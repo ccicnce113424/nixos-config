@@ -3,7 +3,7 @@
 {
   programs.firefox = {
     enable = true;
-    languagePackages = [ "zh-CN" ];
+    languagePacks = [ "zh-CN" ];
     preferences = {
       "widget.use-xdg-desktop-portal.file-picker" = 1;
     };
