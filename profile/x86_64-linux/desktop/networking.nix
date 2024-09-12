@@ -13,7 +13,7 @@
     enable = true;
     nssmdns4 = true;
     openFirewall = true;
-    publich = {
+    publish = {
       enable = true;
       userServices = true;
     };
