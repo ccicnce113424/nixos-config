@@ -13,8 +13,8 @@
 
     fontconfig = {
       defaultFonts = {
-        sans = [ "Source Han Sans CN" ];
-        sansSerif = [ "Source Han Serif CN" ];
+        sansSerif = [ "Source Han Sans SC" ];
+        serif = [ "Source Han Serif SC" ];
         monospace = [ "Sarasa Mono SC" ];
         emoji = [ "Noto Color Emoji" ];
       };
