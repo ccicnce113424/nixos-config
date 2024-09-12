@@ -77,13 +77,15 @@
     # Configuration of Home Manager
     homeManagerModules = users: specialArgs: [
       home-manager.nixosModules.home-manager {
-        useGlobalPkgs = true;
-        useUserPackages = true;
-        extraSpecialArgs = specialArgs;
-        users = builtins.listToAttrs (map (username: {
-          name = username;
-          value = import ./home/${username};
-        }) users);
+        home-manager = {
+          useGlobalPkgs = true;
+          useUserPackages = true;
+          extraSpecialArgs = specialArgs;
+          users = builtins.listToAttrs (map (username: {
+            name = username;
+            value = import ./home/${username};
+          }) users);
+        };
       }
     ];
   in
