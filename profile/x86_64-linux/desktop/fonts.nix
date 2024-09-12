@@ -13,9 +13,9 @@
 
     fontconfig = {
       defaultFonts = {
-        sansSerif = [ "Source Han Sans SC" ];
-        serif = [ "Source Han Serif SC" ];
-        monospace = [ "Sarasa Mono SC" ];
+        sansSerif = [ "Noto Sans SC" ];
+        serif = [ "Noto Serif SC" ];
+        monospace = [ "Hack" "Noto Sans SC" ];
         emoji = [ "Noto Color Emoji" ];
       };
     };
