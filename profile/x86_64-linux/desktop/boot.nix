@@ -34,14 +34,14 @@ in
 
     if is_empty_or_missing "${DB_DIR}" || is_empty_or_missing "${KEK_DIR}" || is_empty_or_missing "${PK_DIR}"; then
         echo "No keys found, creating new keys..."
-        sbctl create-keys
+        ${pkgs.sbctl}/bin/sbctl create-keys
     else
         echo "Using existing keys."
     fi
     echo "Remember to enroll the keys into your firmware!"
     
-    find "${ESP}/EFI/systemd" -type f -name "*.efi" -exec sbctl sign {} \;
-    find "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) -exec sbctl sign {} \;
+    find "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
+    find "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
   '';
 
   # Splash screen
