@@ -9,7 +9,7 @@
     };
     wrapperConfig = {
       pipewireSupport = true;
-    }
+    };
   };
 
   services.speechd.enable = true;

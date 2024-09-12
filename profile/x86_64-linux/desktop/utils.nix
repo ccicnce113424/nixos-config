@@ -11,11 +11,7 @@
   virtualisation.podman = {
     enable = true;
     dockerCompat = true;
-    dockerSocket = true;
-    networkSocket = {
-      enable = true;
-      openFirewall = true;
-    };
+    dockerSocket.enable = true;
     defaultNetwork.settings.dns_enabled = true;
   };
 

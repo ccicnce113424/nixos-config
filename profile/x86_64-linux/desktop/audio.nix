@@ -20,7 +20,7 @@
           "default.clock.max-quantum" = 128;
           "default.clock.quantum" = 64;
         };
-      }
+      };
     };
-  }
+  };
 }

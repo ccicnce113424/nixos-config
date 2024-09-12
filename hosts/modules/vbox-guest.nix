@@ -5,5 +5,5 @@
     enable = true;
     dragAndDrop = true;
     clipboard = true;
-  }
+  };
 }
