@@ -2,7 +2,7 @@
 let
   ESP = "/efi";
   XBOOTLDR = "/boot";
-  KEYS_DIR = "/var/lib/sbctl/keys";
+  KEYS_DIR = "/etc/secureboot/keys";
   DB_DIR = "${KEYS_DIR}/db";
   KEK_DIR = "${KEYS_DIR}/KEK";
   PK_DIR = "${KEYS_DIR}/PK";
