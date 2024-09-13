@@ -7,7 +7,7 @@
     uutils-coreutils-noprefix
   ];
 
-  environment.memoryAllocator.provider = "jemalloc";
+  # environment.memoryAllocator.provider = "mimalloc";
 
   security.sudo.enable = false;
   security.sudo-rs.enable = true;
