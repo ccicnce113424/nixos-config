@@ -3,7 +3,6 @@
 
   # Cache
   nixConfig = {
-    allowUnfree = true;
     substituters = [
       "https://mirrors.ustc.edu.cn/nix-channels/store"
     ];
