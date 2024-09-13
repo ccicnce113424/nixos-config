@@ -7,9 +7,9 @@
     preferences = {
       "widget.use-xdg-desktop-portal.file-picker" = 1;
     };
-    wrapperConfig = {
-      pipewireSupport = true;
-    };
+    package = (pkgs.wrapFirefox (pkgs.firefox-unwrapped.override {
+      jemallocSupport = false;
+    }) {});
   };
 
   services.speechd.enable = true;
