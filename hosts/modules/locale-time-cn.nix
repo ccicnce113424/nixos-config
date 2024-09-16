@@ -1,4 +1,4 @@
-{ config, host, ... }: 
+{ ... }: 
 {
   time = {
     timeZone = "Asia/Shanghai";

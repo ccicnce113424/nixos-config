@@ -1,11 +1,11 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   programs.appimage = {
     enable = true;
     binfmt = true;
   };
-  
+
   services.flatpak.enable = true;
   services.fwupd.enable = true;
 

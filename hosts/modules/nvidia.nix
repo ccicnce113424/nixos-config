@@ -9,11 +9,12 @@
 #  |  __| | |  | | |    |  <     \   /| |  | | |  | |           
 #  | |    | |__| | |____| . \     | | | |__| | |__| |           
 #  |_|     \____/ \_____|_|\_\    |_|  \____/ \____/            
-                                                              
-                                                              
 
-
-{ config, lib, pkgs, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 {
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {

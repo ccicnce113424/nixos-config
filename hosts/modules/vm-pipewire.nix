@@ -1,7 +1,7 @@
-{ config, ... }:
+{ ... }:
 
 {
-  imports = [./better-pipewire.nix];
+  imports = [ ./better-pipewire.nix ];
   services.pipewire.wireplumber.extraConfig = {
     "50-alsa-config" = {
       "monitor.alsa.rules" = [
