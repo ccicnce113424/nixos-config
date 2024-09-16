@@ -2,6 +2,10 @@
 
 {
 
+  imports = [
+    ./development
+  ];
+
   # Avoid Chinese in the directory names
   xdg.userDirs.enable = true;
   
