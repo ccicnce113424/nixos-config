@@ -13,7 +13,7 @@
     ];
     userSettings = {
       "nix.enableLanguageServer" = true;
-      "nix.serverPath" = "nil";
+      "nix.serverPath" = "nixd";
       "nix.serverSettings" = {
         "nixd" = {
           "formatting" = {
