@@ -7,6 +7,7 @@
   };
   
   services.flatpak.enable = true;
+  services.fwupd.enable = true;
 
   virtualisation.podman = {
     enable = true;
