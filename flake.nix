@@ -76,7 +76,7 @@
           useGlobalPkgs = true;
           useUserPackages = true;
           extraSpecialArgs = specialArgs;
-          home-manager.sharedModules = nixpkgs.lib.lists.flatten [
+          sharedModules = nixpkgs.lib.lists.flatten [
             (nixpkgs.lib.lists.optional (specialArgs.host.profile == "plasma") specialArgs.inputs.plasma-manager.homeManagerModules.plasma-manager )
           ];
           users = builtins.listToAttrs (map (username: {
