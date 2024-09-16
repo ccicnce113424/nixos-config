@@ -15,4 +15,8 @@
       "security.workspace.trust.enabled" = false;
     };
   };
+  home.file.".vscode/argv.json".text = builtins.toJSON {
+    "enable-crash-reporter" = false;
+    "locale" = "zh-cn";
+  };
 }
