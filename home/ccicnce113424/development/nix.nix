@@ -9,7 +9,6 @@
     extensions = [
       pkgs.vscode-extensions.jnoortheen.nix-ide
       pkgs.vscode-extensions.arrterian.nix-env-selector
-      pkgs.vscode-extensions.mkhl.direnv
     ];
     userSettings = {
       "nix.enableLanguageServer" = true;

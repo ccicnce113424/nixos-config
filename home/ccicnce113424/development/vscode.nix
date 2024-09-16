@@ -12,9 +12,4 @@
       "security.workspace.trust.enabled" = false;
     };
   };
-  programs.direnv = {
-    enable = true;
-    enableZshIntegration = true;
-    nix-direnv.enable = true;
-  };
 }
