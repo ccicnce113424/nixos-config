@@ -17,7 +17,6 @@
 
   outputs =
     inputs@{
-      self,
       nixpkgs,
       home-manager,
       plasma-manager,
@@ -102,7 +101,7 @@
             extraSpecialArgs = specialArgs;
             sharedModules = nixpkgs.lib.lists.optional (
               specialArgs.host.env == "plasma"
-            ) inputs.plasma-manager.homeManagerModules.plasma-manager;
+            ) plasma-manager.homeManagerModules.plasma-manager;
             users = builtins.listToAttrs (
               map (username: {
                 name = username;
