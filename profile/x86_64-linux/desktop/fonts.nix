@@ -7,8 +7,8 @@
     packages = with pkgs; [
       noto-fonts
       noto-fonts-cjk
-      noto-fonts-emoji
-      noto-fonts-extra
+      noto-fonts-color-emoji
+      noto-fonts-monochrome-emoji
       dejavu_fonts
       hack-font
     ];
