@@ -18,4 +18,9 @@
 
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
+
+  xdg = {
+    terminal-exec.enable = true;
+    portal.xdgOpenUsePortal = true;
+  };
 }
