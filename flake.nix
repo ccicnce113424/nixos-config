@@ -71,22 +71,26 @@
       ];
 
       # Configuration of users
-      userModules = users: [
+      userModules =
+        users:
         (
-          { ... }:
-          {
-            users.users = builtins.listToAttrs (
-              map (username: {
-                name = username;
-                value = {
-                  home = "/home/${username}";
-                };
-              }) users
-            );
-          }
-        )
-        (map (username: ./users/${username}) users)
-      ];
+          [
+            (
+              { ... }:
+              {
+                users.users = builtins.listToAttrs (
+                  map (username: {
+                    name = username;
+                    value = {
+                      home = "/home/${username}";
+                    };
+                  }) users
+                );
+              }
+            )
+          ]
+          ++ (map (username: ./users/${username}) users)
+        );
 
       # Configuration of Home Manager
       homeManagerModules = specialArgs: [
@@ -96,11 +100,9 @@
             useGlobalPkgs = true;
             useUserPackages = true;
             extraSpecialArgs = specialArgs;
-            sharedModules = nixpkgs.lib.lists.flatten [
-              (nixpkgs.lib.lists.optional (
-                specialArgs.host.profile == "plasma"
-              ) inputs.plasma-manager.homeManagerModules.plasma-manager)
-            ];
+            sharedModules = nixpkgs.lib.lists.optional (
+              specialArgs.host.env == "plasma"
+            ) inputs.plasma-manager.homeManagerModules.plasma-manager;
             users = builtins.listToAttrs (
               map (username: {
                 name = username;
@@ -126,15 +128,14 @@
             value = nixpkgs.lib.nixosSystem {
               inherit specialArgs;
               system = hosts.${hostname}.system;
-              modules = nixpkgs.lib.lists.flatten [
+              modules =
                 nixConfigModules
-                (systemModules (hosts.${hostname}.system))
-                (profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile))
-                (envModules (hosts.${hostname}.env))
-                (hostModules hostname)
-                (userModules (hosts.${hostname}.users))
-                (homeManagerModules specialArgs)
-              ];
+                ++ (systemModules (hosts.${hostname}.system))
+                ++ (profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile))
+                ++ (envModules (hosts.${hostname}.env))
+                ++ (hostModules hostname)
+                ++ (userModules (hosts.${hostname}.users))
+                ++ (homeManagerModules specialArgs);
             };
           }
         ) (builtins.attrNames hosts)
