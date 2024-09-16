@@ -62,7 +62,7 @@
       # Configuration of host
       hostModules = hostname: [
         (
-          { config, pkgs, ... }:
+          { ... }:
           {
             networking.hostName = hostname;
           }
@@ -73,7 +73,7 @@
       # Configuration of users
       userModules = users: [
         (
-          { config, pkgs, ... }:
+          { ... }:
           {
             users.users = builtins.listToAttrs (
               map (username: {
