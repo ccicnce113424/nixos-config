@@ -2,7 +2,8 @@
 
 {
   home.packages = with pkgs; [
-    nil
+    # nil
+    nixd
     nixfmt-rfc-style
   ];
   programs.vscode = {
@@ -14,7 +15,7 @@
       "nix.enableLanguageServer" = true;
       "nix.serverPath" = "nil";
       "nix.serverSettings" = {
-        "nil" = {
+        "nixd" = {
           "formatting" = {
             "command" = [ "nixfmt" ];
           };
