@@ -6,14 +6,14 @@
     substituters = [
       "https://mirrors.ustc.edu.cn/nix-channels/store"
     ];
-    # extra-substituters = [
-    #   "https://nix-community.cachix.org"
-    #   "https://cache.nixos.org"
-    # ];
-    # extra-trusted-public-keys = [
-    #   "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-    #   "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-    # ];
+    extra-substituters = [
+     "https://nix-community.cachix.org"
+     "https://cache.nixos.org"
+   ];
+    extra-trusted-public-keys = [
+     "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+     "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+   ];
   };
 
   # Sources
@@ -23,13 +23,24 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
-  outputs = inputs @ { self, nixpkgs, home-manager, ... }: 
+  outputs = inputs @ { self, nixpkgs, home-manager, plasma-manager, ... }: 
   let
     # List of hosts
     hosts = {
       test-vbox = {
+        system = "x86_64-linux";
+        profile = "desktop";
+        env = "plasma";
+        users = [ "ccicnce113424" ];
+      };
+      test-vmware = {
         system = "x86_64-linux";
         profile = "desktop";
         env = "plasma";
@@ -80,6 +91,9 @@
           useGlobalPkgs = true;
           useUserPackages = true;
           extraSpecialArgs = specialArgs;
+          home-manager.sharedModules = lib.lists.flatten [
+            (lib.lists.optional (specialArgs.host.profile == "plasma") plasma-manager.homeManagerModules.plasma-manager )
+          ];
           users = builtins.listToAttrs (map (username: {
             name = username;
             value = import ./home/${username};
@@ -101,7 +115,7 @@
       value = nixpkgs.lib.nixosSystem {
         inherit specialArgs;
         system = hosts.${hostname}.system;
-        modules = nixpkgs.lib.lists.flatten [
+        modules = lib.lists.flatten [
           nixConfigModules
           (systemModules (hosts.${hostname}.system))
           (profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile))
