@@ -4,6 +4,7 @@
 
   imports = [
     ./development
+    ./fcitx5
   ];
 
   # Avoid Chinese in the directory names
