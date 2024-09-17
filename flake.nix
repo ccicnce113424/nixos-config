@@ -13,6 +13,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
     };
+    nur = {
+      url = "github:nix-community/NUR";
+    };
   };
 
   outputs =
@@ -20,6 +23,7 @@
       nixpkgs,
       home-manager,
       plasma-manager,
+      nur,
       ...
     }:
     let
@@ -128,7 +132,8 @@
               inherit specialArgs;
               system = hosts.${hostname}.system;
               modules =
-                nixConfigModules
+                [ nur.nixosModules.nur ]
+                ++ nixConfigModules
                 ++ (systemModules (hosts.${hostname}.system))
                 ++ (profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile))
                 ++ (envModules (hosts.${hostname}.env))
