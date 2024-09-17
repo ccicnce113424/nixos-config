@@ -8,4 +8,6 @@
     ];
     shell = pkgs.zsh;
   };
+
+  imports = [ ./daed.nix ];
 }

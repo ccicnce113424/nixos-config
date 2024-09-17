@@ -16,6 +16,10 @@
     nur = {
       url = "github:nix-community/NUR";
     };
+    daeuniverse = {
+      url = "github:daeuniverse/flake.nix/release";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -24,6 +28,7 @@
       home-manager,
       plasma-manager,
       nur,
+      daeuniverse,
       ...
     }:
     let
@@ -134,7 +139,10 @@
               inherit specialArgs;
               system = hosts.${hostname}.system;
               modules =
-                [ nur.nixosModules.nur ]
+                [
+                  nur.nixosModules.nur
+                  daeuniverse.nixosModules.daed
+                ]
                 ++ nixConfigModules
                 ++ (systemModules (hosts.${hostname}.system))
                 ++ (profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile))
