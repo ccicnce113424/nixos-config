@@ -4,6 +4,7 @@
 
   imports = [
     ./development
+    ./plasma
   ];
 
   # Avoid Chinese in the directory names
