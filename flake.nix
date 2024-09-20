@@ -34,7 +34,7 @@
     let
       # List of hosts
       hosts = {
-        test-vbox = {
+        ccic-desktop = {
           system = "x86_64-linux";
           profile = "desktop";
           env = "plasma";
