@@ -39,13 +39,13 @@
         ccic-desktop = {
           system = "x86_64-linux";
           profile = "desktop";
-          env = "plasma";
+          env = [ "plasma" ];
           users = [ "ccicnce113424" ];
         };
         test-vmware = {
           system = "x86_64-linux";
           profile = "desktop";
-          env = "plasma";
+          env = [ "plasma" ];
           users = [ "ccicnce113424" ];
         };
       };
@@ -65,9 +65,7 @@
         ./profile/${system}/${profile}
       ];
 
-      envModules = env: [
-        ./env/${env}
-      ];
+      envModules = env: map (env: ./env/${env}) env;
 
       # Configuration of host
       hostModules = hostname: [
@@ -115,9 +113,7 @@
                 nur.hmModules.nur
                 nix-flatpak.homeManagerModules.nix-flatpak
               ]
-              ++ nixpkgs.lib.lists.optional (
-                specialArgs.host.env == "plasma"
-              ) plasma-manager.homeManagerModules.plasma-manager;
+              ++ nixpkgs.lib.lists.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
             users = builtins.listToAttrs (
               map (username: {
                 name = username;
