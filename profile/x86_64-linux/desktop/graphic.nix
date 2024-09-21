@@ -6,6 +6,7 @@
     enable32Bit = true;
   };
 
+  services.xserver.enable = true;
   programs.xwayland.enable = true;
 
   services.colord.enable = true;
