@@ -4,7 +4,11 @@
 
   imports = [
     ./development
-    ./plasma
+    ./multimedia
+    ./networking
+    ./plasma.nix
+    ./utils.nix
+    ./documents.nix
   ];
 
   # Avoid Chinese in the directory names

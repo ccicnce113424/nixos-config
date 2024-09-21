@@ -20,6 +20,7 @@
       url = "github:daeuniverse/flake.nix/release";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
   outputs =
@@ -29,6 +30,7 @@
       plasma-manager,
       nur,
       daeuniverse,
+      nix-flatpak,
       ...
     }:
     let
@@ -109,7 +111,10 @@
             useUserPackages = true;
             extraSpecialArgs = specialArgs;
             sharedModules =
-              [ nur.hmModules.nur ]
+              [
+                nur.hmModules.nur
+                nix-flatpak.homeManagerModules.nix-flatpak
+              ]
               ++ nixpkgs.lib.lists.optional (
                 specialArgs.host.env == "plasma"
               ) plasma-manager.homeManagerModules.plasma-manager;
@@ -142,6 +147,7 @@
                 [
                   nur.nixosModules.nur
                   daeuniverse.nixosModules.daed
+                  nix-flatpak.nixosModules.nix-flatpak
                 ]
                 ++ nixConfigModules
                 ++ (systemModules (hosts.${hostname}.system))

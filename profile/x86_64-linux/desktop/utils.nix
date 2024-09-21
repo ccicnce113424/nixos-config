@@ -6,7 +6,15 @@
     binfmt = true;
   };
 
-  services.flatpak.enable = true;
+  services.flatpak = {
+    enable = true;
+    remotes = [
+      {
+        name = "flathub";
+        location = "https://mirror.sjtu.edu.cn/flathub";
+      }
+    ];
+  };
   services.fwupd.enable = true;
 
   virtualisation.podman = {
