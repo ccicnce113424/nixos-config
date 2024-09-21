@@ -1,7 +1,8 @@
 { pkgs, ... }:
 {
-  home.packages = [
-    pkgs.mpv
-    pkgs.qcm
+  home.packages = with pkgs; [
+    mpv
+    netease-cloud-music-gtk
+    osdlyrics
   ];
 }
