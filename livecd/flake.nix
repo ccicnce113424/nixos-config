@@ -7,7 +7,11 @@
     daeuniverse.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
-    inputs@{ nixpkgs, daeuniverse }:
+    inputs@{
+      self,
+      nixpkgs,
+      daeuniverse,
+    }:
     {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
@@ -18,7 +22,7 @@
           ./configuration.nix
           daeuniverse.nixosModules.daed
           (
-            { pkgs }:
+            { pkgs, ... }:
             {
               environment.systemPackages = [ pkgs.git ];
               services.daed = {
