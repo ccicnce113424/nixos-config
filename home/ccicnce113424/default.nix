@@ -6,7 +6,7 @@
     ./development
     ./multimedia
     ./networking
-    ./plasma.nix
+    ./plasma
     ./utils.nix
     ./documents.nix
   ];
