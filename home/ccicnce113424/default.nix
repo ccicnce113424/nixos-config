@@ -9,6 +9,7 @@
     ./plasma
     ./utils.nix
     ./documents.nix
+    ./zsh.nix
   ];
 
   # Avoid Chinese in the directory names

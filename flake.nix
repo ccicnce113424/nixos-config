@@ -108,6 +108,7 @@
             useGlobalPkgs = true;
             useUserPackages = true;
             extraSpecialArgs = specialArgs;
+            backupFileExtension = ".backup";
             sharedModules =
               [
                 nur.hmModules.nur
