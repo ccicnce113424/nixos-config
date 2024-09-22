@@ -18,7 +18,6 @@
 {
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
-    enable = true;
     open = true;
     modesetting.enable = true;
     nvidiaSettings = true;
@@ -26,7 +25,6 @@
     dynamicBoost.enable = true;
     powerManagement = {
       enable = true;
-      finegrained = true;
     };
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
