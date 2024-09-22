@@ -13,6 +13,11 @@
           fcitx5-pinyin-moegirl
           fcitx5-pinyin-zhwiki
         ]);
+      settings.addons = {
+        classicui.globalSection.Theme = "plasma";
+        classicui.globalSection.DarkTheme = "plasma";
+        classicui.globalSection.UseDarkTheme = "True";
+      };
     };
   };
 }
