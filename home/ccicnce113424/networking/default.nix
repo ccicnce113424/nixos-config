@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   programs.chromium.enable = true;
   programs.firefox.enable = true;
@@ -17,4 +17,9 @@
       ];
     };
   };
+
+  home.packages = [
+    pkgs.qq
+    config.nur.repos.xddxdd.wechat-uos
+  ];
 }
