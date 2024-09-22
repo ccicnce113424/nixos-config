@@ -1,0 +1,7 @@
+1. Connect the internet
+2. install git and dae
+3. set up dae
+4. set up partition
+5. clone configuration
+6. install
+7. set users
