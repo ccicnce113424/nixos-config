@@ -50,7 +50,7 @@
   home.packages = with pkgs; [
     dust
     tokei
-    bottom-rs
+    bottom
   ];
 
   programs = {
