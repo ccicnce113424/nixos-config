@@ -29,16 +29,34 @@
       ];
     };
     shellAliases = {
-      apply = "sudo nixos-rebuild switch";
-      sgc = "sudo nixos-collect-garbage --delete-old";
-      gc = "nixos-collect-garbage --delete-old";
-      upos = "sudo nix flake update /etc/nixos";
+      switch = "sudo nixos-rebuild switch";
+      sgc = "sudo nix-collect-garbage --delete-old";
+      gc = "nix-collect-garbage --delete-old";
+      up = "sudo nix flake update /etc/nixos";
       clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
     };
+  };
+
+  programs.autojump = {
+    enable = true;
+    enableZshIntegration = true;
   };
 
   programs.thefuck = {
     enable = true;
     enableZshIntegration = true;
+  };
+
+  home.packages = with pkgs; [
+    dust
+    tokei
+    bottom-rs
+  ];
+
+  programs = {
+    fd.enable = true;
+    ripgrep.enable = true;
+    htop.enable = true;
+    fastfetch.enable = true;
   };
 }
