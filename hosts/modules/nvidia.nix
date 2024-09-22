@@ -22,10 +22,8 @@
     modesetting.enable = true;
     nvidiaSettings = true;
     nvidiaPersistenced = true;
-    dynamicBoost.enable = true;
-    powerManagement = {
-      enable = true;
-    };
+    dynamicBoost.enable = false;
+    powerManagement.enable = false;
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
