@@ -24,6 +24,18 @@
           (
             { pkgs, ... }:
             {
+              nixpkgs.config.allowUnfree = true;
+              nix.settings = {
+                experimental-features = "nix-command flakes";
+                substituters = [
+                  "https://mirror.sjtu.edu.cn/nix-channels/store"
+                  "https://cache.nixos.org"
+                  "https://cache.garnix.io"
+                ];
+                extra-trusted-public-keys = [
+                  "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+                ];
+              };
               environment.systemPackages = [ pkgs.git ];
               services.daed = {
                 enable = true;
