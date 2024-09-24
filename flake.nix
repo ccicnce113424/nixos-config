@@ -39,7 +39,10 @@
         ccic-desktop = {
           system = "x86_64-linux";
           profile = "desktop";
-          env = [ "plasma" ];
+          env = [
+            "plasma"
+            "steam"
+          ];
           users = [ "ccicnce113424" ];
         };
         test-vmware = {

@@ -3,8 +3,7 @@
   programs.plasma.powerdevil = {
     AC = {
       autoSuspend = {
-        action = "sleep";
-        idleTimeout = 600;
+        action = "nothing";
       };
       dimDisplay = {
         enable = true;
