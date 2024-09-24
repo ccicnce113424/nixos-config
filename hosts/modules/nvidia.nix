@@ -19,6 +19,7 @@
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.nvidia = {
     open = true;
+    gsp.enable = true;
     modesetting.enable = true;
     nvidiaSettings = true;
     nvidiaPersistenced = true;
