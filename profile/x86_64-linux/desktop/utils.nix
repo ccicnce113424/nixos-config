@@ -8,12 +8,12 @@
 
   services.flatpak = {
     enable = true;
-    remotes = [
-      {
-        name = "flathub";
-        location = "https://mirror.sjtu.edu.cn/flathub";
-      }
-    ];
+    # remotes = [
+    #   {
+    #     name = "flathub";
+    #     location = "https://mirror.sjtu.edu.cn/flathub";
+    #   }
+    # ];
   };
   services.fwupd.enable = true;
 
