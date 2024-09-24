@@ -37,4 +37,8 @@
       nvidia-vaapi-driver
     ];
   };
+
+  boot.kernelParams = [
+    "initcall_blacklist=simpledrm_platform_driver_init"
+  ];
 }
