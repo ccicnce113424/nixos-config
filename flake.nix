@@ -114,7 +114,7 @@
                 nur.hmModules.nur
                 nix-flatpak.homeManagerModules.nix-flatpak
               ]
-              ++ nixpkgs.lib.lists.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
+              ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
             users = builtins.listToAttrs (
               map (username: {
                 name = username;

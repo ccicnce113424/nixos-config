@@ -1,7 +1,7 @@
 { ... }:
 
 {
-  # imports = [./vm-audio.nix];
+  imports = [ ./vm-pipewire.nix ];
   virtualisation.virtualbox.guest = {
     enable = true;
     dragAndDrop = true;
