@@ -45,12 +45,6 @@
           ];
           users = [ "ccicnce113424" ];
         };
-        test-vmware = {
-          system = "x86_64-linux";
-          profile = "desktop";
-          env = [ "plasma" ];
-          users = [ "ccicnce113424" ];
-        };
       };
 
       # Configuration of Nix and Flake
