@@ -32,7 +32,7 @@
       switch = "sudo nixos-rebuild switch";
       sgc = "sudo nix-collect-garbage --delete-old";
       gc = "nix-collect-garbage --delete-old";
-      up = "sudo nix flake update";
+      up = "nix flake update";
       clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
       win = "systemctl reboot --boot-loader-entry=auto-windows";
       fw = "systemctl reboot --firmware-setup";
