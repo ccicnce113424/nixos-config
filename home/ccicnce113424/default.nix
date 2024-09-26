@@ -10,6 +10,7 @@
     ./utils.nix
     ./documents.nix
     ./zsh.nix
+    ./wine.nix
   ];
 
   # Avoid Chinese in the directory names
