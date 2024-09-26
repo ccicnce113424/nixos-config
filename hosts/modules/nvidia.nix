@@ -25,7 +25,7 @@
     nvidiaPersistenced = true;
     dynamicBoost.enable = false;
     powerManagement.enable = false;
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
 
   hardware.nvidia-container-toolkit.enable = true;
@@ -38,8 +38,4 @@
       nvidia-vaapi-driver
     ];
   };
-
-  # boot.kernelParams = [
-  #   "initcall_blacklist=simpledrm_platform_driver_init"
-  # ];
 }
