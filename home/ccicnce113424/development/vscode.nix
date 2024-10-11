@@ -5,7 +5,7 @@
     enable = true;
     extensions = [
       pkgs.vscode-extensions.ms-ceintl.vscode-language-pack-zh-hans
-      pkgs.vscode-extensions.ms-vscode.cpptools-extension-pack
+      pkgs.vscode-extensions.ms-vscode.cpptools
     ];
     userSettings = {
       "files.autoGuessEncoding" = true;
