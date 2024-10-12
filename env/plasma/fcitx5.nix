@@ -18,6 +18,7 @@
         DarkTheme = "plasma";
         UseDarkTheme = "True";
       };
+      waylandFrontend = true;
     };
   };
 }
