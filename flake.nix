@@ -17,7 +17,7 @@
       url = "github:nix-community/NUR";
     };
     daeuniverse = {
-      url = "github:daeuniverse/flake.nix/release";
+      url = "github:daeuniverse/flake.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
