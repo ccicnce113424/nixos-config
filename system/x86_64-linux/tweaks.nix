@@ -12,6 +12,7 @@
   security.sudo.enable = false;
   security.sudo-rs.enable = true;
   security.rtkit.enable = true;
+  security.polkit.enable = true;
 
   programs.nix-ld.enable = true;
 }
