@@ -35,25 +35,19 @@
     }:
     let
       # List of hosts
-      hosts = {
-        ccic-desktop = {
+      hosts = rec {
+        desktop-template = {
           system = "x86_64-linux";
           profile = "desktop";
           env = [
             "plasma"
             "steam"
+            "obs"
           ];
           users = [ "ccicnce113424" ];
         };
-        test-vmware = {
-          system = "x86_64-linux";
-          profile = "desktop";
-          env = [
-            "plasma"
-            "steam"
-          ];
-          users = [ "ccicnce113424" ];
-        };
+        ccic-desktop = desktop-template;
+        test-vmware = desktop-template;
       };
 
       # Configuration of Nix and Flake
