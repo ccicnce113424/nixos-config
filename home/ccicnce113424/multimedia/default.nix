@@ -4,5 +4,6 @@
     mpv
     netease-cloud-music-gtk
     osdlyrics
+    gimp
   ];
 }
