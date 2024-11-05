@@ -167,7 +167,7 @@
                 {
                   isoImage.squashfsCompression = "zstd";
                   imports = [
-                    (modulesPath + "/installer/cd-dvd/installation-cd-minimal-new-kernel.nix")
+                    (modulesPath + "/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix")
                     ./nix-config.nix
                     daeuniverse.nixosModules.daed
                   ];
