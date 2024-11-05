@@ -10,7 +10,7 @@
     substituters = [
       "https://mirror.sjtu.edu.cn/nix-channels/store"
       "https://cache.nixos.org"
-      # "https://cache.garnix.io"
+      "https://cache.garnix.io"
       "https://nix-community.cachix.org"
     ];
     extra-trusted-public-keys = [
