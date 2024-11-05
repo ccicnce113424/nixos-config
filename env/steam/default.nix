@@ -9,7 +9,6 @@
     gamescopeSession = {
       enable = true;
       args = [
-        "--hdr-enabled"
         "--rt"
       ] ++ pkgs.lib.optional (config.networking.hostName == "ccic-desktop") "-r 165";
     };
