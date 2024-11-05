@@ -126,36 +126,69 @@
       ];
     in
     {
-      nixosConfigurations = builtins.listToAttrs (
-        map (
-          hostname:
-          let
-            specialArgs = {
-              inherit inputs;
-              host = hosts.${hostname};
-            };
-          in
-          {
-            name = hostname;
-            value = nixpkgs.lib.nixosSystem {
-              inherit specialArgs;
-              system = hosts.${hostname}.system;
-              modules =
-                [
-                  nur.nixosModules.nur
-                  daeuniverse.nixosModules.daed
-                  nix-flatpak.nixosModules.nix-flatpak
-                ]
-                ++ nixConfigModules
-                ++ (systemModules (hosts.${hostname}.system))
-                ++ (profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile))
-                ++ (envModules (hosts.${hostname}.env))
-                ++ (hostModules hostname)
-                ++ (userModules (hosts.${hostname}.users))
-                ++ (homeManagerModules specialArgs);
-            };
-          }
-        ) (builtins.attrNames hosts)
-      );
+      nixosConfigurations =
+        builtins.listToAttrs (
+          map (
+            hostname:
+            let
+              specialArgs = {
+                inherit inputs;
+                host = hosts.${hostname};
+              };
+            in
+            {
+              name = hostname;
+              value = nixpkgs.lib.nixosSystem {
+                inherit specialArgs;
+                system = hosts.${hostname}.system;
+                modules =
+                  [
+                    nur.nixosModules.nur
+                    daeuniverse.nixosModules.daed
+                    nix-flatpak.nixosModules.nix-flatpak
+                  ]
+                  ++ nixConfigModules
+                  ++ (systemModules (hosts.${hostname}.system))
+                  ++ (profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile))
+                  ++ (envModules (hosts.${hostname}.env))
+                  ++ (hostModules hostname)
+                  ++ (userModules (hosts.${hostname}.users))
+                  ++ (homeManagerModules specialArgs);
+              };
+            }
+          ) (builtins.attrNames hosts)
+        )
+        // {
+          livecd = nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [
+              (
+                { pkgs, modulesPath, ... }:
+                {
+                  isoImage.squashfsCompression = "zstd";
+                  imports = [
+                    (modulesPath + "/installer/cd-dvd/installation-cd-minimal-new-kernel.nix")
+                    ./nix-config.nix
+                    daeuniverse.nixosModules.daed
+                  ];
+                  services.daed = {
+                    enable = true;
+                    openFirewall = {
+                      enable = true;
+                      port = 12345;
+                    };
+                    configDir = "/etc/daed";
+                    listen = "127.0.0.1:2023";
+                  };
+                  environment.systemPackages = [ pkgs.git ];
+                  services.openssh = {
+                    enable = true;
+                    PermitRootLogin = "yes";
+                  };
+                }
+              )
+            ];
+          };
+        };
     };
 }
