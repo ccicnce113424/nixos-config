@@ -183,7 +183,7 @@
                   environment.systemPackages = [ pkgs.git ];
                   services.openssh = {
                     enable = true;
-                    PermitRootLogin = "yes";
+                    settings.PermitRootLogin = "yes";
                   };
                 }
               )
