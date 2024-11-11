@@ -24,6 +24,6 @@
 
   home.packages = [
     pkgs.qq
-    config.nur.repos.xddxdd.wechat-uos
+    pkgs.wechat-uos
   ];
 }
