@@ -1,7 +1,7 @@
-{ pkgs, ... }:
+{ ... }:
 {
-  home.packages = with pkgs; [
-    heroic
-    gogdl
+  services.flatpak.packages = [
+    "net.lutris.Lutris"
+    "com.heroicgameslauncher.hgl"
   ];
 }
