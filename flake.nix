@@ -180,7 +180,10 @@
                     configDir = "/etc/daed";
                     listen = "127.0.0.1:2023";
                   };
-                  environment.systemPackages = [ pkgs.git ];
+                  environment.systemPackages = [
+                    pkgs.git
+                    pkgs.elinks
+                  ];
                   services.openssh = {
                     enable = true;
                     settings.PermitRootLogin = "yes";
