@@ -50,6 +50,7 @@
           "DejaVu Sans"
         ];
       };
+      cache32Bit = true;
     };
   };
 }
