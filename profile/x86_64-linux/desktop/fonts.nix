@@ -34,9 +34,9 @@
         ];
         monospace = [
           "Hack"
-          "Noto Sans CJK SC"
-          "Noto Sans CJK"
-          "Noto Sans"
+          "Noto Sans Mono CJK SC"
+          "Noto Sans Mono CJK"
+          "Noto Sans Mono"
           "Noto Color Emoji"
           "Noto Emoji"
           "DejaVu Sans Mono"
