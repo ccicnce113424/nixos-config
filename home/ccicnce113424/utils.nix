@@ -13,4 +13,6 @@
     ];
     uninstallUnmanaged = true;
   };
+
+  fonts.fontconfig.enable = true;
 }
