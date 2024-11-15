@@ -7,7 +7,7 @@
       };
       dimDisplay = {
         enable = true;
-        idleTimeout = 60;
+        idleTimeout = 180;
       };
       inhibitLidActionWhenExternalMonitorConnected = true;
       powerButtonAction = "shutDown";
