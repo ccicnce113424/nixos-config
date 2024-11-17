@@ -11,7 +11,7 @@
     packages = [
       "io.github.peazip.PeaZip"
     ];
-    uninstallUnmanaged = true;
+    # uninstallUnmanaged = true;
   };
 
   fonts.fontconfig.enable = true;
