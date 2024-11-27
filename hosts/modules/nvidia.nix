@@ -25,7 +25,7 @@
     nvidiaPersistenced = true;
     dynamicBoost.enable = false;
     powerManagement.enable = false;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
   hardware.nvidia-container-toolkit.enable = true;
