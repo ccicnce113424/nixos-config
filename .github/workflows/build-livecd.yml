@@ -1,0 +1,30 @@
+name: Build LiveCD
+
+on:
+  workflow_run:
+    workflows: ["Update Nix Flake"]
+    types:
+      - completed
+  workflow_dispatch:
+
+jobs:
+  build-livecd:
+    name: Build LiveCD
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+  
+      - name: Set up Nix
+        uses: cachix/install-nix-action@v30
+
+      - name: Build LiveCD
+        run: |
+          nix build .#nixosConfigurations.livecd.config.system.build.isoImage
+
+      - name: Upload LiveCD ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: livecd-iso
+          path: ./result/iso

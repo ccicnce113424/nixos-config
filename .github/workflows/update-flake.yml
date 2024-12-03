@@ -18,14 +18,11 @@ jobs:
 
     - name: Set up Nix
       uses: cachix/install-nix-action@v30
-
-    - name: Setup git name and email
+  
+    - name: Update Flake
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-
-    - name: Update Flake
-      run: |
         nix flake update --commit-lock-file
 
     - name: Push changes
