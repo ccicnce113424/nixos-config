@@ -21,6 +21,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+    macronova = {
+      url = "git+https://forgejo.invariantspace.com/macronova/nix-custom.git";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -31,6 +35,7 @@
       nur,
       daeuniverse,
       nix-flatpak,
+      macronova,
       ...
     }:
     let
