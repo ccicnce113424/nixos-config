@@ -1,9 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   services.desktopManager.plasma6.enable = true;
   environment.systemPackages = [
-    # (pkgs.callPackage ../../packages/vulkan-hdr-layer.nix { })
+    config.nur.repos.xddxdd.vk-hdr-layer
     pkgs.kdePackages.kdeconnect-kde
     pkgs.dmidecode
   ];
