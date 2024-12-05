@@ -7,7 +7,7 @@
     pkgs.kdePackages.kdeconnect-kde
     pkgs.dmidecode
   ];
-  environment.sessionVariables = {
-    ENABLE_HDR_WSI = "1";
-  };
+  # environment.sessionVariables = {
+  #   ENABLE_HDR_WSI = "1";
+  # };
 }
