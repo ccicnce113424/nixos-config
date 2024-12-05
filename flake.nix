@@ -185,6 +185,7 @@
                     configDir = "/etc/daed";
                     listen = "0.0.0.0:2023";
                   };
+                  networking.firewall.allowedTCPPorts = [ 22 2023 ];
                   environment.systemPackages = [
                     pkgs.git
                     pkgs.elinks
