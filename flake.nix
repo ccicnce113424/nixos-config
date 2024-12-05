@@ -183,7 +183,7 @@
                       port = 12345;
                     };
                     configDir = "/etc/daed";
-                    listen = "127.0.0.1:2023";
+                    listen = "0.0.0.0:2023";
                   };
                   environment.systemPackages = [
                     pkgs.git
