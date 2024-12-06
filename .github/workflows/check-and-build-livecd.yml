@@ -63,5 +63,4 @@ jobs:
       - name: Upload LiveCD ISO
         uses: actions/upload-artifact@v4
         with:
-          name: livecd-iso
           path: ./result/iso/*.iso
