@@ -42,7 +42,7 @@ jobs:
   
     - name: Check
       run: |
-        nix flake check
+        nix flake check --all-systems
 
   build-livecd:
     name: Build LiveCD
