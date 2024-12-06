@@ -40,20 +40,23 @@
     }:
     let
       # List of hosts
-      hosts = rec {
-        desktop-template = {
-          system = "x86_64-linux";
-          profile = "desktop";
-          env = [
-            "plasma"
-            "steam"
-            "obs"
-          ];
-          users = [ "ccicnce113424" ];
+      hosts =
+        let
+          desktop-template = {
+            system = "x86_64-linux";
+            profile = "desktop";
+            env = [
+              "plasma"
+              "steam"
+              "obs"
+            ];
+            users = [ "ccicnce113424" ];
+          };
+        in
+        {
+          ccic-desktop = desktop-template;
+          test-vmware = desktop-template;
         };
-        ccic-desktop = desktop-template;
-        test-vmware = desktop-template;
-      };
 
       # Configuration of Nix and Flake
       nixConfigModules = [
@@ -185,7 +188,10 @@
                     configDir = "/etc/daed";
                     listen = "0.0.0.0:2023";
                   };
-                  networking.firewall.allowedTCPPorts = [ 22 2023 ];
+                  networking.firewall.allowedTCPPorts = [
+                    22
+                    2023
+                  ];
                   environment.systemPackages = [
                     pkgs.git
                     pkgs.elinks
