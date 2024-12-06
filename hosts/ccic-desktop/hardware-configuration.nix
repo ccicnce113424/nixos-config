@@ -33,6 +33,7 @@
 
   services.beesd.filesystems.root = {
     spec = "UUID=3b266665-e6cf-4c94-a15e-771dfdaa3b0d";
+    hashTableSizeMB = 128;
   };
 
   fileSystems."/home" = {
