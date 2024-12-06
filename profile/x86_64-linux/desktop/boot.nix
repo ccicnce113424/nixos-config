@@ -19,6 +19,7 @@ in
   boot.loader.systemd-boot = {
     enable = true;
     xbootldrMountPoint = XBOOTLDR;
+    graceful = true;
   };
 
   environment.systemPackages = with pkgs; [
