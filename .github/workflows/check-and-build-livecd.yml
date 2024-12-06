@@ -2,12 +2,36 @@ name: Check Flake and build LiveCD
 
 on:
   push:
+  schedule:
+    - cron: "0 0,12 * * *"
   workflow_dispatch:
 
 jobs:
+  update-flake:
+    name: Check for Flake updates
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Nix
+      uses: cachix/install-nix-action@v30
+  
+    - name: Update Flake
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        nix flake update --commit-lock-file
+
+    - name: Push changes
+      run: |
+        git push
+
   check:
     name: Check Flake
     runs-on: ubuntu-latest
+    needs: update-flake
 
     steps:
     - name: Checkout repository
