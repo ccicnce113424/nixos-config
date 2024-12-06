@@ -1,16 +1,29 @@
-name: Build LiveCD
+name: Check Flake and build LiveCD
 
 on:
-  workflow_run:
-    workflows: ["Update Nix Flake"]
-    types:
-      - completed
+  push:
   workflow_dispatch:
 
 jobs:
+  check:
+    name: Check Flake
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Nix
+      uses: cachix/install-nix-action@v30
+  
+    - name: Check
+      run: |
+        nix flake check
+
   build-livecd:
     name: Build LiveCD
     runs-on: ubuntu-latest
+    needs: check
 
     steps:
       - name: Checkout repository
@@ -27,4 +40,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: livecd-iso
-          path: ./result/iso
+          path: ./result/iso/*.iso
