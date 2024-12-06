@@ -31,6 +31,10 @@
     options = [ "compress=zstd" ];
   };
 
+  services.beesd.filesystems.root = {
+    spec = "UUID=3b266665-e6cf-4c94-a15e-771dfdaa3b0d";
+  };
+
   fileSystems."/home" = {
     device = "/dev/disk/by-uuid/3b266665-e6cf-4c94-a15e-771dfdaa3b0d";
     fsType = "btrfs";
