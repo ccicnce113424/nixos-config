@@ -1,9 +1,9 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 
 {
   services.desktopManager.plasma6.enable = true;
   environment.systemPackages = [
-    config.nur.repos.xddxdd.vk-hdr-layer
+    pkgs.nur.repos.xddxdd.vk-hdr-layer
     pkgs.kdePackages.kdeconnect-kde
     pkgs.dmidecode
   ];

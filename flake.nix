@@ -119,7 +119,7 @@
             backupFileExtension = "backup";
             sharedModules =
               [
-                nur.hmModules.nur
+                nur.modules.homeManager.default
                 nix-flatpak.homeManagerModules.nix-flatpak
               ]
               ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
@@ -151,7 +151,7 @@
                 system = hosts.${hostname}.system;
                 modules =
                   [
-                    nur.nixosModules.nur
+                    nur.modules.nixos.default
                     daeuniverse.nixosModules.daed
                     nix-flatpak.nixosModules.nix-flatpak
                   ]
