@@ -20,6 +20,9 @@ in
     enable = true;
     xbootldrMountPoint = XBOOTLDR;
     graceful = true;
+    memtest86.enable = true;
+    edk2-uefi-shell.enable = true;
+    netbootxyz.enable = true;
   };
 
   environment.systemPackages = with pkgs; [
@@ -42,7 +45,7 @@ in
     echo "Remember to enroll the keys into your firmware!"
 
     find "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
-    find "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) ! -name "*init*" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
+    find "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) ! -name "*init*" ! -wholename "*.extra-files/*" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
   '';
 
   # Splash screen
