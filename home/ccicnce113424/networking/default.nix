@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   programs.chromium.enable = true;
   programs.firefox = {
@@ -12,7 +12,7 @@
           "extensions.pocket.enabled" = false;
           "extensions.autoDisableScopes" = 0;
         };
-        extensions = with config.nur.repos.rycee.firefox-addons; [
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
           violentmonkey
           smartproxy

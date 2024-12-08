@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
   i18n.inputMethod = {
     enable = true;
@@ -7,7 +7,7 @@
       plasma6Support = true;
       addons =
         (with pkgs; [ qt6Packages.fcitx5-chinese-addons ])
-        ++ (with config.nur.repos.aleksana; [
+        ++ (with pkgs.nur.repos.aleksana; [
           fcitx5-pinyin-cedict
           fcitx5-pinyin-chinese-idiom
           fcitx5-pinyin-moegirl
