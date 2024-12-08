@@ -55,6 +55,7 @@
         in
         {
           ccic-desktop = desktop-template;
+          ccic-laptop = desktop-template;
           test-vmware = desktop-template;
         };
 
