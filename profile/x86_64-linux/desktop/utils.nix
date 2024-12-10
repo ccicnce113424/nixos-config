@@ -23,6 +23,9 @@
   };
   services.fwupd.enable = true;
 
+  environment.systemPackages = [ pkgs.smartmontools ];
+  services.smartd.enable = true;
+
   virtualisation.podman = {
     enable = true;
     dockerCompat = true;
