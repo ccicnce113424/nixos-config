@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
   hardware.graphics = {
@@ -13,4 +13,6 @@
 
   services.kmscon.enable = true;
   services.kmscon.hwRender = true;
+
+  environment.systemPackages = [ pkgs.nvtopPackages.full ];
 }
