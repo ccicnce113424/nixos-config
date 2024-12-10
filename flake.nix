@@ -15,6 +15,7 @@
     };
     nur = {
       url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     daeuniverse = {
       url = "github:daeuniverse/flake.nix";
