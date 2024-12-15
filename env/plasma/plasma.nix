@@ -9,6 +9,8 @@
     pkgs.kdePackages.plasma-disks
     pkgs.kdePackages.krdc
     pkgs.kdePackages.krfb
+    pkgs.kdePackages.qtmultimedia
+    pkgs.kdePackages.qtwebengine
   ];
 
   networking.firewall = {
