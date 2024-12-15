@@ -27,6 +27,7 @@
     pkgs.smartmontools
     pkgs.android-tools
     pkgs.scrcpy
+    pkgs.python3Full
   ];
   services.smartd.enable = true;
 
