@@ -3,7 +3,7 @@ name: Check Flake and build LiveCD
 on:
   push:
   schedule:
-    - cron: "0 0,8,16 * * *"
+    - cron: "0 0,12 * * *"
   workflow_dispatch:
 
 jobs:
