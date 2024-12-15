@@ -33,6 +33,8 @@
     defaultNetwork.settings.dns_enabled = true;
   };
 
+  virtualisation.waydroid.enable = true;
+
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
 
