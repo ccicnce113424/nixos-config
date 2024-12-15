@@ -7,9 +7,19 @@
     pkgs.kdePackages.kdeconnect-kde
     pkgs.dmidecode
     pkgs.kdePackages.plasma-disks
+    pkgs.kdePackages.krdc
+    pkgs.kdePackages.krfb
   ];
 
   networking.firewall = {
+    allowedTCPPorts = [
+      3389
+      5900
+    ];
+    allowedUDPPorts = [
+      3389
+      5900
+    ];
     allowedTCPPortRanges = [
       {
         from = 1714;
