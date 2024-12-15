@@ -9,5 +9,6 @@
     ./utils.nix
     ./security.nix
     ./zram.nix
+    ./wine.nix
   ];
 }
