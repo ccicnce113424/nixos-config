@@ -25,5 +25,6 @@
   home.packages = [
     pkgs.qq
     pkgs.wechat-uos
+    pkgs.telegram-desktop
   ];
 }
