@@ -23,7 +23,11 @@
   };
   services.fwupd.enable = true;
 
-  environment.systemPackages = [ pkgs.smartmontools ];
+  environment.systemPackages = [
+    pkgs.smartmontools
+    pkgs.android-tools
+    pkgs.scrcpy
+  ];
   services.smartd.enable = true;
 
   virtualisation.podman = {
