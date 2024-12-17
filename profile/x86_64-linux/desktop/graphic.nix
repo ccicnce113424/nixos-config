@@ -18,4 +18,12 @@
   };
 
   environment.systemPackages = [ pkgs.nvtopPackages.full ];
+
+  programs.nix-ld.libraries = [
+    pkgs.xorg.libX11
+    pkgs.xorg.libXext
+    pkgs.xorg.libXi
+    pkgs.xorg.libXrender
+    pkgs.xorg.libXtst
+  ];
 }
