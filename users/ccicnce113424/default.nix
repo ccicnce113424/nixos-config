@@ -5,6 +5,7 @@
     extraGroups = [
       "wheel"
       "networkmanager"
+      "plugdev"
     ];
     shell = pkgs.zsh;
   };
