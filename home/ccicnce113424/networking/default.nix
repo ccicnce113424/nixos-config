@@ -27,5 +27,7 @@
     pkgs.wechat-uos
     pkgs.telegram-desktop
     pkgs.tor-browser
+    pkgs.qbittorrent-enhanced
+    pkgs.motrix
   ];
 }
