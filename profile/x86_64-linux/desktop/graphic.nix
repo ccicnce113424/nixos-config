@@ -25,5 +25,6 @@
     pkgs.xorg.libXi
     pkgs.xorg.libXrender
     pkgs.xorg.libXtst
+    pkgs.fontconfig
   ];
 }
