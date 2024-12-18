@@ -55,7 +55,7 @@
                 profile = "desktop";
                 env = [
                   "plasma"
-                  "steam"
+                  "gaming"
                   "obs"
                 ];
                 users = [ "ccicnce113424" ];

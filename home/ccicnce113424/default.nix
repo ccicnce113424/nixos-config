@@ -2,7 +2,6 @@
 {
   imports = [
     ./development
-    ./gaming
     ./multimedia
     ./networking
     ./plasma

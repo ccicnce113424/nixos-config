@@ -20,4 +20,9 @@
   };
   programs.gamemode.enable = true;
   hardware.xone.enable = true;
+
+  services.flatpak.packages = [
+    "net.lutris.Lutris"
+    "com.heroicgameslauncher.hgl"
+  ];
 }
