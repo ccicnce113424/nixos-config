@@ -1,7 +1,6 @@
-{ pkgs, ... }:
+{ ... }:
 {
   services.daed = {
-    package = pkgs.daed;
     enable = true;
     openFirewall = {
       enable = true;
