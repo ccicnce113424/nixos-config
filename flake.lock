@@ -26,11 +26,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1734530250,
-        "narHash": "sha256-K4ZO7yF89QK+VyTLznSrZHMd7+gpXDqv8IWX6OvrW8s=",
+        "lastModified": 1734533344,
+        "narHash": "sha256-GAo7eo7ZOFwDrax18nfCodB9RZmNDTdLgwi5PJkGWcI=",
         "owner": "daeuniverse",
         "repo": "flake.nix",
-        "rev": "7d1f8cd10e12ce696e9721d37650dc10762a2ad9",
+        "rev": "9a27c24553d3767bebbe998d3c8c1f9797a2fc01",
         "type": "github"
       },
       "original": {
