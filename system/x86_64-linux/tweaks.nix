@@ -15,4 +15,6 @@
   security.polkit.enable = true;
 
   programs.nix-ld.enable = true;
+
+  boot.kernelParams = [ "iommu=pt" ];
 }
