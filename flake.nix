@@ -44,104 +44,105 @@
       macronova,
       ...
     }:
-    let
-      # List of hosts
-      hosts =
+    {
+      nixosConfigurations =
         let
-          desktop-template = {
-            system = "x86_64-linux";
-            profile = "desktop";
-            env = [
-              "plasma"
-              "steam"
-              "obs"
-            ];
-            users = [ "ccicnce113424" ];
-          };
-        in
-        {
-          ccic-desktop = desktop-template;
-          ccic-laptop = desktop-template;
-          test-vmware = desktop-template;
-        };
+          # List of hosts
+          hosts =
+            let
+              desktop-template = {
+                system = "x86_64-linux";
+                profile = "desktop";
+                env = [
+                  "plasma"
+                  "steam"
+                  "obs"
+                ];
+                users = [ "ccicnce113424" ];
+              };
+            in
+            {
+              ccic-desktop = desktop-template;
+              ccic-laptop = desktop-template;
+              test-vmware = desktop-template;
+            };
 
-      # Configuration of Nix and Flake
-      nixConfigModules = [
-        ./nix-config.nix
-      ];
+          # Configuration of Nix and Flake
+          nixConfigModules = [
+            ./nix-config.nix
+          ];
 
-      # Configuration of system
-      systemModules = system: [
-        ./system/${system}
-      ];
+          # Configuration of system
+          systemModules = system: [
+            ./system/${system}
+          ];
 
-      # Configuration of profile
-      profileModules = system: profile: [
-        ./profile/${system}/${profile}
-      ];
+          # Configuration of profile
+          profileModules = system: profile: [
+            ./profile/${system}/${profile}
+          ];
 
-      envModules = env: map (env: ./env/${env}) env;
+          envModules = env: map (env: ./env/${env}) env;
 
-      # Configuration of host
-      hostModules = hostname: [
-        (
-          { ... }:
-          {
-            networking.hostName = hostname;
-          }
-        )
-        ./hosts/${hostname}
-      ];
-
-      # Configuration of users
-      userModules =
-        users:
-        (
-          [
+          # Configuration of host
+          hostModules = hostname: [
             (
               { ... }:
               {
-                users.users = builtins.listToAttrs (
-                  map (username: {
-                    name = username;
-                    value = {
-                      home = "/home/${username}";
-                    };
-                  }) users
-                );
+                networking.hostName = hostname;
               }
             )
-          ]
-          ++ (map (username: ./users/${username}) users)
-        );
+            ./hosts/${hostname}
+          ];
 
-      # Configuration of Home Manager
-      homeManagerModules = specialArgs: [
-        home-manager.nixosModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = specialArgs;
-            backupFileExtension = "backup";
-            sharedModules =
+          # Configuration of users
+          userModules =
+            users:
+            (
+
               [
-                nur.modules.homeManager.default
-                nix-flatpak.homeManagerModules.nix-flatpak
+                (
+                  { ... }:
+                  {
+                    users.users = builtins.listToAttrs (
+                      map (username: {
+                        name = username;
+                        value = {
+                          home = "/home/${username}";
+                        };
+                      }) users
+                    );
+                  }
+                )
               ]
-              ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
-            users = builtins.listToAttrs (
-              map (username: {
-                name = username;
-                value = import ./home/${username};
-              }) specialArgs.host.users
+              ++ map (username: ./users/${username}) users
             );
-          };
-        }
-      ];
-    in
-    {
-      nixosConfigurations =
+
+          # Configuration of Home Manager
+          homeManagerModules = specialArgs: [
+            home-manager.nixosModules.home-manager
+            {
+              home-manager = {
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                extraSpecialArgs = specialArgs;
+                backupFileExtension = "backup";
+                sharedModules =
+                  [
+                    nur.modules.homeManager.default
+                    nix-flatpak.homeManagerModules.nix-flatpak
+                  ]
+                  ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
+                users = builtins.listToAttrs (
+                  map (username: {
+                    name = username;
+                    value = import ./home/${username};
+                  }) specialArgs.host.users
+                );
+              };
+            }
+          ];
+        in
         builtins.listToAttrs (
           map (
             hostname:
@@ -163,12 +164,12 @@
                     nix-flatpak.nixosModules.nix-flatpak
                   ]
                   ++ nixConfigModules
-                  ++ (systemModules (hosts.${hostname}.system))
-                  ++ (profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile))
-                  ++ (envModules (hosts.${hostname}.env))
-                  ++ (hostModules hostname)
-                  ++ (userModules (hosts.${hostname}.users))
-                  ++ (homeManagerModules specialArgs);
+                  ++ systemModules (hosts.${hostname}.system)
+                  ++ profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile)
+                  ++ envModules (hosts.${hostname}.env)
+                  ++ hostModules hostname
+                  ++ userModules (hosts.${hostname}.users)
+                  ++ homeManagerModules specialArgs;
               };
             }
           ) (builtins.attrNames hosts)
