@@ -1,5 +1,4 @@
 { ... }:
-
 {
   programs.firefox = {
     enable = true;
@@ -11,9 +10,9 @@
       "widget.use-xdg-desktop-portal.location" = 1;
       "widget.use-xdg-desktop-portal.open-uri" = 1;
     };
-    # package = (pkgs.wrapFirefox (pkgs.firefox-unwrapped.override {
+    # package = pkgs.wrapFirefox pkgs.firefox-unwrapped.override {
     #   jemallocSupport = false;
-    # }) {});
+    # } { };
   };
 
   services.speechd.enable = true;

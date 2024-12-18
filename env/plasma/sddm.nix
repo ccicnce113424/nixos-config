@@ -1,5 +1,4 @@
 { ... }:
-
 {
   services.displayManager.sddm = {
     autoNumlock = true;

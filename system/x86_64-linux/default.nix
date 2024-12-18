@@ -1,5 +1,4 @@
 { ... }:
-
 {
   imports = [
     ./kernel.nix

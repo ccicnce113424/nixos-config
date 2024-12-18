@@ -6,7 +6,8 @@
     fcitx5 = {
       plasma6Support = true;
       addons =
-        (with pkgs; [ qt6Packages.fcitx5-chinese-addons ])
+        with pkgs;
+        [ qt6Packages.fcitx5-chinese-addons ]
         ++ (with pkgs.nur.repos.aleksana; [
           fcitx5-pinyin-cedict
           fcitx5-pinyin-chinese-idiom

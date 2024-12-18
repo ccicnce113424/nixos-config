@@ -64,7 +64,6 @@
             {
               ccic-desktop = desktop-template;
               ccic-laptop = desktop-template;
-              test-vmware = desktop-template;
             };
 
           # Configuration of Nix and Flake
@@ -82,7 +81,7 @@
             ./profile/${system}/${profile}
           ];
 
-          envModules = env: map (env: ./env/${env}) env;
+          envModules = env: (map (env: ./env/${env}) env);
 
           # Configuration of host
           hostModules = hostname: [
@@ -98,25 +97,22 @@
           # Configuration of users
           userModules =
             users:
-            (
-
-              [
-                (
-                  { ... }:
-                  {
-                    users.users = builtins.listToAttrs (
-                      map (username: {
-                        name = username;
-                        value = {
-                          home = "/home/${username}";
-                        };
-                      }) users
-                    );
-                  }
-                )
-              ]
-              ++ map (username: ./users/${username}) users
-            );
+            [
+              (
+                { ... }:
+                {
+                  users.users = builtins.listToAttrs (
+                    map (username: {
+                      name = username;
+                      value = {
+                        home = "/home/${username}";
+                      };
+                    }) users
+                  );
+                }
+              )
+            ]
+            ++ map (username: ./users/${username}) users;
 
           # Configuration of Home Manager
           homeManagerModules = specialArgs: [
@@ -164,11 +160,11 @@
                     nix-flatpak.nixosModules.nix-flatpak
                   ]
                   ++ nixConfigModules
-                  ++ systemModules (hosts.${hostname}.system)
-                  ++ profileModules (hosts.${hostname}.system) (hosts.${hostname}.profile)
-                  ++ envModules (hosts.${hostname}.env)
+                  ++ systemModules hosts.${hostname}.system
+                  ++ profileModules hosts.${hostname}.system hosts.${hostname}.profile
+                  ++ envModules hosts.${hostname}.env
                   ++ hostModules hostname
-                  ++ userModules (hosts.${hostname}.users)
+                  ++ userModules hosts.${hostname}.users
                   ++ homeManagerModules specialArgs;
               };
             }

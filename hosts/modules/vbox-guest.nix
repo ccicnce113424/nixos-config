@@ -1,5 +1,4 @@
 { ... }:
-
 {
   imports = [ ./vm-pipewire.nix ];
   virtualisation.virtualbox.guest = {
