@@ -1,5 +1,4 @@
 { ... }:
-
 {
   imports = [ ./vm-pipewire.nix ];
   services.xserver.videoDrivers = [ "vmware" ];

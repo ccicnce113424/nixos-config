@@ -1,5 +1,4 @@
 { ... }:
-
 {
   services.pipewire.extraConfig.pipewire = {
     "10-no-resample-and-low-quantum" = {

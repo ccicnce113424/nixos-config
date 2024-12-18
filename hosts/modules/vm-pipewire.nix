@@ -1,5 +1,4 @@
 { ... }:
-
 {
   imports = [ ./better-pipewire.nix ];
   services.pipewire.wireplumber.extraConfig = {
