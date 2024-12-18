@@ -48,4 +48,12 @@
     terminal-exec.enable = true;
     portal.xdgOpenUsePortal = true;
   };
+
+  services.printing = {
+    enable = true;
+    cups-pdf = {
+      enable = true;
+      instances.PDF.settings.Out = "\${HOME}/cups-pdf";
+    };
+  };
 }
