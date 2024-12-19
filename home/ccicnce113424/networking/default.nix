@@ -25,6 +25,7 @@
   home.packages = [
     pkgs.qq
     pkgs.wechat-uos
+    pkgs.nur.repos.linyinfeng.wemeet
     pkgs.telegram-desktop
     pkgs.tor-browser
     pkgs.qbittorrent-enhanced
