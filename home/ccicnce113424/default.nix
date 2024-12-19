@@ -6,7 +6,7 @@
     ./networking
     ./plasma
     ./utils.nix
-    ./documents.nix
+    ./documents
     ./zsh.nix
   ];
 
