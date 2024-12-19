@@ -1,4 +1,4 @@
-username:
+username: importlist:
 { pkgs, ... }:
 {
   users.users.${username} = {
@@ -10,4 +10,5 @@ username:
     ];
     shell = pkgs.zsh;
   };
+  imports = importlist;
 }
