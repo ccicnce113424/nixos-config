@@ -24,12 +24,7 @@ let
   );
 in
 {
-  home.packages = [
-    pkgs.libreoffice-qt6-fresh
-    pkgs.hunspell
-    pkgs.hunspellDicts.en_US
-    wps
-  ];
+  home.packages = [ wps ];
 
   xdg.desktopEntries = {
     wps-office-et = {
