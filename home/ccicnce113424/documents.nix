@@ -1,17 +1,41 @@
 { pkgs, ... }:
+let
+  wps = (
+    pkgs.wpsoffice-cn.overrideAttrs (
+      finalAttrs: previousAttrs: rec {
+        nativeBuildInputs = previousAttrs.nativeBuildInputs ++ [ pkgs.zstd ];
+        freetype2-old = builtins.fetchurl {
+          url = "https://archive.archlinux.org/packages/f/freetype2/freetype2-2.13.0-1-x86_64.pkg.tar.zst";
+          sha256 = "sha256:19hxrhbrlirvaq3m4fwb08d8napxmi9sqm8lzwbpx6lx9c0ay4vn";
+        };
+        splitInstallPhase = pkgs.lib.strings.splitString "\n" previousAttrs.installPhase;
+        installPhase = pkgs.lib.strings.concatStringsSep "\n" (
+          pkgs.lib.lists.take ((builtins.length splitInstallPhase) - 1) splitInstallPhase
+          ++ [
+            ''
+              tar --zstd -xf ${freetype2-old} -C $out
+              ln -s $out/usr/lib/libfreetype.so.6.19.0 $out/opt/kingsoft/wps-office/office6/libfreetype.so.6
+            ''
+          ]
+          ++ [ (pkgs.lib.lists.last splitInstallPhase) ]
+        );
+      }
+    )
+  );
+in
 {
   home.packages = [
     pkgs.libreoffice-qt6-fresh
     pkgs.hunspell
     pkgs.hunspellDicts.en_US
-    pkgs.wpsoffice-cn
+    wps
   ];
 
   xdg.desktopEntries = {
     wps-office-et = {
       name = "WPS 表格";
       genericName = "WPS 表格";
-      exec = "QT_IM_MODULE=fcitx5 ${pkgs.wpsoffice-cn}/bin/et %F";
+      exec = "QT_IM_MODULE=fcitx5 ${wps}/bin/et %F";
       categories = [
         "Office"
         "Spreadsheet"
@@ -41,7 +65,7 @@
     wps-office-pdf = {
       name = "WPS PDF";
       genericName = "WPS PDF";
-      exec = "QT_IM_MODULE=fcitx5 ${pkgs.wpsoffice-cn}/bin/wpspdf %F";
+      exec = "QT_IM_MODULE=fcitx5 ${wps}/bin/wpspdf %F";
       categories = [
         "Office"
         "WordProcessor"
@@ -59,7 +83,7 @@
     wps-office-prometheus = {
       name = "WPS 2019";
       genericName = "WPS 2019";
-      exec = "QT_IM_MODULE=fcitx5 ${pkgs.wpsoffice-cn}/bin/wps %F";
+      exec = "QT_IM_MODULE=fcitx5 ${wps}/bin/wps %F";
       categories = [
         "Office"
         "WordProcessor"
@@ -75,7 +99,7 @@
     wps-office-wpp = {
       name = "WPS 演示";
       genericName = "WPS 演示";
-      exec = "QT_IM_MODULE=fcitx5 ${pkgs.wpsoffice-cn}/bin/wpp %F";
+      exec = "QT_IM_MODULE=fcitx5 ${wps}/bin/wpp %F";
       categories = [
         "Office"
         "Presentation"
@@ -108,7 +132,7 @@
     wps-office-wps = {
       name = "WPS 文字";
       genericName = "WPS 文字";
-      exec = "QT_IM_MODULE=fcitx5 ${pkgs.wpsoffice-cn}/bin/wps %U";
+      exec = "QT_IM_MODULE=fcitx5 ${wps}/bin/wps %U";
       categories = [
         "Office"
         "WordProcessor"
