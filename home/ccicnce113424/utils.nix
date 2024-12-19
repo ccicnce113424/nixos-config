@@ -15,7 +15,7 @@
     packages = [
       "io.github.peazip.PeaZip"
     ];
-    uninstallUnmanaged = true;
+    # uninstallUnmanaged = true;
   };
 
   # home.packages = [
