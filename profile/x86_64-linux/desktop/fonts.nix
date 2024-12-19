@@ -11,6 +11,7 @@
       noto-fonts-monochrome-emoji
       dejavu_fonts
       hack-font
+      nur.repos.rewine.ttf-wps-fonts
     ];
 
     fontconfig = {
