@@ -20,8 +20,7 @@
         UseDarkTheme = "True";
       };
 
-      # Some applications need special environment variables to work with fcitx5
-      waylandFrontend = false;
+      waylandFrontend = true;
     };
   };
 }
