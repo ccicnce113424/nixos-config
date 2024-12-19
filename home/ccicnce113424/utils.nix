@@ -1,4 +1,7 @@
-{ ... }:
+{
+  # pkgs,
+  ...
+}:
 {
   services.flatpak = {
     enable = true;
@@ -12,8 +15,11 @@
     packages = [
       "io.github.peazip.PeaZip"
     ];
-    # uninstallUnmanaged = true;
+    uninstallUnmanaged = true;
   };
 
+  # home.packages = [
+  #   pkgs.peazip
+  # ];
   fonts.fontconfig.enable = true;
 }
