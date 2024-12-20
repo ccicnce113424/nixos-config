@@ -1,24 +1,22 @@
 { pkgs, ... }:
 let
+  # https://github.com/NixOS/nixpkgs/pull/280541
   wps = (
     pkgs.wpsoffice-cn.overrideAttrs (
       finalAttrs: previousAttrs: rec {
-        nativeBuildInputs = previousAttrs.nativeBuildInputs ++ [ pkgs.zstd ];
-        freetype2-old = builtins.fetchurl {
-          url = "https://archive.archlinux.org/packages/f/freetype2/freetype2-2.13.0-1-x86_64.pkg.tar.zst";
-          sha256 = "sha256:19hxrhbrlirvaq3m4fwb08d8napxmi9sqm8lzwbpx6lx9c0ay4vn";
-        };
-        splitInstallPhase = pkgs.lib.strings.splitString "\n" previousAttrs.installPhase;
-        installPhase = pkgs.lib.strings.concatStringsSep "\n" (
-          pkgs.lib.lists.take ((builtins.length splitInstallPhase) - 1) splitInstallPhase
-          ++ [
-            ''
-              tar --zstd -xf ${freetype2-old} -C $out
-              ln -s $out/usr/lib/libfreetype.so.6.19.0 $out/opt/kingsoft/wps-office/office6/libfreetype.so.6
-            ''
-          ]
-          ++ [ (pkgs.lib.lists.last splitInstallPhase) ]
-        );
+        freetype-wps = pkgs.freetype.overrideAttrs (old: {
+          pname = "freetype-wps";
+          version = "2.13.0";
+          src = pkgs.fetchurl {
+            url = "mirror://savannah/freetype/freetype-2.13.0.tar.xz";
+            hash = "sha256-XuI6vQR2NsJLLUPGYl3K/GZmHRrKZN7J4NBd8pWSYkw=";
+          };
+        });
+        preFixup =
+          ''
+            ln -s ${freetype-wps}/lib/libfreetype.so.* $out/opt/kingsoft/wps-office/office6/
+          ''
+          + previousAttrs.preFixup;
       }
     )
   );
