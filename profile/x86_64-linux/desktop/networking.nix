@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   networking = {
     networkmanager.enable = true;
@@ -27,4 +27,6 @@
     configDir = "/etc/daed";
     listen = "127.0.0.1:2023";
   };
+
+  environment.systemPackages = [ pkgs.linux-wifi-hotspot ];
 }
