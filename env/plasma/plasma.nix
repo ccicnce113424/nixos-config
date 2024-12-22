@@ -10,6 +10,11 @@
     pkgs.kdePackages.krfb
     pkgs.kdePackages.qtmultimedia
     pkgs.kdePackages.qtwebengine
+    pkgs.kdePackages.yakuake
+    pkgs.kdePackages.francis
+    pkgs.kdePackages.kcalc
+    pkgs.kdePackages.kclock
+    pkgs.kdePackages.kamoso
   ];
 
   networking.firewall = {
