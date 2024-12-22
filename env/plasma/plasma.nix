@@ -14,7 +14,7 @@
     pkgs.kdePackages.francis
     pkgs.kdePackages.kcalc
     pkgs.kdePackages.kclock
-    pkgs.kdePackages.kamoso
+    # pkgs.kdePackages.kamoso
   ];
 
   networking.firewall = {
