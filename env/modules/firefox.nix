@@ -9,6 +9,7 @@
       "widget.use-xdg-desktop-portal.settings" = 1;
       "widget.use-xdg-desktop-portal.location" = 1;
       "widget.use-xdg-desktop-portal.open-uri" = 1;
+      "media.ffmpeg.vaapi.enabled" = true;
     };
     # package = pkgs.wrapFirefox pkgs.firefox-unwrapped.override {
     #   jemallocSupport = false;
