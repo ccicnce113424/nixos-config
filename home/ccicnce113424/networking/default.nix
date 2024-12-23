@@ -15,7 +15,7 @@
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
           violentmonkey
-          smartproxy
+          foxyproxy-standard
           user-agent-string-switcher
           plasma-integration
         ];
