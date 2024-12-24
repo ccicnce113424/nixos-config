@@ -7,6 +7,7 @@ username: importlist:
       "wheel"
       "networkmanager"
       "plugdev"
+      "libvirtd"
     ];
     shell = pkgs.zsh;
   };
