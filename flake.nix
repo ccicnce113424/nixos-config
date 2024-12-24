@@ -57,6 +57,7 @@
                   "plasma"
                   "gaming"
                   "obs"
+                  "virt-manager"
                 ];
                 users = [ "ccicnce113424" ];
               };
