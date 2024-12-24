@@ -29,7 +29,7 @@
     pkgs.android-tools
     pkgs.scrcpy
     pkgs.python3Full
-    pkgs.unzip
+    pkgs.unzipNLS
   ];
   services.smartd.enable = true;
 
