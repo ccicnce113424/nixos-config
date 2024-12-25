@@ -31,8 +31,8 @@
     pkgs.python3Full
     pkgs.zip
     pkgs.unzipNLS
-    pkgs.p7zip-rar
-    pkgs.rar
+    pkgs.p7zip
+    pkgs.unar
     pkgs.libarchive
   ];
   services.smartd.enable = true;
