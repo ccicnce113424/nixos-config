@@ -13,8 +13,8 @@
           192000
         ];
         "default.clock.min-quantum" = 16;
-        "default.clock.max-quantum" = 1024;
-        "default.clock.quantum" = 128;
+        "default.clock.max-quantum" = 256;
+        "default.clock.quantum" = 64;
       };
     };
   };
