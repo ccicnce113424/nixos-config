@@ -30,6 +30,7 @@
     pkgs.scrcpy
     pkgs.python3Full
     pkgs.unzipNLS
+    pkgs.libarchive
   ];
   services.smartd.enable = true;
 
