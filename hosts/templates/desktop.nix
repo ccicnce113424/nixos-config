@@ -1,10 +1,10 @@
+extraModules:
 { ... }:
 {
   imports = [
-    ../modules/better-pipewire.nix
     ../modules/locale-time-cn.nix
+    ../modules/better-pipewire.nix
     ../modules/bluetooth.nix
     ../modules/tpm.nix
-    ./hardware-configuration.nix
-  ];
+  ] ++ extraModules;
 }
