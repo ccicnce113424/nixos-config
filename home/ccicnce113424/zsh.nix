@@ -36,8 +36,6 @@
       clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
       win = "systemctl reboot --boot-loader-entry=auto-windows";
       fw = "systemctl reboot --firmware-setup";
-      boff = "sudo systemctl stop beesd@root.service";
-      bon = "sudo systemctl start beesd@root.service";
     };
   };
 
