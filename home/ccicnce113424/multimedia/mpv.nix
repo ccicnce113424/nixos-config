@@ -44,7 +44,7 @@
       basefile=$(basename "$file")
       target_file="$HOME/.local/share/applications/$basefile"
       cp -f "$file" "$target_file"
-      sed -i 's|^Exec=|Exec=env ENABLE_HDR_WSI=1 |' "$target_file"
+      sed -i 's|^Exec=|Exec=ENABLE_HDR_WSI=1 |' "$target_file"
     done
   '';
 }
