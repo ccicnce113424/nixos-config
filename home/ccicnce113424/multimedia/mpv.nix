@@ -20,7 +20,7 @@
       ao = "pipewire";
       audio-file-auto = "fuzzy";
       sub-auto = "fuzzy";
-      slang = "zh-Hans-CN-u-sd-cmn,en";
+      slang = "zh-Hans,cmn-Hans,en";
     };
     scripts = [
       pkgs.mpvScripts.thumbfast
