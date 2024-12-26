@@ -14,7 +14,7 @@
       gpu-api = "vulkan";
       gpu-context = "waylandvk";
       hwdec = "auto-safe";
-      scale = "ewa_lanczos4sharpest";
+      scale = "ewa_lanczossharp";
       dscale = "mitchell";
       dither = "error-diffusion";
       ao = "pipewire";
