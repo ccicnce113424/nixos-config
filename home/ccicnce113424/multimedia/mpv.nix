@@ -26,15 +26,6 @@
       pkgs.mpvScripts.thumbfast
       pkgs.mpvScripts.uosc
       pkgs.mpvScripts.mpris
-      (pkgs.mpvScripts.buildLua rec {
-        name = "mpv-sub_not_forced_not_sdh";
-        pname = name;
-        src = pkgs.fetchzip {
-          url = "https://github.com/pzim-devdata/mpv-scripts/releases/download/v0.0.1/mpv-scripts.zip";
-          hash = "sha256-2FKEl3G+v/exGDGJTHIeoUQb0vrtIP8wNiUHj5MElz4=";
-        };
-        scriptPath = "${src}/mpv-sub_not_forced_not_sdh.lua";
-      })
     ];
   };
 
