@@ -1,7 +1,1 @@
-{ ... }:
-{
-  imports = [
-    ./kernel.nix
-    ./tweaks.nix
-  ];
-}
+import ../common [ ]

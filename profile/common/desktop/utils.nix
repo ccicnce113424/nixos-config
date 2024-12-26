@@ -62,4 +62,6 @@
       instances.PDF.settings.Out = "\${HOME}/cups-pdf";
     };
   };
+
+  programs.ssh.startAgent = true;
 }

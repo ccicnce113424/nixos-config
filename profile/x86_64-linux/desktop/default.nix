@@ -1,14 +1,4 @@
-{ ... }:
-{
-  imports = [
-    ./boot.nix
-    ./audio.nix
-    ./fonts.nix
-    ./graphic.nix
-    ./networking.nix
-    ./utils.nix
-    ./security.nix
-    ./zram.nix
-    ./wine.nix
-  ];
-}
+import ../../common/desktop [
+  ./boot.nix
+  ./wine.nix
+]

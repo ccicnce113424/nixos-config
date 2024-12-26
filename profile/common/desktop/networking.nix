@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   networking = {
+    firewall.enable = true;
     networkmanager.enable = true;
     iproute2.enable = true;
   };
