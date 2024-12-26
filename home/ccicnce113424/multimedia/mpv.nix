@@ -26,7 +26,7 @@
       overwhelm = {
         scale = "bilinear";
         dscale = "bilinear";
-        dither = "fruit";
+        dither = "ordered";
         correct-downscaling = false;
       };
     };
