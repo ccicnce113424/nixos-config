@@ -29,9 +29,7 @@ in
     for file in ${wps}/share/applications/*.desktop; do
       basefile=$(basename "$file")
       target_file="$HOME/.local/share/applications/$basefile"
-      if [[ ! -f "$target_file" ]]; then
-        cp "$file" "$target_file"
-      fi
+      cp -f "$file" "$target_file"
       sed -i 's|^Exec=|Exec=env QT_IM_MODULE=fcitx5 |' "$target_file"
     done
   '';

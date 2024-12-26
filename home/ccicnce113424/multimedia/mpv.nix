@@ -33,9 +33,7 @@
     for file in ${config.programs.mpv.package}/share/applications/*.desktop; do
       basefile=$(basename "$file")
       target_file="$HOME/.local/share/applications/$basefile"
-      if [[ ! -f "$target_file" ]]; then
-        cp "$file" "$target_file"
-      fi
+      cp -f "$file" "$target_file"
       sed -i 's|^Exec=|Exec=env ENABLE_HDR_WSI=1 |' "$target_file"
     done
   '';
