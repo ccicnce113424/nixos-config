@@ -6,6 +6,7 @@
     package = pkgs.appimage-run.override {
       extraPkgs = pkgs: [
         pkgs.icu
+        pkgs.xorg.libxshmfence
       ];
     };
 
