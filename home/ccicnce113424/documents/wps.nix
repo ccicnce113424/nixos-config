@@ -30,7 +30,7 @@ in
       basefile=$(basename "$file")
       target_file="$HOME/.local/share/applications/$basefile"
       cp -f "$file" "$target_file"
-      sed -i 's|^Exec=|Exec=env QT_IM_MODULE=fcitx5 |' "$target_file"
+      sed -i 's|^Exec=|Exec=QT_IM_MODULE=fcitx5 |' "$target_file"
     done
   '';
 }
