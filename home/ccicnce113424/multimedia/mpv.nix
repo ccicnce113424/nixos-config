@@ -22,6 +22,7 @@
       sub-auto = "fuzzy";
     };
     scripts = [
+      pkgs.mpvScripts.thumbfast
       pkgs.mpvScripts.uosc
       pkgs.mpvScripts.mpris
     ];
