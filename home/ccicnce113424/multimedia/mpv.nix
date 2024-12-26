@@ -22,6 +22,14 @@
       sub-auto = "fuzzy";
       slang = "zh-Hans,cmn-Hans,en";
     };
+    profiles = {
+      overwhelm = {
+        scale = "bilinear";
+        dscale = "bilinear";
+        dither = "fruit";
+        correct-downscaling = false;
+      };
+    };
     scripts = [
       pkgs.mpvScripts.thumbfast
       pkgs.mpvScripts.uosc
