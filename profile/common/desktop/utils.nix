@@ -35,7 +35,6 @@
     pkgs.p7zip
     pkgs.unar
     pkgs.libarchive
-    pkgs.inetutils
   ];
   services.smartd.enable = true;
 
