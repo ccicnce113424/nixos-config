@@ -8,6 +8,7 @@ username: importlist:
       "networkmanager"
       "plugdev"
       "libvirtd"
+      "podman"
     ];
     shell = pkgs.zsh;
   };
