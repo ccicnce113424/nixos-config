@@ -8,6 +8,12 @@
 
   services.samba.enable = true;
   services.samba.openFirewall = true;
+  services.samba.nsswins = true;
+
+  services.samba-wsdd = {
+    enable = true;
+    openFirewall = true;
+  };
 
   services.avahi = {
     enable = true;
