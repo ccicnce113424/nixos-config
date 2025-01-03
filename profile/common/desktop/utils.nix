@@ -35,6 +35,7 @@
     pkgs.p7zip
     pkgs.unar
     pkgs.libarchive
+    pkgs.progress
   ];
   services.smartd.enable = true;
 
