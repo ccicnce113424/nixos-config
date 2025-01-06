@@ -3,6 +3,7 @@
   programs.steam = {
     enable = true;
     extest.enable = true;
+    extraCompatPackages = [ pkgs.proton-ge-bin ];
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
@@ -29,5 +30,6 @@
   environment.systemPackages = [
     # pkgs.lutris
     # pkgs.heroic
+    pkgs.protonup-qt
   ];
 }
