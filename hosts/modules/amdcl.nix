@@ -2,8 +2,8 @@
 {
   hardware.graphics = {
     extraPackages = with pkgs; [
-      mesa.opencl
-      # rocmPackages.clr.icd
+      # mesa.opencl
+      rocmPackages.clr.icd
     ];
     extraPackages32 = with pkgs.pkgsi686Linux; [
       mesa.opencl
