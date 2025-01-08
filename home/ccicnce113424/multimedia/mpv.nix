@@ -21,6 +21,7 @@
       audio-file-auto = "fuzzy";
       sub-auto = "fuzzy";
       slang = "zh-Hans,cmn-Hans,en";
+      border = false;
     };
     profiles = {
       overwhelm = {
