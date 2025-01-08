@@ -36,6 +36,8 @@
     pkgs.unar
     pkgs.libarchive
     pkgs.progress
+    pkgs.podman-compose
+    pkgs.podman-desktop
   ];
   services.smartd.enable = true;
 
