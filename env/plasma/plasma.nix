@@ -16,6 +16,7 @@
     pkgs.kdePackages.kclock
     pkgs.kdePackages.kweather
     pkgs.kdePackages.filelight
+    pkgs.kdePackages.kfind
     # pkgs.kdePackages.kamoso
   ];
 
