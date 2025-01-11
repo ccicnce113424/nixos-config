@@ -3,11 +3,11 @@
     "candy-icons": {
       "flake": false,
       "locked": {
-        "lastModified": 1733869301,
-        "narHash": "sha256-EjjbRR2gPTZb18+ok9Wa+ivpSBqz9InS8OkD/A3/TU0=",
+        "lastModified": 1736029199,
+        "narHash": "sha256-dfCk3ZdMol91YTpAzi0tPQgZYnZQHvCeHPLoFYe5xts=",
         "ref": "refs/heads/master",
-        "rev": "cbf6189549400aa68822d37eeded001ad501d82a",
-        "revCount": 1246,
+        "rev": "504d31851e1d87af8ddb8ee2b6b2de43e32aaa11",
+        "revCount": 1255,
         "type": "git",
         "url": "https://github.com/EliverLara/candy-icons"
       },
@@ -111,11 +111,11 @@
         "yorha-sound-theme": "yorha-sound-theme"
       },
       "locked": {
-        "lastModified": 1733896485,
-        "narHash": "sha256-KiHiqzMPsIEER2dW+C1MEpa0lA6ISMpf7r4S8ujQYVc=",
+        "lastModified": 1736582984,
+        "narHash": "sha256-KBuEC0w5dAtx7yJieUumwhKaaU6MwlJMJj8oyerC9iU=",
         "ref": "refs/heads/main",
-        "rev": "79687538ddcc409c32cd93d54e2f8b867e9d8da3",
-        "revCount": 31,
+        "rev": "a1271d04c038ee664bee51fce824e241d4594312",
+        "revCount": 32,
         "type": "git",
         "url": "https://forgejo.invariantspace.com/macronova/nix-custom.git"
       },
@@ -178,11 +178,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1736580656,
-        "narHash": "sha256-WFhwR7SU2Q0DzAXLsutW/9c9zwH9rgz6SWIQcOpkFfc=",
+        "lastModified": 1736610420,
+        "narHash": "sha256-MvvjzN4DJSQmRLQSfQWC3a70GWVu6RiwE0D71c8el2U=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "e5a302deaa59a4c8361c61b1a1db96b559946140",
+        "rev": "bc3d78ce1ae003f42ddd6434256262861247cfe1",
         "type": "github"
       },
       "original": {
@@ -229,11 +229,11 @@
     "sweet-ambar-blue": {
       "flake": false,
       "locked": {
-        "lastModified": 1733350152,
-        "narHash": "sha256-SSsybjFgRQOe1CxiRdSuO7PNfeZX0KXta6/z27Xmo70=",
+        "lastModified": 1736465217,
+        "narHash": "sha256-8sPz6pFZbLtX7w+Lb9KsmnpdZZnEA7kl/h/Xx7cf1hU=",
         "ref": "Ambar-Blue",
-        "rev": "023979fe5d038e9e3b65a6d8e7c76f19c9ba835e",
-        "revCount": 310,
+        "rev": "2b3d23728b0b8a5aaaf4682b67eebd2aa382c6b3",
+        "revCount": 316,
         "type": "git",
         "url": "https://github.com/EliverLara/Sweet"
       },
@@ -246,11 +246,11 @@
     "sweet-ambar-blue-dark": {
       "flake": false,
       "locked": {
-        "lastModified": 1733349596,
-        "narHash": "sha256-Xag4lfDpCFOtt5x3b/BiMZkm5jJZnNTBIj6wafZ/rbg=",
+        "lastModified": 1736465280,
+        "narHash": "sha256-Yt/PL9OrkjxB2eU9iEaE1xyS8Y0zIloLGbUsgx1HWVs=",
         "ref": "Ambar-Blue-Dark",
-        "rev": "2da81f72c96220dd93ca060d7eae16fd57fff1a5",
-        "revCount": 396,
+        "rev": "c3e85d084dcd4238b3a63af447a3e9432b4b91c9",
+        "revCount": 400,
         "type": "git",
         "url": "https://github.com/EliverLara/Sweet"
       },
