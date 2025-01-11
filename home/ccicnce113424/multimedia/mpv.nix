@@ -31,10 +31,11 @@
         correct-downscaling = false;
       };
     };
-    scripts = [
-      pkgs.mpvScripts.thumbfast
-      pkgs.mpvScripts.uosc
-      pkgs.mpvScripts.mpris
+    scripts = with pkgs.mpvScripts; [
+      thumbfast
+      uosc
+      mpris
+      sponsorblock
     ];
   };
 

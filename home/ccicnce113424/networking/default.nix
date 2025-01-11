@@ -18,6 +18,8 @@
           foxyproxy-standard
           user-agent-string-switcher
           plasma-integration
+          bilisponsorblock
+          sponsorblock
         ];
       };
     };
