@@ -21,8 +21,35 @@
       audio-file-auto = "fuzzy";
       sub-auto = "fuzzy";
       slang = "zh-Hans,cmn-Hans,en";
-      border = false;
     };
+    extraInput = ''
+      MBTN_LEFT  script-binding drag-to-pan
+      WHEEL_UP   script-message cursor-centric-zoom 0.1
+      WHEEL_DOWN script-message cursor-centric-zoom -0.1
+
+      # panning with the keyboard:
+      # pan-image takes the following arguments
+      # pan-image AXIS AMOUNT ZOOM_INVARIANT IMAGE_CONSTRAINED
+      #            ^            ^                  ^
+      #          x or y         |                  |
+      #                         |                  |
+      #   if yes, will pan by the same         if yes, stops panning if the image
+      #     amount regardless of zoom             would go outside of the window
+
+      ctrl+down  repeatable script-message pan-image y -0.1 yes yes
+      ctrl+up    repeatable script-message pan-image y +0.1 yes yes
+      ctrl+right repeatable script-message pan-image x -0.1 yes yes
+      ctrl+left  repeatable script-message pan-image x +0.1 yes yes
+
+      # now with more precision
+      alt+down   repeatable script-message pan-image y -0.01 yes yes
+      alt+up     repeatable script-message pan-image y +0.01 yes yes
+      alt+right  repeatable script-message pan-image x -0.01 yes yes
+      alt+left   repeatable script-message pan-image x +0.01 yes yes
+
+      # reset the image
+      ctrl+0  no-osd set video-pan-x 0; no-osd set video-pan-y 0; no-osd set video-zoom 0
+    '';
     profiles = {
       overwhelm = {
         scale = "bilinear";
@@ -36,6 +63,7 @@
       uosc
       mpris
       sponsorblock
+      mpv-image-viewer.image-positioning
     ];
   };
 
