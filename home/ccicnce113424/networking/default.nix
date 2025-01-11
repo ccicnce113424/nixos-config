@@ -20,6 +20,7 @@
           plasma-integration
           bilisponsorblock
           sponsorblock
+          aria2-integration
         ];
       };
     };
