@@ -10,5 +10,5 @@
     mediainfo-gui
   ];
 
-  imports = [ ./mpv.nix ];
+  imports = [ ./mpv ];
 }
