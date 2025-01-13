@@ -12,5 +12,5 @@
     pkgs.motrix
   ];
 
-  imports = [ ./firefox.nix ];
+  imports = [ ./firefox ];
 }
