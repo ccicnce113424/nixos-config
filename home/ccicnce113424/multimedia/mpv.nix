@@ -23,7 +23,7 @@
       slang = "zh-Hans,cmn-Hans,en";
     };
     extraInput = ''
-      MBTN_LEFT  script-binding drag-to-pan
+      MBTN_MID  script-binding drag-to-pan
       WHEEL_UP   script-message cursor-centric-zoom 0.1
       WHEEL_DOWN script-message cursor-centric-zoom -0.1
 
@@ -49,6 +49,7 @@
 
       # reset the image
       ctrl+0  no-osd set video-pan-x 0; no-osd set video-pan-y 0; no-osd set video-zoom 0
+      ctrl+KP0  no-osd set video-pan-x 0; no-osd set video-pan-y 0; no-osd set video-zoom 0
     '';
     profiles = {
       overwhelm = {
