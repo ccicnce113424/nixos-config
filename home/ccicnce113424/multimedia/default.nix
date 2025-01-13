@@ -6,6 +6,8 @@
     nur.repos.rewine.electron-netease-cloud-music
     waylyrics
     gimp
+    mediainfo
+    mediainfo-gui
   ];
 
   imports = [ ./mpv.nix ];
