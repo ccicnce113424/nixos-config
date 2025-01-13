@@ -8,8 +8,6 @@
         isDefault = true;
         settings = {
           "intl.locale.requested" = "zh-cn";
-          "extensions.pocket.enabled" = false;
-          "extensions.autoDisableScopes" = 0;
           "browser.tabs.closeTabByDblclick" = true;
           "browser.tabs.drawInTitlebar" = false;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
