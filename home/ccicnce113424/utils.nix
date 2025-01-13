@@ -1,5 +1,5 @@
 {
-  # pkgs,
+  pkgs,
   ...
 }:
 {
@@ -15,8 +15,9 @@
     # uninstallUnmanaged = true;
   };
 
-  # home.packages = [
-  #   pkgs.peazip
-  # ];
+  home.packages = [
+    pkgs.android-tools
+    pkgs.scrcpy
+  ];
   fonts.fontconfig.enable = true;
 }

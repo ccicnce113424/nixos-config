@@ -27,8 +27,6 @@
 
   environment.systemPackages = [
     pkgs.smartmontools
-    pkgs.android-tools
-    pkgs.scrcpy
     pkgs.python3Full
     pkgs.zip
     pkgs.unzipNLS
