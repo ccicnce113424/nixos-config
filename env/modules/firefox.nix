@@ -11,6 +11,12 @@
       "widget.use-xdg-desktop-portal.open-uri" = 1;
       "media.ffmpeg.vaapi.enabled" = true;
       "browser.shell.checkDefaultBrowser" = false;
+      "extensions.pocket.enabled" = false;
+      "extensions.autoDisableScopes" = 0;
+      "dom.webgpu.enabled" = true;
+      "dom.webgpu.hal-labels" = true;
+      "dom.webgpu.indirect-draw.enabled" = true;
+      "dom.webgpu.workers.enabled" = true;
     };
     # package = pkgs.wrapFirefox pkgs.firefox-unwrapped.override {
     #   jemallocSupport = false;
