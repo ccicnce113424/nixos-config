@@ -19,7 +19,6 @@
       dither = "error-diffusion";
       ao = "pipewire";
       audio-file-auto = "fuzzy";
-      audio-spdif = "aac,ac3,dts-hd,eac3,mp3,truehd";
       sub-auto = "fuzzy";
       slang = "zh-Hans,cmn-Hans,en";
     };
@@ -58,6 +57,9 @@
         dscale = "bilinear";
         dither = "ordered";
         correct-downscaling = false;
+      };
+      passthru = {
+        audio-spdif = "aac,ac3,dts-hd,eac3,mp3,truehd";
       };
     };
     scripts = with pkgs.mpvScripts; [
