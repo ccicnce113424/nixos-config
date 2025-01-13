@@ -30,7 +30,6 @@
     };
     shellAliases = {
       switch = "sudo nixos-rebuild switch";
-      sgc = "sudo nix-collect-garbage --delete-old";
       gc = "nix-collect-garbage --delete-old";
       up = "nix flake update --commit-lock-file";
       clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
