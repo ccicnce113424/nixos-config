@@ -26,7 +26,6 @@
           gesturefy
           scroll_anywhere
           search-by-image
-          buster-captcha-solver
           clearcache
           clearurls
           video-downloadhelper
