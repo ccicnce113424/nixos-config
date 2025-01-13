@@ -6,5 +6,6 @@ extraModules:
     ../modules/better-pipewire.nix
     ../modules/bluetooth.nix
     ../modules/tpm.nix
+    ../modules/zram.nix
   ] ++ extraModules;
 }

@@ -7,6 +7,5 @@ extraModules:
     ./graphic.nix
     ./networking.nix
     ./utils.nix
-    ./zram.nix
   ] ++ extraModules;
 }
