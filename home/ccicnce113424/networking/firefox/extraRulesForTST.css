@@ -166,3 +166,11 @@ tab-item {
   --indent-line-width: 2px;
   --indent-line-width-active: 2px;
 }
+
+tab-item .counter {
+  visibility: collapse;
+}
+
+:root:hover tab-item .counter {
+  visibility: initial;
+}
