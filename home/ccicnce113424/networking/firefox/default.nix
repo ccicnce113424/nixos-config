@@ -31,6 +31,7 @@
           video-downloadhelper
 
           tree-style-tab
+          tst-indent-line
           tst-more-tree-commands
           tst-tab-search
           multiple-tab-handler
