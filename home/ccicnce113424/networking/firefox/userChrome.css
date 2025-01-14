@@ -1,5 +1,10 @@
-#TabsToolbar { visibility: collapse !important; }
-#nav-bar .titlebar-buttonbox-container { display: flex !important; }
+#TabsToolbar {
+  visibility: collapse !important;
+}
+
+#nav-bar .titlebar-buttonbox-container {
+  display: flex !important;
+}
 
 /* Sidebar min and max width removal */
 
@@ -7,11 +12,13 @@
   max-width: none !important;
   min-width: 0px !important;
 }
+
 /* Hide splitter, when using Tree Style Tab. */
 
-#sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] + #sidebar-splitter {
+#sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"]+#sidebar-splitter {
   display: none !important;
 }
+
 /* Hide sidebar header, when using Tree Style Tab. */
 
 #sidebar-box[sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"] #sidebar-header {
@@ -42,5 +49,5 @@
   transition-delay: 0.2s !important;
   min-width: var(--wide-tab-width) !important;
   max-width: var(--wide-tab-width) !important;
-  /* margin-right: calc((var(--wide-tab-width) - var(--thin-tab-width)) * -1) !important; */
+  margin-right: calc((var(--wide-tab-width) - var(--thin-tab-width)) * -1) !important;
 }

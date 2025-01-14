@@ -41,6 +41,7 @@
         # https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#full-auto-showhide-theme
         # Need manually set tst style and set close tab by dbclick
         # TST options => "Development" => "All Configs" => "baseIndent" set to 8
+        # Do not show tab preview image
         # TST tab search => Hide Header
         userChrome = builtins.readFile ./userChrome.css;
       };
