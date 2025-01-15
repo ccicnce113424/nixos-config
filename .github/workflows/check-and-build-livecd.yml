@@ -42,6 +42,7 @@ jobs:
   
     - name: Check
       run: |
+        git pull
         nix flake check --all-systems
 
   build-livecd:
@@ -58,6 +59,7 @@ jobs:
 
       - name: Build LiveCD
         run: |
+          git pull
           nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 
       - name: Upload LiveCD ISO
