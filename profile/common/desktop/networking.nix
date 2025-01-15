@@ -3,6 +3,7 @@
   networking = {
     firewall.enable = true;
     networkmanager.enable = true;
+    networkmanager.wifi.backend = "iwd";
     iproute2.enable = true;
   };
 
