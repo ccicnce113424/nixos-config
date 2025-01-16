@@ -29,6 +29,7 @@
           clearcache
           clearurls
           video-downloadhelper
+          header-editor
 
           tree-style-tab
           tst-indent-line
