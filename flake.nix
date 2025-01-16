@@ -26,7 +26,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs."flake-parts".follows = "flake-parts";
     };
-    nix-flatpak.url = "github:gmodena/nix-flatpak?rev=5f4ec93d432cd5288f6fe20d8842dceb5a065885";
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
     macronova = {
       url = "git+https://forgejo.invariantspace.com/macronova/nix-custom.git";
       inputs.nixpkgs.follows = "nixpkgs";
