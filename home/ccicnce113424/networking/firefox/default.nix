@@ -30,7 +30,7 @@
           clearurls
           video-downloadhelper
           header-editor
-          dark-reader
+          darkreader
 
           tree-style-tab
           tst-indent-line
