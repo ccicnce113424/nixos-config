@@ -21,7 +21,7 @@
     #     location = "https://mirror.sjtu.edu.cn/flathub";
     #   }
     # ];
-    # uninstallUnmanaged = true;
+    uninstallUnmanaged = true;
   };
   services.fwupd.enable = true;
 
