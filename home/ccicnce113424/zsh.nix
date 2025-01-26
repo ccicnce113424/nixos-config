@@ -29,7 +29,7 @@
       ];
     };
     shellAliases = {
-      switch = "sudo unbuffer nixos-rebuild --fast --install-bootloader switch |& nom";
+      switch = "sudo nixos-rebuild --fast --install-bootloader switch |& nom";
       gc = "nix-collect-garbage --delete-old";
       up = "nix flake update --commit-lock-file";
       clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
@@ -52,7 +52,6 @@
     dust
     tokei
     bottom
-    expect
   ];
 
   programs = {
