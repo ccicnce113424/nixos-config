@@ -18,7 +18,6 @@
   home.packages = [
     pkgs.android-tools
     pkgs.scrcpy
-    pkgs.nix-output-monitor
   ];
   fonts.fontconfig.enable = true;
 }
