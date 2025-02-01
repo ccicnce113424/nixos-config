@@ -8,6 +8,7 @@
     gimp
     mediainfo
     mediainfo-gui
+    bilibili
   ];
 
   imports = [ ./mpv ];
