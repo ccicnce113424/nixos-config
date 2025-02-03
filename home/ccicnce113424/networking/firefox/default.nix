@@ -31,6 +31,7 @@
           video-downloadhelper
           header-editor
           darkreader
+          indie-wiki-buddy
 
           tree-style-tab
           tst-indent-line
