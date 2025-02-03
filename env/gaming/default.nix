@@ -31,5 +31,8 @@
     # pkgs.lutris
     # pkgs.heroic
     pkgs.protonup-qt
+
+    pkgs.hmcl
+    pkgs.graalvmPackages.graalvm-ce
   ];
 }
