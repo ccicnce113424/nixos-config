@@ -12,7 +12,7 @@
           "browser.tabs.drawInTitlebar" = false;
           "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
         };
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
           violentmonkey
           foxyproxy-standard
