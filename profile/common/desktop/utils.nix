@@ -36,6 +36,7 @@
     pkgs.progress
     pkgs.podman-compose
     pkgs.podman-desktop
+    pkgs.xorg.xwininfo
   ];
   services.smartd.enable = true;
 
