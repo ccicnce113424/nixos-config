@@ -37,6 +37,14 @@
     pkgs.podman-compose
     pkgs.podman-desktop
     pkgs.xorg.xwininfo
+
+    (pkgs.symlinkJoin {
+      name = "7z-alias";
+      paths = [ pkgs._7zz ];
+      postBuild = ''
+        ln -s ${pkgs._7zz}/bin/7zz $out/bin/7z
+      '';
+    })
   ];
   services.smartd.enable = true;
 
