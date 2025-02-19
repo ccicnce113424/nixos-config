@@ -125,7 +125,7 @@
                 backupFileExtension = "backup";
                 sharedModules =
                   [
-                    nur.modules.homeManager.default
+                    # nur.modules.homeManager.default    NOT NEEDED ANYMORE
                     nix-flatpak.homeManagerModules.nix-flatpak
                   ]
                   ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
