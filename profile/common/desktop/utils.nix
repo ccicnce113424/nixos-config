@@ -30,7 +30,7 @@
     pkgs.python3Full
     pkgs.zip
     pkgs.unzipNLS
-    pkgs.p7zip
+    pkgs._7zz
     pkgs.unar
     pkgs.libarchive
     pkgs.progress
