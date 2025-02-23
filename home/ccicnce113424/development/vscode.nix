@@ -2,7 +2,7 @@
 {
   programs.vscode = {
     enable = true;
-    extensions = [
+    profiles.default.extensions = [
       pkgs.vscode-extensions.ms-ceintl.vscode-language-pack-zh-hans
       pkgs.vscode-extensions.github.vscode-github-actions
       pkgs.vscode-extensions.github.copilot

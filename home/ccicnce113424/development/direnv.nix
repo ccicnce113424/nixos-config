@@ -5,5 +5,5 @@
     enableZshIntegration = true;
     nix-direnv.enable = true;
   };
-  programs.vscode.extensions = [ pkgs.vscode-extensions.mkhl.direnv ];
+  programs.vscode.profiles.default.extensions = [ pkgs.vscode-extensions.mkhl.direnv ];
 }

@@ -6,7 +6,7 @@
     nixfmt-rfc-style
   ];
   programs.vscode = {
-    extensions = [
+    profiles.default.extensions = [
       pkgs.vscode-extensions.jnoortheen.nix-ide
       pkgs.vscode-extensions.arrterian.nix-env-selector
     ];
