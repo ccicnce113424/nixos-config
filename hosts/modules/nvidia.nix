@@ -22,9 +22,6 @@
     gsp.enable = true;
     modesetting.enable = true;
     nvidiaSettings = true;
-    nvidiaPersistenced = true;
-    dynamicBoost.enable = false;
-    powerManagement.enable = false;
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
