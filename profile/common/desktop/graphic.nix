@@ -16,7 +16,10 @@
     # extraConfig = "font-size=18";
   };
 
-  environment.systemPackages = [ pkgs.nvtopPackages.full ];
+  environment.systemPackages = [
+    pkgs.nvtopPackages.full
+    pkgs.weston
+  ];
 
   programs.nix-ld.libraries = [
     pkgs.xorg.libX11
