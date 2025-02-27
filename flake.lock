@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "candy-icons": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1738178806,
-        "narHash": "sha256-Y56gg6dROTaKGvIwsi7xZim8Bc66x3zAWPTsAjYjALc=",
-        "ref": "refs/heads/master",
-        "rev": "907231dcea3008532ec912757d106b4155937331",
-        "revCount": 1259,
-        "type": "git",
-        "url": "https://github.com/EliverLara/candy-icons"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://github.com/EliverLara/candy-icons"
-      }
-    },
     "daeuniverse": {
       "inputs": {
         "flake-parts": [
@@ -55,24 +39,6 @@
         "type": "github"
       }
     },
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -91,35 +57,6 @@
         "owner": "nix-community",
         "repo": "home-manager",
         "type": "github"
-      }
-    },
-    "macronova": {
-      "inputs": {
-        "candy-icons": "candy-icons",
-        "flake-utils": "flake-utils",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "sweet-ambar-blue": "sweet-ambar-blue",
-        "sweet-ambar-blue-dark": "sweet-ambar-blue-dark",
-        "sweet-folders": "sweet-folders",
-        "sweet-kde": "sweet-kde",
-        "wallpaper-engine-plasma6-plugin": "wallpaper-engine-plasma6-plugin",
-        "yorha-grub-theme": "yorha-grub-theme",
-        "yorha-sound-theme": "yorha-sound-theme"
-      },
-      "locked": {
-        "lastModified": 1739053809,
-        "narHash": "sha256-f09f16njUWxRneGUWbJpjy/UocpXWMgEI7xPMPeBAM4=",
-        "ref": "refs/heads/main",
-        "rev": "397ae7f5ec32fcce5e702ec8de69151c1c1b3b0d",
-        "revCount": 34,
-        "type": "git",
-        "url": "https://forgejo.invariantspace.com/macronova/nix-custom.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://forgejo.invariantspace.com/macronova/nix-custom.git"
       }
     },
     "nix-flatpak": {
@@ -192,11 +129,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1740659813,
-        "narHash": "sha256-izao0iY9l+RDZbf1a6UngWqs5BLLOujvDrsaVv4n54c=",
+        "lastModified": 1740667465,
+        "narHash": "sha256-y48/nmlieyShkQw/afAwaoQ/uCuRjhiNd7XlcdeQoHI=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "ef34655f7f6972b52bcec7692d9a0ae7d9c3fb38",
+        "rev": "e493917781e06efb25b6b4722f429069c4457841",
         "type": "github"
       },
       "original": {
@@ -233,93 +170,10 @@
         "daeuniverse": "daeuniverse",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "macronova": "macronova",
         "nix-flatpak": "nix-flatpak",
         "nixpkgs": "nixpkgs_2",
         "nur": "nur",
         "plasma-manager": "plasma-manager"
-      }
-    },
-    "sweet-ambar-blue": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1738884950,
-        "narHash": "sha256-w64CckY8o9dFITJJicdpOAKjA+UCLY/p+y0ZYbmYd8o=",
-        "ref": "Ambar-Blue",
-        "rev": "7b266b8dfa45d1af0b0044c3d66e56af837fdec5",
-        "revCount": 321,
-        "type": "git",
-        "url": "https://github.com/EliverLara/Sweet"
-      },
-      "original": {
-        "ref": "Ambar-Blue",
-        "type": "git",
-        "url": "https://github.com/EliverLara/Sweet"
-      }
-    },
-    "sweet-ambar-blue-dark": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1738883097,
-        "narHash": "sha256-sfG6LaJdrWGQvT1ixLP4Z48tv4UHoG25imFMD5AYn98=",
-        "ref": "Ambar-Blue-Dark",
-        "rev": "cfb490ef620d897d6d6729aa3c21885ffa1e49b9",
-        "revCount": 404,
-        "type": "git",
-        "url": "https://github.com/EliverLara/Sweet"
-      },
-      "original": {
-        "ref": "Ambar-Blue-Dark",
-        "type": "git",
-        "url": "https://github.com/EliverLara/Sweet"
-      }
-    },
-    "sweet-folders": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1679179505,
-        "narHash": "sha256-QexfqXH5a1IEhKBRjWSMdrEvThvLRzd4M32Xti1DCGE=",
-        "ref": "refs/heads/master",
-        "rev": "b2192ff1412472f036fdf9778c6b9dbcb6c044ec",
-        "revCount": 14,
-        "type": "git",
-        "url": "https://github.com/EliverLara/Sweet-folders"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://github.com/EliverLara/Sweet-folders"
-      }
-    },
-    "sweet-kde": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1712792363,
-        "narHash": "sha256-Pp/cRLDWsOV9fFQa8KC/a52Pu3bHZmFGoklbHh5g5BI=",
-        "ref": "plasma6",
-        "rev": "f3b13a7d55223ddd7aa66000ee8967a085ad6909",
-        "revCount": 31,
-        "type": "git",
-        "url": "https://github.com/EliverLara/Sweet-kde"
-      },
-      "original": {
-        "ref": "plasma6",
-        "type": "git",
-        "url": "https://github.com/EliverLara/Sweet-kde"
-      }
-    },
-    "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
       }
     },
     "treefmt-nix": {
@@ -341,56 +195,6 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
-      }
-    },
-    "wallpaper-engine-plasma6-plugin": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1730612159,
-        "narHash": "sha256-ICQLtw+qaOMf0lkqKegp+Dkl7eUgPqKDn8Fj5Osb7eA=",
-        "ref": "refs/heads/main",
-        "rev": "ed58dd8b920dbb2bf0859ab64e0b5939b8a32a0e",
-        "revCount": 628,
-        "submodules": true,
-        "type": "git",
-        "url": "https://github.com/catsout/wallpaper-engine-kde-plugin"
-      },
-      "original": {
-        "submodules": true,
-        "type": "git",
-        "url": "https://github.com/catsout/wallpaper-engine-kde-plugin"
-      }
-    },
-    "yorha-grub-theme": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1665169118,
-        "narHash": "sha256-XVzYDwJM7Q9DvdF4ZOqayjiYpasUeMhAWWcXtnhJ0WQ=",
-        "owner": "OliveThePuffin",
-        "repo": "yorha-grub-theme",
-        "rev": "4d9cd37baf56c4f5510cc4ff61be278f11077c81",
-        "type": "github"
-      },
-      "original": {
-        "owner": "OliveThePuffin",
-        "repo": "yorha-grub-theme",
-        "type": "github"
-      }
-    },
-    "yorha-sound-theme": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1700807066,
-        "narHash": "sha256-kr0vdyHSjunGa3y0cTqRX6z1rRdLY6IcFeNRy213L2s=",
-        "ref": "refs/heads/main",
-        "rev": "a1dad2f17c229ec9b98987614cce4de83eed73f9",
-        "revCount": 3,
-        "type": "git",
-        "url": "https://forgejo.invariantspace.com/macronova/yorha-sound-theme"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://forgejo.invariantspace.com/macronova/yorha-sound-theme"
       }
     }
   },
