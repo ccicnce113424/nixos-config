@@ -3,8 +3,7 @@
   home.packages = with pkgs; [
     vlc
     netease-cloud-music-gtk
-    nur.repos.xddxdd.netease-cloud-music
-    nur.repos.xddxdd.ncmdump-rs
+    nur.repos.rewine.electron-netease-cloud-music
     waylyrics
     gimp
     mediainfo
