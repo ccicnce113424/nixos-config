@@ -17,6 +17,7 @@
     pkgs.kdePackages.kweather
     pkgs.kdePackages.filelight
     pkgs.kdePackages.kfind
+    pkgs.kdePackages.wallpaper-engine-plugin
     # pkgs.kdePackages.kamoso
   ];
 
