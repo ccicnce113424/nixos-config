@@ -11,11 +11,11 @@
 
   services.colord.enable = true;
 
-  services.kmscon = {
-    enable = true;
-    hwRender = true;
-    # extraConfig = "font-size=18";
-  };
+  # services.kmscon = {
+  #   enable = true;
+  #   hwRender = true;
+  #   # extraConfig = "font-size=18";
+  # };
 
   environment.systemPackages = [
     pkgs.nvtopPackages.full
