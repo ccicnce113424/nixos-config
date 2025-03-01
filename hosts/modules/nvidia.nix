@@ -22,6 +22,7 @@
     modesetting.enable = true;
     nvidiaSettings = true;
     videoAcceleration = true;
+    powerManagement.enable = true;
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
