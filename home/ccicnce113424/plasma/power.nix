@@ -1,9 +1,13 @@
 { ... }:
 {
   programs.plasma.powerdevil = {
+    batteryLevels.criticalAction = "sleep";
+    general.pausePlayersOnSuspend = true;
+
     AC = {
       autoSuspend = {
-        action = "nothing";
+        action = "sleep";
+        idleTimeout = 600;
       };
       dimDisplay = {
         enable = true;
@@ -16,8 +20,9 @@
         idleTimeoutWhenLocked = 60;
       };
       whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "standby";
+      whenSleepingEnter = "standbyThenHibernate";
     };
+
     battery = {
       autoSuspend = {
         action = "sleep";
@@ -34,8 +39,9 @@
         idleTimeoutWhenLocked = 60;
       };
       whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "standby";
+      whenSleepingEnter = "standbyThenHibernate";
     };
+
     lowBattery = {
       autoSuspend = {
         action = "sleep";
@@ -52,7 +58,9 @@
         idleTimeoutWhenLocked = 60;
       };
       whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "standby";
+      whenSleepingEnter = "standbyThenHibernate";
+
+      powerProfile = "powerSaving";
     };
   };
 }
