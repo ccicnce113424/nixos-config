@@ -12,7 +12,6 @@
 
 {
   config,
-  pkgs,
   ...
 }:
 {
@@ -22,17 +21,11 @@
     gsp.enable = true;
     modesetting.enable = true;
     nvidiaSettings = true;
+    videoAcceleration = true;
     package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
-  hardware.nvidia-container-toolkit.enable = true;
+  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
 
-  hardware.graphics = {
-    extraPackages = with pkgs; [
-      nvidia-vaapi-driver
-    ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [
-      nvidia-vaapi-driver
-    ];
-  };
+  hardware.nvidia-container-toolkit.enable = true;
 }
