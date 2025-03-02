@@ -44,8 +44,8 @@ in
     fi
     echo "Remember to enroll the keys into your firmware!"
 
-    find "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
-    find "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) ! -name "*init*" ! -wholename "*.extra-files/*" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
+    ${pkgs.findutils}/bin/find "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
+    ${pkgs.findutils}/bin/find "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) ! -name "*init*" ! -wholename "*.extra-files/*" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
   '';
 
   # Splash screen
