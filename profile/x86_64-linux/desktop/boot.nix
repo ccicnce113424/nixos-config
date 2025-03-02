@@ -30,7 +30,7 @@ in
   ];
 
   # Secure Boot
-  system.activationScripts.secureboot = ''
+  boot.loader.systemd-boot.extraInstallCommands = ''
     is_empty_or_missing() {
         local dir="$1"
         [[ ! -d "$dir" || -z "$(ls -A "$dir" 2>/dev/null)" ]]
