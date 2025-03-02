@@ -2,10 +2,6 @@
 let
   ESP = "/efi";
   XBOOTLDR = "/boot";
-  KEYS_DIR = "/var/lib/sbctl/keys";
-  DB_DIR = "${KEYS_DIR}/db";
-  KEK_DIR = "${KEYS_DIR}/KEK";
-  PK_DIR = "${KEYS_DIR}/PK";
 in
 {
   # Settings for bootloader
@@ -31,19 +27,8 @@ in
 
   # Secure Boot
   boot.loader.systemd-boot.extraInstallCommands = ''
-    is_empty_or_missing() {
-        local dir="$1"
-        [[ ! -d "$dir" || -z "$(ls -A "$dir" 2>/dev/null)" ]]
-    }
-
-    if is_empty_or_missing "${DB_DIR}" || is_empty_or_missing "${KEK_DIR}" || is_empty_or_missing "${PK_DIR}"; then
-        echo "No keys found, creating new keys..."
-        ${pkgs.sbctl}/bin/sbctl create-keys
-    else
-        echo "Using existing keys."
-    fi
+    ${pkgs.sbctl}/bin/sbctl create-keys
     echo "Remember to enroll the keys into your firmware!"
-
     ${pkgs.findutils}/bin/find "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
     ${pkgs.findutils}/bin/find "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) ! -name "*init*" ! -wholename "*.extra-files/*" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
   '';
