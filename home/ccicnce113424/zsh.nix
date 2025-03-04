@@ -30,6 +30,7 @@
     };
     shellAliases = {
       switch = "sudo nixos-rebuild --fast --install-bootloader switch";
+      cswitch = "sudo nixos-rebuild --fast --install-bootloader --option substituters \"https://cache.nixos.org\" switch";
       gc = "nix-collect-garbage --delete-old";
       up = "nix flake update --commit-lock-file";
       clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
