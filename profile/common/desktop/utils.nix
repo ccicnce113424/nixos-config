@@ -35,7 +35,6 @@
     pkgs.libarchive
     pkgs.progress
     pkgs.podman-compose
-    pkgs.podman-desktop
     pkgs.xorg.xwininfo
 
     (pkgs.symlinkJoin {
