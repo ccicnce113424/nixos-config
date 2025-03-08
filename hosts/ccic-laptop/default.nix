@@ -1,4 +1,4 @@
 import ../templates/desktop.nix [
-  ../modules/amdcl.nix
+  ../modules/amdgpu.nix
   ./hardware-configuration.nix
 ]
