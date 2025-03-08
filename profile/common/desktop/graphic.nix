@@ -20,6 +20,8 @@
   environment.systemPackages = [
     pkgs.nvtopPackages.full
     pkgs.weston
+    pkgs.mesa-demos
+    pkgs.vulkan-tools
   ];
 
   programs.nix-ld.libraries = [
