@@ -9,7 +9,7 @@
     mediainfo
     mediainfo-gui
     bilibili
-    audacity
+    tenacity
   ];
 
   imports = [ ./mpv ];
