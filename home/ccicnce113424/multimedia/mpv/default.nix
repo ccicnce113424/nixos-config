@@ -1,7 +1,5 @@
 {
-  config,
   pkgs,
-  lib,
   ...
 }:
 {
@@ -43,14 +41,4 @@
       mpv-image-viewer.image-positioning
     ];
   };
-
-  # home.activation.mpvAutoHDR = lib.hm.dag.entryAfter [ "xdg" ] ''
-  #   mkdir -p ~/.local/share/applications
-  #   for file in ${config.programs.mpv.package}/share/applications/*.desktop; do
-  #     basefile=$(basename "$file")
-  #     target_file="$HOME/.local/share/applications/$basefile"
-  #     cp -f "$file" "$target_file"
-  #     sed -i 's|^Exec=|Exec=ENABLE_HDR_WSI=1 |' "$target_file"
-  #   done
-  # '';
 }
