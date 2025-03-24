@@ -2,7 +2,6 @@
 {
   services.desktopManager.plasma6.enable = true;
   environment.systemPackages = [
-    pkgs.nur.repos.xddxdd.vk-hdr-layer
     pkgs.kdePackages.kdeconnect-kde
     pkgs.dmidecode
     pkgs.kdePackages.plasma-disks
@@ -19,6 +18,8 @@
     pkgs.kdePackages.kfind
     pkgs.kdePackages.wallpaper-engine-plugin
     # pkgs.kdePackages.kamoso
+
+    # pkgs.nur.repos.xddxdd.vk-hdr-layer
   ];
 
   networking.firewall = {
