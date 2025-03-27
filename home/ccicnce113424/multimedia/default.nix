@@ -10,6 +10,7 @@
     mediainfo-gui
     bilibili
     tenacity
+    ffmpeg-full
   ];
 
   imports = [ ./mpv ];
