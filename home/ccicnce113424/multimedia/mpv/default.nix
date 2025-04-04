@@ -12,6 +12,7 @@
       gpu-api = "vulkan";
       gpu-context = "waylandvk";
       hwdec = "auto-safe";
+      gpu-hwdec-interop = "vaapi";
       scale = "ewa_lanczossharp";
       dscale = "mitchell";
       dither = "error-diffusion";
