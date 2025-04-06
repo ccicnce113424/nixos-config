@@ -7,10 +7,11 @@
     waylyrics
     mediainfo
     mediainfo-gui
-    bilibili
     tenacity
     ffmpeg-full
     gimp-with-plugins
+
+    # bilibili
   ];
 
   imports = [ ./mpv ];
