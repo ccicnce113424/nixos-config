@@ -17,8 +17,6 @@
     pkgs.kdePackages.filelight
     pkgs.kdePackages.kfind
     pkgs.kdePackages.wallpaper-engine-plugin
-
-    pkgs.nur.repos.xddxdd.vk-hdr-layer
   ];
 
   networking.firewall = {
