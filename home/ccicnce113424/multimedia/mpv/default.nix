@@ -11,8 +11,7 @@
       icc-profile-auto = true;
       gpu-api = "vulkan";
       gpu-context = "waylandvk";
-      hwdec = "auto-safe";
-      gpu-hwdec-interop = "vulkan";
+      hwdec = "vulkan";
       scale = "ewa_lanczossharp";
       dscale = "mitchell";
       dither = "error-diffusion";
