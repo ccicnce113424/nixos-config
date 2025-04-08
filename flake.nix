@@ -52,6 +52,7 @@
                   "gaming"
                   "obs"
                   "virt-manager"
+                  "wine"
                 ];
                 users = [ "ccicnce113424" ];
               };
