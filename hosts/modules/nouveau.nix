@@ -6,7 +6,7 @@
   ];
   hardware.graphics = {
     extraPackages = with pkgs; [ mesa.opencl ];
-    extraPackages32 = with pkgs.pkgsi686Linux; [ mesa.opencl ];
+    # extraPackages32 = with pkgs.pkgsi686Linux; [ mesa.opencl ];
   };
   environment.sessionVariables = {
     RUSTICL_ENABLE = "nouveau";
