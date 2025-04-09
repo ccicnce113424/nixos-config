@@ -16,4 +16,8 @@
   programs.nix-ld.enable = true;
 
   boot.kernelParams = [ "iommu=pt" ];
+
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", MODE="0664", GROUP="plugdev"
+  '';
 }
