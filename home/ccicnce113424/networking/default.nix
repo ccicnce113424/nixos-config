@@ -1,7 +1,5 @@
 { pkgs, ... }:
 {
-  programs.chromium.enable = true;
-
   home.packages = [
     pkgs.qq
     pkgs.wechat-uos
