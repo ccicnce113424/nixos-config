@@ -17,6 +17,7 @@
 
   boot.kernelParams = [ "iommu=pt" ];
 
+  users.groups.plugdev = { };
   services.udev.extraRules = ''
     SUBSYSTEM=="usb", MODE="0664", GROUP="plugdev"
   '';
