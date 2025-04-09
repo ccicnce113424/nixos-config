@@ -22,4 +22,23 @@
       };
     };
   };
+
+  services.pipewire.wireplumber.extraConfig = {
+    "usb-dac-volume-fix" = {
+      "monitor.alsa.rules" = [
+        {
+          matches = [
+            {
+              "device.name" = "~alsa_card.usb*";
+            }
+          ];
+          actions = {
+            update-props = {
+              "api.alsa.ignore-dB" = true;
+            };
+          };
+        }
+      ];
+    };
+  };
 }
