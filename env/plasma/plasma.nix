@@ -21,6 +21,17 @@
     pkgs.nur.repos.xddxdd.vk-hdr-layer
   ];
 
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+        if ((action.id == "org.freedesktop.udisks2.filesystem-mount-system" ||
+             action.id == "org.freedesktop.udisks.filesystem-mount-system-internal") &&
+            subject.local && subject.active && subject.isInGroup("users"))
+        {
+                return polkit.Result.YES;
+        }
+    });
+  '';
+
   networking.firewall = {
     allowedTCPPorts = [
       3389
