@@ -36,6 +36,7 @@
     pkgs.progress
     pkgs.podman-compose
     pkgs.xorg.xwininfo
+    pkgs.pv
 
     (pkgs.symlinkJoin {
       name = "7z-alias";
