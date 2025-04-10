@@ -11,6 +11,7 @@
       }
     '';
   };
+  services.mpd-mpris.enable = true;
 
-  home.packages = [ pkgs.cantata ];
+  home.packages = [ pkgs.cantata ]; # Remember to disable mpris in cantata
 }
