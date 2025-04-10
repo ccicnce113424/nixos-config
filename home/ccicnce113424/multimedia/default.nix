@@ -10,6 +10,7 @@
     tenacity
     ffmpeg-full
     gimp-with-plugins
+    nur.repos.xddxdd.ncmdump-rs
 
     # bilibili
   ];
