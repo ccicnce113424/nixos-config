@@ -15,5 +15,8 @@
     # bilibili
   ];
 
-  imports = [ ./mpv ];
+  imports = [
+    ./mpd
+    ./mpv
+  ];
 }
