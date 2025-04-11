@@ -24,12 +24,12 @@
   };
 
   services.pipewire.wireplumber.extraConfig = {
-    "usb-dac-volume-fix" = {
+    "ja11-volume-fix" = {
       "monitor.alsa.rules" = [
         {
           matches = [
             {
-              "device.name" = "~alsa_card.usb*";
+              "device.name" = "~alsa_output.usb-FIIO_JadeAudio_JA11*";
             }
           ];
           actions = {
