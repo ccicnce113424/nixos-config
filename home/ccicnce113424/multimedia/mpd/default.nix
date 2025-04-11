@@ -13,5 +13,8 @@
   };
   services.mpd-mpris.enable = true;
 
-  home.packages = [ pkgs.nur.repos.bandithedoge.cantata ]; # Remember to disable mpris in cantata
+  home.packages = [
+    pkgs.cantata
+    # pkgs.nur.repos.bandithedoge.cantata
+  ]; # Remember to disable mpris in cantata
 }
