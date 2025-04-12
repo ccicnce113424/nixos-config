@@ -29,7 +29,7 @@
         {
           matches = [
             {
-              "device.name" = "~alsa_output.usb-FIIO_JadeAudio_JA11*";
+              "device.name" = "~alsa_card.usb-FIIO_JadeAudio_JA11*";
             }
           ];
           actions = {
