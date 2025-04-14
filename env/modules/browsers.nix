@@ -4,13 +4,22 @@
     enable = true;
     languagePacks = [ "zh-CN" ];
     preferences = {
+      # Settings for integration
       "widget.use-xdg-desktop-portal.file-picker" = 1;
       "widget.use-xdg-desktop-portal.mime-handler" = 1;
       "widget.use-xdg-desktop-portal.settings" = 1;
       "widget.use-xdg-desktop-portal.location" = 1;
       "widget.use-xdg-desktop-portal.open-uri" = 1;
+
+      # Settings for hardware video decoding
       "media.ffmpeg.vaapi.enabled" = true;
       "media.hardware-video-decoding.force-enabled" = true;
+      "widget.dmabuf.force-enabled" = true;
+
+      # TODO: REMOVE THIS ONCE NVIDIA VAAPI LAYER IS READY
+      "media.hevc.enabled" = false;
+
+      # Behavior settings
       "browser.shell.checkDefaultBrowser" = false;
       "extensions.pocket.enabled" = false;
       "extensions.autoDisableScopes" = 0;
@@ -24,6 +33,7 @@
 
   environment.sessionVariables = {
     MOZ_USE_XINPUT2 = "1";
+    MOZ_DISABLE_RDD_SANDBOX = "1";
   };
 
   programs.chromium.enable = true;
