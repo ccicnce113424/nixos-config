@@ -10,6 +10,7 @@
       "widget.use-xdg-desktop-portal.location" = 1;
       "widget.use-xdg-desktop-portal.open-uri" = 1;
       "media.ffmpeg.vaapi.enabled" = true;
+      "media.hardware-video-decoding.force-enabled" = true;
       "browser.shell.checkDefaultBrowser" = false;
       "extensions.pocket.enabled" = false;
       "extensions.autoDisableScopes" = 0;
