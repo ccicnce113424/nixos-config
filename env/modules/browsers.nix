@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   programs.firefox = {
     enable = true;
@@ -37,4 +37,11 @@
   };
 
   programs.chromium.enable = true;
+  environment.systemPackages = [
+    (pkgs.chromium.override {
+      commandLineArgs = [
+        "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
+      ];
+    })
+  ];
 }
