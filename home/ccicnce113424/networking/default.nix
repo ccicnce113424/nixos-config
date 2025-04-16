@@ -2,7 +2,7 @@
 {
   home.packages = [
     pkgs.qq
-    pkgs.nur.repos.novel2430.wechat-universal-bwrap
+    pkgs.wechat-uos
     pkgs.nur.repos.novel2430.wemeet-bin-bwrap-wayland-screenshare
     pkgs.telegram-desktop
     pkgs.tor-browser
