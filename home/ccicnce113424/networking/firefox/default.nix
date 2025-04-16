@@ -46,7 +46,7 @@
         # TST options => "Development" => "All Configs" => "baseIndent" set to 8
         # Do not show tab preview image
         # TST tab search => Hide Header
-        userChrome = builtins.readFile ./userChrome.css;
+        userChrome = ./userChrome.css;
       };
     };
   };
