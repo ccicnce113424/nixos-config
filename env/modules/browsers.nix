@@ -16,9 +16,6 @@
       "media.hardware-video-decoding.force-enabled" = true;
       "widget.dmabuf.force-enabled" = true;
 
-      # TODO: REMOVE THIS ONCE NVIDIA VAAPI LAYER IS READY
-      "media.hevc.enabled" = false;
-
       # Behavior settings
       "browser.shell.checkDefaultBrowser" = false;
       "extensions.pocket.enabled" = false;
