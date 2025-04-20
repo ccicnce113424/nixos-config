@@ -24,12 +24,13 @@
 
   services.flatpak.packages = [
     "net.lutris.Lutris"
-    "com.heroicgameslauncher.hgl"
+    # "com.heroicgameslauncher.hgl"
   ];
 
   environment.systemPackages = [
     # pkgs.lutris
-    # pkgs.heroic
+    pkgs.heroic
+    
     pkgs.protonup-qt
     pkgs.umu-launcher
 
