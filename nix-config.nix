@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   inputs,
   ...
 }:
@@ -8,8 +9,8 @@
   options.smallPkgs = lib.mkOption {
     type = lib.types.pkgs;
     default = import inputs.nixpkgs-small {
-      system = pkgs.system;
-      config = pkgs.config;
+      system = config.nixpkgs.system;
+      config = config.nixpkgs.config;
     };
   };
 
