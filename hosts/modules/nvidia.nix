@@ -29,4 +29,6 @@
   boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
 
   hardware.nvidia-container-toolkit.enable = true;
+
+  nixpkgs.config.cudaSupport = true;
 }
