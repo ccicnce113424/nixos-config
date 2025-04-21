@@ -1,10 +1,25 @@
-{ pkgs, ... }:
 {
-  environment.systemPackages = with pkgs; [
+  pkgs,
+  lib,
+  inputs,
+  ...
+}:
+{
+  options.smallPkgs = lib.mkOption {
+    type = lib.types.pkgs;
+    default = import inputs.nixpkgs-small {
+      system = pkgs.system;
+      config = pkgs.config;
+    };
+  };
+
+  config.environment.systemPackages = with pkgs; [
     git
   ];
-  nixpkgs.config.allowUnfree = true;
-  nix.settings = {
+
+  config.nixpkgs.config.allowUnfree = true;
+
+  config.nix.settings = {
     experimental-features = "nix-command flakes";
     substituters = [
       "https://mirrors.ustc.edu.cn/nix-channels/store"
@@ -19,5 +34,6 @@
       # "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     ];
   };
-  system.stateVersion = "24.05";
+
+  config.system.stateVersion = "24.05";
 }
