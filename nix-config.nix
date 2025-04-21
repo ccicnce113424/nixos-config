@@ -11,6 +11,7 @@
     default = import inputs.nixpkgs-small {
       system = config.nixpkgs.system;
       config = config.nixpkgs.config;
+      overlays = config.nixpkgs.overlays;
     };
   };
 
