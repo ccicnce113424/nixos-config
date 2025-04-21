@@ -1,6 +1,6 @@
-{ pkgs, inputs, ... }:
+{ smallPkgs, ... }:
 {
-  boot.kernelPackages = inputs.nixpkgs-small.legacyPackages.${pkgs.system}.linuxPackages_latest;
+  boot.kernelPackages = smallPkgs.linuxPackages_latest;
   boot.kernel.sysctl = {
     "kernel.sysrq" = 1;
   };
