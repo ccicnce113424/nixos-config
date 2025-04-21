@@ -141,9 +141,13 @@
           map (
             hostname:
             let
-              specialArgs = {
-                inherit inputs;
+              specialArgs = rec {
                 host = hosts.${hostname};
+                smallPkgs = import nixpkgs-small {
+                  system = host.system;
+                  config.allowUnfree = true;
+                };
+                inherit inputs;
               };
             in
             {
