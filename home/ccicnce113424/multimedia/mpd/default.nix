@@ -13,6 +13,10 @@
         mixer_control "Master"
         dop "yes"
       }
+      audio_output {
+        type "jack"
+        name "Jack Output"
+      }
     '';
   };
   services.mpd-mpris.enable = true;
