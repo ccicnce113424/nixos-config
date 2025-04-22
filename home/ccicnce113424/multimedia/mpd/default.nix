@@ -7,6 +7,12 @@
         type "pipewire"
         name "PipeWire Output"
       }
+      audio_output {
+        type "alsa"
+        name "ALSA Output"
+        mixer_control "Master"
+        dop "yes"
+      }
     '';
   };
   services.mpd-mpris.enable = true;
