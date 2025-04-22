@@ -37,6 +37,7 @@
     pkgs.podman-compose
     pkgs.xorg.xwininfo
     pkgs.pv
+    pkgs.tree
 
     (pkgs.runCommand "7z-alias" { buildInputs = [ pkgs._7zz ]; } ''
       mkdir -p $out/bin
