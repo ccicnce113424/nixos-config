@@ -6,6 +6,7 @@
       audio_output {
         type          "pipewire"
         name          "PipeWire Output"
+        enabled       "yes"
       }
       audio_output {
         type          "alsa"
@@ -14,6 +15,7 @@
         mixer_device  "pipewire"
         mixer_control "Master"
         dop           "yes"
+        enabled       "no"
       }
     '';
   };
