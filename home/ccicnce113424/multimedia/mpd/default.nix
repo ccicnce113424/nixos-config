@@ -4,18 +4,14 @@
     enable = true;
     extraConfig = ''
       audio_output {
-        type "pipewire"
-        name "PipeWire Output"
+        type    "pipewire"
+        name    "PipeWire Output"
       }
       audio_output {
-        type "alsa"
-        name "ALSA Output"
-        mixer_control "Master"
-        dop "yes"
-      }
-      audio_output {
-        type "jack"
-        name "Jack Output"
+        type    "alsa"
+        name    "ALSA JA11 DoP Output"
+        device  "hw:CARD=JA11"
+        dop     "yes"
       }
     '';
   };
