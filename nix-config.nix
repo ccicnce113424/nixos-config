@@ -23,6 +23,7 @@ let
               cd /etc/nixos
               git pull
               switch
+              reboot
             '';
             clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
             clr = ''
