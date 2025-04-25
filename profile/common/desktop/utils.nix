@@ -7,6 +7,7 @@
       extraPkgs = pkgs: [
         pkgs.icu
         pkgs.xorg.libxshmfence
+        pkgs.webkitgtk_4_1
       ];
     };
 
