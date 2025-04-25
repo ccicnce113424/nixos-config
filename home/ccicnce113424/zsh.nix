@@ -28,15 +28,6 @@
         "line"
       ];
     };
-    shellAliases = {
-      switch = "sudo nixos-rebuild --fast --install-bootloader switch";
-      cswitch = "switch --option substituters \"https://cache.nixos.org\"";
-      gc = "nix-collect-garbage --delete-old";
-      up = "nix flake update --commit-lock-file";
-      clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
-      win = "systemctl reboot --boot-loader-entry=auto-windows";
-      fw = "systemctl reboot --firmware-setup";
-    };
   };
 
   programs.autojump = {
