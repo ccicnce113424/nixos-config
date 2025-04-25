@@ -4,11 +4,14 @@
     enable = true;
     binfmt = true;
     package = pkgs.appimage-run.override {
-      extraPkgs = pkgs: [
-        pkgs.icu
-        pkgs.xorg.libxshmfence
-        pkgs.webkitgtk_4_1
-      ];
+      extraPkgs =
+        pkgs: with pkgs; [
+          icu
+          xorg.libxshmfence
+          webkitgtk_4_1
+          libsoup_3
+          libepoxy
+        ];
     };
 
   };
