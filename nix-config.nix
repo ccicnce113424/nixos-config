@@ -19,7 +19,17 @@ let
             cswitch = "switch --option substituters \"https://cache.nixos.org\"";
             gc = "nix-collect-garbage --delete-old";
             up = "nix flake update --commit-lock-file";
+            upg = ''
+              cd /etc/nixos
+              git pull
+              switch
+            '';
             clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
+            clr = ''
+              clean
+              switch
+              gc
+            '';
             win = "systemctl reboot --boot-loader-entry=auto-windows";
             fw = "systemctl reboot --firmware-setup";
           };
