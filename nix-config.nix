@@ -13,26 +13,7 @@ let
         git
       ]
       ++ lib.attrValues (
-        lib.mapAttrs (name: cmd: (pkgs.writeShellScriptBin name cmd)) {
-          # Commands to add
-          switch = "sudo nixos-rebuild --fast --install-bootloader switch";
-          cswitch = "switch --option substituters \"https://cache.nixos.org\"";
-          gc = "nix-collect-garbage --delete-old";
-          up = "nix flake update --commit-lock-file";
-          upd = ''
-            cd /etc/nixos
-            git pull
-            switch
-          '';
-          clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
-          clr = ''
-            clean
-            switch
-            gc
-          '';
-          win = "systemctl reboot --boot-loader-entry=auto-windows";
-          fw = "systemctl reboot --firmware-setup";
-        }
+        lib.mapAttrs (name: cmd: (pkgs.writeShellScriptBin name cmd)) config.shellAliases
       );
 
     nixpkgs.config.allowUnfree = true;
@@ -62,6 +43,29 @@ in
       system = config.nixpkgs.system;
       config = config.nixpkgs.config;
       overlays = config.nixpkgs.overlays;
+    };
+  };
+  options.shellAliases = lib.mkOption {
+    type = lib.types.attrs;
+    default = {
+      # Commands to add
+      switch = "sudo nixos-rebuild --fast --install-bootloader switch";
+      cswitch = "switch --option substituters \"https://cache.nixos.org\"";
+      gc = "nix-collect-garbage --delete-old";
+      up = "nix flake update --commit-lock-file";
+      upd = ''
+        cd /etc/nixos
+        git pull
+        switch
+      '';
+      clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
+      clr = ''
+        clean
+        switch
+        gc
+      '';
+      win = "systemctl reboot --boot-loader-entry=auto-windows";
+      fw = "systemctl reboot --firmware-setup";
     };
   };
 
