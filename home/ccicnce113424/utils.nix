@@ -1,5 +1,7 @@
 {
   pkgs,
+  lib,
+  sysCfg,
   ...
 }:
 {
@@ -20,4 +22,11 @@
     pkgs.scrcpy
   ];
   fonts.fontconfig.enable = true;
+
+  xdg.desktopEntries = lib.mapAttrs (name: _: {
+    inherit name;
+    exec = name;
+    terminal = true;
+    categories = [ "System" ];
+  }) sysCfg.shellAliases;
 }
