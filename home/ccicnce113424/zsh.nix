@@ -43,7 +43,6 @@
   home.packages = with pkgs; [
     dust
     tokei
-    bottom
   ];
 
   programs = {
@@ -51,5 +50,7 @@
     ripgrep.enable = true;
     htop.enable = true;
     fastfetch.enable = true;
+    bottom.enable = true;
+    btop.enable = true;
   };
 }
