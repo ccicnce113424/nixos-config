@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
   ESP = "/efi";
   XBOOTLDR = "/boot";
@@ -26,7 +26,7 @@ in
   ];
 
   # Secure Boot
-  boot.loader.systemd-boot.extraInstallCommands = ''
+  boot.loader.systemd-boot.extraInstallCommands = lib.mkAfter ''
     ${pkgs.sbctl}/bin/sbctl create-keys
     echo "Remember to enroll the keys into your firmware!"
     ${pkgs.findutils}/bin/find "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
