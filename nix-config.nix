@@ -13,7 +13,7 @@ let
         git
       ]
       ++ lib.attrValues (
-        lib.mapAttrs (name: cmd: (pkgs.writeShellScriptBin name cmd)) config.shellAliases
+        lib.mapAttrs (name: cmd: (pkgs.writeShellScriptBin name cmd)) config.cmdAliases
       );
 
     nixpkgs.config.allowUnfree = true;
@@ -47,7 +47,7 @@ in
       overlays = config.nixpkgs.overlays;
     };
   };
-  options.shellAliases = lib.mkOption {
+  options.cmdAliases = lib.mkOption {
     type = lib.types.attrs;
     default = {
       # Commands to add
