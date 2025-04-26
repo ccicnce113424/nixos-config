@@ -27,7 +27,6 @@
     inherit name;
     exec = name;
     terminal = true;
-    categories = [ "System" ];
     comment = "run \"${name}\"";
-  }) sysCfg.shellAliases;
+  }) sysCfg.cmdAliases;
 }
