@@ -34,6 +34,8 @@ let
       ];
     };
     system.stateVersion = "24.05";
+
+    home-manager.extraSpecialArgs.sysCfg = config;
   };
 in
 {
@@ -52,8 +54,7 @@ in
       switch = "sudo nixos-rebuild --fast --install-bootloader switch";
       cswitch = "switch --option substituters \"https://cache.nixos.org\"";
       gc = "nix-collect-garbage --delete-old";
-      up = "nix flake update --commit-lock-file";
-      upd = ''
+      up = ''
         cd /etc/nixos
         git pull
         switch
