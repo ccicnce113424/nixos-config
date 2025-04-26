@@ -138,37 +138,28 @@
             }
           ];
         in
-        builtins.listToAttrs (
-          map (
-            hostname:
-            let
-              specialArgs = {
-                host = hosts.${hostname};
-                inherit inputs;
-              };
-            in
-            {
-              name = hostname;
-              value = nixpkgs.lib.nixosSystem {
-                inherit specialArgs;
-                system = hosts.${hostname}.system;
-                modules =
-                  [
-                    nur.modules.nixos.default
-                    daeuniverse.nixosModules.daed
-                    nix-flatpak.nixosModules.nix-flatpak
-                  ]
-                  ++ nixConfigModules
-                  ++ systemModules hosts.${hostname}.system
-                  ++ profileModules hosts.${hostname}.system hosts.${hostname}.profile
-                  ++ envModules hosts.${hostname}.env
-                  ++ hostModules hostname
-                  ++ userModules hosts.${hostname}.users
-                  ++ homeManagerModules specialArgs;
-              };
-            }
-          ) (builtins.attrNames hosts)
-        )
+        builtins.mapAttrs (
+          name: host:
+          nixpkgs.lib.nixosSystem rec {
+            specialArgs = {
+              inherit inputs host;
+            };
+            system = host.system;
+            modules =
+              [
+                nur.modules.nixos.default
+                daeuniverse.nixosModules.daed
+                nix-flatpak.nixosModules.nix-flatpak
+              ]
+              ++ nixConfigModules
+              ++ systemModules host.system
+              ++ profileModules host.system host.profile
+              ++ envModules host.env
+              ++ hostModules name
+              ++ userModules host.users
+              ++ homeManagerModules specialArgs;
+          }
+        ) hosts
         // {
           livecd = nixpkgs.lib.nixosSystem {
             system = "x86_64-linux";
