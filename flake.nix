@@ -123,10 +123,7 @@
                 extraSpecialArgs = specialArgs;
                 backupFileExtension = "backup";
                 sharedModules =
-                  [
-                    # nur.modules.homeManager.default    NOT NEEDED ANYMORE
-                    nix-flatpak.homeManagerModules.nix-flatpak
-                  ]
+                  [ nix-flatpak.homeManagerModules.nix-flatpak ]
                   ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
                 users = builtins.listToAttrs (
                   map (username: {
@@ -136,6 +133,12 @@
                 );
               };
             }
+            (
+              { config, ... }:
+              {
+                home-manager.extraSpecialArgs.sysCfg = config;
+              }
+            )
           ];
         in
         builtins.mapAttrs (
