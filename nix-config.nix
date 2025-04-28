@@ -34,8 +34,6 @@ let
       ];
     };
     system.stateVersion = "24.05";
-
-    home-manager.extraSpecialArgs.sysCfg = config;
   };
 in
 {
