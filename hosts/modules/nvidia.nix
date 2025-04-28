@@ -30,7 +30,8 @@
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
     "nvidia.NVreg_EnablePCIERelaxedOrderingMode=1"
-    "nvidia."
+    "nvidia.NVreg_EnableS0ixPowerManagement=1"
+    "nvidia.NVreg_EnableStreamMemOPs=1"
   ];
 
   hardware.nvidia-container-toolkit.enable = true;
