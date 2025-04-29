@@ -100,14 +100,9 @@
               (
                 { ... }:
                 {
-                  users.users = builtins.listToAttrs (
-                    map (username: {
-                      name = username;
-                      value = {
-                        home = "/home/${username}";
-                      };
-                    }) users
-                  );
+                  users.users = nixpkgs.lib.attrsets.genAttrs users (username: {
+                    home = "/home/${username}";
+                  });
                 }
               )
             ]
@@ -125,12 +120,7 @@
                 sharedModules =
                   [ nix-flatpak.homeManagerModules.nix-flatpak ]
                   ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
-                users = builtins.listToAttrs (
-                  map (username: {
-                    name = username;
-                    value = import ./home/${username};
-                  }) specialArgs.host.users
-                );
+                users = nixpkgs.lib.attrsets.genAttrs specialArgs.host.users (username: import ./home/${username});
               };
             }
             (
