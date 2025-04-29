@@ -17,6 +17,14 @@
         dop           "yes"
         enabled       "no"
       }
+      audio_output {
+        type          "alsa"
+        name          "ALSA Output (Through PipeWire)"
+        mixer_device  "pipewire"
+        mixer_control "Master"
+        dop           "yes"
+        enabled       "no"
+      }
     '';
   };
   services.mpd-mpris.enable = true;
