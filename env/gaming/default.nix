@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   programs.steam = {
     enable = true;
@@ -11,7 +16,7 @@
       enable = true;
       args = [
         "--rt"
-      ] ++ pkgs.lib.optional (config.networking.hostName == "ccic-desktop") "-r 165";
+      ] ++ lib.optional (config.networking.hostName == "ccic-desktop") "-r 165";
     };
     protontricks.enable = true;
   };
@@ -30,7 +35,7 @@
   environment.systemPackages = [
     # pkgs.lutris
     pkgs.heroic
-    
+
     pkgs.protonup-qt
     pkgs.umu-launcher
 
