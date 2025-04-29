@@ -12,9 +12,7 @@ let
       [
         git
       ]
-      ++ lib.attrValues (
-        lib.mapAttrs (name: cmd: (pkgs.writeShellScriptBin name cmd)) config.cmdAliases
-      );
+      ++ lib.mapAttrsToList (name: cmd: (pkgs.writeShellScriptBin name cmd)) config.cmdAliases;
 
     nixpkgs.config.allowUnfree = true;
 
