@@ -65,6 +65,10 @@ in
       fw = "systemctl reboot --firmware-setup";
     };
   };
+  options.enable32Bit = lib.mkOption {
+    type = lib.types.bool;
+    default = false;
+  };
 
   config = nix-config;
 }

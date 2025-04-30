@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 {
   services.xserver.videoDrivers = [ "nouveau" ];
   boot.kernelParams = [
@@ -6,7 +11,7 @@
   ];
   hardware.graphics = {
     extraPackages = with pkgs; [ mesa.opencl ];
-    # extraPackages32 = with pkgs.pkgsi686Linux; [ mesa.opencl ];
+    extraPackages32 = lib.optional config.enable32Bit (with pkgs; [ mesa.opencl ]);
   };
   environment.sessionVariables = {
     RUSTICL_ENABLE = "nouveau";
