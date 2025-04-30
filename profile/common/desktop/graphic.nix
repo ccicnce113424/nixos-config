@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   hardware.graphics = {
     enable = true;
-    # enable32Bit = true;
+    enable32Bit = config.enable32Bit;
   };
 
   services.xserver.enable = true;
