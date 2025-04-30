@@ -12,7 +12,7 @@ let
       [
         git
       ]
-      ++ lib.mapAttrsToList (name: cmd: (pkgs.writeShellScriptBin name cmd)) config.cmdAliases;
+      ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
 
     nixpkgs.config.allowUnfree = true;
 
