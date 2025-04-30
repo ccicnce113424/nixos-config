@@ -14,6 +14,8 @@
     # bilibili
   ];
 
+  services.easyeffects.enable = true;
+
   imports = [
     ./mpd
     ./mpv

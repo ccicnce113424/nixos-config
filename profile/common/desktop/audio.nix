@@ -20,8 +20,5 @@
       alsa.support32Bit = true;
     };
 
-  environment.systemPackages = [
-    pkgs.alsa-utils
-    pkgs.easyeffects
-  ];
+  environment.systemPackages = [ pkgs.alsa-utils ];
 }
