@@ -12,5 +12,8 @@
     jack.enable = true;
   };
 
-  environment.systemPackages = [ pkgs.alsa-utils ];
+  environment.systemPackages = [
+    pkgs.alsa-utils
+    pkgs.easyeffects
+  ];
 }
