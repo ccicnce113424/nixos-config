@@ -20,7 +20,6 @@
         idleTimeoutWhenLocked = 60;
       };
       whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "hybridSleep";
     };
 
     battery = {
@@ -39,7 +38,6 @@
         idleTimeoutWhenLocked = 60;
       };
       whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "hybridSleep";
     };
 
     lowBattery = {
@@ -58,7 +56,6 @@
         idleTimeoutWhenLocked = 60;
       };
       whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "hybridSleep";
 
       powerProfile = "powerSaving";
     };
