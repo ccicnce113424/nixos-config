@@ -1,9 +1,13 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 {
   hardware.graphics = {
     enable = true;
-    enable32Bit = config.enable32Bit;
-  };
+  } // lib.optionalAttrs config.enable32Bit { enable32Bit = true; };
 
   services.xserver.enable = true;
   services.xserver.displayManager.startx.enable = true;

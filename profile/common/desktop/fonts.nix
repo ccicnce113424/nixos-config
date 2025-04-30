@@ -1,4 +1,9 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 {
   fonts = {
     enableDefaultPackages = true;
@@ -50,7 +55,6 @@
           "DejaVu Sans"
         ];
       };
-      cache32Bit = config.enable32Bit;
-    };
+    } // lib.optionalAttrs config.enable32Bit { cache32Bit = true; };
   };
 }
