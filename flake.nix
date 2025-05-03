@@ -69,9 +69,6 @@
           };
         };
 
-      # Configuration of Nix and Flake
-      nixConfigModules = [ ./nix-config.nix ];
-
       # Configuration of system
       systemModules = system: if null == system then [ ] else [ ./system/${system} ];
 
@@ -157,8 +154,8 @@
               nur.modules.nixos.default
               daeuniverse.nixosModules.daed
               nix-flatpak.nixosModules.nix-flatpak
+              ./nix-config.nix
             ]
-            ++ nixConfigModules
             ++ systemModules host.system
             ++ profileModules host.system host.profile
             ++ envModules host.env
