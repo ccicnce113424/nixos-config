@@ -61,6 +61,12 @@
         {
           ccic-desktop = desktop-template;
           ccic-laptop = desktop-template;
+          livecd = {
+            system = "x86_64-linux";
+            profile = "livecd";
+            env = null;
+            users = null;
+          };
         };
 
       # Configuration of Nix and Flake
@@ -137,8 +143,8 @@
           )
         ];
     in
-    let
-      configGenerator =
+    {
+      nixosConfigurations = builtins.mapAttrs (
         name: host:
         nixpkgs.lib.nixosSystem rec {
           specialArgs = {
@@ -158,9 +164,7 @@
             ++ hostModules name
             ++ userModules host.users
             ++ homeManagerModules specialArgs;
-        };
-    in
-    {
-      nixosConfigurations = builtins.mapAttrs configGenerator hosts // import ./livecd.nix inputs;
+        }
+      ) hosts;
     };
 }
