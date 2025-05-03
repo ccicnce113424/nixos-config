@@ -9,10 +9,7 @@ let
   nix-config = {
     environment.systemPackages =
       with pkgs;
-      [
-        git
-      ]
-      ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
+      [ git ] ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
 
     nixpkgs.config.allowUnfree = true;
 
