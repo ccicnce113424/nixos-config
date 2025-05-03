@@ -69,32 +69,38 @@
       ];
 
       # Configuration of system
-      systemModules = system: [
-        ./system/${system}
-      ];
+      systemModules =
+        system:
+        nixpkgs.lib.optional (system != null) [
+          ./system/${system}
+        ];
 
       # Configuration of profile
-      profileModules = system: profile: [
-        ./profile/${system}/${profile}
-      ];
+      profileModules =
+        system: profile:
+        nixpkgs.lib.optional (system != null && profile != null) [
+          ./profile/${system}/${profile}
+        ];
 
-      envModules = env: (map (env: ./env/${env}) env);
+      envModules = env: nixpkgs.lib.optional (env != null) (map (env: ./env/${env}) env);
 
       # Configuration of host
-      hostModules = hostname: [
-        (
-          { ... }:
-          {
-            networking.hostName = hostname;
-          }
-        )
-        ./hosts/${hostname}
-      ];
+      hostModules =
+        hostname:
+        nixpkgs.lib.optional (hostname != null) [
+          (
+            { ... }:
+            {
+              networking.hostName = hostname;
+            }
+          )
+          ./hosts/${hostname}
+        ];
 
       # Configuration of users
       userModules =
         users:
-        [
+        nixpkgs.lib.optional (users != null) [
           (
             { ... }:
             {
@@ -107,27 +113,29 @@
         ++ map (username: ./users/${username}) users;
 
       # Configuration of Home Manager
-      homeManagerModules = specialArgs: [
-        home-manager.nixosModules.home-manager
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = specialArgs;
-            backupFileExtension = "backup";
-            sharedModules =
-              [ nix-flatpak.homeManagerModules.nix-flatpak ]
-              ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
-            users = nixpkgs.lib.genAttrs specialArgs.host.users (username: import ./home/${username});
-          };
-        }
-        (
-          { config, ... }:
+      homeManagerModules =
+        specialArgs:
+        nixpkgs.lib.optional (specialArgs.host.users != null) [
+          home-manager.nixosModules.home-manager
           {
-            home-manager.extraSpecialArgs.sysCfg = config;
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = specialArgs;
+              backupFileExtension = "backup";
+              sharedModules =
+                [ nix-flatpak.homeManagerModules.nix-flatpak ]
+                ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
+              users = nixpkgs.lib.genAttrs specialArgs.host.users (username: import ./home/${username});
+            };
           }
-        )
-      ];
+          (
+            { config, ... }:
+            {
+              home-manager.extraSpecialArgs.sysCfg = config;
+            }
+          )
+        ];
     in
     let
       configGenerator =
