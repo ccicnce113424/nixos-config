@@ -4,6 +4,7 @@
 
   environment.systemPackages = with pkgs; [
     uutils-coreutils-noprefix
+    bcachefs-tools
   ];
 
   # environment.memoryAllocator.provider = "mimalloc";
