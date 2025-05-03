@@ -1,15 +1,11 @@
 {
   pkgs,
   modulesPath,
-  inputs,
   ...
 }:
 {
   isoImage.squashfsCompression = "zstd";
-  imports = [
-    (modulesPath + "/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix")
-    inputs.daeuniverse.nixosModules.daed
-  ];
+  imports = [ (modulesPath + "/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix") ];
   services.daed = {
     enable = true;
     openFirewall = {
