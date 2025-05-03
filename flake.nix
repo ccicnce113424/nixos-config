@@ -161,6 +161,6 @@
         };
     in
     {
-      nixosConfigurations = builtins.mapAttrs configGenerator hosts // import ./nix-config.nix inputs;
+      nixosConfigurations = builtins.mapAttrs configGenerator hosts // import ./livecd.nix inputs;
     };
 }
