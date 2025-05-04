@@ -5,6 +5,6 @@
     hunspell
     hunspellDicts.en_US
 
-    nur.repos.chillcicada.wpsoffice-cn
+    nur.repos.novel2430.wpsoffice-365
   ];
 }
