@@ -1,24 +1,24 @@
 { pkgs, ... }:
 {
   services.desktopManager.plasma6.enable = true;
-  environment.systemPackages = [
-    pkgs.kdePackages.kdeconnect-kde
-    pkgs.dmidecode
-    pkgs.kdePackages.plasma-disks
-    pkgs.kdePackages.krdc
-    pkgs.kdePackages.krfb
-    pkgs.kdePackages.qtmultimedia
-    pkgs.kdePackages.qtwebengine
-    pkgs.kdePackages.yakuake
-    pkgs.kdePackages.francis
-    pkgs.kdePackages.kcalc
-    pkgs.kdePackages.kclock
-    pkgs.kdePackages.kweather
-    pkgs.kdePackages.filelight
-    pkgs.kdePackages.kfind
-    pkgs.kdePackages.wallpaper-engine-plugin
+  environment.systemPackages = with pkgs; [
+    kdePackages.kdeconnect-kde
+    dmidecode
+    kdePackages.plasma-disks
+    kdePackages.krdc
+    kdePackages.krfb
+    kdePackages.qtmultimedia
+    kdePackages.qtwebengine
+    kdePackages.yakuake
+    kdePackages.francis
+    kdePackages.kcalc
+    kdePackages.kclock
+    kdePackages.kweather
+    kdePackages.filelight
+    kdePackages.kfind
+    kdePackages.wallpaper-engine-plugin
 
-    pkgs.nur.repos.xddxdd.vk-hdr-layer
+    nur.repos.xddxdd.vk-hdr-layer
   ];
 
   security.polkit.extraConfig = ''

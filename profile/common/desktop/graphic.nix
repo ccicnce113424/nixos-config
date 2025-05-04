@@ -21,19 +21,19 @@
   #   # extraConfig = "font-size=18";
   # };
 
-  environment.systemPackages = [
-    pkgs.nvtopPackages.full
-    pkgs.weston
-    pkgs.mesa-demos
-    pkgs.vulkan-tools
+  environment.systemPackages = with pkgs; [
+    nvtopPackages.full
+    weston
+    mesa-demos
+    vulkan-tools
   ];
 
-  programs.nix-ld.libraries = [
-    pkgs.xorg.libX11
-    pkgs.xorg.libXext
-    pkgs.xorg.libXi
-    pkgs.xorg.libXrender
-    pkgs.xorg.libXtst
-    pkgs.fontconfig
+  programs.nix-ld.libraries = with pkgs; [
+    xorg.libX11
+    xorg.libXext
+    xorg.libXi
+    xorg.libXrender
+    xorg.libXtst
+    fontconfig
   ];
 }

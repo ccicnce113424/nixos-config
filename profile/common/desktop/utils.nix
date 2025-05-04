@@ -29,19 +29,19 @@
   };
   services.fwupd.enable = true;
 
-  environment.systemPackages = [
-    pkgs.smartmontools
-    pkgs.python3Full
-    pkgs.zip
-    pkgs.unzipNLS
-    pkgs._7zz
-    pkgs.unar
-    pkgs.libarchive
-    pkgs.progress
-    pkgs.podman-compose
-    pkgs.xorg.xwininfo
-    pkgs.pv
-    pkgs.tree
+  environment.systemPackages = with pkgs; [
+    smartmontools
+    python3Full
+    zip
+    unzipNLS
+    _7zz
+    unar
+    libarchive
+    progress
+    podman-compose
+    xorg.xwininfo
+    pv
+    tree
 
     (pkgs.runCommand "7z-alias" { buildInputs = [ pkgs._7zz ]; } ''
       mkdir -p $out/bin

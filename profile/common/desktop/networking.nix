@@ -35,9 +35,9 @@
     listen = "127.0.0.1:2023";
   };
 
-  environment.systemPackages = [
-    pkgs.linux-wifi-hotspot
-    pkgs.inetutils
-    pkgs.sshfs
+  environment.systemPackages = with pkgs; [
+    linux-wifi-hotspot
+    inetutils
+    sshfs
   ];
 }

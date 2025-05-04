@@ -16,9 +16,9 @@
     listen = "0.0.0.0:2023";
   };
   networking.firewall.allowedTCPPorts = [ 2023 ];
-  environment.systemPackages = [
-    pkgs.git
-    pkgs.elinks
+  environment.systemPackages = with pkgs; [
+    git
+    elinks
   ];
   services.openssh = {
     enable = true;

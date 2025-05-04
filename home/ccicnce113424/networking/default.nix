@@ -1,13 +1,13 @@
 { pkgs, ... }:
 {
-  home.packages = [
-    pkgs.qq
-    pkgs.wechat-uos
-    pkgs.wemeet
-    pkgs.telegram-desktop
-    pkgs.tor-browser
-    pkgs.qbittorrent-enhanced
-    pkgs.motrix
+  home.packages = with pkgs; [
+    qq
+    wechat-uos
+    wemeet
+    telegram-desktop
+    tor-browser
+    qbittorrent-enhanced
+    motrix
   ];
 
   imports = [ ./firefox ];
