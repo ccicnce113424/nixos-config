@@ -8,7 +8,7 @@
   programs.steam = {
     enable = true;
     extest.enable = true;
-    extraCompatPackages = [ pkgs.proton-ge-bin ];
+    extraCompatPackages = with pkgs; [ proton-ge-bin ];
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
@@ -32,14 +32,14 @@
     # "com.heroicgameslauncher.hgl"
   ];
 
-  environment.systemPackages = [
-    # pkgs.lutris
-    pkgs.heroic
+  environment.systemPackages = with pkgs; [
+    # lutris
+    heroic
 
-    pkgs.protonup-qt
-    pkgs.umu-launcher
+    protonup-qt
+    umu-launcher
 
-    pkgs.hmcl
-    pkgs.graalvmPackages.graalvm-ce
+    hmcl
+    graalvmPackages.graalvm-ce
   ];
 }

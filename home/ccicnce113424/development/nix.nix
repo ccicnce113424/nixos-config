@@ -6,9 +6,9 @@
     nixfmt-rfc-style
   ];
   programs.vscode = {
-    profiles.default.extensions = [
-      pkgs.vscode-extensions.jnoortheen.nix-ide
-      pkgs.vscode-extensions.arrterian.nix-env-selector
+    profiles.default.extensions = with pkgs; [
+      vscode-extensions.jnoortheen.nix-ide
+      vscode-extensions.arrterian.nix-env-selector
     ];
     # userSettings = {
     #   "nix.enableLanguageServer" = true;

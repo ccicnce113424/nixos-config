@@ -17,9 +17,9 @@
     uninstallUnmanaged = true;
   };
 
-  home.packages = [
-    pkgs.android-tools
-    pkgs.scrcpy
+  home.packages = with pkgs; [
+    android-tools
+    scrcpy
   ];
   fonts.fontconfig.enable = true;
 
