@@ -4,7 +4,7 @@
   # Sources
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
+    # nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -33,7 +33,7 @@
   outputs =
     inputs@{
       nixpkgs,
-      nixpkgs-small,
+      # nixpkgs-small,
       home-manager,
       plasma-manager,
       nur,
