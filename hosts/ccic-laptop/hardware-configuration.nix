@@ -27,13 +27,13 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/b6c84fbc-e1e1-4d4c-a803-dc1962a8d6d5";
     fsType = "btrfs";
-    options = [ "compress=zstd" ];
+    options = config.fsOptions ++ [ "compress=zstd" ];
   };
 
   fileSystems."/home" = {
     device = "/dev/disk/by-uuid/b6c84fbc-e1e1-4d4c-a803-dc1962a8d6d5";
     fsType = "btrfs";
-    options = [
+    options = config.fsOptions ++ [
       "subvol=home"
       "compress=zstd"
     ];
@@ -42,7 +42,7 @@
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/b6c84fbc-e1e1-4d4c-a803-dc1962a8d6d5";
     fsType = "btrfs";
-    options = [
+    options = config.fsOptions ++ [
       "subvol=nix"
       "noatime"
       "compress=zstd"
