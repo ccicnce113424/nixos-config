@@ -7,5 +7,6 @@ extraModules:
     ../modules/bluetooth.nix
     ../modules/tpm.nix
     ../modules/zram.nix
+    ../modules/fs-options.nix
   ] ++ extraModules;
 }
