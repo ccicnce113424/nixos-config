@@ -52,19 +52,19 @@
   fileSystems."/efi" = {
     device = "/dev/disk/by-uuid/B8C7-AB16";
     fsType = "vfat";
-    options = config.efiOptions ++ [
+    options = [
       "fmask=0022"
       "dmask=0022"
-    ];
+    ] ++ config.efiPartOptions;
   };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/18D5-E145";
     fsType = "vfat";
-    options = config.efiOptions ++ [
+    options = [
       "fmask=0022"
       "dmask=0022"
-    ];
+    ] ++ config.efiPartOptions;
   };
 
   swapDevices = [
