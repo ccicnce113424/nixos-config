@@ -45,7 +45,6 @@
     options = [
       "subvol=nix"
       "compress=zstd"
-      "noatime"
     ];
   };
 
@@ -55,7 +54,6 @@
     options = [
       "fmask=0022"
       "dmask=0022"
-      "umask=0077"
     ];
   };
 
@@ -65,7 +63,6 @@
     options = [
       "fmask=0022"
       "dmask=0022"
-      "umask=0077"
     ];
   };
 
