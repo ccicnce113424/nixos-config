@@ -2,8 +2,7 @@ extraModules:
 { ... }:
 {
   imports = [
-    ../modules/locale-time-cn.nix
-    ../modules/vm-pipewire.nix
+    ./vm-guest.nix
     ../modules/vmware-guest.nix
   ] ++ extraModules;
 }
