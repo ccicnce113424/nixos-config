@@ -4,8 +4,8 @@
     type = lib.types.listOf lib.types.str;
     default = [ "lazytime" ];
   };
-  config.fileSystems = {
-    "/efi".options = [ "umask=0077" ];
-    "/boot".options = [ "umask=0077" ];
+  options.efiOptions = lib.mkOption {
+    type = lib.types.listOf lib.types.str;
+    default = [ "umask=0077" ];
   };
 }
