@@ -44,6 +44,7 @@
     fsType = "btrfs";
     options = [
       "subvol=nix"
+      "noatime"
       "compress=zstd"
     ];
   };
