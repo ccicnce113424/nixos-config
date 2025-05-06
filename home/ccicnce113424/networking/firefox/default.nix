@@ -32,6 +32,7 @@
           header-editor
           darkreader
           indie-wiki-buddy
+          ruffle_rs
 
           tree-style-tab
           tst-indent-line
