@@ -5,10 +5,6 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     # nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
-    lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0-3.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,7 +34,6 @@
     inputs@{
       nixpkgs,
       # nixpkgs-small,
-      lix-module,
       home-manager,
       plasma-manager,
       nur,
@@ -156,7 +151,6 @@
           system = host.system;
           modules =
             [
-              lix-module.nixosModules.default
               nur.modules.nixos.default
               daeuniverse.nixosModules.daed
               nix-flatpak.nixosModules.nix-flatpak
