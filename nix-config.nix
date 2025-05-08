@@ -44,7 +44,7 @@ in
     type = lib.types.attrs;
     default = {
       # Commands to add
-      switch = "sudo nixos-rebuild --fast --install-bootloader switch";
+      switch = "systemd-inhibit sudo nixos-rebuild --fast --install-bootloader switch";
       cswitch = "switch --option substituters \"https://cache.nixos.org\"";
       gc = "nix-collect-garbage --delete-old";
       up = ''
