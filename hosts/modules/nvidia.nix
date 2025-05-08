@@ -27,7 +27,6 @@
   };
 
   boot.kernelParams = [
-    "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
     "nvidia.NVreg_EnablePCIERelaxedOrderingMode=1"
     "nvidia.NVreg_EnableStreamMemOPs=1"
