@@ -46,7 +46,7 @@ in
       # Commands to add
       switch = "systemd-inhibit sudo nixos-rebuild --fast --install-bootloader switch";
       cswitch = "switch --option substituters \"https://cache.nixos.org\"";
-      gc = "nix-collect-garbage --delete-old";
+      gc = "nix store gc";
       up = ''
         cd /etc/nixos
         git pull
