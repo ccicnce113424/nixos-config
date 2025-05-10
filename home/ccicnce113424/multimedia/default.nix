@@ -17,6 +17,7 @@
   services.easyeffects.enable = true;
 
   imports = [
+    ./fluidsynth.nix
     ./mpd.nix
     ./mpv
   ];
