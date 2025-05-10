@@ -43,7 +43,7 @@
     pv
     tree
 
-    (pkgs.runCommand "7z-alias" { buildInputs = [ pkgs._7zz ]; } ''
+    (pkgs.runCommand "7z-alias" { buildInputs = with pkgs; [ _7zz ]; } ''
       mkdir -p $out/bin
       ln -s ${pkgs._7zz}/bin/7zz $out/bin/7z
     '')

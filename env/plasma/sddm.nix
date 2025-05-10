@@ -6,5 +6,5 @@
     wayland.compositor = "kwin";
   };
 
-  environment.systemPackages = [ pkgs.kdePackages.sddm-kcm ];
+  environment.systemPackages = with pkgs; [ kdePackages.sddm-kcm ];
 }

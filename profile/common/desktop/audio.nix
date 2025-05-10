@@ -20,5 +20,5 @@
       alsa.support32Bit = true;
     };
 
-  environment.systemPackages = [ pkgs.alsa-utils ];
+  environment.systemPackages = with pkgs; [ alsa-utils ];
 }
