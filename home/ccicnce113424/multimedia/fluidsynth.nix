@@ -5,4 +5,5 @@
     soundFont = "${pkgs.soundfont-generaluser}/share/soundfonts/GeneralUser-GS.sf2";
     soundService = "pipewire-pulse";
   };
+  home.packages = with pkgs; [ fluidsynth ];
 }
