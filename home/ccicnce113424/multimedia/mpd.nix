@@ -1,8 +1,12 @@
-{ ... }:
+{ config, ... }:
 {
   services.mpd = {
     enable = true;
     extraConfig = ''
+      decoder {
+        plugin        "fluidsynth"
+        soundfont     "${config.services.fluidsynth.soundFont}"
+      }
       audio_output {
         type          "pipewire"
         name          "PipeWire Output"
