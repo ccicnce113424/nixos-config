@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   services.fluidsynth = {
     enable = true;
@@ -6,4 +6,5 @@
     soundService = "pipewire-pulse";
   };
   home.packages = with pkgs; [ fluidsynth ];
+  home.file.".local/share/soundfonts/default.sf2".source = config.services.fluidsynth.soundFont;
 }
