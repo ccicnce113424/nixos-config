@@ -17,7 +17,7 @@
   services.easyeffects.enable = true;
 
   imports = [
-    ./mpd
+    ./mpd.nix
     ./mpv
   ];
 }
