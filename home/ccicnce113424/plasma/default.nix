@@ -1,10 +1,18 @@
 { ... }:
 {
-  programs.plasma.enable = true;
-  # programs.plasma.overrideConfig = true;
-  programs.plasma.workspace.theme = "breeze-dark";
-  programs.plasma.workspace.colorScheme = "BreezeDark";
-  programs.plasma.panels = [ { floating = true; } ];
-  programs.plasma.input.keyboard.numlockOnStartup = "on";
+  programs.plasma = {
+    enable = true;
+    overrideConfig = true;
+    workspace = {
+      theme = "breeze-dark";
+      colorScheme = "BreezeDark";
+    };
+    panels = [ { floating = true; } ];
+    input.keyboard.numlockOnStartup = "on";
+
+    # BALOO IS A COMPLETE GARBAGE
+    configFile.baloofilerc."Basic Settings".Indexing-Enabled.value = false;
+  };
+
   imports = [ ./power.nix ];
 }

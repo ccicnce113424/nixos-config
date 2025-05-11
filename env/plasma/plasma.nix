@@ -1,8 +1,8 @@
 { pkgs, ... }:
 {
   services.desktopManager.plasma6.enable = true;
+  programs.kdeconnect.enable = true;
   environment.systemPackages = with pkgs; [
-    kdePackages.kdeconnect-kde
     dmidecode
     kdePackages.plasma-disks
     kdePackages.krdc
@@ -15,7 +15,6 @@
     kdePackages.kclock
     kdePackages.kweather
     kdePackages.filelight
-    kdePackages.kfind
     kdePackages.wallpaper-engine-plugin
 
     nur.repos.xddxdd.vk-hdr-layer
@@ -40,18 +39,6 @@
     allowedUDPPorts = [
       3389
       5900
-    ];
-    allowedTCPPortRanges = [
-      {
-        from = 1714;
-        to = 1764;
-      }
-    ];
-    allowedUDPPortRanges = [
-      {
-        from = 1714;
-        to = 1764;
-      }
     ];
   };
   # environment.sessionVariables = {
