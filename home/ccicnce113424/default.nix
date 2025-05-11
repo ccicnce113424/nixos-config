@@ -1,4 +1,4 @@
-{ sysCfg, ... }:
+{ osConfig, ... }:
 {
   imports = [
     ./development
@@ -14,7 +14,7 @@
   # Avoid Chinese in the directory names
   xdg.userDirs.enable = true;
 
-  home.stateVersion = sysCfg.system.stateVersion;
+  home.stateVersion = osConfig.system.stateVersion;
 
   programs.home-manager.enable = true;
 }

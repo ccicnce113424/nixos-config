@@ -133,12 +133,6 @@
                 users = nixpkgs.lib.genAttrs specialArgs.host.users (username: import ./home/${username});
               };
             }
-            (
-              { config, ... }:
-              {
-                home-manager.extraSpecialArgs.sysCfg = config;
-              }
-            )
           ];
     in
     {
