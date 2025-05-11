@@ -3,8 +3,20 @@
   programs.plasma = {
     enable = true;
     overrideConfig = true;
-    input.keyboard.numlockOnStartup = "on";
+
     panels = [ { floating = true; } ];
+
+    input = {
+      keyboard.numlockOnStartup = "on";
+      touchpads = [
+        {
+          vendorId = "04f3";
+          productId = "3202";
+          name = "ELAN06FA:01 04F3:3202 Touchpad";
+          naturalScroll = true;
+        }
+      ];
+    };
 
     configFile = {
       kwinrc.Wayland.InputMethod = "/run/current-system/sw/share/applications/org.fcitx.Fcitx5.desktop";
@@ -14,15 +26,6 @@
 
       # BALOO IS COMPLETELY GARBAGE
       baloofilerc."Basic Settings".Indexing-Enabled.value = false;
-
-      input.touchpads = [
-        {
-          vendorId = "04f3";
-          productId = "3202";
-          name = "ELAN06FA:01 04F3:3202 Touchpad";
-          naturalScroll = true;
-        }
-      ];
     };
   };
 
