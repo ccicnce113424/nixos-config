@@ -5,6 +5,7 @@
     overrideConfig = true;
 
     panels = [ { floating = true; } ];
+    workspace.colorScheme = "BreezeDark";
 
     input = {
       keyboard.numlockOnStartup = "on";
