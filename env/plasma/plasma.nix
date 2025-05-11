@@ -15,6 +15,7 @@
     kdePackages.kclock
     kdePackages.kweather
     kdePackages.filelight
+    kdePackages.kfind
     kdePackages.wallpaper-engine-plugin
 
     nur.repos.xddxdd.vk-hdr-layer
