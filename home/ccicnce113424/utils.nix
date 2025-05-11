@@ -1,7 +1,7 @@
 {
   pkgs,
   lib,
-  sysCfg,
+  osConfig,
   ...
 }:
 {
@@ -28,5 +28,5 @@
     exec = name;
     terminal = true;
     comment = "run \"${name}\"";
-  }) sysCfg.cmdAliases;
+  }) osConfig.cmdAliases;
 }
