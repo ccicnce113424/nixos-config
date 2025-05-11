@@ -1,66 +1,36 @@
 { ... }:
 {
-  programs.plasma.powerdevil = {
-    batteryLevels.criticalAction = "sleep";
-    general.pausePlayersOnSuspend = true;
+  programs.plasma.powerdevil =
+    let
+      commons = {
+        autoSuspend.action = "sleep";
+        dimDisplay.enable = true;
+        inhibitLidActionWhenExternalMonitorConnected = true;
+        powerButtonAction = "shutDown";
+        turnOffDisplay.idleTimeoutWhenLocked = 60;
+        whenLaptopLidClosed = "turnOffScreen";
+        whenSleepingEnter = "standby";
+      };
+    in
+    {
+      batteryLevels.criticalAction = "sleep";
+      general.pausePlayersOnSuspend = true;
 
-    AC = {
-      autoSuspend = {
-        action = "sleep";
-        idleTimeout = 600;
+      AC = commons // {
+        autoSuspend.idleTimeout = 600;
+        dimDisplay.idleTimeout = 180;
+        turnOffDisplay.idleTimeout = 300;
       };
-      dimDisplay = {
-        enable = true;
-        idleTimeout = 180;
+      battery = commons // {
+        autoSuspend.idleTimeout = 300;
+        dimDisplay.idleTimeout = 60;
+        turnOffDisplay.idleTimeout = 120;
       };
-      inhibitLidActionWhenExternalMonitorConnected = true;
-      powerButtonAction = "shutDown";
-      turnOffDisplay = {
-        idleTimeout = 300;
-        idleTimeoutWhenLocked = 60;
+      lowBattery = commons // {
+        autoSuspend.idleTimeout = 120;
+        dimDisplay.idleTimeout = 30;
+        turnOffDisplay.idleTimeout = 60;
+        powerProfile = "powerSaving";
       };
-      whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "standby";
     };
-
-    battery = {
-      autoSuspend = {
-        action = "sleep";
-        idleTimeout = 300;
-      };
-      dimDisplay = {
-        enable = true;
-        idleTimeout = 60;
-      };
-      inhibitLidActionWhenExternalMonitorConnected = true;
-      powerButtonAction = "shutDown";
-      turnOffDisplay = {
-        idleTimeout = 120;
-        idleTimeoutWhenLocked = 60;
-      };
-      whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "standby";
-    };
-
-    lowBattery = {
-      autoSuspend = {
-        action = "sleep";
-        idleTimeout = 120;
-      };
-      dimDisplay = {
-        enable = true;
-        idleTimeout = 30;
-      };
-      inhibitLidActionWhenExternalMonitorConnected = true;
-      powerButtonAction = "shutDown";
-      turnOffDisplay = {
-        idleTimeout = 60;
-        idleTimeoutWhenLocked = 60;
-      };
-      whenLaptopLidClosed = "turnOffScreen";
-      whenSleepingEnter = "standby";
-
-      powerProfile = "powerSaving";
-    };
-  };
 }
