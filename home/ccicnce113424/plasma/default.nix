@@ -3,15 +3,18 @@
   programs.plasma = {
     enable = true;
     overrideConfig = true;
-    workspace = {
-      theme = "breeze-dark";
-      colorScheme = "BreezeDark";
-    };
-    panels = [ { floating = true; } ];
     input.keyboard.numlockOnStartup = "on";
+    panels = [ { floating = true; } ];
 
-    # BALOO IS A COMPLETE GARBAGE
-    configFile.baloofilerc."Basic Settings".Indexing-Enabled.value = false;
+    configFile = {
+      kwinrc.Wayland.InputMethod = "/run/current-system/sw/share/applications/org.fcitx.Fcitx5.desktop";
+      kdeglobals.KDE.LookAndFeelPackage = "org.kde.breezedark.desktop";
+      ksmserverrc.General.loginMode = "restoreSavedSession";
+      dolphinrc.IconsMode.IconSize = 64;
+
+      # BALOO IS A COMPLETE GARBAGE
+      baloofilerc."Basic Settings".Indexing-Enabled.value = false;
+    };
   };
 
   imports = [ ./power.nix ];
