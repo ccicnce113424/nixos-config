@@ -12,8 +12,17 @@
       ksmserverrc.General.loginMode = "restoreSavedSession";
       dolphinrc.IconsMode.IconSize = 64;
 
-      # BALOO IS A COMPLETE GARBAGE
+      # BALOO IS COMPLETELY GARBAGE
       baloofilerc."Basic Settings".Indexing-Enabled.value = false;
+
+      input.touchpads = [
+        {
+          vendorId = "04f3";
+          productId = "3202";
+          name = "ELAN06FA:01 04F3:3202 Touchpad";
+          naturalScroll = true;
+        }
+      ];
     };
   };
 
