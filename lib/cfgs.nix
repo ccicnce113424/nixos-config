@@ -1,4 +1,7 @@
-inputs: with inputs (inputs.nixpkgs); rec {
+inputs:
+with inputs;
+with (inputs.nixpkgs);
+rec {
 
   # Configuration of system
   systemCfgs = system: if null == system then [ ] else [ ../system/${system} ];
