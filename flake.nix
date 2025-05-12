@@ -4,7 +4,6 @@
   # Sources
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    # nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -43,95 +42,9 @@
     let
       # List of hosts
       hosts = import ./hosts.nix;
-
-      # Configuration of system
-      systemModules = system: if null == system then [ ] else [ ./system/${system} ];
-
-      # Configuration of profile
-      profileModules =
-        system: profile:
-        if null == system || null == profile then [ ] else [ ./profile/${system}/${profile} ];
-
-      envModules = env: if null == env then [ ] else map (env: ./env/${env}) env;
-
-      # Configuration of host
-      hostModules =
-        hostname:
-        if "livecd" == hostname then
-          [ ]
-        else
-          [
-            (
-              { ... }:
-              {
-                networking.hostName = hostname;
-              }
-            )
-            ./hosts/${hostname}
-          ];
-
-      # Configuration of users
-      userModules =
-        users:
-        if null == users then
-          [ ]
-        else
-          [
-            (
-              { ... }:
-              {
-                users.users = nixpkgs.lib.genAttrs users (username: {
-                  home = "/home/${username}";
-                });
-              }
-            )
-          ]
-          ++ map (username: ./users/${username}) users;
-
-      # Configuration of Home Manager
-      homeManagerModules =
-        specialArgs:
-        if null == specialArgs.host.users then
-          [ ]
-        else
-          [
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = specialArgs;
-                backupFileExtension = "backup";
-                sharedModules =
-                  [ nix-flatpak.homeManagerModules.nix-flatpak ]
-                  ++ nixpkgs.lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
-                users = nixpkgs.lib.genAttrs specialArgs.host.users (username: import ./home/${username});
-              };
-            }
-          ];
+      cfgs = import ./lib/cfgs.nix inputs;
     in
     {
-      nixosConfigurations = builtins.mapAttrs (
-        name: host:
-        nixpkgs.lib.nixosSystem rec {
-          specialArgs = {
-            inherit inputs host;
-          };
-          system = host.system;
-          modules =
-            [
-              nur.modules.nixos.default
-              daeuniverse.nixosModules.daed
-              nix-flatpak.nixosModules.nix-flatpak
-              ./modules/nixos-treaks.nix
-            ]
-            ++ systemModules host.system
-            ++ profileModules host.system host.profile
-            ++ envModules host.env
-            ++ hostModules name
-            ++ userModules host.users
-            ++ homeManagerModules specialArgs;
-        }
-      ) hosts;
+      nixosConfigurations = cfgs.genOSConfig hosts;
     };
 }
