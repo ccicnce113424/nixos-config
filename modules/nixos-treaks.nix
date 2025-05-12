@@ -2,7 +2,6 @@
   pkgs,
   lib,
   config,
-  # inputs,
   ...
 }:
 let
@@ -32,14 +31,6 @@ let
   };
 in
 {
-  # options.smallPkgs = lib.mkOption {
-  #   type = lib.types.pkgs;
-  #   default = import inputs.nixpkgs-small {
-  #     system = config.nixpkgs.system;
-  #     config = config.nixpkgs.config;
-  #     overlays = config.nixpkgs.overlays;
-  #   };
-  # };
   options.cmdAliases = lib.mkOption {
     type = lib.types.attrs;
     default = {
