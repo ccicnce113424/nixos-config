@@ -1,4 +1,4 @@
-{
+rec {
   description = "My NixOS configuration";
 
   # Sources
@@ -42,7 +42,7 @@
     let
       # List of hosts
       hosts = import ./hosts.nix;
-      cfgs = import ./lib/cfgs.nix inputs;
+      cfgs = import ./lib/cfgs.nix inputs nixConfig;
     in
     {
       nixosConfigurations = cfgs.genOSConfig hosts;

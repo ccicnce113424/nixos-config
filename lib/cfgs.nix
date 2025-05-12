@@ -1,4 +1,4 @@
-inputs:
+inputs: nixConfig:
 with inputs;
 with (inputs.nixpkgs);
 rec {
@@ -75,7 +75,7 @@ rec {
       name: host:
       lib.nixosSystem rec {
         specialArgs = {
-          inherit inputs host;
+          inherit inputs host nixConfig;
         };
         system = host.system;
         modules =
