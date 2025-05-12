@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   check:
-    name: Check Flake
+    name: Check
     runs-on: ubuntu-latest
 
     steps:
