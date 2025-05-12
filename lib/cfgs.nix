@@ -62,7 +62,10 @@ rec {
             extraSpecialArgs = specialArgs;
             backupFileExtension = "backup";
             sharedModules =
-              [ nix-flatpak.homeManagerModules.nix-flatpak ]
+              [
+                nix-flatpak.homeManagerModules.nix-flatpak
+                ../home/common
+              ]
               ++ lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
             users = lib.genAttrs specialArgs.host.users (username: import ../home/${username});
           };
