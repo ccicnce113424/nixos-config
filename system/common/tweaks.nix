@@ -4,6 +4,7 @@
 
   environment.systemPackages = with pkgs; [
     uutils-coreutils-noprefix
+    coreutils-prefixed
     bcachefs-tools
   ];
 
