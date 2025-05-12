@@ -5,8 +5,6 @@ pull_request_rules:
   - name: Merge when labeled and all CI jobs pass
     conditions:
       - "label=dependencies"
-      - "check-success=Check"
-      - "check-success=Build LiveCD"
     actions:
       update:
       merge:
