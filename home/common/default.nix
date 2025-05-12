@@ -1,0 +1,4 @@
+{ nixConfig, ... }:
+{
+  nix.settings = nixConfig;
+}
