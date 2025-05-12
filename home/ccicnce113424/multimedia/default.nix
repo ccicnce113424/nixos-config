@@ -12,6 +12,12 @@
     nur.repos.xddxdd.ncmdump-rs
 
     # bilibili
+
+    (pkgs.av1an.override {
+      withSvtav1 = true;
+      withRav1e = true;
+      withVmaf = true;
+    })
   ];
 
   services.easyeffects.enable = true;
