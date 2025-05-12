@@ -1,4 +1,4 @@
-name: Check and build LiveCD
+name: check-and-build-livecd
 
 on:
   push:
