@@ -2,15 +2,18 @@
   pkgs,
   lib,
   config,
+  nixConfig,
   ...
 }:
 let
-  nix-config = {
+  cfg = {
     environment.systemPackages =
       with pkgs;
       [ git ] ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
 
     nixpkgs.config.allowUnfree = true;
+
+    nix.settings = nixConfig;
 
     system.stateVersion = "24.05";
   };
@@ -43,5 +46,5 @@ in
     default = false;
   };
 
-  config = nix-config;
+  config = cfg;
 }
