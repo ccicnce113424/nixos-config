@@ -11,7 +11,12 @@ let
       with pkgs;
       [ git ] ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
 
-    nixpkgs.config.allowUnfree = true;
+    nixpkgs.config = {
+      allowUnfree = true;
+      permittedInsecurePackages = [
+        "olm-3.2.16"
+      ];
+    };
 
     nix.settings = nixConfig;
 
