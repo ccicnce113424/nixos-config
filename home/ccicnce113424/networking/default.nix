@@ -8,7 +8,7 @@
     tor-browser
     qbittorrent-enhanced
     motrix
-    kdePackages.neochat
+    nheko
   ];
 
   imports = [ ./firefox ];
