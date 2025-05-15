@@ -33,9 +33,8 @@
     MOZ_DISABLE_RDD_SANDBOX = "1";
   };
 
-  programs.chromium.enable = true;
   environment.systemPackages = [
-    (pkgs.chromium.override {
+    (pkgs.microsoft-edge.override {
       commandLineArgs = [
         "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
       ];
