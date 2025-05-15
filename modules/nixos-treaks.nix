@@ -32,12 +32,14 @@ in
       cswitch = "switch --option substituters \"https://cache.nixos.org\"";
       gc = "nix store gc";
       up = ''
+        set -e
         cd /etc/nixos
         git pull
         switch
       '';
       clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system";
       clr = ''
+        set -e
         clean
         switch
         gc
