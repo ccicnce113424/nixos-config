@@ -87,6 +87,7 @@ rec {
             daeuniverse.nixosModules.daed
             nix-flatpak.nixosModules.nix-flatpak
             ../modules/nixos-treaks.nix
+            ../modules/overlay.nix
           ]
           ++ systemCfgs host.system
           ++ profileCfgs host.system host.profile
