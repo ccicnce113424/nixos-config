@@ -10,11 +10,13 @@ let
       "wine"
     ];
     users = [ "ccicnce113424" ];
+    thin = false;
   };
   thin = {
     system = "x86_64-linux";
     env = null;
     users = null;
+    thin = true;
   };
 in
 {
@@ -24,9 +26,9 @@ in
     profile = "livecd";
   };
   vbox-test = thin // {
-    profile = "desktop";
+    profile = "vm-test";
   };
   vmware-test = thin // {
-    profile = "desktop";
+    profile = "vm-test";
   };
 }
