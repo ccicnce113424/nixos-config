@@ -1,8 +1,8 @@
 { ... }:
 {
   imports = [
-    ../modules/locale-time-cn.nix
-    ../modules/vm-pipewire.nix
-    ../modules/fs-options.nix
+    ../modules/common.nix
+    ../modules/vm.nix
   ];
+  hostCfg.vm.enable = true;
 }

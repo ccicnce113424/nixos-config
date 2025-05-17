@@ -1,6 +1,11 @@
-import ../templates/desktop.nix [
-  ../modules/nvidia.nix
-  # ../modules/nouveau.nix
-  ../modules/icpu.nix
-  ./hardware-configuration.nix
-]
+{ ... }:
+{
+  imports = [
+    ../templates/desktop.nix
+    ./hardware-configuration.nix
+  ];
+  hostCfg = {
+    cpu = "intel";
+    gpu.nvidia = true;
+  };
+}

@@ -67,14 +67,6 @@
     portal.xdgOpenUsePortal = true;
   };
 
-  services.printing = {
-    enable = true;
-    cups-pdf = {
-      enable = true;
-      instances.PDF.settings.Out = "\${HOME}/cups-pdf";
-    };
-  };
-
   programs.ssh.startAgent = true;
   services.openssh = {
     enable = true;
