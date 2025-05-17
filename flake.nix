@@ -24,7 +24,7 @@ rec {
     };
     daeuniverse = {
       url = "github:daeuniverse/flake.nix";
-      # inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs."flake-parts".follows = "flake-parts";
     };
     nix-gaming = {
