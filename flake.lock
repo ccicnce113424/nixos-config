@@ -76,6 +76,30 @@
         "type": "github"
       }
     },
+    "nix-gaming": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1747468700,
+        "narHash": "sha256-f9tOdxX/GWUrwaYIX11QLVuwPHCYcwKLuf3YWkZF7Ec=",
+        "owner": "ccicnce113424",
+        "repo": "nix-gaming",
+        "rev": "95a118e94ab602119d1a0e0870755124251a249d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ccicnce113424",
+        "ref": "dxvk-nvapi-vkreflex-layer",
+        "repo": "nix-gaming",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1747327360,
@@ -160,6 +184,7 @@
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
         "nix-flatpak": "nix-flatpak",
+        "nix-gaming": "nix-gaming",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
         "plasma-manager": "plasma-manager"
