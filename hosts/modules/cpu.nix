@@ -4,31 +4,27 @@
   ...
 }:
 let
-  cfg = config.hostCfg.cpu;
-in
-{
-  options.hostCfg.cpu = lib.mkOption {
-    type = lib.types.nullOr (
-      lib.types.enum [
-        "intel"
-        "amd"
-      ]
-    );
-    default = null;
-  };
-  config = lib.mkMerge [
-    {
-      hardware.cpu.x86.msr.enable = true;
-    }
-    (lib.mkIf ("intel" == cfg) {
+  cpuCfg = {
+    intel = {
       boot.kernelParams = [ "intel_iommu=on" ];
       hardware.cpu.intel.updateMicrocode = true;
-    })
-    (lib.mkIf ("amd" == cfg) {
+    };
+    amd = {
       hardware.cpu.amd = {
         updateMicrocode = true;
         ryzen-smu.enable = true;
       };
-    })
-  ];
+    };
+  };
+  cfg = config.hostCfg.cpu;
+in
+{
+  options.hostCfg.cpu = builtins.mapAttrs (
+    _: _:
+    lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+    }
+  ) cpuCfg;
+  config = lib.mkMerge (lib.mapAttrsToList (type: c: (lib.mkIf cfg.${type} c)) cpuCfg);
 }

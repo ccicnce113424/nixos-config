@@ -5,18 +5,8 @@
   ...
 }:
 let
-  gpu = config.hostCfg.gpu;
-in
-{
-  options.hostCfg.gpu = lib.genAttrs [ "amdgpu" "nvidia" "nouveau" ] (
-    _:
-    lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-    }
-  );
-  config = lib.mkMerge [
-    (lib.mkIf gpu.amdgpu {
+  gpuCfg = {
+    amdgpu = {
       services.xserver.videoDrivers = [ "amdgpu" ];
       hardware.amdgpu = {
         opencl.enable = true;
@@ -25,9 +15,8 @@ in
         AMD_DEBUG = "useaco";
       };
       nixpkgs.config.rocmSupport = true;
-    })
-
-    (lib.mkIf gpu.nvidia {
+    };
+    nvidia = {
       services.xserver.videoDrivers = [ "nvidia" ];
       hardware.nvidia = {
         open = true;
@@ -48,9 +37,8 @@ in
       hardware.nvidia-container-toolkit.enable = true;
 
       nixpkgs.config.cudaSupport = true;
-    })
-
-    (lib.mkIf gpu.nouveau {
+    };
+    nouveau = {
       services.xserver.videoDrivers = [ "nouveau" ];
       boot.kernelParams = [
         "nouveau.config=NvGspRm=1"
@@ -63,6 +51,17 @@ in
         RUSTICL_ENABLE = "nouveau";
         RUSTICL_FEATURES = "fp16,fp64";
       };
-    })
-  ];
+    };
+  };
+  cfg = config.hostCfg.gpu;
+in
+{
+  options.hostCfg.gpu = builtins.mapAttrs (
+    _: _:
+    lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+    }
+  ) gpuCfg;
+  config = lib.mkMerge (lib.mapAttrsToList (type: c: (lib.mkIf cfg.${type} c)) gpuCfg);
 }
