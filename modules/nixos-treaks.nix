@@ -2,7 +2,7 @@
   pkgs,
   lib,
   config,
-  nixConfig,
+  nixCfg,
   ...
 }:
 let
@@ -18,7 +18,7 @@ let
       ];
     };
 
-    nix.settings = nixConfig;
+    nix.settings = nixCfg;
 
     system.stateVersion = "24.05";
   };
