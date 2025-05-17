@@ -1,5 +1,5 @@
 { ... }:
 {
   imports = [ ../templates/vm-guest.nix ];
-  hostCfg.vm.type = "vmware";
+  hostCfg.vm.vmware = true;
 }

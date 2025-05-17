@@ -5,7 +5,7 @@
     ./hardware-configuration.nix
   ];
   hostCfg = {
-    cpu = "amd";
+    cpu.amd = true;
     gpu.amdgpu = true;
   };
 }

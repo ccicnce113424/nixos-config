@@ -5,7 +5,7 @@
     ./hardware-configuration.nix
   ];
   hostCfg = {
-    cpu = "intel";
+    cpu.intel = true;
     gpu.nvidia = true;
   };
 }
