@@ -1,5 +1,11 @@
-import ../templates/desktop.nix [
-  ../modules/amdgpu.nix
-  ../modules/ryzen.nix
-  ./hardware-configuration.nix
-]
+{ ... }:
+{
+  imports = [
+    ../templates/desktop.nix
+    ./hardware-configuration.nix
+  ];
+  hostCfg = {
+    cpu = "amd";
+    gpu.amdgpu = true;
+  };
+}
