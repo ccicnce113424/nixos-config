@@ -27,6 +27,11 @@ rec {
       inputs.nixpkgs.follows = "nixpkgs";
       inputs."flake-parts".follows = "flake-parts";
     };
+    nix-gaming = {
+      url = "github:ccicnce113424/nix-gaming/dxvk-nvapi-vkreflex-layer";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs."flake-parts".follows = "flake-parts";
+    };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
@@ -37,6 +42,7 @@ rec {
       plasma-manager,
       nur,
       daeuniverse,
+      nix-gaming,
       nix-flatpak,
       ...
     }:
