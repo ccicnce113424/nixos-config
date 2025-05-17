@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 {
@@ -42,5 +43,7 @@
 
     hmcl
     graalvmPackages.graalvm-ce
+
+    inputs.nix-gaming.packages.${pkgs.hostPlatform.system}.dxvk-nvapi-vkreflex-layer
   ];
 }
