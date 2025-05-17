@@ -31,22 +31,11 @@
 
   environment.systemPackages = with pkgs; [
     smartmontools
-    python3Full
-    zip
-    unzipNLS
-    _7zz
-    unar
-    libarchive
-    progress
+
     podman-compose
     xorg.xwininfo
-    pv
-    tree
 
-    (pkgs.runCommand "7z-alias" { buildInputs = with pkgs; [ _7zz ]; } ''
-      mkdir -p $out/bin
-      ln -s ${pkgs._7zz}/bin/7zz $out/bin/7z
-    '')
+    linux-wifi-hotspot
   ];
   services.smartd.enable = true;
 
@@ -59,17 +48,32 @@
 
   virtualisation.waydroid.enable = true;
 
-  programs.zsh.enable = true;
-  users.defaultUserShell = pkgs.zsh;
-
   xdg = {
     terminal-exec.enable = true;
-    portal.xdgOpenUsePortal = true;
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+    };
   };
 
-  programs.ssh.startAgent = true;
-  services.openssh = {
+  services.samba = {
     enable = true;
     openFirewall = true;
+    nsswins = true;
+  };
+
+  services.samba-wsdd = {
+    enable = true;
+    openFirewall = true;
+  };
+
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+    publish = {
+      enable = true;
+      userServices = true;
+    };
   };
 }
