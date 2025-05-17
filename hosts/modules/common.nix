@@ -1,18 +1,8 @@
 { lib, config, ... }:
 {
-  options = {
-    fsOptions = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ "lazytime" ];
-    };
-    efiPartOptions = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ "umask=0077" ];
-    };
-    hostCfg.locale = lib.mkOption {
-      type = lib.types.str;
-      default = "CN";
-    };
+  options.hostCfg.locale = lib.mkOption {
+    type = lib.types.str;
+    default = "CN";
   };
   config = lib.mkMerge [
     {
