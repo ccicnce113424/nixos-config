@@ -27,25 +27,30 @@
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/3b266665-e6cf-4c94-a15e-771dfdaa3b0d";
     fsType = "btrfs";
-    options = config.fsOptions ++ [ "compress=zstd" ];
+    options = [
+      "compress=zstd"
+      "lazytime"
+    ];
   };
 
   fileSystems."/home" = {
     device = "/dev/disk/by-uuid/3b266665-e6cf-4c94-a15e-771dfdaa3b0d";
     fsType = "btrfs";
-    options = config.fsOptions ++ [
+    options = [
       "subvol=home"
       "compress=zstd"
+      "lazytime"
     ];
   };
 
   fileSystems."/nix" = {
     device = "/dev/disk/by-uuid/3b266665-e6cf-4c94-a15e-771dfdaa3b0d";
     fsType = "btrfs";
-    options = config.fsOptions ++ [
+    options = [
       "subvol=nix"
       "noatime"
       "compress=zstd"
+      "lazytime"
     ];
   };
 
@@ -55,7 +60,8 @@
     options = [
       "fmask=0022"
       "dmask=0022"
-    ] ++ config.efiPartOptions;
+      "umask=0077"
+    ];
   };
 
   fileSystems."/boot" = {
@@ -64,7 +70,8 @@
     options = [
       "fmask=0022"
       "dmask=0022"
-    ] ++ config.efiPartOptions;
+      "umask=0077"
+    ];
   };
 
   swapDevices = [ ];
