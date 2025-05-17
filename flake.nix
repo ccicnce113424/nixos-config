@@ -51,8 +51,9 @@ rec {
       hosts = import ./hosts.nix;
       cfgs = import ./lib/cfgs.nix inputs nixConfig;
     in
-    {
+    rec {
       nixosConfigurations = cfgs.genOSConfig hosts;
+      buildLive = nixosConfigurations.livecd.config.system.build;
     };
 
   nixConfig = {
