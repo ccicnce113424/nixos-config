@@ -4,6 +4,7 @@
     ../modules/common.nix
     ../modules/cpu.nix
     ../modules/gpu.nix
+    ../modules/biometric.nix
   ];
 
   services.printing = {
