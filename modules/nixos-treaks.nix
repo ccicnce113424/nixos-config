@@ -20,7 +20,7 @@ let
 
     nix.settings = nixCfg;
 
-    system.stateVersion = "24.05";
+    system.stateVersion = lib.trivial.release;
   };
 in
 {
