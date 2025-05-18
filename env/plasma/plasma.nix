@@ -18,7 +18,7 @@
     kdePackages.kfind
     kdePackages.wallpaper-engine-plugin
 
-    (nur.repos.xddxdd.vk-hdr-layer.override { vulkan-headers = pkgs.old-vulkan-headers; })
+    vk-hdr-layer
   ];
 
   security.polkit.extraConfig = ''
