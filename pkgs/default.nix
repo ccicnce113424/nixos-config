@@ -1,4 +1,5 @@
 { pkgs }:
+with builtins;
 rec {
   old-vulkan-headers = pkgs.vulkan-headers.overrideAttrs (
     _: prev: rec {
@@ -16,9 +17,7 @@ rec {
   };
   wpsoffice-365 = pkgs.nur.repos.novel2430.wpsoffice-365.overrideAttrs (old: {
     src = pkgs.fetchurl {
-      url = "https://wps-linux-365.wpscdn.cn/wps/download/ep/Linux365/${
-        builtins.substring (builtins.stringLength old.version - 5) 5 old.version
-      }/wps-office_${old.version}.AK.preload.sw_amd64.deb";
+      url = "https://wps-linux-365.wpscdn.cn/wps/download/ep/Linux365/${last (splitVersion old.version)}/wps-office_${old.version}.AK.preload.sw_amd64.deb";
       hash = "sha256-N+2n6i7RCoKjAQ6Pds/dpfupnKR624RUiGj2cQQFpHk=";
       curlOptsList = [ "-ehttps://365.wps.cn" ];
     };
