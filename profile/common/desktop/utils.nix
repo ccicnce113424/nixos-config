@@ -31,6 +31,7 @@
 
   environment.systemPackages = with pkgs; [
     smartmontools
+    resources
 
     podman-compose
     xorg.xwininfo
