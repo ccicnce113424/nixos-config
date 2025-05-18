@@ -7,6 +7,5 @@
   hostCfg = {
     cpu.amd = true;
     gpu.amdgpu = true;
-    biometric.howdy = true;
   };
 }
