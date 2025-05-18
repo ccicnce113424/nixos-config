@@ -1,5 +1,6 @@
 { pkgs }:
 with builtins;
+with (pkgs.lib);
 rec {
   old-vulkan-headers = pkgs.vulkan-headers.overrideAttrs (
     _: prev: rec {
