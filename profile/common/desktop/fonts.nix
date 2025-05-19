@@ -16,6 +16,7 @@
       noto-fonts-monochrome-emoji
       dejavu_fonts
       maple-mono.NF-CN
+      nerd-fonts.symbols-only
       nur.repos.rewine.ttf-wps-fonts
       nur.repos.rewine.ttf-ms-win10
     ];
@@ -28,6 +29,7 @@
           "Noto Sans"
           "Noto Color Emoji"
           "Noto Emoji"
+          "Symbols Nerd Font"
           "DejaVu Sans"
         ];
         serif = [
@@ -36,6 +38,7 @@
           "Noto Serif"
           "Noto Color Emoji"
           "Noto Emoji"
+          "Symbols Nerd Font"
           "DejaVu Serif"
         ];
         monospace = [
@@ -49,6 +52,7 @@
         emoji = [
           "Noto Color Emoji"
           "Noto Emoji"
+          "Symbols Nerd Font"
           "Noto Sans CJK SC"
           "Noto Sans CJK"
           "Noto Sans"
