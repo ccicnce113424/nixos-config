@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, osConfig, ... }:
 {
   programs.plasma = {
     enable = true;
@@ -17,6 +17,11 @@
           naturalScroll = true;
         }
       ];
+    };
+
+    fonts.fixedWidth = {
+      family = lib.head osConfig.fonts.fontconfig.defaultFonts.monospace;
+      pointSize = 10;
     };
 
     configFile = {
