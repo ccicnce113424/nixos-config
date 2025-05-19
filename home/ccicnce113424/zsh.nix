@@ -9,7 +9,7 @@
         file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
       }
     ];
-    # envExtra = "source $HOME/.zsh/p10k.zsh";
+    envExtra = "source $HOME/.zsh/p10k.zsh";
     autocd = true;
     autosuggestion.enable = true;
     syntaxHighlighting = {
