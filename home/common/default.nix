@@ -1,5 +1,5 @@
-{ nixCfg, ... }:
+{ osConfig, ... }:
 {
-  nix.settings = nixCfg;
+  nix.settings = osConfig.nix.settings;
   home.enableNixpkgsReleaseCheck = false;
 }

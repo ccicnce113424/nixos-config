@@ -2,7 +2,7 @@
   pkgs,
   lib,
   config,
-  nixCfg,
+  nixConfig,
   ...
 }:
 let
@@ -18,7 +18,7 @@ let
       ];
     };
 
-    nix.settings = nixCfg;
+    nix.settings = nixConfig;
 
     system.stateVersion = lib.trivial.release;
   };
