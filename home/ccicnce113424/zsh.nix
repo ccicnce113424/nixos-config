@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   programs.zsh = {
     enable = true;
@@ -8,12 +8,8 @@
         src = pkgs.zsh-powerlevel10k;
         file = "share/zsh-powerlevel10k/powerlevel10k.zsh-theme";
       }
-      {
-        name = "powerlevel10k-config";
-        src = ./p10k-cfg;
-        file = "p10k.zsh";
-      }
     ];
+    envExtra = "source $HOME/.zsh/p10k.zsh";
     autocd = true;
     autosuggestion.enable = true;
     syntaxHighlighting = {
@@ -29,6 +25,8 @@
       ];
     };
   };
+
+  home.file.".zsh/p10k.zsh".source = config.lib.file.mkOutOfStoreSymlink ./p10k.zsh;
 
   programs.autojump = {
     enable = true;
