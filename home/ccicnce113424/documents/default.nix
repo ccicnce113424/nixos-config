@@ -5,6 +5,6 @@
     hunspell
     hunspellDicts.en_US
 
-    wpsoffice-365
+    nur.repos.novel2430.wpsoffice-365
   ];
 }
