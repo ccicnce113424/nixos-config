@@ -1,4 +1,5 @@
 {
+  self,
   inputs,
   lib,
   nixConfig,
@@ -98,8 +99,8 @@ with inputs;
                 nur.modules.nixos.default
                 daeuniverse.nixosModules.daed
                 nix-flatpak.nixosModules.nix-flatpak
-                ../modules/nixos-treaks.nix
-                ../modules/overlay.nix
+                self.nixosModules.nixos-treaks
+                self.nixosModules.overlay
               ]
               ++ systemCfgs host.system
               ++ profileCfgs host.system host.profile
