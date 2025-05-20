@@ -38,6 +38,7 @@ rec {
       inputs."flake-parts".follows = "flake-parts";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+    flake-compat.url = "github:edolstra/flake-compat";
   };
 
   outputs =
