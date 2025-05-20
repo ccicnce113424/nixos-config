@@ -36,17 +36,7 @@ rec {
   };
 
   outputs =
-    inputs@{
-      nixpkgs,
-      home-manager,
-      plasma-manager,
-      flake-parts,
-      nur,
-      daeuniverse,
-      nix-gaming,
-      nix-flatpak,
-      ...
-    }:
+    inputs@{ flake-parts, ... }:
     let
       # List of hosts
       hosts = import ./hosts.nix;
@@ -56,7 +46,11 @@ rec {
       {
         _module.args = { inherit nixConfig; };
         systems = [ "x86_64-linux" ];
-        imports = [ ./lib/gencfg.nix ];
+        imports = [
+          ./lib/gencfg.nix
+          ./modules/flake-module.nix
+          ./pkgs/flake-module.nix
+        ];
         flake = {
           nixosConfigurations = lib'.genOSConfig hosts;
         };
