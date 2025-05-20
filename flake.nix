@@ -40,6 +40,7 @@ rec {
       nixpkgs,
       home-manager,
       plasma-manager,
+      flake-parts,
       nur,
       daeuniverse,
       nix-gaming,
@@ -49,11 +50,18 @@ rec {
     let
       # List of hosts
       hosts = import ./hosts.nix;
-      cfgs = import ./lib/cfgs.nix inputs nixConfig;
     in
-    {
-      nixosConfigurations = cfgs.genOSConfig hosts;
-    };
+    flake-parts.lib.mkFlake { inherit inputs; } (
+      { lib, lib', ... }:
+      {
+        _module.args = { inherit nixConfig; };
+        systems = [ "x86_64-linux" ];
+        imports = [ ./lib/gencfg.nix ];
+        flake = {
+          nixosConfigurations = lib'.genOSConfig hosts;
+        };
+      }
+    );
 
   nixConfig = {
     trusted-users = [ "@wheel" ];
