@@ -33,6 +33,8 @@
           darkreader
           indie-wiki-buddy
           ruffle_rs
+          floccus
+          bitwarden
 
           tree-style-tab
           tst-indent-line
