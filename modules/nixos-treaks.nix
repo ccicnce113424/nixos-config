@@ -9,7 +9,11 @@ let
   cfg = {
     environment.systemPackages =
       with pkgs;
-      [ git ] ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
+      [
+        git
+        ccic-hello
+      ]
+      ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
 
     nixpkgs.config = {
       allowUnfree = true;
