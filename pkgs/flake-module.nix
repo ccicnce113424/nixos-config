@@ -8,6 +8,5 @@
         type = "app";
         program = "${self'.packages.ccic-hello}/bin/ccic-hello";
       };
-      formatter = pkgs.nixfmt-rfc-style;
     };
 }

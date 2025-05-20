@@ -32,11 +32,15 @@ rec {
       inputs.nixpkgs.follows = "nixpkgs";
       inputs."flake-parts".follows = "flake-parts";
     };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
+    inputs@{ flake-parts, treefmt-nix, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       _module.args = { inherit nixConfig; };
       systems = [ "x86_64-linux" ];
@@ -45,6 +49,8 @@ rec {
         ./modules/flake-module.nix
         ./pkgs/flake-module.nix
         ./hosts/flake-module.nix
+        treefmt-nix.flakeModule
+        ./treefmt.nix
       ];
     };
 
