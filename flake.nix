@@ -17,10 +17,15 @@ rec {
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
     };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nur = {
       url = "github:nix-community/NUR";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs."flake-parts".follows = "flake-parts";
+      inputs."treefmt-nix".follows = "treefmt-nix";
     };
     daeuniverse = {
       url = "github:daeuniverse/flake.nix";
@@ -31,10 +36,6 @@ rec {
       url = "github:fufexan/nix-gaming";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs."flake-parts".follows = "flake-parts";
-    };
-    treefmt-nix = {
-      url = "github:numtide/treefmt-nix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
