@@ -55,17 +55,17 @@ tab-item {
 }
 
 tab-item:hover {
-  filter: opacity(80%) drop-shadow(0px 0px 0px #3498DB);
+  filter: opacity(80%) drop-shadow(0px 0px 0px #3498db);
 }
 
 /* Adjust style for tab that has sound playing. */
 tab-item.sound-playing .favicon::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 50%;
   left: 50%;
   border-radius: 50%;
-  background: #FFFFFF;
+  background: #ffffff;
   animation: pulse 2s ease-out 0s infinite;
   z-index: -1;
   opacity: 0;
@@ -81,7 +81,7 @@ tab-item.muted {
    them flatly since we cannot calculate how deep it is dynamically :/ */
 :root {
   --custom-indent: 8px;
-  --max-visual-indent: 15
+  --max-visual-indent: 15;
 }
 
 tab-item tab-item-substance {

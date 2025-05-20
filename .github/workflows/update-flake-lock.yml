@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch: # allows manual triggering
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   lockfile:
@@ -18,11 +18,11 @@ jobs:
 
       - name: Install Nix
         uses: nixbuild/nix-quick-install-action@v30
-              
+
       - name: Update flake.lock
         uses: DeterminateSystems/update-flake-lock@main
         with:
           token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
           pr-title: "Update flake.lock" # Title of PR to be created
-          pr-labels: |                  # Labels to be set on the PR
+          pr-labels: | # Labels to be set on the PR
             dependencies
