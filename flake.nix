@@ -37,25 +37,16 @@ rec {
 
   outputs =
     inputs@{ flake-parts, ... }:
-    let
-      # List of hosts
-      hosts = import ./hosts.nix;
-    in
-    flake-parts.lib.mkFlake { inherit inputs; } (
-      { lib, lib', ... }:
-      {
-        _module.args = { inherit nixConfig; };
-        systems = [ "x86_64-linux" ];
-        imports = [
-          ./lib/gencfg.nix
-          ./modules/flake-module.nix
-          ./pkgs/flake-module.nix
-        ];
-        flake = {
-          nixosConfigurations = lib'.genOSConfig hosts;
-        };
-      }
-    );
+    flake-parts.lib.mkFlake { inherit inputs; } {
+      _module.args = { inherit nixConfig; };
+      systems = [ "x86_64-linux" ];
+      imports = [
+        ./lib/gencfg.nix
+        ./modules/flake-module.nix
+        ./pkgs/flake-module.nix
+        ./hosts/flake-module.nix
+      ];
+    };
 
   nixConfig = {
     trusted-users = [ "@wheel" ];
