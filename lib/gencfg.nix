@@ -94,6 +94,7 @@ with inputs;
                 nixConfig
                 ;
             };
+            system = host.system;
             modules =
               [
                 nur.modules.nixos.default
