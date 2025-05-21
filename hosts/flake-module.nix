@@ -1,6 +1,10 @@
-{ lib', ... }:
+{ lib, lib', ... }:
+let
+  hosts = import ./hosts.nix;
+in
 {
   flake = {
-    nixosConfigurations = lib'.genOSConfig (import ./hosts.nix);
+    nixosConfigurations = lib'.genOSConfig hosts;
   };
+  systems = lib.unique (lib.mapAttrsToList (_: host: host.system) hosts);
 }

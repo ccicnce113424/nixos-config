@@ -44,7 +44,6 @@ rec {
     inputs@{ flake-parts, treefmt-nix, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       _module.args = { inherit nixConfig; };
-      systems = [ "x86_64-linux" ];
       imports = [
         ./lib/gencfg.nix
         ./modules/flake-module.nix
