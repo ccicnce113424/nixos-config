@@ -9,6 +9,8 @@
     qbittorrent-enhanced
     motrix
     nheko
+
+    nur.repos.xddxdd.peerbanhelper
   ];
 
   imports = [ ./firefox ];
