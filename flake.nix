@@ -3,7 +3,6 @@ rec {
 
   # Sources
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -12,9 +11,6 @@ rec {
       url = "github:nix-community/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.home-manager.follows = "home-manager";
-    };
-    flake-parts = {
-      url = "github:hercules-ci/flake-parts";
     };
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -36,6 +32,8 @@ rec {
       inputs.nixpkgs.follows = "nixpkgs";
       inputs."flake-parts".follows = "flake-parts";
     };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     flake-compat.url = "github:edolstra/flake-compat";
   };
