@@ -32,10 +32,7 @@ in
     type = lib.types.attrs;
     default = {
       # Commands to add
-      switch = ''
-        rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup
-        systemd-inhibit sudo nixos-rebuild --fast --install-bootloader switch $@
-      '';
+      switch = " systemd-inhibit sudo nixos-rebuild --fast --install-bootloader switch $@";
       cswitch = "switch --option substituters \"https://cache.nixos.org\" $@";
       gc = "nix store gc $@";
       up = ''
