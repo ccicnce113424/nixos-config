@@ -34,8 +34,8 @@
 }
 
 #sidebar-box:not(
-    [sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"]
-  ) {
+  [sidebarcommand="treestyletab_piro_sakura_ne_jp-sidebar-action"]
+) {
   min-width: var(--wide-tab-width) !important;
   max-width: none !important;
 }
@@ -53,7 +53,6 @@
   transition-delay: 0.2s !important;
   min-width: var(--wide-tab-width) !important;
   max-width: var(--wide-tab-width) !important;
-  margin-right: calc(
-    (var(--wide-tab-width) - var(--thin-tab-width)) * -1
-  ) !important;
+  margin-right: calc((var(--wide-tab-width) - var(--thin-tab-width)) * -1)
+    !important;
 }
