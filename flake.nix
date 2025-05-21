@@ -39,7 +39,7 @@ rec {
   };
 
   outputs =
-    inputs@{ flake-parts, treefmt-nix, ... }:
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       _module.args = { inherit nixConfig; };
       imports = [
@@ -47,7 +47,6 @@ rec {
         ./modules/flake-module.nix
         ./pkgs/flake-module.nix
         ./hosts/flake-module.nix
-        treefmt-nix.flakeModule
         ./treefmt.nix
       ];
     };
