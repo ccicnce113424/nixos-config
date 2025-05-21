@@ -5,7 +5,7 @@ rec {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager = {
-      url = "github:nix-community/home-manager/65d2282ff6cf560f54997013bd1e575fbd0a7ebf";
+      url = "github:nix-community/home-manager/20974416338898f0725a87832e4cd9bd82cbdaad";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     plasma-manager = {
