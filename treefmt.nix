@@ -9,7 +9,7 @@
           enable = true;
           package = pkgs.nixfmt-rfc-style;
         };
-        programs.prettier.enable = true;
+        programs.deno.enable = true;
       };
     };
 }
