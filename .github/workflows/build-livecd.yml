@@ -18,8 +18,7 @@ jobs:
         uses: cachix/install-nix-action@v31
         with:
           extra_nix_config: |
-            extra-substituters = https://nix-community.cachix.org
-            extra-trusted-public-keys = nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
+            accept-flake-config = true
 
       # use following when pnpm issue is fixed
       # https://github.com/nixbuild/nix-quick-install-action/issues/63
