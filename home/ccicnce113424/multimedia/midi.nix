@@ -10,7 +10,7 @@ in
 {
   options.midi.enable = lib.mkEnableOption "";
   config = lib.mkIf cfg.enable {
-    lservices.fluidsynth = {
+    services.fluidsynth = {
       enable = true;
       extraOptions = [ "--sample-rate 48000" ];
       soundFont = "${pkgs.soundfont-arachno}/share/soundfonts/arachno.sf2";
