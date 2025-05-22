@@ -28,7 +28,7 @@ rec {
       inputs."flake-parts".follows = "flake-parts";
     };
     nix-gaming = {
-      url = "github:fufexan/nix-gaming";
+      url = "github:ccicnce113424/nix-gaming/ntsync";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs."flake-parts".follows = "flake-parts";
     };
