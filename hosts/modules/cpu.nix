@@ -19,12 +19,6 @@ let
   cfg = config.hostCfg.cpu;
 in
 {
-  options.hostCfg.cpu = builtins.mapAttrs (
-    _: _:
-    lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-    }
-  ) cpuCfg;
+  options.hostCfg.cpu = builtins.mapAttrs (n: _: lib.mkEnableOption n) cpuCfg;
   config = lib.mkMerge (lib.mapAttrsToList (type: c: (lib.mkIf cfg.${type} c)) cpuCfg);
 }

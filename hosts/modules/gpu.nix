@@ -56,12 +56,6 @@ let
   cfg = config.hostCfg.gpu;
 in
 {
-  options.hostCfg.gpu = builtins.mapAttrs (
-    _: _:
-    lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-    }
-  ) gpuCfg;
+  options.hostCfg.gpu = builtins.mapAttrs (n: _: lib.mkEnableOption n) gpuCfg;
   config = lib.mkMerge (lib.mapAttrsToList (type: c: (lib.mkIf cfg.${type} c)) gpuCfg);
 }

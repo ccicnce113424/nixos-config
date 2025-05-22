@@ -16,20 +16,9 @@ let
   cfg = config.hostCfg.vm;
 in
 {
-  options.hostCfg.vm =
-    {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-      };
-    }
-    // builtins.mapAttrs (
-      _: _:
-      lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-      }
-    ) vmCfg;
+  options.hostCfg.vm = {
+    enable = lib.mkEnableOption "";
+  } // builtins.mapAttrs (n: _: lib.mkEnableOption n) vmCfg;
   config = lib.mkIf cfg.enable (
     lib.mkMerge (
       [
