@@ -8,6 +8,7 @@
     ./utils.nix
     ./documents
     ./zsh.nix
+    ./fonts.nix
   ];
 
   # Avoid Chinese in the directory names

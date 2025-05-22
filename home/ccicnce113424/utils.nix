@@ -21,7 +21,7 @@
     android-tools
     scrcpy
   ];
-  fonts.fontconfig.enable = false;
+  fonts.fontconfig.enable = true;
 
   xdg.desktopEntries = lib.mapAttrs (name: _: {
     inherit name;
