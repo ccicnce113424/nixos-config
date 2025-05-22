@@ -1,9 +1,8 @@
 name: Build LiveCD
 
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    - cron: "0 12 * * *"
   workflow_dispatch: # allows manual triggering
 
 jobs:
