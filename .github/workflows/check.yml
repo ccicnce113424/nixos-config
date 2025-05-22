@@ -1,0 +1,28 @@
+name: Check Flake
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch: # allows manual triggering
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    name: Check Flake
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          extra_nix_config: |
+            accept-flake-config = true
+
+      - name: Check
+        run: |
+          nix flake check --all-systems
