@@ -17,10 +17,6 @@
     uninstallUnmanaged = true;
   };
 
-  home.packages = with pkgs; [
-    android-tools
-    scrcpy
-  ];
   fonts.fontconfig.enable = true;
 
   xdg.desktopEntries = lib.mapAttrs (name: _: {
