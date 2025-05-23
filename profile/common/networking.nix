@@ -6,10 +6,7 @@
     iproute2.enable = true;
   };
 
-  networking.networkmanager.connectionConfig = {
-    "ethernet.wake-on-lan" = "magic";
-    "wifi.wake-on-lan" = "magic";
-  };
+  services.udev.extraRules = ''ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"'';
 
   services.daed = {
     enable = true;
