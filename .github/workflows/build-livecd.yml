@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     name: Build LiveCD
     steps:
+      - name: Purge unnecessary things
+        uses: wimpysworld/nothing-but-nix@main
+        with:
+          hatchet-protocol: "rampage"
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
