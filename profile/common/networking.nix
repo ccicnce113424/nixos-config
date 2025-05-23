@@ -6,6 +6,11 @@
     iproute2.enable = true;
   };
 
+  networking.networkmanager.connectionConfig = {
+    "ethernet.wake-on-lan" = "magic";
+    "wifi.wake-on-lan" = "magic";
+  };
+
   services.daed = {
     enable = true;
     openFirewall = {
