@@ -1,6 +1,8 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    rsync
+    fuc
     pv
     tree
     python3Full
