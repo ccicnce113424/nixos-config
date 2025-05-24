@@ -11,6 +11,7 @@
           package = pkgs.nixfmt-rfc-style;
         };
         programs.deno.enable = true;
+        programs.just.enable = true;
       };
     };
 }
