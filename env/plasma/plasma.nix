@@ -17,8 +17,6 @@
     kdePackages.filelight
     kdePackages.kfind
     kdePackages.wallpaper-engine-plugin
-
-    vulkan-hdr-layer-kwin6
   ];
 
   security.polkit.extraConfig = ''
