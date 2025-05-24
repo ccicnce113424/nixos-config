@@ -2,10 +2,11 @@
 {
   programs.vscode = {
     enable = true;
-    profiles.default.extensions = with pkgs; [
-      vscode-extensions.ms-ceintl.vscode-language-pack-zh-hans
-      vscode-extensions.github.vscode-github-actions
-      vscode-extensions.github.copilot
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      ms-ceintl.vscode-language-pack-zh-hans
+      github.vscode-github-actions
+      github.copilot
+      skellock.just
     ];
     # userSettings = {
     #   "files.autoGuessEncoding" = true;

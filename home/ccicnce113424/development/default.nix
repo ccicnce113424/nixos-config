@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
     ./vscode.nix
@@ -7,4 +7,5 @@
     ./git.nix
     ./c.nix
   ];
+  home.packages = with pkgs; [ just ];
 }
