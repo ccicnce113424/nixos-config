@@ -52,7 +52,7 @@ rec {
       perSystem =
         { pkgs, ... }:
         {
-          devShells.default = pkgs.callPackage ./shell.nix { };
+          devShells.default = pkgs.callPackage ./devshell.nix { };
         };
     };
 
