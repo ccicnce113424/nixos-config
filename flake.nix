@@ -48,12 +48,8 @@ rec {
         ./pkgs/flake-module.nix
         ./hosts/flake-module.nix
         ./treefmt.nix
+        ./devshell.nix
       ];
-      perSystem =
-        { pkgs, ... }:
-        {
-          devShells.default = pkgs.callPackage ./devshell.nix { };
-        };
     };
 
   nixConfig = {
