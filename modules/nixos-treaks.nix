@@ -44,7 +44,6 @@ in
         git pull
         switch $@
       '';
-      fup = "nix flake update --commit-lock-file $@";
       clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system $@";
       clr = ''
         set -e
