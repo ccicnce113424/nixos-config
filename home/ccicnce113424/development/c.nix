@@ -6,8 +6,4 @@
       vadimcn.vscode-lldb
     ];
   };
-  home.packages = with pkgs; [
-    clang-tools
-    pkg-config
-  ];
 }
