@@ -1,11 +1,17 @@
-{ pkgs, ... }:
-pkgs.mkShell {
-  packages = with pkgs; [
-    just
-    nixd
-    nil
-    nixfmt-rfc-style
-    nix-tree
-    nix-output-monitor
-  ];
+{ ... }:
+{
+  perSystem =
+    { pkgs, ... }:
+    {
+      devShells.default = pkgs.mkShell {
+        packages = with pkgs; [
+          just
+          nixd
+          nil
+          nixfmt-rfc-style
+          nix-tree
+          nix-output-monitor
+        ];
+      };
+    };
 }
