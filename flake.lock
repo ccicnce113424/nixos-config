@@ -63,11 +63,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1748134483,
-        "narHash": "sha256-5PBK1nV8X39K3qUj8B477Aa2RdbLq3m7wRxUKRtggX4=",
+        "lastModified": 1748182899,
+        "narHash": "sha256-r6MHSalDFydlUmjorVTSsyhLjIt8VWNtGc5+mffXvFQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "c1e671036224089937e111e32ea899f59181c383",
+        "rev": "901f8fef7f349cf8a8e97b3230b22fd592df9160",
         "type": "github"
       },
       "original": {
@@ -101,16 +101,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1748156781,
-        "narHash": "sha256-PBJBHvauG+96qi/rNN+wCMWNbUi/kcKEDjFHWrzPI74=",
-        "owner": "ccicnce113424",
+        "lastModified": 1748189689,
+        "narHash": "sha256-hB74AiTtPkvnZHKi09AQ/VndCcgllzzpSm4/SGfOPKA=",
+        "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "0b66377c85a7f3e91300696eea089d541abee24e",
+        "rev": "0ec005ba4fe744d1e8f960e8a3c45ae3aeb262c1",
         "type": "github"
       },
       "original": {
-        "owner": "ccicnce113424",
-        "ref": "ntsync",
+        "owner": "fufexan",
         "repo": "nix-gaming",
         "type": "github"
       }
@@ -159,11 +158,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1748170927,
-        "narHash": "sha256-M48QNs0jab0BG88dniPY9Xl4oOx115goU1uNdMxFIPU=",
+        "lastModified": 1748190776,
+        "narHash": "sha256-t734cEJ3zKUEUdlIWVPiy9WxU66WhXqg9XQwoDhLMeA=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "bb29133da4285054b9f48abf67e353e77b53ca34",
+        "rev": "1fddc69b73b54110650213d13f363227da765237",
         "type": "github"
       },
       "original": {
@@ -182,11 +181,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742765550,
-        "narHash": "sha256-2vVIh2JrL6GAGfgCeY9e6iNKrBjs0Hw3bGQEAbwVs68=",
+        "lastModified": 1748196248,
+        "narHash": "sha256-1iHjsH6/5UOerJEoZKE+Gx1BgAoge/YcnUsOA4wQ/BU=",
         "owner": "nix-community",
         "repo": "plasma-manager",
-        "rev": "b70be387276e632fe51232887f9e04e2b6ef8c16",
+        "rev": "b7697abe89967839b273a863a3805345ea54ab56",
         "type": "github"
       },
       "original": {
