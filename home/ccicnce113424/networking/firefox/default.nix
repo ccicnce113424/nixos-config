@@ -9,6 +9,7 @@
         settings = {
           "intl.locale.requested" = "zh-cn";
           "browser.tabs.closeTabByDblclick" = true;
+          "browser.urlbar.keepPanelOpenDuringImeComposition" = true;
           "sidebar.animation.expand-on-hover.duration-ms" = 200;
           "sidebar.main.tools" = "history,bookmarks";
           "sidebar.verticalTabs" = true;
