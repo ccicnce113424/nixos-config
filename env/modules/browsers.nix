@@ -20,6 +20,7 @@
       "browser.shell.checkDefaultBrowser" = false;
       "extensions.pocket.enabled" = false;
       "extensions.autoDisableScopes" = 0;
+      "image.jxl.enabled" = true;
     };
     # package = pkgs.wrapFirefox pkgs.firefox-unwrapped.override {
     #   jemallocSupport = false;
