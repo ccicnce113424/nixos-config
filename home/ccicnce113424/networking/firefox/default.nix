@@ -9,8 +9,10 @@
         settings = {
           "intl.locale.requested" = "zh-cn";
           "browser.tabs.closeTabByDblclick" = true;
-          "browser.tabs.drawInTitlebar" = false;
-          "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+          "sidebar.animation.expand-on-hover.duration-ms" = 200;
+          "sidebar.main.tools" = "history,bookmarks";
+          "sidebar.verticalTabs" = true;
+          "sidebar.visibility" = "expand-on-hover";
         };
         extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
@@ -21,7 +23,6 @@
           bilisponsorblock
           sponsorblock
           aria2-integration
-          auto-tab-discard
           immersive-translate
           gesturefy
           scroll_anywhere
@@ -35,21 +36,7 @@
           ruffle_rs
           floccus
           bitwarden
-
-          tree-style-tab
-          tst-indent-line
-          tst-more-tree-commands
-          tst-tab-search
-          multiple-tab-handler
-          move-unloaded-tabs-for-tst
         ];
-
-        # https://github.com/piroor/treestyletab/wiki/Code-snippets-for-custom-style-rules#full-auto-showhide-theme
-        # Need manually set tst style and set close tab by dbclick
-        # TST options => "Development" => "All Configs" => "baseIndent" set to 8
-        # Do not show tab preview image
-        # TST tab search => Hide Header
-        userChrome = ./userChrome.css;
       };
     };
   };
