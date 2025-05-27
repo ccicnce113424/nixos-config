@@ -17,6 +17,7 @@
     kdePackages.filelight
     kdePackages.kfind
     kdePackages.wallpaper-engine-plugin
+    kdePackages.kdialog
   ];
 
   security.polkit.extraConfig = ''
