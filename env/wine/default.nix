@@ -21,5 +21,12 @@ in
     ++ (with inputs'.nix-gaming.packages; [
       wineprefix-preparer
       winetricks-git
+    ])
+    ++ (with pkgs.gst_all_1; [
+      gst-plugins-base
+      gst-plugins-good
+      gst-plugins-bad
+      gst-plugins-ugly
+      gst-libav
     ]);
 }
