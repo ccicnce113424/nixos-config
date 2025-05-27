@@ -8,14 +8,10 @@
     python3Full
     zip
     unzipNLS
-    _7zz
+    p7zip
     unar
     libarchive
     progress
-    (pkgs.runCommand "7z-alias" { buildInputs = with pkgs; [ _7zz ]; } ''
-      mkdir -p $out/bin
-      ln -s ${pkgs._7zz}/bin/7zz $out/bin/7z
-    '')
   ];
 
   programs.zsh.enable = true;
