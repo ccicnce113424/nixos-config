@@ -8,6 +8,6 @@
       obs-vaapi
       obs-gstreamer
     ];
-    enableVirtualCamera = true;
+    # enableVirtualCamera = true;
   };
 }

@@ -25,7 +25,7 @@ let
         nvidiaSettings = true;
         videoAcceleration = true;
         powerManagement.enable = true;
-        package = config.boot.kernelPackages.nvidiaPackages.beta;
+        package = config.boot.kernelPackages.nvidiaPackages.stable;
       };
 
       boot.kernelParams = [

@@ -27,7 +27,7 @@
   };
   programs.gamemode.enable = true;
   users.groups.gamemode.members = builtins.attrNames config.users.users;
-  hardware.xone.enable = true;
+  # hardware.xone.enable = true;
 
   services.flatpak.packages = [
     "net.lutris.Lutris"
