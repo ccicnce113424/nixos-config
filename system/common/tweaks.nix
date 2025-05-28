@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   services.dbus.implementation = "broker";
+  services.scx.enable = true;
 
   environment.systemPackages = with pkgs; [
     uutils-coreutils-noprefix
