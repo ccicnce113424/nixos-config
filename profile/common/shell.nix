@@ -12,6 +12,7 @@
     unar
     libarchive
     progress
+    colorized-logs
   ];
 
   programs.zsh.enable = true;
