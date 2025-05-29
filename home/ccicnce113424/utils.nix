@@ -1,4 +1,5 @@
 {
+  pkgs,
   lib,
   osConfig,
   ...
@@ -24,4 +25,8 @@
     terminal = true;
     comment = "run \"${name}\"";
   }) osConfig.cmdAliases;
+
+  home.packages = with pkgs; [
+    bitwarden-desktop
+  ];
 }
