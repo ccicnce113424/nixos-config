@@ -34,22 +34,24 @@ in
       # Commands to add
       switch = ''
         rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup
-        systemd-inhibit sudo nixos-rebuild --fast --install-bootloader switch $@
+        systemd-inhibit nh os switch $@
       '';
-      cswitch = "switch --option substituters \"https://cache.nixos.org\" $@";
-      gc = "nix store gc $@";
+      cswitch = ''
+        rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup
+        systemd-inhibit sudo nixos-rebuild switch --fast --install-bootloader --option substituters 'https://cache.nixos.org' $@
+      '';
+      sgc = "systemd-inhibit nix store gc $@";
       up = ''
         set -e
         cd /etc/nixos
-        git pull
-        switch $@
+        systemd-inhibit git pull
+        switch -a $@
       '';
-      clean = "sudo nix profile wipe-history --profile /nix/var/nix/profiles/system $@";
+      pclean = "systemd-inhibit nh clean all $@";
       clr = ''
         set -e
-        clean
-        switch $@
-        gc
+        pclean
+        switch -a $@
       '';
       win = "systemctl reboot --boot-loader-entry=auto-windows $@";
       fw = "systemctl reboot --firmware-setup $@";
