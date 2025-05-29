@@ -23,4 +23,9 @@
     enable = true;
     openFirewall = true;
   };
+
+  programs.nh = {
+    enable = true;
+    flake = "/etc/nixos";
+  };
 }
