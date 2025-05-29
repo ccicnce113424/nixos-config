@@ -41,13 +41,12 @@
       heroic
 
       protonup-qt
-      umu-launcher
 
       hmcl
       graalvmPackages.graalvm-ce
     ]
     ++ (with inputs'.nix-gaming.packages; [
       dxvk-nvapi-vkreflex-layer
-      umu-launcher
-    ]);
+    ])
+    ++ [ inputs'.umu.packages.umu-launcher ];
 }
