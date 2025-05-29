@@ -34,16 +34,20 @@
     # "com.heroicgameslauncher.hgl"
   ];
 
-  environment.systemPackages = with pkgs; [
-    # lutris
-    heroic
+  environment.systemPackages =
+    with pkgs;
+    [
+      # lutris
+      heroic
 
-    protonup-qt
-    umu-launcher
+      protonup-qt
+      umu-launcher
 
-    hmcl
-    graalvmPackages.graalvm-ce
-
-    inputs'.nix-gaming.packages.dxvk-nvapi-vkreflex-layer
-  ];
+      hmcl
+      graalvmPackages.graalvm-ce
+    ]
+    ++ (with inputs'.nix-gaming.packages; [
+      dxvk-nvapi-vkreflex-layer
+      umu-launcher
+    ]);
 }
