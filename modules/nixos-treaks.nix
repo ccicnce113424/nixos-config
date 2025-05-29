@@ -45,13 +45,13 @@ in
         set -e
         cd /etc/nixos
         systemd-inhibit git pull
-        switch -a $@
+        switch $@
       '';
       pclean = "systemd-inhibit nh clean all $@";
       clr = ''
         set -e
         pclean
-        switch -a $@
+        switch $@
       '';
       win = "systemctl reboot --boot-loader-entry=auto-windows $@";
       fw = "systemctl reboot --firmware-setup $@";
