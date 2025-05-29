@@ -25,7 +25,6 @@
       defaultFonts = {
         sansSerif = [
           "Noto Sans CJK SC"
-          "Noto Sans CJK"
           "Noto Sans"
           "Noto Color Emoji"
           "Noto Emoji"
@@ -34,7 +33,6 @@
         ];
         serif = [
           "Noto Serif CJK SC"
-          "Noto Serif CJK"
           "Noto Serif"
           "Noto Color Emoji"
           "Noto Emoji"
@@ -44,7 +42,6 @@
         monospace = [
           "Maple Mono NF CN"
           "Noto Sans Mono CJK SC"
-          "Noto Sans Mono CJK"
           "Noto Color Emoji"
           "Noto Emoji"
           "DejaVu Sans Mono"
@@ -54,7 +51,6 @@
           "Noto Emoji"
           "Symbols Nerd Font"
           "Noto Sans CJK SC"
-          "Noto Sans CJK"
           "Noto Sans"
           "DejaVu Sans"
         ];
