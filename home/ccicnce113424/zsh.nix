@@ -35,11 +35,6 @@
     enableZshIntegration = true;
   };
 
-  programs.thefuck = {
-    enable = true;
-    enableZshIntegration = true;
-  };
-
   home.packages = with pkgs; [
     dust
     tokei
