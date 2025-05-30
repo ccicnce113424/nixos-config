@@ -7,6 +7,7 @@
       ms-ceintl.vscode-language-pack-zh-hans
       github.vscode-github-actions
       github.copilot
+      github.vscode-pull-request-github
       skellock.just
     ];
     # userSettings = {
