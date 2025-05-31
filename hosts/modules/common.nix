@@ -65,12 +65,20 @@
         (pkgs.writeTextFile {
           name = "usb-rules";
           text = ''
-            SUBSYSTEM=="usb", MODE="0664", GROUP:="lp", TAG+="uaccess"
+            SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", MODE="0664", TAG+="uaccess", TAG+="systemd", ENV{SYSTEMD_WANTS}="usb-lp-acl@%N.service"
             SUBSYSTEM=="hidraw", MODE="0664", TAG+="uaccess"
           '';
           destination = "/etc/udev/rules.d/70-usb.rules";
         })
       ];
+
+      systemd.services."usb-lp-acl@" = {
+        description = "Description=Set ACL for lp group on USB device %I";
+        serviceConfig = {
+          Type = "oneshot";
+          ExecStart = ''${pkgs.acl}/bin/setfacl -m g:lp:rw %I'';
+        };
+      };
 
       i18n.supportedLocales = [
         "zh_CN.UTF-8/UTF-8"
