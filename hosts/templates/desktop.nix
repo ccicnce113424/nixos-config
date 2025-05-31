@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
     ../modules/common.nix
@@ -12,6 +12,10 @@
       enable = true;
       instances.PDF.settings.Out = "\${HOME}/cups-pdf";
     };
+    drivers = with pkgs; [
+      gutenprintBin
+      hplipWithPlugin
+    ];
   };
 
   security.tpm2 = {
