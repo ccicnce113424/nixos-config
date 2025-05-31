@@ -6,8 +6,6 @@
     ../modules/gpu.nix
   ];
 
-  environment.systemPackages = with pkgs; [ hplip ];
-
   services.printing.drivers = with pkgs; [
     gutenprintBin
     hplip
