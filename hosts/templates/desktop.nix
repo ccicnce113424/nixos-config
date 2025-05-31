@@ -6,19 +6,13 @@
     ../modules/gpu.nix
   ];
 
-  services.printing = {
-    enable = true;
-    cups-pdf = {
-      enable = true;
-      instances.PDF.settings.Out = "\${HOME}/cups-pdf";
-    };
-    drivers = with pkgs; [
-      gutenprintBin
-      hplipWithPlugin
-    ];
-  };
+  services.printing.drivers = with pkgs; [
+    gutenprintBin
+    hplipWithPlugin
+  ];
+
   services.udev.extraRules = ''
-    SUBSYSTEM=="usb", MODE="0664", GROUP="lp"
+    ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"
   '';
 
   security.tpm2 = {

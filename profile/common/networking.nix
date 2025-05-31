@@ -6,8 +6,6 @@
     iproute2.enable = true;
   };
 
-  services.udev.extraRules = ''ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"'';
-
   services.daed = {
     enable = true;
     openFirewall = {

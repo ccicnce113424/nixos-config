@@ -1,4 +1,9 @@
-{ lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 {
   options.hostCfg.locale = lib.mkOption {
     type = lib.types.str;
@@ -47,6 +52,26 @@
           ];
         };
       };
+
+      services.printing = {
+        enable = true;
+        cups-pdf = {
+          enable = true;
+          instances.PDF.settings.Out = "\${HOME}/cups-pdf";
+        };
+        logLevel = "debug";
+      };
+
+      services.udev.packages = [
+        (pkgs.writeTextFile {
+          name = "usb-rules";
+          text = ''
+            SUBSYSTEM=="usb", MODE="0664", TAG+="uaccess", RUN+="${pkgs.acl}/bin/setfacl -m g:lp:rw $env{DEVNAME}"
+            SUBSYSTEM=="hidraw", MODE="0664", TAG+="uaccess"
+          '';
+          destination = "/etc/udev/rules.d/70-usb.rules";
+        })
+      ];
 
       i18n.supportedLocales = [
         "zh_CN.UTF-8/UTF-8"
