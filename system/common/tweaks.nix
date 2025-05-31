@@ -24,12 +24,6 @@
     kernelParams = [ "iommu=pt" ];
   };
 
-  users.groups.plugdev = { };
-  services.udev.extraRules = ''
-    SUBSYSTEM=="usb", MODE="0664", GROUP="plugdev"
-    SUBSYSTEM=="hidraw", MODE="0664", GROUP="plugdev"
-  '';
-
   systemd.oomd.extraConfig = {
     DefaultMemoryPressureThreshold = "90%";
     DefaultMemoryPressureDurationSec = "10s";
