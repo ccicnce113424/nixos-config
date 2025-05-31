@@ -65,7 +65,7 @@
         (pkgs.writeTextFile {
           name = "usb-rules";
           text = ''
-            SUBSYSTEM=="usb", MODE="0664", TAG+="uaccess", RUN+="${pkgs.acl}/bin/setfacl -m g:lp:rw $devpath"
+            SUBSYSTEM=="usb", MODE="0664", GROUP:="lp", TAG+="uaccess"
             SUBSYSTEM=="hidraw", MODE="0664", TAG+="uaccess"
           '';
           destination = "/etc/udev/rules.d/70-usb.rules";
