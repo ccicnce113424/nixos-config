@@ -13,7 +13,6 @@
 
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"
-    ACTION=="add", SUBSYSTEM=="net", NAME=="wl*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"
   '';
 
   security.tpm2 = {
