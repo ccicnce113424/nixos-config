@@ -8,7 +8,7 @@
 
   services.printing.drivers = with pkgs; [
     gutenprintBin
-    hplipWithPlugin
+    hplip
   ];
 
   services.udev.extraRules = ''
