@@ -59,7 +59,6 @@
           enable = true;
           instances.PDF.settings.Out = "\${HOME}/cups-pdf";
         };
-        logLevel = "debug";
       };
 
       services.udev.packages = [
