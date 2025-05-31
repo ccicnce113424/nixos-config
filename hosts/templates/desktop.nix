@@ -17,6 +17,9 @@
       hplipWithPlugin
     ];
   };
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", MODE="0664", GROUP="lp"
+  '';
 
   security.tpm2 = {
     enable = true;
