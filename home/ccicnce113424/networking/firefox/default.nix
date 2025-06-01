@@ -2,7 +2,7 @@
 {
   programs.firefox = {
     enable = true;
-    nativeMessagingHosts = with pkgs; [ kdePackages.plasma-browser-integration ];
+    nativeMessagingHosts = with pkgs.kdePackages; [ plasma-browser-integration ];
     profiles = {
       default = {
         isDefault = true;
