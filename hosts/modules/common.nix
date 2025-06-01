@@ -61,15 +61,9 @@
         };
       };
 
-      services.udev.packages = [
-        (pkgs.writeTextFile {
-          name = "usb-rules";
-          text = ''
-            SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", MODE="0664", TAG+="uaccess", TAG+="systemd", ENV{SYSTEMD_WANTS}="usb-lp-acl@%N.service"
-            SUBSYSTEM=="hidraw", MODE="0664", TAG+="uaccess"
-          '';
-          destination = "/etc/udev/rules.d/70-usb.rules";
-        })
+      services.udev.packages = with pkgs; [
+        game-devices-udev-rules
+        android-udev-rules
       ];
 
       systemd.services."usb-lp-acl@" = {
