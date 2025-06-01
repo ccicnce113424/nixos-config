@@ -34,14 +34,14 @@
   hardware.xpad-noone.enable = lib.mkForce false;
 
   services.flatpak.packages = [
-    "net.lutris.Lutris"
+    # "net.lutris.Lutris"
     # "com.heroicgameslauncher.hgl"
   ];
 
   environment.systemPackages =
     with pkgs;
     [
-      # lutris
+      lutris
       heroic
 
       protonup-qt
