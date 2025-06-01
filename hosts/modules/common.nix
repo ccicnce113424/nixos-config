@@ -73,14 +73,6 @@
         android-udev-rules
       ];
 
-      systemd.services."usb-lp-acl@" = {
-        description = "Description=Set ACL for lp group on USB device %I";
-        serviceConfig = {
-          Type = "oneshot";
-          ExecStart = ''${pkgs.acl}/bin/setfacl -m g:lp:rw %I'';
-        };
-      };
-
       i18n.supportedLocales = [
         "zh_CN.UTF-8/UTF-8"
         "en_US.UTF-8/UTF-8"
