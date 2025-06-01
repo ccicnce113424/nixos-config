@@ -12,7 +12,9 @@ let
     amd = {
       hardware.cpu.amd = {
         updateMicrocode = true;
-        ryzen-smu.enable = true;
+
+        # build failed with cachyos-lto
+        # ryzen-smu.enable = true;
       };
     };
   };
