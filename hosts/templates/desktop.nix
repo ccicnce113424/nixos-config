@@ -21,6 +21,7 @@
 
   security.tpm2 = {
     enable = true;
+    pkcs11.enable = true;
   };
 
   hardware.bluetooth.enable = true;
