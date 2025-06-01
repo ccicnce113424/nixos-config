@@ -51,7 +51,7 @@ in
       clr = ''
         set -e
         pclean
-        switch $@
+        cswitch $@
       '';
       win = "systemctl reboot --boot-loader-entry=auto-windows $@";
       fw = "systemctl reboot --firmware-setup $@";
