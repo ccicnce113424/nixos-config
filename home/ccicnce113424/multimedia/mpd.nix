@@ -1,4 +1,4 @@
-{ config, ... }:
+{ pkgs, config, ... }:
 {
   services.mpd = {
     enable = true;
@@ -33,5 +33,5 @@
   };
   services.mpd-mpris.enable = true;
 
-  services.flatpak.packages = [ "dog.unix.cantata.Cantata" ];
+  home.packages = with pkgs; [ cantata ];
 }
