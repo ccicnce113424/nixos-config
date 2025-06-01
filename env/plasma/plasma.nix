@@ -23,6 +23,7 @@
       wallpaper-engine-plugin
       kdialog
       sddm-kcm
+      skanpage
     ]);
 
   security.polkit.extraConfig = ''
