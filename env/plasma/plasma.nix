@@ -26,13 +26,13 @@
       skanpage
     ]);
 
+  # https://gist.github.com/Scrumplex/8f528c1f63b5f4bfabe14b0804adaba7
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
-        if ((action.id == "org.freedesktop.udisks2.filesystem-mount-system" ||
-             action.id == "org.freedesktop.udisks.filesystem-mount-system-internal") &&
-            subject.local && subject.active && subject.isInGroup("users"))
-        {
+        if (subject.isInGroup("wheel")) {
+            if (action.id.startsWith("org.freedesktop.udisks2.")) {
                 return polkit.Result.YES;
+            }
         }
     });
   '';
