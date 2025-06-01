@@ -16,12 +16,6 @@ in
     graceful = true;
   };
 
-  # Splash screen
-  boot.plymouth = {
-    enable = true;
-    theme = "bgrt";
-  };
-
   boot.consoleLogLevel = 3;
   boot.initrd.verbose = false;
 }

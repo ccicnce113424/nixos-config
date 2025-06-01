@@ -33,11 +33,11 @@ in
     ${pkgs.findutils}/bin/find "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) ! -name "*init*" ! -wholename "*.extra-files/*" -exec ${pkgs.sbctl}/bin/sbctl sign {} \;
   '';
 
-  # Splash screen
-  boot.plymouth = {
-    enable = true;
-    theme = "bgrt";
-  };
+  # # Splash screen
+  # boot.plymouth = {
+  #   enable = true;
+  #   theme = "bgrt";
+  # };
 
   # Silent boot
   boot.kernelParams = [
