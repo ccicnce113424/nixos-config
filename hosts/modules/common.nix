@@ -55,10 +55,17 @@
 
       services.printing = {
         enable = true;
+        openFirewall = true;
         cups-pdf = {
           enable = true;
           instances.PDF.settings.Out = "\${HOME}/cups-pdf";
         };
+      };
+
+      hardware.sane = {
+        enable = true;
+        openFirewall = true;
+        extraBackends = with pkgs; [ sane-airscan ];
       };
 
       services.udev.packages = with pkgs; [
