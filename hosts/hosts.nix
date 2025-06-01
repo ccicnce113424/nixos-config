@@ -4,6 +4,7 @@ let
     profile = "desktop";
     env = [
       "plasma"
+      "image"
       "gaming"
       "obs"
       "virt-manager"
