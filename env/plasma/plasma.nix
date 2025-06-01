@@ -6,6 +6,7 @@
     with pkgs;
     [
       dmidecode
+      qpwgraph
     ]
     ++ (with pkgs.kdePackages; [
       plasma-disks
