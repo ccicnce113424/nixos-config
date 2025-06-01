@@ -48,6 +48,7 @@
     ]
     ++ (with inputs'.nix-gaming.packages; [
       dxvk-nvapi-vkreflex-layer
+      osu-lazer-bin
     ])
     ++ [ inputs'.umu.packages.umu-launcher ];
 }
