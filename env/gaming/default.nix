@@ -26,9 +26,12 @@
     enable = true;
     capSysNice = true;
   };
+
   programs.gamemode.enable = true;
   users.groups.gamemode.members = builtins.attrNames config.users.users;
+
   hardware.xone.enable = true;
+  hardware.xpad-noone.enable = lib.mkForce false;
 
   services.flatpak.packages = [
     "net.lutris.Lutris"
