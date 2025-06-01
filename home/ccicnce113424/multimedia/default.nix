@@ -7,7 +7,6 @@
     mediainfo
     mediainfo-gui
     tenacity
-    gimp-with-plugins
   ];
 
   services.easyeffects.enable = true;
