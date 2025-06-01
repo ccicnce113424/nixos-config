@@ -2,23 +2,28 @@
 {
   services.desktopManager.plasma6.enable = true;
   programs.kdeconnect.enable = true;
-  environment.systemPackages = with pkgs; [
-    dmidecode
-    kdePackages.plasma-disks
-    kdePackages.krdc
-    kdePackages.krfb
-    kdePackages.qtmultimedia
-    kdePackages.qtwebengine
-    kdePackages.yakuake
-    kdePackages.francis
-    kdePackages.kcalc
-    kdePackages.kclock
-    kdePackages.kweather
-    kdePackages.filelight
-    kdePackages.kfind
-    kdePackages.wallpaper-engine-plugin
-    kdePackages.kdialog
-  ];
+  environment.systemPackages =
+    with pkgs;
+    [
+      dmidecode
+    ]
+    ++ (with pkgs.kdePackages; [
+      plasma-disks
+      krdc
+      krfb
+      qtmultimedia
+      qtwebengine
+      yakuake
+      francis
+      kcalc
+      kclock
+      kweather
+      filelight
+      kfind
+      wallpaper-engine-plugin
+      kdialog
+      sddm-kcm
+    ]);
 
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {
