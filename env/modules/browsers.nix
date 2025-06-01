@@ -13,7 +13,6 @@
 
       # Settings for hardware video decoding
       "media.ffmpeg.vaapi.enabled" = true;
-      "media.hardware-video-decoding.force-enabled" = true;
       "widget.dmabuf.force-enabled" = true;
 
       # Behavior settings
