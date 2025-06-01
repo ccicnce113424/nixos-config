@@ -98,6 +98,7 @@ with inputs;
             modules =
               [
                 nur.modules.nixos.default
+                chaotic.nixosModules.default
                 daeuniverse.nixosModules.daed
                 nix-flatpak.nixosModules.nix-flatpak
                 self.nixosModules.nixos-treaks
