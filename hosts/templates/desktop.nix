@@ -11,9 +11,13 @@
     hplipWithPlugin
   ];
 
+  hardware.sane.extraBackends = with pkgs; [ hplipWithPlugin ];
+
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"
   '';
+
+  services.ipp-usb.enable = true;
 
   security.tpm2 = {
     enable = true;
