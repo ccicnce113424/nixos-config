@@ -13,6 +13,8 @@
 
   hardware.sane.extraBackends = with pkgs; [ hplipWithPlugin ];
 
+  environment.systemPackages = with pkgs; [ hplipWithPlugin ];
+
   services.udev.extraRules = ''
     ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="${pkgs.ethtool}/bin/ethtool -s $name wol g"
   '';
