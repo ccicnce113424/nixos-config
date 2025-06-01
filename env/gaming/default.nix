@@ -48,7 +48,9 @@
     ]
     ++ (with inputs'.nix-gaming.packages; [
       dxvk-nvapi-vkreflex-layer
-      osu-lazer-bin
+      (osu-lazer-bin.override {
+        pipewire_latency = "128/48000";
+      })
     ])
     ++ [ inputs'.umu.packages.umu-launcher ];
 }
