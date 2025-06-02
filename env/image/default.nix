@@ -23,4 +23,9 @@ in
     gimp-combined
     xsane
   ];
+
+  programs.weylus = {
+    enable = true;
+    openFirewall = true;
+  };
 }
