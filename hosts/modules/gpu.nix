@@ -42,6 +42,8 @@ let
 
       hardware.nvidia-container-toolkit.enable = true;
 
+      environment.systemPackages = with pkgs; [ vulkan-hdr-layer-kwin6 ];
+
       nixpkgs.config.cudaSupport = true;
     };
     nouveau = {
