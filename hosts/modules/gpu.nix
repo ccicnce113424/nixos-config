@@ -26,13 +26,18 @@ let
         nvidiaSettings = true;
         videoAcceleration = true;
         powerManagement.enable = true;
-        package = config.boot.kernelPackages.nvidiaPackages.beta;
+        package = config.boot.kernelPackages.nvidiaPackages.latest;
       };
 
       boot.kernelParams = [
         "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
         "nvidia.NVreg_EnablePCIERelaxedOrderingMode=1"
         "nvidia.NVreg_EnableStreamMemOPs=1"
+      ];
+      boot.initrd.kernelModules = [
+        "nvidia"
+        "nvidia_modeset"
+        "nvidia_drm"
       ];
 
       hardware.nvidia-container-toolkit.enable = true;
