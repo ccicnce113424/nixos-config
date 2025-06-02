@@ -1,4 +1,9 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  host,
+  ...
+}:
 let
   gimp-base = pkgs.gimp3;
   xsane = pkgs.xsane.override {
@@ -27,5 +32,6 @@ in
   programs.weylus = {
     enable = true;
     openFirewall = true;
+    users = host.users;
   };
 }

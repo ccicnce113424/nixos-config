@@ -3,6 +3,7 @@
   pkgs,
   lib,
   inputs',
+  host,
   ...
 }:
 {
@@ -28,7 +29,7 @@
   };
 
   programs.gamemode.enable = true;
-  users.groups.gamemode.members = builtins.attrNames config.users.users;
+  users.groups.gamemode.members = host.users;
 
   hardware.xone.enable = true;
   hardware.xpad-noone.enable = lib.mkForce false;
