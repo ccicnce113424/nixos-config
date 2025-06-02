@@ -10,6 +10,7 @@ let
       services.xserver.videoDrivers = [ "amdgpu" ];
       hardware.amdgpu = {
         opencl.enable = true;
+        initrd.enable = true;
       };
       environment.variables = {
         AMD_DEBUG = "useaco";
