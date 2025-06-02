@@ -1,4 +1,12 @@
-{ ... }:
+{ inputs', ... }:
 {
-  nixpkgs.overlays = [ (final: prev: import ../pkgs { pkgs = final; }) ];
+  nixpkgs.overlays = [
+    (
+      final: prev:
+      import ../pkgs {
+        inherit inputs';
+        pkgs = final;
+      }
+    )
+  ];
 }
