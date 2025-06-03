@@ -4,8 +4,10 @@
     ./vscode.nix
     ./nix.nix
     ./direnv.nix
-    ./git.nix
     ./c.nix
   ];
-  home.packages = with pkgs; [ just ];
+  home.packages = with pkgs; [
+    just
+    gh
+  ];
 }
