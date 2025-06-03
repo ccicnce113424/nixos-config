@@ -33,6 +33,9 @@
 
   hardware.xone.enable = true;
   hardware.xpad-noone.enable = lib.mkForce false;
+  hardware.xpadneo.enable = true;
+
+  services.joycond.enable = true;
 
   services.flatpak.packages = [
     # "net.lutris.Lutris"
