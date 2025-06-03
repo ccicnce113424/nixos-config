@@ -19,9 +19,22 @@
       ];
     };
 
-    fonts.fixedWidth = {
-      family = lib.head osConfig.fonts.fontconfig.defaultFonts.monospace;
-      pointSize = 10;
+    fonts = rec {
+      fixedWidth = {
+        family = lib.head osConfig.fonts.fontconfig.defaultFonts.monospace;
+        pointSize = 10;
+      };
+      general = {
+        family = lib.head osConfig.fonts.fontconfig.defaultFonts.sansSerif;
+        pointSize = 10;
+      };
+      small = {
+        family = lib.head osConfig.fonts.fontconfig.defaultFonts.sansSerif;
+        pointSize = 8;
+      };
+      menu = general;
+      toolbar = general;
+      windowTitle = general;
     };
 
     configFile = {
