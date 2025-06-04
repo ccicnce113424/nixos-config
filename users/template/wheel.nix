@@ -8,6 +8,7 @@ username: importlist:
       "networkmanager"
       "libvirtd"
       "podman"
+      "samba"
     ];
     shell = pkgs.zsh;
   };
