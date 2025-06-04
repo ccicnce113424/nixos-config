@@ -25,7 +25,7 @@
   };
 
   systemd.oomd.extraConfig = {
-    DefaultMemoryPressureThreshold = "90%";
+    DefaultMemoryPressureThreshold = "60%";
     DefaultMemoryPressureDurationSec = "10s";
   };
 }
