@@ -62,6 +62,7 @@
     package = pkgs.sambaFull;
     openFirewall = true;
     nsswins = true;
+    usershares.enable = true;
   };
 
   services.samba-wsdd = {
