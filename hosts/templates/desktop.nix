@@ -1,9 +1,10 @@
 { pkgs, ... }:
 {
   imports = [
-    ../modules/common.nix
+    ../modules/desktop.nix
     ../modules/cpu.nix
     ../modules/gpu.nix
+    ../modules/locale.nix
   ];
 
   services.printing.drivers = with pkgs; [
