@@ -88,21 +88,21 @@
           inputs.nixpkgs.lib.nixosSystem rec {
             specialArgs = {
               inherit
+                self
                 inputs
                 inputs'
                 host
                 nixConfig
                 ;
             };
-            system = host.system;
+            # system = host.system;
             modules =
               [
-                inputs.nur.modules.nixos.default
+                self.nixosModules.genpkg
+                self.nixosModules.nixos-treaks
                 inputs.chaotic.nixosModules.default
                 inputs.daeuniverse.nixosModules.daed
                 inputs.nix-flatpak.nixosModules.nix-flatpak
-                self.nixosModules.nixos-treaks
-                self.nixosModules.overlay
               ]
               ++ systemCfgs host.system or null
               ++ profileCfgs host.system or null host.profile or null
