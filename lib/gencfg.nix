@@ -58,7 +58,7 @@ with inputs;
     # Configuration of Home Manager
     homeManagerCfgs =
       specialArgs:
-      if null == specialArgs.host.users then
+      if null == specialArgs.host.users or null then
         [ ]
       else
         [
@@ -105,11 +105,11 @@ with inputs;
                 self.nixosModules.nixos-treaks
                 self.nixosModules.overlay
               ]
-              ++ systemCfgs host.system
-              ++ profileCfgs host.system host.profile
-              ++ envCfgs host.env
+              ++ systemCfgs host.system or null
+              ++ profileCfgs host.system or null host.profile or null
+              ++ envCfgs host.env or null
               ++ hostCfgs name
-              ++ userCfgs host.users
+              ++ userCfgs host.users or null
               ++ homeManagerCfgs specialArgs;
           }
         ))
