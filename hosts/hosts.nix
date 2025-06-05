@@ -15,8 +15,6 @@ let
   };
   thin = {
     system = "x86_64-linux";
-    env = null;
-    users = null;
     thin = true;
   };
 in
