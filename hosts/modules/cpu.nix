@@ -26,9 +26,4 @@ in
 {
   options.hostCfg.cpu = builtins.mapAttrs (n: _: lib.mkEnableOption n) cpuCfg;
   config = lib.mkMerge (lib.mapAttrsToList (type: c: (lib.mkIf cfg.${type} c)) cpuCfg);
-
-  options.pkgsarch = lib.mkOption {
-    type = lib.types.str;
-    default = "pkgs";
-  };
 }
