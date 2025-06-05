@@ -15,14 +15,8 @@ let
       ]
       ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
 
-    nixpkgs.config = {
-      allowUnfree = true;
-      permittedInsecurePackages = [
-        "olm-3.2.16"
-      ];
-    };
-
     nix.settings = nixConfig;
+    chaotic.nyx.overlay.enable = false;
 
     system.stateVersion = lib.trivial.release;
   };

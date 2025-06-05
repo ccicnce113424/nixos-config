@@ -15,7 +15,6 @@ let
       environment.variables = {
         AMD_DEBUG = "useaco";
       };
-      nixpkgs.config.rocmSupport = true;
     };
     nvidia = {
       services.xserver.videoDrivers = [ "nvidia" ];
@@ -43,8 +42,6 @@ let
       hardware.nvidia-container-toolkit.enable = true;
 
       environment.systemPackages = with pkgs; [ vulkan-hdr-layer-kwin6 ];
-
-      nixpkgs.config.cudaSupport = true;
     };
     nouveau = {
       services.xserver.videoDrivers = [ "nouveau" ];
