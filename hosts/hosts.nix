@@ -21,8 +21,18 @@ let
   };
 in
 {
-  ccic-desktop = desktop-template;
-  ccic-laptop = desktop-template;
+  ccic-desktop = desktop-template // {
+    hostCfg = {
+      cpu.intel = true;
+      gpu.nvidia = true;
+    };
+  };
+  ccic-laptop = desktop-template // {
+    hostCfg = {
+      cpu.amd = true;
+      gpu.amdgpu = true;
+    };
+  };
   livecd = thin // {
     profile = "livecd";
   };
