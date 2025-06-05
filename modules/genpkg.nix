@@ -6,7 +6,12 @@
   ...
 }:
 {
-  nixpkgs.pkgs = import inputs.nixpkgs rec {
+  options.pkgsarch = lib.mkOption {
+    type = lib.types.str;
+    default = "pkgs";
+  };
+
+  config.nixpkgs.pkgs = import inputs.nixpkgs rec {
     system = host.system;
     config =
       {
