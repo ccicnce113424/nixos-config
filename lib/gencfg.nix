@@ -6,7 +6,6 @@
   withSystem,
   ...
 }:
-with inputs;
 {
   _module.args.lib' = rec {
 
@@ -62,7 +61,7 @@ with inputs;
         [ ]
       else
         [
-          home-manager.nixosModules.home-manager
+          inputs.home-manager.nixosModules.home-manager
           {
             home-manager = {
               useGlobalPkgs = true;
@@ -71,10 +70,10 @@ with inputs;
               backupFileExtension = "backup";
               sharedModules =
                 [
-                  nix-flatpak.homeManagerModules.nix-flatpak
+                  inputs.nix-flatpak.homeManagerModules.nix-flatpak
                   ../home/common
                 ]
-                ++ lib.optional (builtins.elem "plasma" specialArgs.host.env) plasma-manager.homeManagerModules.plasma-manager;
+                ++ lib.optional (builtins.elem "plasma" specialArgs.host.env) inputs.plasma-manager.homeManagerModules.plasma-manager;
               users = lib.genAttrs specialArgs.host.users (username: import ../home/${username});
             };
           }
@@ -98,10 +97,10 @@ with inputs;
             system = host.system;
             modules =
               [
-                nur.modules.nixos.default
-                chaotic.nixosModules.default
-                daeuniverse.nixosModules.daed
-                nix-flatpak.nixosModules.nix-flatpak
+                inputs.nur.modules.nixos.default
+                inputs.chaotic.nixosModules.default
+                inputs.daeuniverse.nixosModules.daed
+                inputs.nix-flatpak.nixosModules.nix-flatpak
                 self.nixosModules.nixos-treaks
                 self.nixosModules.overlay
               ]
