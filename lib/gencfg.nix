@@ -28,9 +28,10 @@ with inputs;
       else
         [
           (
-            { ... }:
+            { host, ... }:
             {
               networking.hostName = hostname;
+              hostCfg = host.hostCfg or { };
             }
           )
           ../hosts/${hostname}
