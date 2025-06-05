@@ -31,9 +31,6 @@ in
       gpu.amdgpu = true;
     };
   };
-  livecd = thin // {
-    profile = "livecd";
-  };
   vbox-test = thin // {
     profile = "vm-test";
   };

@@ -20,21 +20,16 @@
     envCfgs = env: if null == env then [ ] else map (env: ../env/${env}) env;
 
     # Configuration of host
-    hostCfgs =
-      hostname:
-      if "livecd" == hostname then
-        [ ]
-      else
-        [
-          (
-            { host, ... }:
-            {
-              networking.hostName = hostname;
-              hostCfg = host.hostCfg or { };
-            }
-          )
-          ../hosts/${hostname}
-        ];
+    hostCfgs = hostname: [
+      (
+        { host, ... }:
+        {
+          networking.hostName = hostname;
+          hostCfg = host.hostCfg or { };
+        }
+      )
+      ../hosts/${hostname}
+    ];
 
     # Configuration of users
     userCfgs =
