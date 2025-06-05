@@ -1,12 +1,13 @@
 {
+  config,
   lib,
   self,
   inputs,
   host,
   ...
 }:
-{
-  nixpkgs.pkgs = import inputs.nixpkgs rec {
+let
+  pkgs = import inputs.nixpkgs rec {
     system = host.system;
     config =
       {
@@ -32,5 +33,16 @@
       self.overlays.default
     ];
   };
-  imports = [ inputs.nixpkgs.nixosModules.readOnlyPkgs ];
+  pkgsWithOptimization = pkgs."pkgs${config.microarch}";
+in
+{
+  options.microarch = lib.mkOption {
+    type = lib.types.str;
+    default = "";
+  };
+  config = {
+    nixpkgs.pkgs = pkgs;
+    _module.args.pkgs' = pkgsWithOptimization;
+    home-manager.extraSpecialArgs.pkgs' = pkgsWithOptimization;
+  };
 }
