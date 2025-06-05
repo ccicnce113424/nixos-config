@@ -67,6 +67,7 @@ rec {
         ./pkgs/flake-module.nix
         ./hosts/flake-module.nix
         ./treefmt.nix
+        ./livecd.nix
       ];
       perSystem =
         { pkgs, ... }:
