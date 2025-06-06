@@ -2,11 +2,12 @@
   lib,
   stdenv,
   fetchFromGitHub,
+  unstableGitUpdater,
   ...
 }:
 stdenv.mkDerivation (final: {
-  pname = "danmakufactory";
-  version = "unstable-40fe891";
+  pname = "DanmakuFactory";
+  version = "0-unstable-2025-04-12";
 
   src = fetchFromGitHub {
     owner = "hihkm";
@@ -23,6 +24,8 @@ stdenv.mkDerivation (final: {
 
     runHook postInstall
   '';
+
+  passthru.updateScript = unstableGitUpdater { };
 
   meta = {
     description = "支持特殊弹幕的xml转ass格式转换工具 ";
