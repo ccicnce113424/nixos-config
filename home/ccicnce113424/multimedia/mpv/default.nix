@@ -1,4 +1,9 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  lib,
+  host,
+  ...
+}:
 {
   programs.mpv = {
     enable = true;
@@ -9,6 +14,11 @@
         mpris
         sponsorblock
         mpv-image-viewer.image-positioning
+      ];
+      extraMakeWrapperArgs = lib.optionals host.hostCfg.gpu.nvidia [
+        "--set"
+        "ENABLE_HDR_WSI"
+        "1"
       ];
     };
     config = {
