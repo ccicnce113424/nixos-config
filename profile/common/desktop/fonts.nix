@@ -15,7 +15,7 @@
       noto-fonts-color-emoji
       noto-fonts-monochrome-emoji
       dejavu_fonts
-      maple-mono.NL-NF-CN
+      maple-mono.NF-CN
       nerd-fonts.symbols-only
       nur.repos.rewine.ttf-wps-fonts
       nur.repos.rewine.ttf-ms-win10
@@ -40,7 +40,7 @@
           "DejaVu Serif"
         ];
         monospace = [
-          "Maple Mono NL NF CN"
+          "Maple Mono NF CN"
           "Noto Sans Mono"
           "Noto Sans Mono CJK SC"
           "Noto Color Emoji"
