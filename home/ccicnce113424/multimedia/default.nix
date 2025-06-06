@@ -7,6 +7,7 @@
     mediainfo
     mediainfo-gui
     tenacity
+    danmakufactory
   ];
 
   services.easyeffects.enable = true;
