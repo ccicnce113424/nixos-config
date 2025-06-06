@@ -56,4 +56,5 @@
       };
     };
   };
+  home.packages = with pkgs; [ playinmpv ];
 }
