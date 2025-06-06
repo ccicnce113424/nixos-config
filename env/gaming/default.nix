@@ -11,7 +11,10 @@
   programs.steam = {
     enable = true;
     extest.enable = true;
-    extraCompatPackages = with pkgs; [ proton-ge-bin ];
+    extraCompatPackages = with pkgs; [
+      proton-ge-bin
+      luxtorpeda
+    ];
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;

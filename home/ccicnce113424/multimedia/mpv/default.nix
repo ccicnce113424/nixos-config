@@ -2,6 +2,15 @@
 {
   programs.mpv = {
     enable = true;
+    package = pkgs.mpv-vapoursynth.override {
+      scripts = with pkgs.mpvScripts; [
+        thumbfast
+        uosc
+        mpris
+        sponsorblock
+        mpv-image-viewer.image-positioning
+      ];
+    };
     config = {
       vo = "gpu-next";
       target-colorspace-hint = true;
@@ -30,12 +39,5 @@
         audio-spdif = "aac,ac3,dts-hd,eac3,mp3,truehd";
       };
     };
-    scripts = with pkgs.mpvScripts; [
-      thumbfast
-      uosc
-      mpris
-      sponsorblock
-      mpv-image-viewer.image-positioning
-    ];
   };
 }
