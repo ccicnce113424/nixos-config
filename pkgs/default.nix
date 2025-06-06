@@ -8,4 +8,5 @@ rec {
     inherit danmakufactory;
     buildLua = pkgs.mpvScripts.buildLua;
   };
+  playinmpv = pkgs.callPackage ./playinmpv { };
 }
