@@ -4,9 +4,7 @@ rec {
 
   shijima-qt = pkgs.callPackage ./shijima-qt { };
   danmakufactory = pkgs.callPackage ./danmakufactory { };
-  uosc-danmaku = pkgs.callPackage ./uosc-danmaku {
-    inherit danmakufactory;
-    buildLua = pkgs.mpvScripts.buildLua;
-  };
+  uosc-danmaku = pkgs.mpvScripts.callPackage ./uosc-danmaku { inherit danmakufactory; };
   playinmpv = pkgs.callPackage ./playinmpv { };
+  wpsoffice-365 = pkgs.libsForQt5.callPackage ./wpsoffice-365 { };
 }
