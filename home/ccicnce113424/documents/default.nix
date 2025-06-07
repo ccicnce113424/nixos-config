@@ -5,6 +5,6 @@
     hunspell
     hunspellDicts.en_US
 
-    wpsoffice-cn
+    wpsoffice-365
   ];
 }
