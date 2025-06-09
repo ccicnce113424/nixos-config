@@ -2,14 +2,9 @@
 {
   imports = [ inputs.flake-parts.flakeModules.easyOverlay ];
   perSystem =
+    { pkgs, config, ... }:
     {
-      pkgs,
-      config,
-      inputs',
-      ...
-    }:
-    {
-      packages = import ./default.nix { inherit pkgs inputs'; };
+      packages = import ./default.nix { inherit pkgs; };
       overlayAttrs = config.packages;
       apps.ccic-hello = {
         type = "app";

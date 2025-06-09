@@ -56,15 +56,5 @@
       };
     };
   };
-  home.packages = [
-    # pkgs.playinmpv
-    (pkgs.writeShellScriptBin "mpv-url-handler" (builtins.readFile ./mpv-url-handler.sh))
-  ];
-  # xdg.desktopEntries.mpv-url-handler = {
-  #   type = "Application";
-  #   name = "MPV URL Handler";
-  #   comment = "Handle MPV URLs";
-  #   exec = "${lib.getExe (pkgs.writeShellScriptBin "mpv-url-handler" (builtins.readFile ./mpv-url-handler.sh))} %u";
-  #   mimeType = [ "x-scheme-handler/mpv" ];
-  # };
+  home.packages = with pkgs; [ mpv-handler ];
 }
