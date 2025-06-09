@@ -22,22 +22,22 @@ rec {
       url = "github:nix-community/NUR";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        "flake-parts".follows = "flake-parts";
-        "treefmt-nix".follows = "treefmt-nix";
+        flake-parts.follows = "flake-parts";
+        treefmt-nix.follows = "treefmt-nix";
       };
     };
     daeuniverse = {
       url = "github:daeuniverse/flake.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        "flake-parts".follows = "flake-parts";
+        flake-parts.follows = "flake-parts";
       };
     };
     nix-gaming = {
       url = "github:fufexan/nix-gaming";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        "flake-parts".follows = "flake-parts";
+        flake-parts.follows = "flake-parts";
       };
     };
     umu = {
@@ -49,6 +49,15 @@ rec {
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
+      };
+    };
+    nix-packages = {
+      url = "github:ccicnce113424/nix-packages";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        treefmt-nix.follows = "treefmt-nix";
+        flake-compat.follows = "flake-compat";
       };
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

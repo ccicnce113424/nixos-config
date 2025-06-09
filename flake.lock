@@ -222,6 +222,35 @@
         "type": "github"
       }
     },
+    "nix-packages": {
+      "inputs": {
+        "flake-compat": [
+          "flake-compat"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1749461927,
+        "narHash": "sha256-5q22csv/Ddln4neKaNLZ3EzUtgVcAJouQ3RQeooqoxE=",
+        "owner": "ccicnce113424",
+        "repo": "nix-packages",
+        "rev": "910fca49e2f98649967f48928c436ec8c9e59d50",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ccicnce113424",
+        "repo": "nix-packages",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1749285348,
@@ -266,11 +295,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749447216,
-        "narHash": "sha256-9QeExxJBu8BDy5XMT4HDBif89OFBal/MdhLlgA1unRw=",
+        "lastModified": 1749459420,
+        "narHash": "sha256-JV1u6FkatmLPdVLl5Jkuibaw4SJNJ8nXN5hpoE1IwCQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "e6b2b3c3407b1b964d0f9c874438ca98b9ecb66b",
+        "rev": "b40eb65f7baf98d65ceb49510c1d55211b72a508",
         "type": "github"
       },
       "original": {
@@ -311,6 +340,7 @@
         "home-manager": "home-manager",
         "nix-flatpak": "nix-flatpak",
         "nix-gaming": "nix-gaming",
+        "nix-packages": "nix-packages",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
         "plasma-manager": "plasma-manager",
