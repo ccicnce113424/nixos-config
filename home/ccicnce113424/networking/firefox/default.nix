@@ -37,6 +37,7 @@
           ruffle_rs
           floccus
           bitwarden
+          cookies-txt
         ];
       };
     };
