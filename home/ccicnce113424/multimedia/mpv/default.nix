@@ -18,7 +18,7 @@
           mpv-image-viewer.image-positioning
         ]
         ++ [
-          pkgs.uosc-danmaku
+          pkgs.uosc-danmaku-git
         ];
       extraMakeWrapperArgs = lib.optionals host.hostCfg.gpu.nvidia or false [
         "--set"
