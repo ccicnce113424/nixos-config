@@ -98,6 +98,12 @@ rec {
       "https://chaotic-nyx.cachix.org/"
       "https://numtide.cachix.org"
       "https://nix-gaming.cachix.org"
+
+      "https://guanran928.cachix.org"
+      "https://rewine.cachix.org"
+      "https://rycee.cachix.org"
+      "https://xddxdd.cachix.org"
+
       # "https://cache.garnix.io"
     ];
     extra-trusted-public-keys = [
@@ -105,6 +111,12 @@ rec {
       "chaotic-nyx.cachix.org-1:HfnXSw4pj95iI/n17rIDy40agHj12WfF+Gqk6SonIT8"
       "numtide.cachix.org-1:2ps1kLBUWjxIneOy1Ik6cQjb41X0iXVXeHigGmycPPE="
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
+
+      "guanran928.cachix.org-1:BE/iBCj2/pqJXG908wHRrcaV0B2fC+KbFjHsXY6b91c="
+      "rewine.cachix.org-1:aOIg9PvwuSefg59gVXXxGIInHQI9fMpskdyya2xO+7I="
+      "rycee.cachix.org-1:TiiXyeSk0iRlzlys4c7HiXLkP3idRf20oQ/roEUAh/A="
+      "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
+
       # "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     ];
   };
