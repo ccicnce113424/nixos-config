@@ -7,7 +7,7 @@
     mediainfo
     mediainfo-gui
     tenacity
-    danmakufactory
+    danmakufactory-git
 
     oneanime
     kazumi
