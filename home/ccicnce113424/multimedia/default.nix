@@ -8,6 +8,10 @@
     mediainfo-gui
     tenacity
     danmakufactory
+
+    oneanime
+    kazumi
+    venera
   ];
 
   services.easyeffects.enable = true;
