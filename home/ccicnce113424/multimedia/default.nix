@@ -8,6 +8,7 @@
     mediainfo-gui
     tenacity
     danmakufactory-git
+    splayer-git
 
     oneanime
     kazumi
