@@ -10,41 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     name: Build LiveCD
     steps:
-      - name: Purge unnecessary things
-        uses: wimpysworld/nothing-but-nix@main
-        with:
-          hatchet-protocol: "rampage"
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
         with:
-          nix_path: nixpkgs=channel:nixpkgs-unstable
+          nix_path: nixpkgs=channel:nixos-unstable
           extra_nix_config: |
             accept-flake-config = true
-
-      # use following when pnpm issue is fixed
-      # https://github.com/nixbuild/nix-quick-install-action/issues/63
-
-      # - name: Install Nix
-      #   uses: nixbuild/nix-quick-install-action@v30
-      #   with:
-      #     nix_conf: |
-      #       extra-substituters = https://nix-community.cachix.org
-      #       extra-trusted-public-keys = nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
-
-      # - name: Restore and save Nix store
-      #   uses: nix-community/cache-nix-action@v6
-      #   with:
-      #     primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
-      #     restore-prefixes-first-match: nix-${{ runner.os }}-
-      #     gc-max-store-size-linux: 3G
-      #     purge: true
-      #     purge-prefixes: nix-${{ runner.os }}-
-      #     purge-last-accessed: 259200
-      #     purge-created: 604800
 
       - name: Build LiveCD
         run: |
