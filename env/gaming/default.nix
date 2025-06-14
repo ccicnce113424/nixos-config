@@ -45,22 +45,20 @@
     # "com.heroicgameslauncher.hgl"
   ];
 
-  environment.systemPackages =
-    with pkgs;
-    [
-      lutris
-      heroic
+  environment.systemPackages = with pkgs; [
+    lutris
+    heroic
 
-      protonup-qt
+    protonup-qt
 
-      hmcl
-      graalvmPackages.graalvm-ce
-    ]
-    ++ (with inputs'.nix-gaming.packages; [
-      dxvk-nvapi-vkreflex-layer
-      umu-launcher
-      (osu-lazer-tachyon-bin.override {
-        pipewire_latency = "128/48000";
-      })
-    ]);
+    hmcl
+    graalvmPackages.graalvm-ce
+
+    # following packages are from nix0gaming
+    dxvk-nvapi-vkreflex-layer
+    umu-launcher
+    (osu-lazer-tachyon-bin.override {
+      pipewire_latency = "128/48000";
+    })
+  ];
 }

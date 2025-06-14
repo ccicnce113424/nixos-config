@@ -1,11 +1,11 @@
 {
   pkgs,
   inputs,
-  inputs',
   ...
 }:
 let
-  wine = inputs'.nix-gaming.packages.wine-tkg-ntsync;
+  # from nix-gaming
+  wine = pkgs.wine-tkg-ntsync;
 in
 {
   imports = [ inputs.nix-gaming.nixosModules.ntsync ];
@@ -18,7 +18,8 @@ in
         ln -s ${wine}/bin/wine $out/bin/wine64
       '')
     ]
-    ++ (with inputs'.nix-gaming.packages; [
+    ++ (with pkgs; [
+      # following packages are from nix-gaming
       wineprefix-preparer
       winetricks-git
     ]);
