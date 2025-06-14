@@ -35,6 +35,11 @@
     enableZshIntegration = true;
   };
 
+  programs.pay-respects = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   home.packages = with pkgs; [
     dust
     tokei
