@@ -58,7 +58,7 @@
     ]
     ++ (with inputs'.nix-gaming.packages; [
       dxvk-nvapi-vkreflex-layer
-      (osu-lazer-bin.override {
+      (osu-lazer-tachyon-bin.override {
         pipewire_latency = "128/48000";
       })
     ])
