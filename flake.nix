@@ -40,10 +40,6 @@ rec {
         flake-parts.follows = "flake-parts";
       };
     };
-    umu = {
-      url = "github:Open-Wine-Components/umu-launcher?dir=packaging/nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     chaotic = {
       url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
       inputs = {
