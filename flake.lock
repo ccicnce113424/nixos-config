@@ -344,8 +344,7 @@
         "nixpkgs": "nixpkgs",
         "nur": "nur",
         "plasma-manager": "plasma-manager",
-        "treefmt-nix": "treefmt-nix",
-        "umu": "umu"
+        "treefmt-nix": "treefmt-nix"
       }
     },
     "rust-analyzer-src": {
@@ -382,28 +381,6 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "umu": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "dir": "packaging/nix",
-        "lastModified": 1749871705,
-        "narHash": "sha256-h8MqN18V27ZYsWnrDyNioGSMgXCeXqfwqK4jvwdTXkc=",
-        "owner": "Open-Wine-Components",
-        "repo": "umu-launcher",
-        "rev": "5194507371d76025ffbd9199b833dcc55324e372",
-        "type": "github"
-      },
-      "original": {
-        "dir": "packaging/nix",
-        "owner": "Open-Wine-Components",
-        "repo": "umu-launcher",
         "type": "github"
       }
     }
