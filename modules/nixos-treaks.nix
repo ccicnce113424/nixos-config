@@ -16,7 +16,7 @@ let
       ++ lib.mapAttrsToList (
         name: text:
         pkgs.symlinkJoin {
-          inherit name;
+          name = "${name}-cmdalias";
           paths = [
             (pkgs.writeShellScriptBin name text)
             (pkgs.makeDesktopItem {
