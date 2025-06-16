@@ -51,7 +51,6 @@
     protonup-qt
 
     hmcl
-    graalvmPackages.graalvm-ce
 
     # following packages are from nix0gaming
     dxvk-nvapi-vkreflex-layer
