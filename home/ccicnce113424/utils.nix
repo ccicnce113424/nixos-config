@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  osConfig,
-  ...
-}:
+{ pkgs, ... }:
 {
   services.flatpak = {
     enable = true;
@@ -18,13 +13,6 @@
   };
 
   fonts.fontconfig.enable = true;
-
-  xdg.desktopEntries = lib.mapAttrs (name: _: {
-    inherit name;
-    exec = name;
-    terminal = true;
-    comment = "run \"${name}\"";
-  }) osConfig.cmdAliases;
 
   home.packages = with pkgs; [
     bitwarden-desktop
