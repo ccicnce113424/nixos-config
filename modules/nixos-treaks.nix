@@ -13,15 +13,20 @@ let
         git
         ccic-hello
       ]
-      ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAlias
       ++ lib.mapAttrsToList (
-        name: _:
-        pkgs.makeDesktopItem {
+        name: text:
+        pkgs.symlinkJoin {
           inherit name;
-          desktopName = name;
-          exec = name;
-          terminal = true;
-          comment = "run \"${name}\"";
+          paths = [
+            (pkgs.writeShellScriptBin name text)
+            (pkgs.makeDesktopItem {
+              inherit name;
+              desktopName = name;
+              exec = name;
+              terminal = true;
+              comment = "run \"${name}\"";
+            })
+          ];
         }
       ) config.cmdAlias;
 
