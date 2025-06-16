@@ -13,7 +13,17 @@ let
         git
         ccic-hello
       ]
-      ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAliases;
+      ++ lib.mapAttrsToList pkgs.writeShellScriptBin config.cmdAlias
+      ++ lib.mapAttrsToList (
+        name: _:
+        pkgs.makeDesktopItem {
+          inherit name;
+          desktopName = name;
+          exec = name;
+          terminal = true;
+          comment = "run \"${name}\"";
+        }
+      ) config.cmdAlias;
 
     nix.settings = nixConfig;
     chaotic.nyx.overlay.enable = false;
@@ -22,7 +32,7 @@ let
   };
 in
 {
-  options.cmdAliases = lib.mkOption {
+  options.cmdAlias = lib.mkOption {
     type = lib.types.attrs;
     default = {
       # Commands to add
