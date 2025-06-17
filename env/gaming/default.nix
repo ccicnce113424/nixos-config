@@ -51,6 +51,7 @@
     protonup-qt
 
     hmcl
+    javaPackages.openjfx21
 
     # following packages are from nix0gaming
     dxvk-nvapi-vkreflex-layer
