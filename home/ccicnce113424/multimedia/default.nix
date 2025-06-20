@@ -19,7 +19,7 @@
 
   imports = [
     ./midi.nix
-    ./mpd.nix
+    # ./mpd.nix
     ./mpv
   ];
 }
