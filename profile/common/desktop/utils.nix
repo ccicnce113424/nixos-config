@@ -79,4 +79,6 @@
       userServices = true;
     };
   };
+
+  networking.firewall.allowedUDPPorts = [ 4242 ];
 }

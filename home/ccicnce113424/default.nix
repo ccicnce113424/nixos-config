@@ -9,6 +9,7 @@
     ./documents
     ./zsh.nix
     ./fonts.nix
+    ./inputs.nix
   ];
 
   # Avoid Chinese in the directory names
