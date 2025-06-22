@@ -66,6 +66,7 @@
               sharedModules =
                 [
                   inputs.nix-flatpak.homeManagerModules.nix-flatpak
+                  inputs.lan-mouse.homeManagerModules.default
                   ../home/common
                 ]
                 ++ lib.optional (builtins.elem "plasma" specialArgs.host.env) inputs.plasma-manager.homeManagerModules.plasma-manager;

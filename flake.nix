@@ -52,6 +52,13 @@ rec {
         rust-overlay.follows = "rust-overlay";
       };
     };
+    lan-mouse = {
+      url = "github:feschber/lan-mouse";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        rust-overlay.follows = "rust-overlay";
+      };
+    };
     nix-packages = {
       url = "github:ccicnce113424/nix-packages";
       inputs = {
