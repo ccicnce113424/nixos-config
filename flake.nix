@@ -40,11 +40,16 @@ rec {
         flake-parts.follows = "flake-parts";
       };
     };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     chaotic = {
       url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
+        rust-overlay.follows = "rust-overlay";
       };
     };
     nix-packages = {
