@@ -7,6 +7,8 @@
     [
       dmidecode
       qpwgraph
+      smartmontools
+      lm_sensors
     ]
     ++ (with pkgs.kdePackages; [
       plasma-disks
