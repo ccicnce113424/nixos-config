@@ -4,7 +4,6 @@
     qq
     wechat-uos
     wemeet
-    telegram-desktop
     ayugram-desktop
     tor-browser
     qbittorrent-enhanced
