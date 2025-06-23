@@ -12,6 +12,7 @@
           fcitx5-pinyin-moegirl
           fcitx5-pinyin-zhwiki
           fcitx5-pinyin-minecraft
+          fcitx5-lua
         ]
         ++ (with pkgs.nur.repos.aleksana; [
           fcitx5-pinyin-cedict
