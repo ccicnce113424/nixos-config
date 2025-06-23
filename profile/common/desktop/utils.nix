@@ -30,7 +30,6 @@
   services.fwupd.enable = true;
 
   environment.systemPackages = with pkgs; [
-    smartmontools
     resources
 
     podman-compose
