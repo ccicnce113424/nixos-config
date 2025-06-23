@@ -45,6 +45,11 @@
     tokei
   ];
 
+  programs.nix-index = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   programs = {
     fd.enable = true;
     ripgrep.enable = true;
