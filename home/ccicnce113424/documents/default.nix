@@ -4,6 +4,7 @@
     libreoffice-qt6-fresh
     hunspell
     hunspellDicts.en_US
+    pdf4qt
 
     wpsoffice-cn
   ];
