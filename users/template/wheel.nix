@@ -6,7 +6,7 @@ username: importlist:
     extraGroups = [
       "wheel"
       "networkmanager"
-      "libvirtd"
+      "vboxusers"
       "podman"
       "samba"
     ];

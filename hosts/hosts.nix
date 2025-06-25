@@ -7,7 +7,7 @@ let
       "image"
       "gaming"
       "obs"
-      "virt-manager"
+      "vbox"
       "wine"
     ];
     users = [ "ccicnce113424" ];
