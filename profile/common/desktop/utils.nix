@@ -46,8 +46,6 @@
     defaultNetwork.settings.dns_enabled = true;
   };
 
-  virtualisation.waydroid.enable = true;
-
   xdg = {
     terminal-exec.enable = true;
     portal = {
