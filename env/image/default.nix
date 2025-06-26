@@ -32,6 +32,6 @@ in
   programs.weylus = {
     enable = true;
     openFirewall = true;
-    users = host.users;
+    inherit (host) users;
   };
 }

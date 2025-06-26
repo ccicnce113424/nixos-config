@@ -1,4 +1,3 @@
-{ ... }:
 {
   programs.plasma.powerdevil =
     let

@@ -38,14 +38,11 @@
         [ ]
       else
         [
-          (
-            { ... }:
-            {
-              users.users = lib.genAttrs users (username: {
-                home = "/home/${username}";
-              });
-            }
-          )
+          {
+            users.users = lib.genAttrs users (username: {
+              home = "/home/${username}";
+            });
+          }
         ]
         ++ map (username: ../users/${username}) users;
 

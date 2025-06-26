@@ -12,7 +12,7 @@
   };
 
   config.nixpkgs.pkgs = import inputs.nixpkgs rec {
-    system = host.system;
+    inherit (host) system;
     config =
       {
         allowUnfree = true;

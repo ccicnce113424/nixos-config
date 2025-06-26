@@ -1,4 +1,3 @@
-{ ... }:
 let
   ESP = "/efi";
 in
