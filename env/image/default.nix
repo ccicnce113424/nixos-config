@@ -12,9 +12,9 @@ let
   };
   gimp-combined = pkgs.gimp3-with-plugins.override {
     plugins =
-      lib.filter (
-        pkg: lib.isDerivation pkg && !pkg.meta.broken or false && pkgs.gimp3Plugins.lightning != pkg
-      ) (lib.attrValues pkgs.gimp3Plugins)
+      lib.filter (pkg: lib.isDerivation pkg && !pkg.meta.broken or false) (
+        lib.attrValues pkgs.gimp3Plugins
+      )
       ++ [
         (pkgs.runCommand "gimp-plugin-xsane" { buildInputs = [ xsane ]; } ''
           mkdir -p $out/${gimp-base.targetPluginDir}/xsane
