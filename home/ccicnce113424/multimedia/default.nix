@@ -13,7 +13,7 @@
     oneanime
     kazumi
     venera
-    # animeko
+    animeko
   ];
 
   services.easyeffects.enable = true;

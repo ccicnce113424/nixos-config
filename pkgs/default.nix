@@ -12,4 +12,8 @@
         --replace-fail '"libGL.so.1"' '"${pkgs.libGL}/lib/libGL.so.1"'
       '';
   });
+
+  animeko = pkgs.animeko.overrideAttrs (oldAttrs: {
+    autoPatchelfIgnoreMissingDeps = oldAttrs.autoPatchelfIgnoreMissingDeps ++ [ "libxml2.so.2" ];
+  });
 }
