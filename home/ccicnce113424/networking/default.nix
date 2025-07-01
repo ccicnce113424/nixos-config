@@ -9,6 +9,7 @@
     qbittorrent-enhanced
     motrix
     nheko
+    chatbox
 
     nur.repos.xddxdd.peerbanhelper
   ];
