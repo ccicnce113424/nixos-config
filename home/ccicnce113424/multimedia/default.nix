@@ -13,6 +13,7 @@
     oneanime
     kazumi
     venera
+    animeko
   ];
 
   services.easyeffects.enable = true;
