@@ -38,6 +38,7 @@
       commandLineArgs = [
         "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
       ];
+      enableWideVine = true;
     })
   ];
 }
