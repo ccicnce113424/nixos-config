@@ -38,6 +38,7 @@
           floccus
           bitwarden
           cookies-txt
+          nixpkgs-pr-tracker
         ];
       };
     };
