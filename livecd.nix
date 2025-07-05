@@ -16,7 +16,6 @@
             (modulesPath + "/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix")
           ];
           services.daed = {
-            package = pkgs.daed;
             enable = true;
             openFirewall = {
               enable = true;
