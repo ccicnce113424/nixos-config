@@ -9,6 +9,7 @@
     tenacity
     danmakufactory-git
     splayer-git
+    algermusicplayer
 
     oneanime
     kazumi
