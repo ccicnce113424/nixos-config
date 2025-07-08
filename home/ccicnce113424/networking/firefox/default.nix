@@ -39,6 +39,7 @@
           bitwarden
           cookies-txt
           nixpkgs-pr-tracker
+          chrome-mask
         ];
       };
     };
