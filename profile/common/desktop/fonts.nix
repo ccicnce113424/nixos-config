@@ -10,10 +10,11 @@
     fontDir.enable = true;
     packages = with pkgs; [
       noto-fonts
-      noto-fonts-cjk-sans
-      noto-fonts-cjk-serif
+      noto-fonts-cjk-sans-static
+      noto-fonts-cjk-serif-static
       noto-fonts-color-emoji
       noto-fonts-monochrome-emoji
+      noto-fonts-lgc-plus
       dejavu_fonts
       maple-mono.NF-CN
       lxgw-wenkai-gb
