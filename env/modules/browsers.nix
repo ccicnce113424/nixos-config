@@ -10,7 +10,6 @@
       "widget.use-xdg-desktop-portal.settings" = 1;
       "widget.use-xdg-desktop-portal.location" = 1;
       "widget.use-xdg-desktop-portal.open-uri" = 1;
-      "widget.use-xdg-desktop-portal.native-messaging" = 1;
 
       # Settings for hardware video decoding
       "media.ffmpeg.vaapi.enabled" = true;
