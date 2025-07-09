@@ -6,6 +6,34 @@
   ...
 }:
 let
+  aliasPkg =
+    {
+      name,
+      text,
+      stdenvNoCC,
+      writeShellScriptBin,
+      copyDesktopItems,
+      makeDesktopItem,
+    }:
+    stdenvNoCC.mkDerivation {
+      name = "${name}-cmdalias";
+      src = writeShellScriptBin name text;
+      nativeBuildInputs = [ copyDesktopItems ];
+      desktopItems = [
+        (makeDesktopItem {
+          inherit name;
+          desktopName = name;
+          exec = name;
+          terminal = true;
+          comment = "run \"${name}\"";
+        })
+      ];
+      installPhase = ''
+        runHook preInstall
+        install -D bin/${name} $out/bin/${name}
+        runHook postInstall
+      '';
+    };
   cfg = {
     environment.systemPackages =
       with pkgs;
@@ -14,20 +42,7 @@ let
         ccic-hello
       ]
       ++ lib.mapAttrsToList (
-        name: text:
-        pkgs.symlinkJoin {
-          name = "${name}-cmdalias";
-          paths = [
-            (pkgs.writeShellScriptBin name text)
-            (pkgs.makeDesktopItem {
-              inherit name;
-              desktopName = name;
-              exec = name;
-              terminal = true;
-              comment = "run \"${name}\"";
-            })
-          ];
-        }
+        name: text: pkgs.callPackage aliasPkg { inherit name text; }
       ) config.cmdAlias;
 
     nix.settings = nixConfig;
