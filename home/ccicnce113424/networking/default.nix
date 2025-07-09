@@ -14,5 +14,8 @@
     nur.repos.xddxdd.peerbanhelper
   ];
 
-  imports = [ ./firefox ];
+  imports = [
+    ./firefox.nix
+    ./thunderbird.nix
+  ];
 }
