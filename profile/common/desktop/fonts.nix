@@ -16,6 +16,8 @@
       noto-fonts-monochrome-emoji
       dejavu_fonts
       maple-mono.NF-CN
+      lxgw-wenkai-gb
+      zhuque
       nerd-fonts.symbols-only
       nur.repos.rewine.ttf-wps-fonts
       nur.repos.rewine.ttf-ms-win10
