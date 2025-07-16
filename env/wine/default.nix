@@ -20,6 +20,6 @@ in
     ]);
 
   environment.sessionVariables = {
-    WINE_BIN = lib.getExe wine;
+    WINE_BIN = "/run/current-system/sw/bin/wine";
   };
 }
