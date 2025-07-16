@@ -52,7 +52,7 @@ let
         extraPackages = with pkgs; [ mesa.opencl ];
         extraPackages32 = lib.optional config.enable32Bit (with pkgs; [ mesa.opencl ]);
       };
-      environment.sessionVariables = {
+      environment.variables = {
         RUSTICL_ENABLE = "nouveau";
         RUSTICL_FEATURES = "fp16,fp64";
       };
