@@ -85,4 +85,9 @@
     capSysAdmin = true;
     openFirewall = true;
   };
+
+  programs.localsend = {
+    enable = true;
+    openFirewall = true;
+  };
 }
