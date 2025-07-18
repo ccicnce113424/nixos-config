@@ -26,6 +26,6 @@
 
   programs.nh = {
     enable = true;
-    flake = "/etc/nixos";
+    flake = "~/code/nixos-config";
   };
 }
