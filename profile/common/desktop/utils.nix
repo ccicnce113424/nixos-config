@@ -54,6 +54,17 @@
     };
   };
 
+  # https://github.com/NixOS/nixpkgs/issues/425732
+  pkgsPatch = [
+    (
+      p:
+      p.fetchpatch {
+        url = "https://github.com/NixOS/nixpkgs/pull/425900.patch";
+        hash = "sha256-pbgtYveB3VImn/90zhcHPhmIouK1ue3Y8TCn322gvg8=";
+      }
+    )
+  ];
+
   services.samba = {
     enable = true;
     package = pkgs.sambaFull;
