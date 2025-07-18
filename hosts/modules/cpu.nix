@@ -8,7 +8,7 @@ let
     intel = {
       boot.kernelParams = [ "intel_iommu=on" ];
       hardware.cpu.intel.updateMicrocode = true;
-      pkgsarch = "pkgsx86_64_v3";
+      pkgsArch = "pkgsx86_64_v3";
       nix.settings.system-features = [ "gccarch-x86-64-v3" ];
     };
     amd = {
@@ -17,7 +17,7 @@ let
         # build failed with cachyos-lto
         # ryzen-smu.enable = true;
       };
-      pkgsarch = "pkgsx86_64_v3";
+      pkgsArch = "pkgsx86_64_v3";
       nix.settings.system-features = [ "gccarch-x86-64-v3" ];
     };
   };
