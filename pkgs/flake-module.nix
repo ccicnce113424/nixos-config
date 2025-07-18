@@ -4,8 +4,8 @@
   perSystem =
     { pkgs, config, ... }:
     {
-      packages = import ./default.nix { inherit pkgs; };
-      overlayAttrs = config.packages;
+      legacyPackages = import ./default.nix { inherit pkgs; };
+      overlayAttrs = config.legacyPackages;
       apps.ccic-hello = {
         type = "app";
         program = "${config.packages.ccic-hello}/bin/ccic-hello";
