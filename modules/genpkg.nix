@@ -20,9 +20,10 @@
 
   config.nixpkgs.pkgs =
     let
-      unpatchedPkgs = import inputs.nixpkgs { };
+      unpatchedPkgs = import inputs.nixpkgs { inherit (host) system; };
       patches = map (p: p unpatchedPkgs) config.pkgsPatch;
       patchedPkgs = unpatchedPkgs.applyPatches {
+        name = "patched-nixpkgs";
         src = inputs.nixpkgs;
         inherit patches;
       };
