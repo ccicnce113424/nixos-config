@@ -8,7 +8,7 @@
       overlayAttrs = config.legacyPackages;
       apps.ccic-hello = {
         type = "app";
-        program = "${config.packages.ccic-hello}/bin/ccic-hello";
+        program = "${config.legacyPackages.ccic-hello}/bin/ccic-hello";
       };
     };
   flake.nixosModules.overlay = {
