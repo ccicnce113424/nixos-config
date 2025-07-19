@@ -6,17 +6,17 @@
     {
       treefmt = {
         projectRootFile = "flake.nix";
-        programs.deadnix = {
+        programs.nixfmt = {
           enable = true;
+          package = pkgs.nixfmt-rfc-style;
           priority = 0;
         };
         programs.statix = {
           enable = true;
           priority = 1;
         };
-        programs.nixfmt = {
+        programs.deadnix = {
           enable = true;
-          package = pkgs.nixfmt-rfc-style;
           priority = 2;
         };
         programs.prettier.enable = true;
