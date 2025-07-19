@@ -14,7 +14,7 @@
     oneanime
     kazumi
     venera
-    pixes
+    pixes-git
   ];
 
   services.easyeffects.enable = true;
