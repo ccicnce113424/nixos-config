@@ -3,7 +3,7 @@
   home.packages = with pkgs; [
     nixd
     nil
-    nixfmt-rfc-style
+    nixfmt
     nix-tree
     nix-output-monitor
   ];

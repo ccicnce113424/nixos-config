@@ -8,7 +8,7 @@
         projectRootFile = "flake.nix";
         programs.nixfmt = {
           enable = true;
-          package = pkgs.nixfmt-rfc-style;
+          package = pkgs.nixfmt;
           priority = 0;
         };
         programs.statix = {
