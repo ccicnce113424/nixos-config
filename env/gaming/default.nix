@@ -21,7 +21,8 @@
       enable = true;
       args = [
         "--rt"
-      ] ++ lib.optional (config.networking.hostName == "ccic-desktop") "-r 165";
+      ]
+      ++ lib.optional (config.networking.hostName == "ccic-desktop") "-r 165";
     };
     protontricks.enable = true;
   };

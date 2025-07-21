@@ -59,6 +59,7 @@
           "DejaVu Sans"
         ];
       };
-    } // lib.optionalAttrs config.enable32Bit { cache32Bit = true; };
+    }
+    // lib.optionalAttrs config.enable32Bit { cache32Bit = true; };
   };
 }

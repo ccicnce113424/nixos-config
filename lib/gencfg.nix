@@ -60,13 +60,12 @@
               useUserPackages = true;
               extraSpecialArgs = specialArgs;
               backupFileExtension = "backup";
-              sharedModules =
-                [
-                  inputs.nix-flatpak.homeManagerModules.nix-flatpak
-                  inputs.lan-mouse.homeManagerModules.default
-                  ../home/common
-                ]
-                ++ lib.optional (builtins.elem "plasma" specialArgs.host.env) inputs.plasma-manager.homeManagerModules.plasma-manager;
+              sharedModules = [
+                inputs.nix-flatpak.homeManagerModules.nix-flatpak
+                inputs.lan-mouse.homeManagerModules.default
+                ../home/common
+              ]
+              ++ lib.optional (builtins.elem "plasma" specialArgs.host.env) inputs.plasma-manager.homeManagerModules.plasma-manager;
               users = lib.genAttrs specialArgs.host.users (username: import ../home/${username});
             };
           }
@@ -89,20 +88,19 @@
                 ;
             };
             # system = host.system;
-            modules =
-              [
-                self.nixosModules.genpkg
-                self.nixosModules.nixos-treaks
-                inputs.chaotic.nixosModules.default
-                inputs.daeuniverse.nixosModules.daed
-                inputs.nix-flatpak.nixosModules.nix-flatpak
-              ]
-              ++ systemCfgs host.system or null
-              ++ profileCfgs host.system or null host.profile or null
-              ++ envCfgs host.env or null
-              ++ hostCfgs name
-              ++ userCfgs host.users or null
-              ++ homeManagerCfgs specialArgs;
+            modules = [
+              self.nixosModules.genpkg
+              self.nixosModules.nixos-treaks
+              inputs.chaotic.nixosModules.default
+              inputs.daeuniverse.nixosModules.daed
+              inputs.nix-flatpak.nixosModules.nix-flatpak
+            ]
+            ++ systemCfgs host.system or null
+            ++ profileCfgs host.system or null host.profile or null
+            ++ envCfgs host.env or null
+            ++ hostCfgs name
+            ++ userCfgs host.users or null
+            ++ homeManagerCfgs specialArgs;
           }
         ))
       ) hosts;

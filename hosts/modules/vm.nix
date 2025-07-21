@@ -18,7 +18,8 @@ in
 {
   options.hostCfg.vm = {
     enable = lib.mkEnableOption "";
-  } // builtins.mapAttrs (n: _: lib.mkEnableOption n) vmCfg;
+  }
+  // builtins.mapAttrs (n: _: lib.mkEnableOption n) vmCfg;
   config = lib.mkIf cfg.enable (
     lib.mkMerge (
       [

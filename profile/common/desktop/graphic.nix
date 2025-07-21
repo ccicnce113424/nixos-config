@@ -7,7 +7,8 @@
 {
   hardware.graphics = {
     enable = true;
-  } // lib.optionalAttrs config.enable32Bit { enable32Bit = true; };
+  }
+  // lib.optionalAttrs config.enable32Bit { enable32Bit = true; };
 
   services.xserver.enable = true;
   services.xserver.displayManager.startx.enable = true;

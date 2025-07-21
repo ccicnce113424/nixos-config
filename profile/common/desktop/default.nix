@@ -8,5 +8,6 @@ extraModules:
     ../networking.nix
     ../shell.nix
     ./utils.nix
-  ] ++ extraModules;
+  ]
+  ++ extraModules;
 }

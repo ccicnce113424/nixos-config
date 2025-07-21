@@ -31,19 +31,18 @@
     in
     import finalPkgs rec {
       inherit (host) system;
-      config =
-        {
-          allowUnfree = true;
-          permittedInsecurePackages = [
-            "olm-3.2.16"
-          ];
-        }
-        // lib.optionalAttrs host.hostCfg.gpu.nvidia or false {
-          cudaSupport = true;
-        }
-        // lib.optionalAttrs host.hostCfg.gpu.amdgpu or false {
-          rocmSupport = true;
-        };
+      config = {
+        allowUnfree = true;
+        permittedInsecurePackages = [
+          "olm-3.2.16"
+        ];
+      }
+      // lib.optionalAttrs host.hostCfg.gpu.nvidia or false {
+        cudaSupport = true;
+      }
+      // lib.optionalAttrs host.hostCfg.gpu.amdgpu or false {
+        rocmSupport = true;
+      };
       overlays = [
         self.overlays.default
         inputs.nur.overlays.default
