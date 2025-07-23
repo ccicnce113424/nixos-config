@@ -46,12 +46,9 @@
     defaultNetwork.settings.dns_enabled = true;
   };
 
-  xdg = {
-    terminal-exec.enable = true;
-    portal = {
-      enable = true;
-      xdgOpenUsePortal = true;
-    };
+  xdg.portal = {
+    enable = true;
+    xdgOpenUsePortal = true;
   };
 
   services.samba = {
