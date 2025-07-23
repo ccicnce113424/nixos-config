@@ -33,7 +33,7 @@ rec {
       };
     };
     nix-gaming = {
-      url = "github:ccicnce113424/nix-gaming";
+      url = "github:fufexan/nix-gaming";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
