@@ -17,6 +17,7 @@
       noto-fonts-lgc-plus
       dejavu_fonts
       maple-mono.NF-CN
+      arphic-ukai
       lxgw-wenkai-gb
       zhuque
       nerd-fonts.symbols-only
