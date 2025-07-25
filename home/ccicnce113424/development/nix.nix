@@ -6,6 +6,7 @@
     nixfmt
     nix-tree
     nix-output-monitor
+    hydra-check
   ];
   programs.vscode = {
     profiles.default.extensions = with pkgs.vscode-extensions; [
