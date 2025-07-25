@@ -47,6 +47,7 @@
     });
   '';
 
+  # Open port for remote control
   networking.firewall = {
     allowedTCPPorts = [
       3389
