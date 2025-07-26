@@ -6,8 +6,8 @@
     (
       p:
       p.fetchpatch {
-        url = "https://github.com/NixOS/nixpkgs/commit/dbe1d06756992239fbbd2027ad1d6cfcef31280b.patch";
-        hash = "sha256-akpVwrNMxItt5rD+S76HuOMK+NPYpz5tp+h5bB8VHN4=";
+        url = "https://github.com/NixOS/nixpkgs/commit/33853c9c64c6c1da9bc19fd0daed7bc29229250e.patch";
+        hash = "sha256-VIkTvsZdRWUt8VsTKBoHqXVVJSg59kzV+B8hhSFgub8=";
       }
     )
   ];
@@ -17,6 +17,6 @@
     enableKvm = true;
     enableExtensionPack = true;
     addNetworkInterface = false;
-    enableHardening = false;
+    enableHardening = true;
   };
 }
