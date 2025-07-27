@@ -10,6 +10,7 @@
       github.copilot-chat
       github.vscode-pull-request-github
       skellock.just
+      yzhang.markdown-all-in-one
     ];
     # userSettings = {
     #   "files.autoGuessEncoding" = true;
