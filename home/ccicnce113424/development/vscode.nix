@@ -11,6 +11,7 @@
       github.vscode-pull-request-github
       skellock.just
       yzhang.markdown-all-in-one
+      yzane.markdown-pdf
     ];
     # userSettings = {
     #   "files.autoGuessEncoding" = true;
