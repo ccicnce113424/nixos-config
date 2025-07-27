@@ -8,6 +8,4 @@
 
     nur.repos.fym998.wpsoffice-cn-fcitx
   ];
-  programs.texlive.enable = true;
-  programs.pandoc.enable = true;
 }
