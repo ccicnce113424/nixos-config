@@ -3,9 +3,43 @@ rec {
 
   # Sources
   inputs = {
+    chaotic = {
+      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      inputs.home-manager.follows = "home-manager";
+    };
+    daeuniverse = {
+      url = "github:daeuniverse/flake.nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/main.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-gaming = {
+      url = "github:fufexan/nix-gaming";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+    nix-packages = {
+      url = "github:ccicnce113424/nix-packages";
+      inputs = {
+        flake-parts.follows = "flake-parts";
+        treefmt-nix.follows = "treefmt-nix";
+        flake-compat.follows = "flake-compat";
+      };
+    };
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
     };
     plasma-manager = {
       url = "github:nix-community/plasma-manager";
@@ -18,57 +52,11 @@ rec {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nur = {
-      url = "github:nix-community/NUR";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-    daeuniverse = {
-      url = "github:daeuniverse/flake.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-    nix-gaming = {
-      url = "github:fufexan/nix-gaming";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    chaotic = {
-      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-        rust-overlay.follows = "rust-overlay";
-      };
-    };
-    lan-mouse.url = "github:feschber/lan-mouse";
-    lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/main.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nix-packages = {
-      url = "github:ccicnce113424/nix-packages";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        treefmt-nix.follows = "treefmt-nix";
-        flake-compat.follows = "flake-compat";
-      };
-    };
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-parts.url = "github:hercules-ci/flake-parts";
-    nix-flatpak.url = "github:gmodena/nix-flatpak";
     flake-compat.url = "github:edolstra/flake-compat";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    lan-mouse.url = "github:feschber/lan-mouse";
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
   outputs =
