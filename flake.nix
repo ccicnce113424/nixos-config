@@ -107,7 +107,6 @@ rec {
     extra-substituters = [
       "https://nix-community.cachix.org"
       "https://chaotic-nyx.cachix.org/"
-      "https://lan-mouse.cachix.org"
       "https://numtide.cachix.org"
       "https://nix-gaming.cachix.org"
 
@@ -127,7 +126,6 @@ rec {
 
       "ccicnce113424.cachix.org-1:OWV4fSkx7o7TinVCSD98zPG8udShCIjhyaAdOIRNetw="
       "guanran928.cachix.org-1:BE/iBCj2/pqJXG908wHRrcaV0B2fC+KbFjHsXY6b91c="
-      "lan-mouse.cachix.org-1:KlE2AEZUgkzNKM7BIzMQo8w9yJYqUpor1CAUNRY6OyM="
       "rewine.cachix.org-1:aOIg9PvwuSefg59gVXXxGIInHQI9fMpskdyya2xO+7I="
       "rycee.cachix.org-1:TiiXyeSk0iRlzlys4c7HiXLkP3idRf20oQ/roEUAh/A="
       "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="

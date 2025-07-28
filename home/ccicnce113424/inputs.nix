@@ -1,5 +1,9 @@
+{ pkgs, ... }:
 {
-  programs.lan-mouse.enable = true;
+  programs.lan-mouse = {
+    enable = true;
+    package = pkgs.lan-mouse;
+  };
 
   programs.plasma.input = {
     keyboard.numlockOnStartup = "on";
