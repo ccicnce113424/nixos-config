@@ -14,7 +14,7 @@ let
     amd = {
       hardware.cpu.amd = {
         updateMicrocode = true;
-        # build failed with cachyos-lto
+        # TODO: re-enable this when ryzen-smu is fixed
         # ryzen-smu.enable = true;
       };
       pkgsArch = "pkgsx86_64_v3";

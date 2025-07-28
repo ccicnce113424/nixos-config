@@ -35,6 +35,8 @@
   users.groups.gamemode.members = host.users;
 
   hardware.xone.enable = true;
+
+  # TODO: remove this when xpadneo is fixed
   hardware.xpad-noone.enable = lib.mkForce false;
   hardware.xpadneo.enable = true;
 

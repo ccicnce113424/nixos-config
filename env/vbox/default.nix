@@ -1,7 +1,6 @@
 {
   # https://github.com/NixOS/nixpkgs/issues/382233#issuecomment-2888150127
-  # https://github.com/NixOS/nixpkgs/pull/409005
-
+  # TODO: remove this when https://github.com/NixOS/nixpkgs/pull/428689 is merged
   pkgsPatch = [
     (
       p:

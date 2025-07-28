@@ -53,7 +53,7 @@
 
   services.samba = {
     enable = true;
-    # https://github.com/NixOS/nixpkgs/issues/426401
+    # TODO: remove override when cephfs is fixed
     package = pkgs.sambaFull.override { enableCephFS = false; };
     openFirewall = true;
     nsswins = true;
