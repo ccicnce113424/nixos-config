@@ -2,6 +2,7 @@
 {
   programs.firefox = {
     enable = true;
+    languagePacks = [ "zh-CN" ];
     nativeMessagingHosts = with pkgs; [
       kdePackages.plasma-browser-integration
       ff2mpv-rust
