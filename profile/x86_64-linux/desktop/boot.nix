@@ -37,6 +37,7 @@ in
   boot.plymouth = {
     enable = true;
     theme = "bgrt";
+    font = "${pkgs.maple-mono.truetype}/share/fonts/truetype/MapleMono-Regular.ttf";
   };
 
   # Silent boot
