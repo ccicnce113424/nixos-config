@@ -30,6 +30,8 @@
   services.fwupd.enable = true;
 
   environment.systemPackages = with pkgs; [
+    wl-clipboard-rs
+
     resources
 
     podman-compose
