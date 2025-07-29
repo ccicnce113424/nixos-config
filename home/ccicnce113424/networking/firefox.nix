@@ -2,7 +2,10 @@
 {
   programs.firefox = {
     enable = true;
-    nativeMessagingHosts = with pkgs.kdePackages; [ plasma-browser-integration ];
+    nativeMessagingHosts = with pkgs; [
+      kdePackages.plasma-browser-integration
+      ff2mpv-rust
+    ];
     profiles = {
       default = {
         isDefault = true;
@@ -40,6 +43,7 @@
           cookies-txt
           nixpkgs-pr-tracker
           chrome-mask
+          ff2mpv
         ];
       };
     };
