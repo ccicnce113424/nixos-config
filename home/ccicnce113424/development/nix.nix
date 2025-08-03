@@ -2,7 +2,6 @@
 {
   home.packages = with pkgs; [
     nixd
-    nil
     nixfmt
     nix-tree
     nix-output-monitor
