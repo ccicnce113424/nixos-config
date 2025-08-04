@@ -33,7 +33,7 @@ rec {
       };
     };
     nix-gaming = {
-      url = "github:fufexan/nix-gaming";
+      url = "github:ccicnce113424/nix-gaming/osu-lazer-add-post-extract";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";

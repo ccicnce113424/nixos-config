@@ -62,6 +62,9 @@
     umu-launcher
     (osu-lazer-tachyon-bin.override {
       pipewire_latency = "128/48000";
+      postExtract = ''
+        ${lib.getExe pkgs.unzip} ${pkgs.hikariii} -d $out/usr/bin
+      '';
     })
   ];
 }
