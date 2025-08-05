@@ -257,16 +257,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1754328222,
-        "narHash": "sha256-uWRoYZyuqYDQy1oFJOs5N7fFYPbH2z1CdYl+NKSPnDQ=",
-        "owner": "ccicnce113424",
+        "lastModified": 1754187571,
+        "narHash": "sha256-1VvRI2zswUtVijM5iKJRdhtwLH8ASscZuVzhos/zMfs=",
+        "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "f0c161e83d809f4f7dd1d7b7bb342ee1c19bce16",
+        "rev": "40b28f289429ff02f469052224560802472955f0",
         "type": "github"
       },
       "original": {
-        "owner": "ccicnce113424",
-        "ref": "osu-lazer-add-post-extract",
+        "owner": "fufexan",
         "repo": "nix-gaming",
         "type": "github"
       }
