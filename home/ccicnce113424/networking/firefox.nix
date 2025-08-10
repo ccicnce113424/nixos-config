@@ -28,7 +28,7 @@
           bilisponsorblock
           sponsorblock
           aria2-integration
-          immersive-translate
+          kiss-translator
           gesturefy
           scroll_anywhere
           search-by-image
