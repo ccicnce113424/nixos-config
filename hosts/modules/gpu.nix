@@ -15,6 +15,9 @@ let
       environment.variables = {
         AMD_DEBUG = "useaco";
       };
+      environment.systemPackages = with pkgs; [
+        nvtopPackages.amd
+      ];
     };
     nvidia = {
       services.xserver.videoDrivers = [ "nvidia" ];
@@ -41,7 +44,10 @@ let
 
       hardware.nvidia-container-toolkit.enable = true;
 
-      environment.systemPackages = with pkgs; [ vulkan-hdr-layer-kwin6 ];
+      environment.systemPackages = with pkgs; [
+        nvtopPackages.nvidia
+        vulkan-hdr-layer-kwin6
+      ];
     };
     nouveau = {
       services.xserver.videoDrivers = [ "nouveau" ];
