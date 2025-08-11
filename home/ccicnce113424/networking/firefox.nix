@@ -11,7 +11,7 @@
       default = {
         isDefault = true;
         settings = {
-          "intl.locale.requested" = "zh-cn";
+          "intl.locale.requested" = "zh-CN";
           "browser.tabs.closeTabByDblclick" = true;
           "browser.urlbar.keepPanelOpenDuringImeComposition" = true;
           "sidebar.animation.expand-on-hover.duration-ms" = 200;
