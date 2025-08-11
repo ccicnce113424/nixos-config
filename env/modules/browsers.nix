@@ -2,6 +2,7 @@
 {
   programs.firefox = {
     enable = true;
+    languagePacks = [ "zh-CN" ];
     preferences = {
       # Settings for integration
       "widget.use-xdg-desktop-portal.file-picker" = 1;
