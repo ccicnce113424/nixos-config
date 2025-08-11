@@ -1,8 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   programs.firefox = {
     enable = true;
-    languagePacks = [ "zh-CN" ];
+    languagePacks = { CN = [ "zh-CN" ]; }.${config.hostCfg.locale};
     preferences = {
       # Settings for integration
       "widget.use-xdg-desktop-portal.file-picker" = 1;
