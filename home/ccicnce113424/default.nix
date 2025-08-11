@@ -8,7 +8,6 @@
     ./utils.nix
     ./documents
     ./zsh.nix
-    ./fonts.nix
     ./inputs.nix
   ];
 
