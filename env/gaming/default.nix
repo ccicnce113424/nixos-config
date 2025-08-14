@@ -51,6 +51,8 @@
     mangohud
     lutris
     heroic
+    lsfg-vk
+    lsfg-vk-ui
 
     protonup-qt
 
