@@ -20,6 +20,7 @@
   ];
 
   services.easyeffects.enable = true;
+  midi.enable = true;
 
   imports = [
     ./midi.nix
