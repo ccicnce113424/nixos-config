@@ -257,15 +257,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1755339670,
-        "narHash": "sha256-KyCQsjXtv7zTnnh5O4sMe11m3b2bRVNlrcKLBPOwPQ0=",
-        "owner": "fufexan",
+        "lastModified": 1755364968,
+        "narHash": "sha256-5gIIxh5/d+NyGHfxZA2tNl1WJnX8l03noVNKPVcX5vI=",
+        "owner": "ccicnce113424",
         "repo": "nix-gaming",
-        "rev": "ea98e1bf7948da86a3e8f69ddab46e10b5ea4079",
+        "rev": "3c58d5b62cf39e2e5887ea14db9c6dd9637251eb",
         "type": "github"
       },
       "original": {
-        "owner": "fufexan",
+        "owner": "ccicnce113424",
+        "ref": "cnc-ddraw",
         "repo": "nix-gaming",
         "type": "github"
       }
