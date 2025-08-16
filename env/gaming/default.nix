@@ -49,6 +49,7 @@
 
   environment.systemPackages = with pkgs; [
     mangohud
+    libstrangle
     lutris
     heroic
     lsfg-vk
