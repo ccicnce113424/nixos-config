@@ -13,7 +13,7 @@
   };
   environment.systemPackages = with pkgs; [
     # following packages are from nix-gaming
-    wineprefix-preparer
+    (wineprefix-preparer.override { withDdraw = true; })
     winetricks-git
   ];
 }
