@@ -55,6 +55,8 @@
     lsfg-vk
     lsfg-vk-ui
 
+    discord
+
     protonup-qt
 
     hmcl
