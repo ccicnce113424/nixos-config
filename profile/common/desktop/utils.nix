@@ -35,6 +35,7 @@
     resources
 
     podman-compose
+    podman-desktop
     xorg.xwininfo
 
     linux-wifi-hotspot
