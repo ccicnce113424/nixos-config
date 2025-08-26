@@ -16,7 +16,6 @@
     kazumi
     venera
     pixes-git
-    animeko
   ];
 
   services.easyeffects.enable = true;
