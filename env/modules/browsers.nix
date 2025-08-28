@@ -2,6 +2,7 @@
 {
   programs.firefox = {
     enable = true;
+    package = pkgs.firefox-bin;
     languagePacks = { CN = [ "zh-CN" ]; }.${config.hostCfg.locale};
     preferences = {
       # Settings for integration
@@ -20,9 +21,6 @@
       "extensions.pocket.enabled" = false;
       "extensions.autoDisableScopes" = 0;
     };
-    # package = pkgs.wrapFirefox pkgs.firefox-unwrapped.override {
-    #   jemallocSupport = false;
-    # } { };
   };
 
   services.speechd.enable = true;
