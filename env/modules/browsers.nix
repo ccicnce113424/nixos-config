@@ -32,11 +32,10 @@
 
   programs.chromium.enable = true;
   environment.systemPackages = [
-    (pkgs.chromium.override {
+    (pkgs.ungoogled-chromium.override {
       commandLineArgs = [
         "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
       ];
-      enableWideVine = true;
     })
   ];
 }
