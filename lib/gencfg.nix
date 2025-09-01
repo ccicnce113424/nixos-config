@@ -66,7 +66,7 @@
                 inputs.nix-index-database.homeModules.nix-index
                 ../home/common
               ]
-              ++ lib.optional (builtins.elem "plasma" specialArgs.host.env) inputs.plasma-manager.homeManagerModules.plasma-manager;
+              ++ lib.optional (builtins.elem "plasma" specialArgs.host.env) inputs.plasma-manager.homeModules.plasma-manager;
               users = lib.genAttrs specialArgs.host.users (username: import ../home/${username});
             };
           }
