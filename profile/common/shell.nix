@@ -5,7 +5,7 @@
     fuc
     pv
     tree
-    python3Full
+    python3
     zip
     unzipNLS
     p7zip
