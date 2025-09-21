@@ -58,7 +58,8 @@
 
   services.samba = {
     enable = true;
-    package = pkgs.sambaFull;
+    # TODO: remove override when cephfs is fixed
+    package = pkgs.sambaFull.override { enableCephFS = false; };
     openFirewall = true;
     nsswins = true;
     usershares.enable = true;
