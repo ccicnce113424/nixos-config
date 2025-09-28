@@ -6,6 +6,6 @@
     hunspellDicts.en_US
     pdf4qt
 
-    nur.repos.fym998.wpsoffice-cn-fcitx
+    wpsoffice-cn
   ];
 }
