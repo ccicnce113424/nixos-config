@@ -7,7 +7,7 @@
   imports = [ inputs.nix-gaming.nixosModules.wine ];
   programs.wine = {
     enable = true;
-    package = pkgs.wine-tkg-ntsync;
+    package = pkgs.wine-tkg;
     binfmt = true;
     ntsync = true;
   };
