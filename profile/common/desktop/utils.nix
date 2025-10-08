@@ -111,13 +111,5 @@
         hash = "sha256-wrm45msOnbOE+opl7fNT9E1wifc1kw7N8G5BN66NHtw=";
       }
     )
-    (
-      p:
-      p.fetchpatch {
-        name = "fix-allegro-cmake-error.patch";
-        url = "https://github.com/NixOS/nixpkgs/commit/375da09b236f6056cdfb96570ba46a927ad5b53b.patch";
-        hash = "sha256-xUNT9+ogmUTkB1Rg5pufMwpcKyhOUxeqoPL4SEGZfgM=";
-      }
-    )
   ];
 }
