@@ -24,7 +24,7 @@
     kernelParams = [ "iommu=pt" ];
   };
 
-  systemd.oomd.extraConfig = {
+  systemd.oomd.settings.OOM = {
     DefaultMemoryPressureThreshold = "60%";
     DefaultMemoryPressureDurationSec = "10s";
   };
