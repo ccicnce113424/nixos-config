@@ -8,7 +8,7 @@
     mediainfo-gui
     tenacity
     ruffle
-    danmakufactory
+    danmakufactory-git
     splayer-git
     algermusicplayer
 
