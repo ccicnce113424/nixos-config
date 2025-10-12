@@ -101,15 +101,4 @@
     enable = true;
     openFirewall = true;
   };
-
-  pkgsPatch = [
-    (
-      p:
-      p.fetchpatch {
-        name = "fix-taglib-cmake-error.patch";
-        url = "https://github.com/NixOS/nixpkgs/pull/449768.patch";
-        hash = "sha256-wrm45msOnbOE+opl7fNT9E1wifc1kw7N8G5BN66NHtw=";
-      }
-    )
-  ];
 }
