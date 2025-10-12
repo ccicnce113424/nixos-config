@@ -6,4 +6,10 @@
     addNetworkInterface = false;
     enableHardening = true;
   };
+
+  pkgsPatch = [(p: p.fetchpatch {
+    name = "vbox-fix-3d-acceleration.patch";
+    url = "https://github.com/NixOS/nixpkgs/pull/451054.patch";
+    hash = "sha256-BID9s7WL50EQyF6ckhiAjBetd3uNMi7eG5XdLKlS8CU=";
+  })];
 }

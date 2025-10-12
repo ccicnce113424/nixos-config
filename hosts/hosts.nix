@@ -7,8 +7,7 @@ let
       "image"
       "gaming"
       "obs"
-      # FIXME: Temporarily disable VirtualBox due to build failures.
-      # "vbox"
+      "vbox"
       "wine"
     ];
     users = [ "ccicnce113424" ];
