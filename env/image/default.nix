@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  host,
   ...
 }:
 let
@@ -28,10 +29,9 @@ in
     xsane
   ];
 
-  # FIXME: Enable when NixOS/nixpkgs#449776 is resolved.
-  # programs.weylus = {
-  #   enable = true;
-  #   openFirewall = true;
-  #   inherit (host) users;
-  # };
+  programs.weylus = {
+    enable = true;
+    openFirewall = true;
+    inherit (host) users;
+  };
 }
