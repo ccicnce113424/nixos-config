@@ -15,6 +15,7 @@
     kazumi
     venera
     pixes-git
+    piliplus
   ];
 
   services.easyeffects.enable = true;
