@@ -8,7 +8,7 @@
     mediainfo-gui
     tenacity
     ruffle
-    danmakufactory-git
+    danmakufactory
     splayer-git
 
     oneanime
