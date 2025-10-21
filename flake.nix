@@ -58,10 +58,6 @@ rec {
         rust-overlay.follows = "rust-overlay";
       };
     };
-    lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/release-2.93.tar.gz";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nix-packages = {
       url = "github:ccicnce113424/nix-packages";
       inputs = {
