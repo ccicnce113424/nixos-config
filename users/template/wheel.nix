@@ -9,6 +9,7 @@ username: importlist:
       "vboxusers"
       "podman"
       "samba"
+      "rtkit"
     ];
     shell = pkgs.zsh;
   };
