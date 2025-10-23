@@ -9,4 +9,15 @@
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
   };
+
+  pkgsPatch = [
+    (
+      p:
+      p.fetchpatch2 {
+        name = "fix-nheko-qt-610-build.patch";
+        url = "https://github.com/NixOS/nixpkgs/pull/454781.patch";
+        hash = "sha256-e7RLeDzAdbThxO0ytNtfa6dsE/oy0zhEUF52Yoy07eU=";
+      }
+    )
+  ];
 }
