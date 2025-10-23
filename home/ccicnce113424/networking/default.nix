@@ -4,7 +4,7 @@
     qq
     wechat
     wemeet
-    ayugram-desktop
+    telegram-desktop
     tor-browser
     qbittorrent-enhanced
     motrix
