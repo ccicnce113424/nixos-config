@@ -27,4 +27,15 @@
       waylandFrontend = true;
     };
   };
+
+  pkgsPatch = [
+    (
+      p:
+      p.fetchpatch2 {
+        name = "fix-fcitx5-qt.patch";
+        url = "https://github.com/NixOS/nixpkgs/pull/454184.patch";
+        hash = "sha256-IwmlP3UWO4pGPyoteb+L8SrzPchJBTNMQNACbMLD2yM=";
+      }
+    )
+  ];
 }
