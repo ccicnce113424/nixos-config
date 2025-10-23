@@ -23,7 +23,6 @@
       kweather
       filelight
       kfind
-      wallpaper-engine-plugin
       kdialog
       sddm-kcm
       skanpage
