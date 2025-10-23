@@ -1,7 +1,10 @@
 { pkgs, ... }:
 {
   services.dbus.implementation = "broker";
-  services.scx.enable = true;
+  services.scx = {
+    enable = true;
+    scheduler = "scx_bpfland";
+  };
 
   environment.systemPackages = with pkgs; [
     uutils-coreutils-noprefix
