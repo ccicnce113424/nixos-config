@@ -32,7 +32,7 @@
       p.fetchpatch {
         name = "fix-ayugram-qt-610-build.patch";
         url = "https://github.com/NixOS/nixpkgs/pull/454863.patch";
-        hash = "sha256-l/XJzZV7MKJr1LHGiv7Sgx/VFrql6Rc3SWJpj4fKrBU=";
+        hash = "sha256-oGulmK++tnICqzKuki5/Dk0AcPlTVOTqvX/HZeUsR6M=";
       }
     )
   ];
