@@ -31,10 +31,10 @@
   pkgsPatch = [
     (
       p:
-      p.fetchpatch2 {
+      p.fetchpatch {
         name = "fix-fcitx5-qt.patch";
         url = "https://github.com/NixOS/nixpkgs/pull/454184.patch";
-        hash = "sha256-IwmlP3UWO4pGPyoteb+L8SrzPchJBTNMQNACbMLD2yM=";
+        hash = "sha256-fEOyY/N/4c0Fz08tXeTzk5WxfflDnso8Y7M83vfOVnU=";
       }
     )
   ];
