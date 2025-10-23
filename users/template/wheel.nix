@@ -10,6 +10,8 @@ username: importlist:
       "podman"
       "samba"
       "rtkit"
+      "audio"
+      "pipewire"
     ];
     shell = pkgs.zsh;
   };
