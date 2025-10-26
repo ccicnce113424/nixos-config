@@ -13,7 +13,11 @@
   };
   environment.systemPackages = with pkgs; [
     # following packages are from nix-gaming
-    (wineprefix-preparer.override { withDdraw = true; })
+    (wineprefix-preparer.override {
+      withDdraw = true;
+      dxvk-w64 = pkgs.dxvk-gplall-bin-w64;
+      dxvk-w32 = pkgs.dxvk-gplall-bin-w32;
+    })
     winetricks-git
   ];
 }
