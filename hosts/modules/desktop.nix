@@ -59,7 +59,6 @@
 
   services.udev.packages = with pkgs; [
     game-devices-udev-rules
-    android-udev-rules
   ];
 
   services.ipp-usb.enable = true;
