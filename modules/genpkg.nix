@@ -56,5 +56,9 @@
         })
       ];
     };
+
+  # https://github.com/NixOS/nixpkgs/issues/454884
+  disabledModules = [ "hardware/facter/system.nix" ];
+
   imports = [ inputs.nixpkgs.nixosModules.readOnlyPkgs ];
 }
