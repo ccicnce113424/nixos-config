@@ -13,7 +13,6 @@
           libepoxy
         ];
     };
-
   };
 
   services.flatpak = {
