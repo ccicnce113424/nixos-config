@@ -63,8 +63,6 @@
 
   services.ipp-usb.enable = true;
 
-  services.libinput.touchpad.naturalScrolling = true;
-
   i18n.supportedLocales = [
     "zh_CN.UTF-8/UTF-8"
     "en_US.UTF-8/UTF-8"
