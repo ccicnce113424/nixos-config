@@ -1,8 +1,8 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    qq
-    wechat
+    nur.repos.lonerOrz.qq
+    nur.repos.lonerOrz.wechat
     wemeet
     ayugram-desktop
     tor-browser

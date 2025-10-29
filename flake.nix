@@ -112,6 +112,7 @@ rec {
 
       "https://ccicnce113424.cachix.org"
       "https://guanran928.cachix.org"
+      "https://loneros.cachix.org"
       "https://rewine.cachix.org"
       "https://rycee.cachix.org"
       "https://xddxdd.cachix.org"
@@ -126,6 +127,7 @@ rec {
 
       "ccicnce113424.cachix.org-1:OWV4fSkx7o7TinVCSD98zPG8udShCIjhyaAdOIRNetw="
       "guanran928.cachix.org-1:BE/iBCj2/pqJXG908wHRrcaV0B2fC+KbFjHsXY6b91c="
+      "loneros.cachix.org-1:dVCECfW25sOY3PBHGBUwmQYrhRRK2+p37fVtycnedDU="
       "rewine.cachix.org-1:aOIg9PvwuSefg59gVXXxGIInHQI9fMpskdyya2xO+7I="
       "rycee.cachix.org-1:TiiXyeSk0iRlzlys4c7HiXLkP3idRf20oQ/roEUAh/A="
       "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="

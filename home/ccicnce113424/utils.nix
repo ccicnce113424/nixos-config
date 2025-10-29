@@ -17,5 +17,6 @@
   home.packages = with pkgs; [
     bitwarden-desktop
     shijima-qt
+    nur.repos.lonerOrz.linux-wallpaperengine
   ];
 }
