@@ -41,10 +41,10 @@ let
         git
         ccic-hello
       ]
-      ++ lib.mapAttrsToList (
-        # name: text: pkgs.callPackage aliasPkg { inherit name text; }
-        name: text: pkgs.writeShellScriptBin name text
-      ) config.cmdAlias;
+      # ++ lib.mapAttrsToList (
+      #   name: text: pkgs.callPackage aliasPkg { inherit name text; }
+      # ) config.cmdAlias;
+      ++ lib.mapAttrsToList writeShellScriptBin config.cmdAlias;
 
     nix.settings = nixConfig;
     chaotic.nyx.overlay.enable = false;
