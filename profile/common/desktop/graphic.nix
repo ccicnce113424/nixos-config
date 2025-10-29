@@ -17,7 +17,7 @@
   services.kmscon = {
     enable = true;
     hwRender = true;
-    # extraConfig = "font-size=18";
+    extraConfig = "font-size=18";
   };
 
   environment.systemPackages = with pkgs; [
