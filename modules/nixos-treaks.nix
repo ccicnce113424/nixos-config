@@ -6,34 +6,34 @@
   ...
 }:
 let
-  aliasPkg =
-    {
-      name,
-      text,
-      stdenvNoCC,
-      writeShellScriptBin,
-      copyDesktopItems,
-      makeDesktopItem,
-    }:
-    stdenvNoCC.mkDerivation {
-      name = "${name}-cmdalias";
-      src = writeShellScriptBin name text;
-      nativeBuildInputs = [ copyDesktopItems ];
-      desktopItems = [
-        (makeDesktopItem {
-          inherit name;
-          desktopName = name;
-          exec = name;
-          terminal = true;
-          comment = "run \"${name}\"";
-        })
-      ];
-      installPhase = ''
-        runHook preInstall
-        install -D bin/${name} $out/bin/${name}
-        runHook postInstall
-      '';
-    };
+  # aliasPkg =
+  #   {
+  #     name,
+  #     text,
+  #     stdenvNoCC,
+  #     writeShellScriptBin,
+  #     copyDesktopItems,
+  #     makeDesktopItem,
+  #   }:
+  #   stdenvNoCC.mkDerivation {
+  #     name = "${name}-cmdalias";
+  #     src = writeShellScriptBin name text;
+  #     nativeBuildInputs = [ copyDesktopItems ];
+  #     desktopItems = [
+  #       (makeDesktopItem {
+  #         inherit name;
+  #         desktopName = name;
+  #         exec = name;
+  #         terminal = true;
+  #         comment = "run \"${name}\"";
+  #       })
+  #     ];
+  #     installPhase = ''
+  #       runHook preInstall
+  #       install -D bin/${name} $out/bin/${name}
+  #       runHook postInstall
+  #     '';
+  #   };
   cfg = {
     environment.systemPackages =
       with pkgs;
@@ -42,7 +42,8 @@ let
         ccic-hello
       ]
       ++ lib.mapAttrsToList (
-        name: text: pkgs.callPackage aliasPkg { inherit name text; }
+        # name: text: pkgs.callPackage aliasPkg { inherit name text; }
+        name: text: pkgs.writeShellScriptBin name text
       ) config.cmdAlias;
 
     nix.settings = nixConfig;
