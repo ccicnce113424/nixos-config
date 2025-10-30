@@ -16,7 +16,7 @@
       noto-fonts-monochrome-emoji
       noto-fonts-lgc-plus
       dejavu_fonts
-      maple-mono.NF-CN
+      maple-mono.NF-CN-unhinted
       arphic-ukai
       lxgw-wenkai-gb
       zhuque
