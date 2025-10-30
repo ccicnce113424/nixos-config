@@ -2,7 +2,7 @@
 {
   programs.firefox = {
     enable = true;
-    # package = pkgs.firefox-bin;
+    package = pkgs.firefox-bin;
     nativeMessagingHosts = with pkgs; [
       kdePackages.plasma-browser-integration
       ff2mpv-rust
