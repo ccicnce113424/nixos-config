@@ -26,7 +26,7 @@ jobs:
 
       - name: Build LiveCD
         run: |
-          nix build .#nixosConfigurations.livecd.config.system.build.isoImage
+          nix build .#nixosConfigurations.livecd.config.system.build.isoImage --print-build-logs
 
       - name: Upload LiveCD ISO
         uses: actions/upload-artifact@v5

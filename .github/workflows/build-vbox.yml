@@ -32,4 +32,4 @@ jobs:
 
       - name: Build VirtualBox
         run: |
-          nix build .#vbox
+          nix build .#vbox --print-build-logs
