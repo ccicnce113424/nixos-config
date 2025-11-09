@@ -1,4 +1,4 @@
-name: Build LiveCD
+name: Build VirtualBox
 
 on:
   schedule:
@@ -6,13 +6,13 @@ on:
   workflow_dispatch: # allows manual triggering
 
 concurrency:
-  group: build-livecd
+  group: build-vbox
   cancel-in-progress: true
 
 jobs:
-  build-livecd:
+  build:
     runs-on: ubuntu-latest
-    name: Build LiveCD
+    name: Build VirtualBox
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -24,11 +24,12 @@ jobs:
           extra_nix_config: |
             accept-flake-config = true
 
-      - name: Build LiveCD
-        run: |
-          nix build .#nixosConfigurations.livecd.config.system.build.isoImage
-
-      - name: Upload LiveCD ISO
-        uses: actions/upload-artifact@v5
+      - name: Set up Cachix
+        uses: cachix/cachix-action@v16
         with:
-          path: ./result/iso/*.iso
+          name: ccicnce113424 # replace with your Cachix cache name
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Build VirtualBox
+        run: |
+          nix build .#nixosConfigurations.ccic-desktop.config.virtualisation.virtualbox.host.package

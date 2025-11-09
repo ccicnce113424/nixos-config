@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch: # allows manual triggering
   schedule:
-    - cron: "30 2 * * *"
+    - cron: "0 2 * * *"
 
 concurrency:
   group: update-flake-lock
