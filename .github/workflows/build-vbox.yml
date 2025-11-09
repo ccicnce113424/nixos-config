@@ -32,4 +32,4 @@ jobs:
 
       - name: Build VirtualBox
         run: |
-          nix build .#vbox --print-build-logs
+          nix-build -A packages.x86_64-linux.vbox
