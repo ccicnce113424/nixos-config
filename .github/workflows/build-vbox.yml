@@ -32,4 +32,4 @@ jobs:
 
       - name: Build VirtualBox
         run: |
-          nix build .#nixosConfigurations.ccic-desktop.config.virtualisation.virtualbox.host.package
+          nix build .#vbox
