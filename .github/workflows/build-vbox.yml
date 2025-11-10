@@ -32,4 +32,4 @@ jobs:
 
       - name: Build VirtualBox
         run: |
-          nix-build -A packages.x86_64-linux.vbox
+          nix build --no-link --print-out-paths .#vbox | cachix push ccicnce113424
