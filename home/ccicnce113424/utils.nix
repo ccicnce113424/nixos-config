@@ -12,7 +12,7 @@
     uninstallUnmanaged = true;
   };
 
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig.enable = false;
 
   home.packages = with pkgs; [
     bitwarden-desktop
