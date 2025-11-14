@@ -2,7 +2,7 @@
 {
   programs.firefox = {
     enable = true;
-    package = pkgs.firefox-bin;
+    # package = pkgs.firefox-bin;
     languagePacks = { CN = [ "zh-CN" ]; }.${config.hostCfg.locale};
     preferences = {
       # Settings for integration
