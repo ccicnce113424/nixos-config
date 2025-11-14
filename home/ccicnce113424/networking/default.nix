@@ -1,7 +1,8 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    nur.repos.lonerOrz.qq
+    # nur.repos.lonerOrz.qq
+    qq
     wechat
     wemeet
     ayugram-desktop
