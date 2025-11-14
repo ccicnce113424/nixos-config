@@ -19,7 +19,7 @@ jobs:
 
       - uses: wimpysworld/nothing-but-nix@v6
         with:
-          hatchet-protocol: 'rampage'
+          hatchet-protocol: "rampage"
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@main
