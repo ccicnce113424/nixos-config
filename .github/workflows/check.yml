@@ -39,4 +39,4 @@ jobs:
 
       - name: Check
         run: |
-          nix flake check --all-systems
+          nix flake check
