@@ -57,7 +57,7 @@
 
   services.samba = {
     enable = true;
-    package = pkgs.sambaFull;
+    # package = pkgs.sambaFull;
     openFirewall = true;
     nsswins = true;
     usershares.enable = true;
