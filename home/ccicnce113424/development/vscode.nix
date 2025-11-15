@@ -12,6 +12,7 @@
       skellock.just
       yzhang.markdown-all-in-one
       yzane.markdown-pdf
+      ms-vscode.live-server
     ];
     # userSettings = {
     #   "files.autoGuessEncoding" = true;
