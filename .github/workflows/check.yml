@@ -18,13 +18,10 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
+        uses: nixbuild/nix-quick-install-action@v34
         with:
-          extra-conf: |
+          nix_conf: |
             accept-flake-config = true
-
-      - name: Restore and save Nix store
-        uses: DeterminateSystems/magic-nix-cache-action@main
 
       - name: Check
         run: |
