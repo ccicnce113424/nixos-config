@@ -50,4 +50,4 @@ jobs:
             exit 1
           fi
 
-          nix run nixpkgs#nix-fast-build -- --skip-cached --no-nom --no-link
+          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --no-link

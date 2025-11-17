@@ -36,4 +36,4 @@ jobs:
 
       - name: Build VirtualBox
         run: |
-          nix run nixpkgs#nix-fast-build -- --skip-cached --no-nom --no-link --cachix-cache ccicnce113424 --flake .#packages.x86_64-linux.vbox
+          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --no-link --cachix-cache ccicnce113424 --flake .#packages.x86_64-linux.vbox
