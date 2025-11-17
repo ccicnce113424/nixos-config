@@ -39,5 +39,15 @@ jobs:
 
       - name: Check
         run: |
-          nix run nixpkgs#nix-eval-jobs -- --no-instantiate --flake . --select 'flake: builtins.mapAttrs (_: conf: conf.config.system.build.toplevel) flake.outputs.nixosConfigurations'
+          nix run nixpkgs#nix-eval-jobs -- --flake . \
+            --select 'flake: builtins.mapAttrs (_: conf: conf.config.system.build.toplevel) flake.outputs.nixosConfigurations' \
+            | tee nix-eval-jobs.log
+
+          # 如果有任意 JSON 对象包含 error 字段，则失败
+          if jq 'select(has("error"))' nix-eval-jobs.log | grep -q .; then
+            echo "nix-eval-jobs has error:"
+            jq 'select(has("error"))' nix-eval-jobs.log
+            exit 1
+          fi
+
           nix run nixpkgs#nix-fast-build -- --skip-cached --no-nom --no-link
