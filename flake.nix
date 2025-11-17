@@ -82,7 +82,7 @@ rec {
     flake-parts.lib.mkFlake { inherit inputs; } {
       _module.args = { inherit nixConfig; };
       imports = [
-        ./lib/gencfg.nix
+        ./lib/flake-module.nix
         ./modules/flake-module.nix
         ./pkgs/flake-module.nix
         ./hosts/flake-module.nix
