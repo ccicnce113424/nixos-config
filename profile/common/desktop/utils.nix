@@ -99,15 +99,4 @@
     enable = true;
     openFirewall = true;
   };
-
-  pkgsPatch = [
-    (
-      p:
-      p.fetchpatch2 {
-        name = "fix-tenacity.patch";
-        url = "https://github.com/NixOS/nixpkgs/pull/461636.patch";
-        hash = "sha256-sxgu9Zj0I8DYdr9HO1iyC8CwshF/SVeSm3UoHyqJjKk=";
-      }
-    )
-  ];
 }
