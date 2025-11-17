@@ -32,7 +32,8 @@ jobs:
         with:
           name: ccicnce113424 # replace with your Cachix cache name
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          skipPush: true
 
       - name: Build VirtualBox
         run: |
-          nix build --no-link --print-out-paths --print-build-logs .#vbox | cachix push ccicnce113424
+          nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --no-link --cachix-cache ccicnce113424 --flake .#packages.x86_64-linux.vbox

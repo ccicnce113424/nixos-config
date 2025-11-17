@@ -39,4 +39,5 @@ jobs:
 
       - name: Check
         run: |
-          nix flake check
+          nix run github:nix-community/nix-eval-jobs -- --no-instantiate --flake . --select 'flake: builtins.mapAttrs (_: conf: conf.config.system.build.toplevel) flake.outputs.nixosConfigurations'
+          nix run github:Mic92/nix-fast-build -- --skip-cached --no-nom --no-link
