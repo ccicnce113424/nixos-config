@@ -1,18 +1,19 @@
-name: Build VirtualBox
+name: Build Packages
 
 on:
-  schedule:
-    - cron: "10 2 * * *"
+  push:
+    branches:
+      - main
   workflow_dispatch: # allows manual triggering
 
 concurrency:
-  group: build-vbox
+  group: build-pkgs
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Build VirtualBox
+    name: Build Packages
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
@@ -35,4 +36,4 @@ jobs:
 
       - name: Build VirtualBox
         run: |
-          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --no-link --flake .#packages.x86_64-linux.vbox | cachix push ccicnce113424
+          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --no-link --flake .#legacyPackages."x86_64-linux".ci-build | cachix push ccicnce113424

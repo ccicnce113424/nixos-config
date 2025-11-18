@@ -1,7 +1,10 @@
-inputs:
 {
-  _module.args.lib' = {
-    inherit (import ./gencfg.nix inputs) genOSConfig;
-    inherit (import ./lib.nix inputs) findPkgs findPkgs';
+  lib,
+  ...
+}@input:
+{
+  imports = [ ./gencfg.nix ];
+  options.lib'.findPkgs = lib.mkOption {
+    default = (import ./lib.nix input).findPkgs;
   };
 }
