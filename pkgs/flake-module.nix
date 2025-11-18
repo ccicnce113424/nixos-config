@@ -19,15 +19,17 @@
         program = "${config.legacyPackages.ccic-hello}/bin/ccic-hello";
       };
       legacyPackages = import ./default.nix { inherit pkgs; } // {
-        ci-build =
-          (lib.recurseIntoAttrs (
+        ci-build = (
+          lib.recurseIntoAttrs (
             outInputs.config.lib'.findPkgs [
               "virtualbox"
             ] self.nixosConfigurations.ccic-desktop.config.environment.systemPackages
-          ))
-          // {
-            inherit (self.nixosConfigurations.ccic-desktop.config.boot.kernelPackages) kernel;
-          };
+          )
+        )
+        # // {
+        #   inherit (self.nixosConfigurations.ccic-desktop.config.boot.kernelPackages) kernel;
+        # }
+        ;
         top-levels = lib.recurseIntoAttrs (
           builtins.mapAttrs (_: c: c.config.system.build.toplevel) self.nixosConfigurations
         );
