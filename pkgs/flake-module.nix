@@ -20,10 +20,10 @@
       };
       legacyPackages = import ./default.nix { inherit pkgs; } // {
         ci-build = lib.recurseIntoAttrs (
-            outInputs.config.lib'.findPkgs [
-              "virtualbox"
-            ] self.nixosConfigurations.ccic-desktop.config.environment.systemPackages
-          )
+          outInputs.config.lib'.findPkgs [
+            "virtualbox"
+          ] self.nixosConfigurations.ccic-desktop.config.environment.systemPackages
+        )
         # // {
         #   inherit (self.nixosConfigurations.ccic-desktop.config.boot.kernelPackages) kernel;
         # }
