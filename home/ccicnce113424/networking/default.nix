@@ -21,9 +21,11 @@
     ])
     # https://github.com/NixOS/nixpkgs/issues/424868
     ++ lib.optional host.hostCfg.gpu.nvidia or false (
-      pkgs.writeShellScriptBin "AyuGram" ''
-        WEBKIT_DISABLE_DMABUF_RENDERER=1 exec ${pkgs.ayugram-desktop}/bin/AyuGram "$@"
-      ''
+      lib.hiPrio (
+        pkgs.writeShellScriptBin "AyuGram" ''
+          WEBKIT_DISABLE_DMABUF_RENDERER=1 exec ${pkgs.ayugram-desktop}/bin/AyuGram "$@"
+        ''
+      )
     );
 
   imports = [
