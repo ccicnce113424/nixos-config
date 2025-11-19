@@ -7,9 +7,16 @@
     names: pkgsList:
     let
       nameSet = lib.genAttrs names (_: null);
-      filtered = builtins.filter (
-        p: builtins.hasAttr (p.pname or (lib.getName p.name or "")) nameSet
-      ) pkgsList;
+      getPackageName =
+        p:
+        p.pname or (builtins.parseDrvName (
+          p.name or (lib.pipe p [
+            builtins.unsafeDiscardStringContext
+            builtins.baseNameOf
+            (builtins.substring 33 (-1))
+          ])
+        )).name;
+      filtered = builtins.filter (p: builtins.hasAttr (getPackageName p) nameSet) pkgsList;
       groups = builtins.groupBy (p: p.pname) filtered;
     in
     builtins.mapAttrs (_name: pkgs: builtins.head pkgs) groups;
