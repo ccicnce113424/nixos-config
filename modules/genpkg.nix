@@ -41,7 +41,7 @@
         cudaSupport = true;
       }
       // lib.optionalAttrs host.hostCfg.gpu.amdgpu or false {
-        # rocmSupport = true; # Only enable if GPU supports ROCm
+        rocmSupport = true; # Only enable if GPU supports ROCm
       };
       overlays = [
         self.overlays.default
