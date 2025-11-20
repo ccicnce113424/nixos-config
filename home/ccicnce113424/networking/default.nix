@@ -26,7 +26,7 @@
       ayugram-desktop
       tor-browser
       qbittorrent-enhanced
-      motrix
+      imfile
       nheko
       cherry-studio
 
