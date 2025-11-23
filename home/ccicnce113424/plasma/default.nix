@@ -5,7 +5,7 @@
     overrideConfig = true;
 
     panels = [ { floating = true; } ];
-    workspace.colorScheme = "BreezeDark";
+    workspace.lookAndFeel = "org.kde.breezedark.desktop";
 
     fonts = rec {
       fixedWidth = {
@@ -27,7 +27,6 @@
 
     configFile = {
       kwinrc.Wayland.InputMethod = "/run/current-system/sw/share/applications/org.fcitx.Fcitx5.desktop";
-      kdeglobals.KDE.LookAndFeelPackage = "org.kde.breezedark.desktop";
       ksmserverrc.General.loginMode = "restoreSavedSession";
       dolphinrc.IconsMode.IconSize = 64;
 
