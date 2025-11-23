@@ -35,6 +35,7 @@ let
         "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
         "nvidia.NVreg_EnablePCIERelaxedOrderingMode=1"
         "nvidia.NVreg_EnableStreamMemOPs=1"
+        "nvidia.NVreg_UsePageAttributeTable=1"
       ];
       boot.initrd.kernelModules = [
         "nvidia"
