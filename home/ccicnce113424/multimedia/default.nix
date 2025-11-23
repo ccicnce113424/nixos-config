@@ -16,6 +16,7 @@
     venera
     pixes-git
     piliplus
+    lyrica
   ];
 
   services.easyeffects.enable = true;
