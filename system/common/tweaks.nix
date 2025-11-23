@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   services.dbus.implementation = "broker";
   services.scx = {
@@ -7,7 +7,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    uutils-coreutils-noprefix
+    (lib.hiPrio uutils-coreutils-noprefix)
     coreutils-prefixed
     bcachefs-tools
   ];
