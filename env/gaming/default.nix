@@ -3,6 +3,7 @@
   pkgs,
   lib,
   host,
+  inputs',
   ...
 }:
 {
@@ -45,25 +46,26 @@
     # "com.heroicgameslauncher.hgl"
   ];
 
-  environment.systemPackages = with pkgs; [
-    mangohud
-    libstrangle
-    lutris
-    heroic
-    lsfg-vk
-    lsfg-vk-ui
+  environment.systemPackages =
+    (with pkgs; [
+      mangohud
+      libstrangle
+      lutris
+      heroic
+      lsfg-vk
+      lsfg-vk-ui
+      umu-launcher
 
-    discord
+      discord
 
-    protonup-qt
+      protonup-qt
 
-    hmcl
-
-    # following packages are from nix0gaming
-    dxvk-nvapi-vkreflex-layer
-    umu-launcher
-    (osu-lazer-tachyon-bin.override {
-      pipewire_latency = "128/48000";
-    })
-  ];
+      hmcl
+    ])
+    ++ (with inputs'.nix-gaming.packages; [
+      dxvk-nvapi-vkreflex-layer
+      (osu-lazer-tachyon-bin.override {
+        pipewire_latency = "128/48000";
+      })
+    ]);
 }
