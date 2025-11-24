@@ -36,8 +36,6 @@
 
   hardware.xone.enable = true;
 
-  # TODO: remove this when xpadneo is fixed
-  hardware.xpad-noone.enable = lib.mkForce false;
   hardware.xpadneo.enable = true;
 
   services.joycond.enable = true;
