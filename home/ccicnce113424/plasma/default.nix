@@ -9,7 +9,42 @@
     enable = true;
     overrideConfig = true;
 
-    panels = [ { floating = true; } ];
+    panels = [
+      {
+        floating = true;
+        widgets = [
+          "org.kde.plasma.kickoff"
+          "org.kde.plasma.pager"
+          "org.kde.plasma.icontasks"
+          "org.kde.plasma.marginsseparator"
+          {
+            name = pkgs.lyrica-plasmoid.passthru.id;
+            config.Backend = {
+              tlyricMode = 3;
+            };
+          }
+          {
+            name = "plasmusic-toolbar";
+            config.General = {
+              maxSongWidthInPanel = 150;
+              showWhenNoMedia = false;
+            };
+          }
+          {
+            name = "luisbocanegra.audio.visualizer";
+            config.General = {
+              length = 100;
+              noiseReduction = 15;
+              hideWhenIdle = true;
+              idleTimer = 3;
+            };
+          }
+          "org.kde.plasma.systemtray"
+          "org.kde.plasma.digitalclock"
+          "org.kde.plasma.showdesktop"
+        ];
+      }
+    ];
     workspace.lookAndFeel = "org.kde.breezedark.desktop";
 
     fonts = rec {
@@ -43,6 +78,8 @@
   home.packages = with pkgs; [
     lyrica-plasmoid
     kurve
+    plasmusic-toolbar
+    kdePackages.wallpaper-engine-plugin
   ];
 
   imports = [ ./power.nix ];
