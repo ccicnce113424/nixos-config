@@ -4,23 +4,17 @@
   lib,
   ...
 }:
-let
-  cfg = config.midi;
-in
 {
-  options.midi.enable = lib.mkEnableOption "";
-  config = lib.mkIf cfg.enable {
-    services.fluidsynth = {
-      enable = true;
-      soundFont = "${pkgs.soundfont-arachno}/share/soundfonts/arachno.sf2";
-      soundService = "pipewire-pulse";
-    };
-    home.packages = with pkgs; [
-      fluidsynth
-      rosegarden
-    ];
-    home.file.".local/share/soundfonts/default.sf2".source = config.services.fluidsynth.soundFont;
-    # Disable the automatic start of fluidsynth with systemd
-    systemd.user.services.fluidsynth.Install.WantedBy = lib.mkForce [ ];
+  services.fluidsynth = {
+    enable = true;
+    soundFont = "${pkgs.soundfont-arachno}/share/soundfonts/arachno.sf2";
+    soundService = "pipewire-pulse";
   };
+  home.packages = with pkgs; [
+    fluidsynth
+    rosegarden
+  ];
+  home.file.".local/share/soundfonts/default.sf2".source = config.services.fluidsynth.soundFont;
+  # Disable the automatic start of fluidsynth with systemd
+  systemd.user.services.fluidsynth.Install.WantedBy = lib.mkForce [ ];
 }
