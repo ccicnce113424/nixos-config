@@ -12,7 +12,6 @@ in
   config = lib.mkIf cfg.enable {
     services.fluidsynth = {
       enable = true;
-      extraOptions = [ "--sample-rate 48000" ];
       soundFont = "${pkgs.soundfont-arachno}/share/soundfonts/arachno.sf2";
       soundService = "pipewire-pulse";
     };
