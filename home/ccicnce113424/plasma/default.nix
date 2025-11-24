@@ -1,4 +1,9 @@
-{ lib, osConfig, ... }:
+{
+  pkgs,
+  lib,
+  osConfig,
+  ...
+}:
 {
   programs.plasma = {
     enable = true;
@@ -34,6 +39,11 @@
       baloofilerc."Basic Settings".Indexing-Enabled.value = false;
     };
   };
+
+  home.packages = with pkgs; [
+    lyrica
+    kurve
+  ];
 
   imports = [ ./power.nix ];
 }

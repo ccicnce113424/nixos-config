@@ -9,9 +9,6 @@
       qpwgraph
       smartmontools
       lm_sensors
-
-      lyrica
-      kurve
     ]
     ++ (with pkgs.kdePackages; [
       plasma-disks
