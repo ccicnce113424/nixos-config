@@ -14,8 +14,7 @@ let
     amd = {
       hardware.cpu.amd = {
         updateMicrocode = true;
-        # TODO: re-enable this when ryzen-smu is fixed
-        # ryzen-smu.enable = true;
+        ryzen-smu.enable = true;
       };
       pkgsArch = "pkgsx86_64_v3";
       nix.settings.system-features = [ "gccarch-x86-64-v3" ];
