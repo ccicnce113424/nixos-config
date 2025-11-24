@@ -31,7 +31,8 @@
       }
     '';
   };
-  services.mpd-mpris.enable = true;
+
+  # services.mpd-mpris.enable = true;
 
   home.packages = with pkgs; [ cantata ];
 }
