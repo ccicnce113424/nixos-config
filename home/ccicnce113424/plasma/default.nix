@@ -41,7 +41,7 @@
   };
 
   home.packages = with pkgs; [
-    lyrica
+    lyrica-plasmoid
     kurve
   ];
 
