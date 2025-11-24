@@ -20,7 +20,7 @@
 
   # https://github.com/nix-community/home-manager/issues/8185
   # services.easyeffects.enable = true;
-  midi.enable = false;
+  midi.enable = true;
 
   imports = [
     ./midi.nix
