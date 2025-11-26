@@ -36,7 +36,7 @@
               length = 100;
               noiseReduction = 15;
               hideWhenIdle = true;
-              idleTimer = 3;
+              idleTimer = 5;
             };
           }
           "org.kde.plasma.systemtray"
