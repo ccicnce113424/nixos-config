@@ -56,7 +56,7 @@
       lsfg-vk-ui
       umu-launcher
 
-      discord-ptb
+      discord
 
       protonup-qt
 
