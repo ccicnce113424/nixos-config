@@ -43,6 +43,8 @@ let
         "nvidia_drm"
       ];
 
+      hardware.nvidia-container-toolkit.enable = true;
+
       environment.systemPackages = with pkgs; [
         nvtopPackages.nvidia
         vulkan-hdr-layer-kwin6
