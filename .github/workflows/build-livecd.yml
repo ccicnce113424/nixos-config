@@ -2,7 +2,7 @@ name: Build LiveCD
 
 on:
   schedule:
-    - cron: "10 2 * * *"
+    - cron: "0 1 * * *"
   workflow_dispatch: # allows manual triggering
 
 concurrency:
