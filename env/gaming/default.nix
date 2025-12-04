@@ -37,7 +37,7 @@
 
   hardware.xone.enable = true;
 
-  hardware.xpadneo.enable = true;
+  # hardware.xpadneo.enable = true;
 
   services.joycond.enable = true;
 
