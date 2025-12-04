@@ -39,6 +39,8 @@
 
   # hardware.xpadneo.enable = true;
 
+  hardware.xpad-noone.enable = lib.mkForce false;
+
   services.joycond.enable = true;
 
   services.flatpak.packages = [
