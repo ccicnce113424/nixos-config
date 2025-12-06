@@ -28,16 +28,16 @@
     fontconfig = {
       defaultFonts = {
         sansSerif = [
-          "Noto Sans"
           "Noto Sans CJK SC"
+          "Noto Sans"
           "Noto Color Emoji"
           "Noto Emoji"
           "Symbols Nerd Font"
           "DejaVu Sans"
         ];
         serif = [
-          "Noto Serif"
           "Noto Serif CJK SC"
+          "Noto Serif"
           "Noto Color Emoji"
           "Noto Emoji"
           "Symbols Nerd Font"
@@ -45,18 +45,18 @@
         ];
         monospace = [
           "Maple Mono NF CN"
-          "Noto Sans Mono"
-          "Noto Sans Mono CJK SC"
           "Noto Color Emoji"
           "Noto Emoji"
+          "Noto Sans Mono CJK SC"
+          "Noto Sans Mono"
           "DejaVu Sans Mono"
         ];
         emoji = [
           "Noto Color Emoji"
           "Noto Emoji"
           "Symbols Nerd Font"
-          "Noto Sans"
           "Noto Sans CJK SC"
+          "Noto Sans"
           "DejaVu Sans"
         ];
       };
