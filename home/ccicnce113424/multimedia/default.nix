@@ -9,13 +9,14 @@
     tenacity
     ruffle
     danmakufactory
-    splayer-git
+    splayer
 
     oneanime
     kazumi
     venera
     pixes-git
     piliplus
+    loveiwara
   ];
 
   # https://github.com/nix-community/home-manager/issues/8185
