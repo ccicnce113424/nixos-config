@@ -1,18 +1,17 @@
 {
   pkgs,
   inputs,
-  inputs',
   ...
 }:
 {
   imports = [ inputs.nix-gaming.nixosModules.wine ];
   programs.wine = {
     enable = true;
-    package = inputs'.nix-gaming.packages.wine-tkg;
+    package = pkgs.wine-tkg;
     binfmt = true;
     ntsync = true;
   };
-  environment.systemPackages = with inputs'.nix-gaming.packages; [
+  environment.systemPackages = with pkgs; [
     # following packages are from nix-gaming
     (wineprefix-preparer.override {
       withDdraw = true;
