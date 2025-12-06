@@ -37,7 +37,7 @@
 
   hardware.xone.enable = true;
 
-  # hardware.xpadneo.enable = true;
+  hardware.xpadneo.enable = true;
 
   hardware.xpad-noone.enable = lib.mkForce false;
 
