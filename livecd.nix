@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake.nixosConfigurations.livecd = inputs.nixpkgs.lib.nixosSystem {
+  flake.nixosConfigurations.livecd = inputs.nixpkgs.lib.nixosSystem rec {
     system = "x86_64-linux";
     modules = [
       (
@@ -29,12 +29,14 @@
           environment.systemPackages = with pkgs; [
             git
             elinks
+            inputs.nix-packages.packages.${system}.ntfsprogs-plus
           ];
           services.openssh = {
             enable = true;
             settings.PermitRootLogin = "yes";
             openFirewall = true;
           };
+          boot.supportedFilesystems.bcachefs = true;
         }
       )
     ];

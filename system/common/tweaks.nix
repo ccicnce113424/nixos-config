@@ -9,7 +9,7 @@
   environment.systemPackages = with pkgs; [
     (lib.hiPrio uutils-coreutils-noprefix)
     coreutils-prefixed
-    bcachefs-tools
+    ntfsprogs-plus
   ];
 
   # environment.memoryAllocator.provider = "mimalloc";
@@ -25,6 +25,7 @@
 
   boot = {
     kernelParams = [ "iommu=pt" ];
+    supportedFilesystems.bcachefs = true;
   };
 
   systemd.oomd.settings.OOM = {
