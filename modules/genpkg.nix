@@ -47,15 +47,7 @@
         self.overlays.default
         inputs.nur.overlays.default
         inputs.nix-packages.overlays.default
-        # https://github.com/fufexan/nix-gaming/issues/321
-        (
-          final: prev:
-          builtins.removeAttrs (inputs.nix-gaming.overlays.default final prev) [
-            "umu"
-            "umu-launcher"
-            "umu-launcher-unwrapped"
-          ]
-        )
+        inputs.nix-gaming.overlays.default
         (import "${inputs.chaotic}/overlays/cache-friendly.nix" {
           flakes = inputs.chaotic.inputs // {
             self = inputs.chaotic;
