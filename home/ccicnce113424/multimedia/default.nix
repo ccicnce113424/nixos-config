@@ -9,7 +9,7 @@
     tenacity
     ruffle
     danmakufactory
-    splayer
+    splayer-git
 
     oneanime
     kazumi
