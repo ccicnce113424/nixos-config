@@ -17,7 +17,6 @@
       qtmultimedia
       qtwebengine
       yakuake
-      francis
       kcalc
       kclock
       kweather
@@ -25,7 +24,6 @@
       kfind
       kdialog
       sddm-kcm
-      skanpage
     ]);
 
   programs.kde-pim = {
