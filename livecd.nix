@@ -29,7 +29,7 @@
           environment.systemPackages = with pkgs; [
             git
             elinks
-            inputs.nix-packages.packages.${system}.ntfsprogs-plus
+            ntfsprogs-plus
           ];
           services.openssh = {
             enable = true;
