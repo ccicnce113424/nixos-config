@@ -38,7 +38,7 @@
 
   hardware.xpadneo.enable = true;
 
-  hardware.xpad-noone.enable = lib.mkForce false;
+  # hardware.xpad-noone.enable = lib.mkForce false;
 
   services.joycond.enable = true;
 
