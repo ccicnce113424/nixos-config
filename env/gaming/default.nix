@@ -64,8 +64,8 @@
     # following packages are from nix0gaming
     dxvk-nvapi-vkreflex-layer
     umu-launcher
-    (osu-lazer-tachyon-bin.override {
-      pipewire_latency = "128/48000";
-    })
+    # (osu-lazer-tachyon-bin.override {
+    #   pipewire_latency = "128/48000";
+    # })
   ];
 }
