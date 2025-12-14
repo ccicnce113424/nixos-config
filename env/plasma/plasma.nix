@@ -19,7 +19,6 @@
       yakuake
       kcalc
       kclock
-      kweather
       filelight
       kfind
       kdialog
