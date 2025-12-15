@@ -44,7 +44,7 @@ rec {
       inputs.nixpkgs.follows = "nixpkgs";
     };
     chaotic = {
-      url = "github:chaotic-cx/nyx/nyxpkgs-unstable";
+      url = "github:lonerOrz/nyx-loner/main";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";

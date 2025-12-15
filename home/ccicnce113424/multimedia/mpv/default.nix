@@ -5,7 +5,7 @@
 {
   programs.mpv = {
     enable = true;
-    package = pkgs.mpv-vapoursynth.override {
+    package = pkgs.mpv.override {
       scripts =
         with pkgs.mpvScripts;
         [
