@@ -17,7 +17,7 @@
           ];
           services.daed = {
             enable = true;
-            package = pkgs.daed;
+            package = inputs.nix-packages.packages.${system}.daed;
             openFirewall = {
               enable = true;
               port = 12345;
