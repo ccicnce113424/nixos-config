@@ -20,6 +20,8 @@
       "browser.shell.checkDefaultBrowser" = false;
       "extensions.pocket.enabled" = false;
       "extensions.autoDisableScopes" = 0;
+
+      "network.trr.mode" = 5;
     };
   };
 
