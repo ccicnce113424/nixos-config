@@ -54,5 +54,5 @@
       };
     };
   };
-  home.packages = with pkgs; [ mpv-handler ];
+  # home.packages = with pkgs; [ mpv-handler ];
 }
