@@ -3,7 +3,7 @@
   services.dbus.implementation = "broker";
   services.scx = {
     enable = true;
-    scheduler = "scx_bpfland";
+    scheduler = "scx_lavd";
   };
 
   environment.systemPackages = with pkgs; [
