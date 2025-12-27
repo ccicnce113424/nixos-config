@@ -55,7 +55,9 @@
     lsfg-vk
     lsfg-vk-ui
 
-    discord
+    (discord.override {
+      withOpenASAR = true;
+    })
 
     protonup-qt
 
