@@ -55,7 +55,7 @@
     lsfg-vk
     lsfg-vk-ui
 
-    (discord.override {
+    (discord-krisp.override {
       withOpenASAR = true;
     })
 
