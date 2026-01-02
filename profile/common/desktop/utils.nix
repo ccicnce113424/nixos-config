@@ -37,8 +37,6 @@
     podman-desktop
     xorg.xwininfo
 
-    linux-wifi-hotspot
-
     moonlight-qt
   ];
   services.smartd.enable = true;
