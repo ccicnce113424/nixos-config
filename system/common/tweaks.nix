@@ -29,7 +29,7 @@
   };
 
   systemd.oomd.settings.OOM = {
-    DefaultMemoryPressureThreshold = "60%";
+    DefaultMemoryPressureThreshold = "75%";
     DefaultMemoryPressureDurationSec = "10s";
   };
 }
