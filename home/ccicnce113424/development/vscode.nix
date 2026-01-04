@@ -13,6 +13,7 @@
       yzhang.markdown-all-in-one
       yzane.markdown-pdf
       ms-vscode.live-server
+      tomoki1207.pdf
     ];
     # userSettings = {
     #   "files.autoGuessEncoding" = true;
