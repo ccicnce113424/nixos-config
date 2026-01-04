@@ -12,7 +12,7 @@
         p.pname or (builtins.parseDrvName (
           p.name or (lib.pipe p [
             builtins.unsafeDiscardStringContext
-            builtins.baseNameOf
+            baseNameOf
             (builtins.substring 33 (-1))
           ])
         )).name;
