@@ -14,6 +14,7 @@ username: importlist:
       "pipewire"
     ];
     shell = pkgs.zsh;
+    initialPassword = "000000";
   };
   imports = importlist;
 }

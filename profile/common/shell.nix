@@ -17,6 +17,7 @@
 
   programs.zsh.enable = true;
   users.defaultUserShell = pkgs.zsh;
+  users.users.root.initialPassword = "000000";
 
   programs.ssh.startAgent = true;
   services.openssh = {
