@@ -23,6 +23,7 @@
       kfind
       kdialog
       sddm-kcm
+      plasma-firewall
     ]);
 
   programs.kde-pim = {
