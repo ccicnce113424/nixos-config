@@ -37,11 +37,6 @@ let
         "nvidia.NVreg_EnableStreamMemOPs=1"
         "nvidia.NVreg_UsePageAttributeTable=1"
       ];
-      boot.initrd.kernelModules = [
-        "nvidia"
-        "nvidia_modeset"
-        "nvidia_drm"
-      ];
 
       hardware.nvidia-container-toolkit.enable = true;
 
