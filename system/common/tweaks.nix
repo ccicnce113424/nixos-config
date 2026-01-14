@@ -28,6 +28,8 @@
     supportedFilesystems.bcachefs = true;
   };
 
+  services.userborn.enable = true;
+
   systemd.oomd.settings.OOM = {
     DefaultMemoryPressureThreshold = "75%";
     DefaultMemoryPressureDurationSec = "10s";
