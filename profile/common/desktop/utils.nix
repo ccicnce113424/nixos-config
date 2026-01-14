@@ -86,6 +86,8 @@
     ];
   };
 
+  services.firewalld.package = pkgs.firewalld-gui;
+
   services.sunshine = {
     enable = true;
     autoStart = true;
