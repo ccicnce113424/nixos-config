@@ -26,9 +26,15 @@
   boot = {
     kernelParams = [ "iommu=pt" ];
     supportedFilesystems.bcachefs = true;
+    initrd.systemd.enable = true;
   };
 
   services.userborn.enable = true;
+
+  system = {
+    etc.overlay.enable = true;
+    nixos-init.enable = true;
+  };
 
   systemd.oomd.settings.OOM = {
     DefaultMemoryPressureThreshold = "75%";

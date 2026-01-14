@@ -10,7 +10,7 @@ let
       services.xserver.videoDrivers = [ "amdgpu" ];
       hardware.amdgpu = {
         opencl.enable = true;
-        initrd.enable = true;
+        # initrd.enable = true;
       };
       environment.variables = {
         AMD_DEBUG = "useaco";
@@ -37,11 +37,11 @@ let
         "nvidia.NVreg_EnableStreamMemOPs=1"
         "nvidia.NVreg_UsePageAttributeTable=1"
       ];
-      boot.initrd.kernelModules = [
-        "nvidia"
-        "nvidia_modeset"
-        "nvidia_drm"
-      ];
+      # boot.initrd.kernelModules = [
+      #   "nvidia"
+      #   "nvidia_modeset"
+      #   "nvidia_drm"
+      # ];
 
       hardware.nvidia-container-toolkit.enable = true;
 
