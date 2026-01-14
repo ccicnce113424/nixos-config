@@ -7,6 +7,8 @@
     iproute2.enable = true;
   };
 
+  services.firewalld.enable = true;
+
   services.daed = {
     enable = true;
     package = pkgs.daed;
