@@ -34,5 +34,7 @@
 
   # services.mpd-mpris.enable = true;
 
+  services.mpd-discord-rpc.enable = true;
+
   home.packages = with pkgs; [ cantata ];
 }

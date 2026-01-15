@@ -50,14 +50,18 @@
   environment.systemPackages = with pkgs; [
     mangohud
     libstrangle
-    lutris
+
+    # moved to user config
+    # lutris
+
     heroic
     lsfg-vk
     lsfg-vk-ui
 
-    (discord-krisp.override {
-      withOpenASAR = true;
-    })
+    # moved to user config
+    # (discord-krisp.override {
+    #   withOpenASAR = true;
+    # })
 
     protonup-qt
 
