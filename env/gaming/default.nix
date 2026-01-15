@@ -12,7 +12,6 @@
     extest.enable = true;
     extraCompatPackages = with pkgs; [
       proton-ge-bin
-      luxtorpeda
     ];
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;

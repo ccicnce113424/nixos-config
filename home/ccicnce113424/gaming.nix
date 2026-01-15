@@ -2,7 +2,7 @@
 {
   programs.lutris = {
     enable = true;
-    defaultWinePackage = builtins.head osConfig.programs.steam.extraCompatPackages;
+    defaultWinePackage = osConfig.programs.wine.package;
     extraPackages = with pkgs; [
       mangohud
       winetricks
