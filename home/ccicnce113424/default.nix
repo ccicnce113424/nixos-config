@@ -9,6 +9,7 @@
     ./documents
     ./zsh.nix
     ./inputs.nix
+    ./gaming.nix
   ];
 
   # Avoid Chinese in the directory names
