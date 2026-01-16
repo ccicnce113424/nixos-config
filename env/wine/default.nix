@@ -1,6 +1,7 @@
 {
   pkgs,
   inputs,
+  inputs',
   ...
 }:
 {
@@ -12,7 +13,7 @@
     ntsync = true;
   };
   environment.systemPackages = with pkgs; [
-    rpc-bridge
+    inputs'.nix-packages.packages.rpc-bridge
 
     # following packages are from nix-gaming
     (wineprefix-preparer.override {
