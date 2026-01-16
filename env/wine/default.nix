@@ -12,6 +12,8 @@
     ntsync = true;
   };
   environment.systemPackages = with pkgs; [
+    rpc-bridge
+
     # following packages are from nix-gaming
     (wineprefix-preparer.override {
       withDdraw = true;
