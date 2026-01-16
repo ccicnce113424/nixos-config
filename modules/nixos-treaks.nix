@@ -47,7 +47,10 @@ let
       ++ lib.mapAttrsToList writeShellScriptBin config.cmdAlias;
 
     nix.settings = nixConfig;
-    chaotic.nyx.overlay.enable = false;
+    chaotic.nyx = {
+      overlay.enable = false;
+      cache.enable = false;
+    };
 
     system.stateVersion = lib.trivial.release;
   };
