@@ -43,10 +43,8 @@ in
   # Silent boot
   boot.kernelParams = [
     "quiet"
-    "boot.shell_on_fail"
-    "rd.systemd.show_status=false"
-    "rd.udev.log_level=3"
-    "udev.log_priority=3"
+    "udev.log_level=3"
+    "systemd.show_status=auto"
   ];
   boot.consoleLogLevel = 3;
   boot.initrd.verbose = false;
