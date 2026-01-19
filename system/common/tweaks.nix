@@ -25,7 +25,15 @@
 
   boot = {
     kernelParams = [ "iommu=pt" ];
-    supportedFilesystems.bcachefs = true;
+    supportedFilesystems = [
+      "btrfs"
+      "ext4"
+      "f2fs"
+      "xfs"
+      "vfat"
+      # "ntfs"  we use ntfsprogs-plus package instead
+      "bcachefs"
+    ];
     initrd.systemd.enable = true;
   };
 
