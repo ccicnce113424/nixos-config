@@ -15,8 +15,8 @@ in
     servers = [ ];
     # initstepslew is deprecated and we use `makestep` instead
     initstepslew.enabled = false;
-    # we use `rtcsync` instead
-    enableRTCTrimming = false;
+    enableRTCTrimming = true;
+    autotrimThreshold = 1;
 
     extraConfig = ''
       ${
@@ -31,7 +31,6 @@ in
         ) config.networking.timeServers
       }
       makestep 0.1 3
-      rtcsync
     '';
   };
 
