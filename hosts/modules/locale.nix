@@ -15,7 +15,7 @@ let
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
       ];
 
-      networking.timeServers = lib.mkBefore [
+      networking.timeServers = [
         "ntp.tencent.com"
         "ntp1.aliyun.com"
         "ntp.ntsc.ac.cn"
