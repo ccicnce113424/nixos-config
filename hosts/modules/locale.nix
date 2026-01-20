@@ -19,8 +19,9 @@ let
         "ntp.aliyun.com"
         "ntp.tencent.com"
         "ntp.ntsc.ac.cn"
-        "time.cloudflare.com"
+        "ntp.cnnic.cn"
         "cn.pool.ntp.org"
+        "time.cloudflare.com"
       ];
     };
   };
