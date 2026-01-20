@@ -16,10 +16,11 @@ let
       ];
 
       networking.timeServers = [
+        "ntp.aliyun.com"
         "ntp.tencent.com"
-        "ntp1.aliyun.com"
         "ntp.ntsc.ac.cn"
-        "cn.ntp.org.cn"
+        "time.cloudflare.com"
+        "cn.pool.ntp.org"
       ];
     };
   };
