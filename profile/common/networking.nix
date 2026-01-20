@@ -25,7 +25,4 @@
     sshfs
     nixos-firewall-tool
   ];
-
-  services.ntpd-rs.enable = true;
-  services.timesyncd.enable = false;
 }
