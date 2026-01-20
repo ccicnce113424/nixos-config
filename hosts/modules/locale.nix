@@ -14,6 +14,13 @@ let
         # "https://mirror.sjtu.edu.cn/nix-channels/store"
         "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
       ];
+
+      networking.timeServers = lib.mkBefore [
+        "ntp.tencent.com"
+        "ntp1.aliyun.com"
+        "ntp.ntsc.ac.cn"
+        "cn.ntp.org.cn"
+      ];
     };
   };
   cfg = config.hostCfg.locale;
