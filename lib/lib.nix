@@ -10,11 +10,7 @@
       getPackageName =
         p:
         p.pname or (builtins.parseDrvName (
-          p.name or (lib.pipe p [
-            builtins.unsafeDiscardStringContext
-            baseNameOf
-            (builtins.substring 33 (-1))
-          ])
+          p.name or (p |> builtins.unsafeDiscardStringContext |> baseNameOf |> (builtins.substring 33 (-1)))
         )).name;
       filtered = builtins.filter (p: builtins.hasAttr (getPackageName p) nameSet) pkgsList;
       groups = builtins.groupBy (p: p.pname) filtered;
