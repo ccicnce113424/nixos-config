@@ -13,6 +13,8 @@
     libarchive
     progress
     colorized-logs
+    man-pages
+    man-pages-posix
   ];
 
   programs.zsh.enable = true;
