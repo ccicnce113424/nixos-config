@@ -24,6 +24,9 @@
       kdialog
       sddm-kcm
       plasma-firewall
+
+      kdepim-addons
+      akonadi-calendar
     ]);
 
   programs.kde-pim = {

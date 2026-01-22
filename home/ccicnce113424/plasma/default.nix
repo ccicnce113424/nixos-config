@@ -34,7 +34,17 @@
             };
           }
           "org.kde.plasma.systemtray"
-          "org.kde.plasma.digitalclock"
+          {
+            name = "org.kde.plasma.digitalclock";
+            config.Appearance = {
+              enabledCalendarPlugins = [
+                "alternatecalendar"
+                "holidaysevents"
+                "astronomicalevents"
+              ];
+              showWeekNumbers = true;
+            };
+          }
           "org.kde.plasma.showdesktop"
         ];
       }
@@ -63,6 +73,9 @@
       kwinrc.Wayland.InputMethod = "/run/current-system/sw/share/applications/org.fcitx.Fcitx5.desktop";
       ksmserverrc.General.loginMode = "restoreSavedSession";
       dolphinrc.IconsMode.IconSize = 64;
+
+      plasma_calendar_alternatecalendar.General.calendarSystem = "Chinese";
+      plasma_calendar_holiday_regions.General.selectedRegions = "cn_zh-cn";
 
       # BALOO IS COMPLETELY GARBAGE
       baloofilerc."Basic Settings".Indexing-Enabled.value = false;
