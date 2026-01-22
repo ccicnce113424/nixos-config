@@ -5,7 +5,7 @@
 {
   home.packages = with pkgs; [
     qq
-    wechat
+    wechat-uos
     wemeet
     ayugram-desktop
     tor-browser
