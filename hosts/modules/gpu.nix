@@ -28,7 +28,7 @@ let
         nvidiaSettings = true;
         videoAcceleration = true;
         powerManagement.enable = true;
-        package = config.boot.kernelPackages.nvidiaPackages.beta;
+        package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
       };
 
       boot.kernelParams = [
@@ -48,7 +48,7 @@ let
 
       environment.systemPackages = with pkgs; [
         nvtopPackages.nvidia
-        vulkan-hdr-layer-kwin6
+        # vulkan-hdr-layer-kwin6  related vulkan extension has been implemented in vulkan beta driver
       ];
     };
     nouveau = {
