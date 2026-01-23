@@ -13,8 +13,8 @@
       "widget.use-xdg-desktop-portal.open-uri" = 1;
 
       # Settings for hardware video decoding
-      "media.ffmpeg.vaapi.enabled" = true;
-      "widget.dmabuf.force-enabled" = true;
+      "media.hardware-video-decoding.force-enabled" = true;
+      # "widget.dmabuf.force-enabled" = true;
 
       # Behavior settings
       "browser.shell.checkDefaultBrowser" = false;
