@@ -28,7 +28,7 @@ let
         nvidiaSettings = true;
         videoAcceleration = true;
         powerManagement.enable = true;
-        package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+        # package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
       };
 
       boot.kernelParams = [
@@ -50,6 +50,18 @@ let
         nvtopPackages.nvidia
         # vulkan-hdr-layer-kwin6  related vulkan extension has been implemented in vulkan beta driver
       ];
+
+      # custom driver package
+      hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver rec {
+        version = "580.94.16";
+        persistencedVersion = "580.95.05";
+        settingsVersion = "580.95.05";
+        sha256_64bit = "sha256-DqwALfSNPjLsat4Q9Sg44BACNUyqK+kpUxL5CFzLlRc=";
+        openSha256 = "sha256-WWql/WBQyWNG+skZgvUFbNCClVjty3s3+QR6NnJhSF4=";
+        settingsSha256 = "sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
+        persistencedSha256 = "sha256-QCwxXQfG/Pa7jSTBB0xD3lsIofcerAWWAHKvWjWGQtg=";
+        url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
+      };
     };
     nouveau = {
       services.xserver.videoDrivers = [ "nouveau" ];
