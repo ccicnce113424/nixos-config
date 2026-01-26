@@ -17,13 +17,13 @@
           "org.kde.plasma.pager"
           "org.kde.plasma.icontasks"
           "org.kde.plasma.marginsseparator"
-          {
-            name = "plasmusic-toolbar";
-            config.General = {
-              maxSongWidthInPanel = 150;
-              showWhenNoMedia = false;
-            };
-          }
+          # {
+          #   name = "plasmusic-toolbar";
+          #   config.General = {
+          #     maxSongWidthInPanel = 150;
+          #     showWhenNoMedia = false;
+          #   };
+          # }
           {
             name = "luisbocanegra.audio.visualizer";
             config.General = {
