@@ -19,7 +19,7 @@ let
     "services/networking/ntp/chrony.nix"
   ];
   modulePatchedPkgs' = unpatchedPkgs.applyPatches {
-    name = "module-patched-nixpkgs";
+    name = "source";
     src = inputs.nixpkgs;
     patches = modulePatches;
   };
@@ -27,7 +27,7 @@ let
   # Apply package patches
   patches = map (p: p unpatchedPkgs) config.pkgsPatch;
   patchedPkgs = unpatchedPkgs.applyPatches {
-    name = "patched-nixpkgs";
+    name = "source";
     src = modulePatchedPkgs;
     inherit patches;
   };
@@ -45,38 +45,52 @@ in
     default = [ ];
   };
 
-  config.nixpkgs.pkgs = import finalPkgs rec {
-    inherit (host) system;
-    config = {
-      allowUnfree = true;
-      permittedInsecurePackages = [
-        "olm-3.2.16"
+  config = {
+    nixpkgs.pkgs = import finalPkgs rec {
+      inherit (host) system;
+      config = {
+        allowUnfree = true;
+        permittedInsecurePackages = [
+          "olm-3.2.16"
+        ];
+      }
+      // lib.optionalAttrs host.hostCfg.gpu.nvidia or false {
+        cudaSupport = true;
+      }
+      // lib.optionalAttrs host.hostCfg.gpu.amdgpu or false {
+        rocmSupport = true; # Only enable if GPU supports ROCm
+      };
+      overlays = [
+        self.overlays.default
+        inputs.nur.overlays.default
+        inputs.nix-packages.overlays.default
+        inputs.nix-gaming.overlays.default
+        (import "${inputs.chaotic}/overlays/cache-friendly.nix" {
+          flakes = inputs.chaotic.inputs // {
+            self = inputs.chaotic;
+          };
+          nixpkgsConfig = config;
+        })
       ];
-    }
-    // lib.optionalAttrs host.hostCfg.gpu.nvidia or false {
-      cudaSupport = true;
-    }
-    // lib.optionalAttrs host.hostCfg.gpu.amdgpu or false {
-      rocmSupport = true; # Only enable if GPU supports ROCm
     };
-    overlays = [
-      self.overlays.default
-      inputs.nur.overlays.default
-      inputs.nix-packages.overlays.default
-      inputs.nix-gaming.overlays.default
-      (import "${inputs.chaotic}/overlays/cache-friendly.nix" {
-        flakes = inputs.chaotic.inputs // {
-          self = inputs.chaotic;
-        };
-        nixpkgsConfig = config;
-      })
-    ];
+
+    # Prevent GC
+    nix.registry = {
+      nixpkgs-module-patched.to = {
+        type = "path";
+        path = modulePatchedPkgs.outPath;
+      };
+      nixpkgs-patched.to = {
+        type = "path";
+        path = finalPkgs.outPath;
+      };
+    };
   };
 
   imports = [
     inputs.nixpkgs.nixosModules.readOnlyPkgs
   ]
-  ++ (map (path: modulePatchedPkgs + "/nixos/modules/" + path) replaceModules);
+  ++ (map (path: modulePatchedPkgs.outPath + "/nixos/modules/" + path) replaceModules);
 
   disabledModules = replaceModules;
 }
