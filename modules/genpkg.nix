@@ -6,6 +6,33 @@
   host,
   ...
 }:
+let
+  unpatchedPkgs = import inputs.nixpkgs { inherit (host) system; };
+  # Add patches which modify nixpkgs modules here to prevent infinite recursion
+  modulePatches = map unpatchedPkgs.fetchpatch [
+    {
+      url = "https://github.com/NixOS/nixpkgs/pull/482959.patch";
+      hash = "sha256-LRkAm4QRQq/guCFE7l89tCwAG7Pjmv2D2cxM4pvynis=";
+    }
+  ];
+  replaceModules = [
+    "services/networking/ntp/chrony.nix"
+  ];
+  modulePatchedPkgs' = unpatchedPkgs.applyPatches {
+    name = "module-patched-nixpkgs";
+    src = inputs.nixpkgs;
+    patches = modulePatches;
+  };
+  modulePatchedPkgs = if [ ] == modulePatches then inputs.nixpkgs else modulePatchedPkgs';
+  # Apply package patches
+  patches = map (p: p unpatchedPkgs) config.pkgsPatch;
+  patchedPkgs = unpatchedPkgs.applyPatches {
+    name = "patched-nixpkgs";
+    src = modulePatchedPkgs;
+    inherit patches;
+  };
+  finalPkgs = if [ ] == patches then modulePatchedPkgs else patchedPkgs;
+in
 {
   options.pkgsArch = lib.mkOption {
     type = lib.types.str;
@@ -18,44 +45,38 @@
     default = [ ];
   };
 
-  config.nixpkgs.pkgs =
-    let
-      unpatchedPkgs = import inputs.nixpkgs { inherit (host) system; };
-      patches = map (p: p unpatchedPkgs) config.pkgsPatch;
-      patchedPkgs = unpatchedPkgs.applyPatches {
-        name = "patched-nixpkgs";
-        src = inputs.nixpkgs;
-        inherit patches;
-      };
-      finalPkgs = if [ ] == patches then inputs.nixpkgs else patchedPkgs;
-    in
-    import finalPkgs rec {
-      inherit (host) system;
-      config = {
-        allowUnfree = true;
-        permittedInsecurePackages = [
-          "olm-3.2.16"
-        ];
-      }
-      // lib.optionalAttrs host.hostCfg.gpu.nvidia or false {
-        cudaSupport = true;
-      }
-      // lib.optionalAttrs host.hostCfg.gpu.amdgpu or false {
-        rocmSupport = true; # Only enable if GPU supports ROCm
-      };
-      overlays = [
-        self.overlays.default
-        inputs.nur.overlays.default
-        inputs.nix-packages.overlays.default
-        inputs.nix-gaming.overlays.default
-        (import "${inputs.chaotic}/overlays/cache-friendly.nix" {
-          flakes = inputs.chaotic.inputs // {
-            self = inputs.chaotic;
-          };
-          nixpkgsConfig = config;
-        })
+  config.nixpkgs.pkgs = import finalPkgs rec {
+    inherit (host) system;
+    config = {
+      allowUnfree = true;
+      permittedInsecurePackages = [
+        "olm-3.2.16"
       ];
+    }
+    // lib.optionalAttrs host.hostCfg.gpu.nvidia or false {
+      cudaSupport = true;
+    }
+    // lib.optionalAttrs host.hostCfg.gpu.amdgpu or false {
+      rocmSupport = true; # Only enable if GPU supports ROCm
     };
+    overlays = [
+      self.overlays.default
+      inputs.nur.overlays.default
+      inputs.nix-packages.overlays.default
+      inputs.nix-gaming.overlays.default
+      (import "${inputs.chaotic}/overlays/cache-friendly.nix" {
+        flakes = inputs.chaotic.inputs // {
+          self = inputs.chaotic;
+        };
+        nixpkgsConfig = config;
+      })
+    ];
+  };
 
-  imports = [ inputs.nixpkgs.nixosModules.readOnlyPkgs ];
+  imports = [
+    inputs.nixpkgs.nixosModules.readOnlyPkgs
+  ]
+  ++ (map (path: modulePatchedPkgs + "/nixos/modules/" + path) replaceModules);
+
+  disabledModules = replaceModules;
 }
