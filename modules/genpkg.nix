@@ -14,9 +14,17 @@ let
       url = "https://github.com/NixOS/nixpkgs/pull/482959.patch";
       hash = "sha256-LRkAm4QRQq/guCFE7l89tCwAG7Pjmv2D2cxM4pvynis=";
     }
+    # {
+    #   url = "https://github.com/NixOS/nixpkgs/pull/391574.patch";
+    #   hash = "sha256-VPJ84atxP4CgkkzGkNmmWI4sDxwvjX5H/+YRi3/uXqk=";
+    # }
   ];
   replaceModules = [
+    # 482959
     "services/networking/ntp/chrony.nix"
+    # 391574
+    # "services/ttys/getty.nix"
+    # "services/ttys/kmscon.nix"
   ];
   modulePatchedPkgs' = unpatchedPkgs.applyPatches {
     name = "source";
