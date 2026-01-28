@@ -31,6 +31,11 @@
   hardware.bluetooth.enable = true;
   services.hardware.bolt.enable = true;
 
+  hardware.logitech.wireless = {
+    enable = true;
+    enableGraphical = true;
+  };
+
   zramSwap = {
     enable = true;
     memoryPercent = 75;
