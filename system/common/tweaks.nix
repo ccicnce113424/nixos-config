@@ -41,6 +41,7 @@
   };
 
   services.userborn.enable = true;
+  services.envfs.enable = true;
 
   system = {
     etc.overlay.enable = true;
