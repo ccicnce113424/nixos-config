@@ -97,6 +97,7 @@
                   inputs.chaotic.nixosModules.default
                   inputs.daeuniverse.nixosModules.daed
                   inputs.nix-flatpak.nixosModules.nix-flatpak
+                  inputs.solaar.nixosModules.default
                 ]
                 ++ systemCfgs host.system or null
                 ++ profileCfgs host.system or null host.profile or null

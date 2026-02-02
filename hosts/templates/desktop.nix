@@ -31,10 +31,7 @@
   hardware.bluetooth.enable = true;
   services.hardware.bolt.enable = true;
 
-  hardware.logitech.wireless = {
-    enable = true;
-    enableGraphical = true;
-  };
+  services.solaar.enable = true;
 
   zramSwap = {
     enable = true;
