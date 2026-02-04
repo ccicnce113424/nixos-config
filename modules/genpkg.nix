@@ -8,6 +8,13 @@
 }:
 let
   unpatchedPkgs = import inputs.nixpkgs { inherit (host) system; };
+  # use fuc for fast copying
+  applyPatches =
+    args:
+    (unpatchedPkgs.applyPatches args).overrideAttrs (old: {
+      nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ unpatchedPkgs.fuc ];
+      installPhase = "cpz ./ $out";
+    });
   # Add patches which modify nixpkgs modules here to prevent infinite recursion
   modulePatches = map unpatchedPkgs.fetchpatch [
     {
@@ -26,7 +33,7 @@ let
     "services/ttys/getty.nix"
     "services/ttys/kmscon.nix"
   ];
-  modulePatchedPkgs' = unpatchedPkgs.applyPatches {
+  modulePatchedPkgs' = applyPatches {
     name = "source";
     src = inputs.nixpkgs;
     patches = modulePatches;
@@ -34,7 +41,7 @@ let
   modulePatchedPkgs = if [ ] == modulePatches then inputs.nixpkgs else modulePatchedPkgs';
   # Apply package patches
   patches = map (p: p unpatchedPkgs) config.pkgsPatch;
-  patchedPkgs = unpatchedPkgs.applyPatches {
+  patchedPkgs = applyPatches {
     name = "source";
     src = modulePatchedPkgs;
     inherit patches;
