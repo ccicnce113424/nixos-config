@@ -27,11 +27,11 @@
   ];
 
   programs.nix-ld.libraries = with pkgs; [
-    xorg.libX11
-    xorg.libXext
-    xorg.libXi
-    xorg.libXrender
-    xorg.libXtst
+    libX11
+    libXext
+    libXi
+    libXrender
+    libXtst
     fontconfig
   ];
 }

@@ -7,7 +7,7 @@
       extraPkgs =
         pkgs: with pkgs; [
           icu
-          xorg.libxshmfence
+          libxshmfence
           webkitgtk_4_1
           libsoup_3
           libepoxy
@@ -35,7 +35,7 @@
 
     podman-compose
     podman-desktop
-    xorg.xwininfo
+    xwininfo
 
     moonlight-qt
   ];
