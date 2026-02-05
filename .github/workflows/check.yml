@@ -25,4 +25,4 @@ jobs:
 
       - name: Check
         run: |
-          nix flake check
+          nix flake check -L
