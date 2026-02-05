@@ -35,7 +35,7 @@ jobs:
 
       - name: Build LiveCD
         run: |
-          nix run nixpkgs#nix-fast-build -- --skip-cached --no-nom --flake .#nixosConfigurations.livecd.config.system.build.isoImage
+          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --flake .#nixosConfigurations.livecd.config.system.build.isoImage
 
       - name: Upload LiveCD ISO
         uses: actions/upload-artifact@v6

@@ -39,4 +39,4 @@ jobs:
 
       - name: Build Packages
         run: |
-          nix run nixpkgs#nix-fast-build -- --skip-cached --no-nom --no-link --flake .#legacyPackages."x86_64-linux".ci-build | cachix push ccicnce113424
+          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --no-link --flake .#legacyPackages."x86_64-linux".ci-build | cachix push ccicnce113424

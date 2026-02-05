@@ -39,7 +39,7 @@ jobs:
 
       - name: Check
         run: |
-          nix run nixpkgs#nix-eval-jobs -- --flake .#legacyPackages."x86_64-linux".top-levels \
+          nix run nixpkgs#nix-eval-jobs -- --debug --flake .#legacyPackages."x86_64-linux".top-levels \
             | tee nix-eval-jobs.log
 
           # 如果有任意 JSON 对象包含 error 字段，则失败
