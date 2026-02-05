@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   self,
@@ -76,6 +77,16 @@ in
         rocmSupport = true; # Only enable if GPU supports ROCm
       };
       overlays = [
+        # use lix
+        (_: prev: {
+          inherit (prev.lixPackageSets.stable)
+            nixpkgs-review
+            nix-eval-jobs
+            nix-fast-build
+            colmena
+            ;
+        })
+
         self.overlays.default
         inputs.nur.overlays.default
         inputs.nix-packages.overlays.default
@@ -88,6 +99,8 @@ in
         })
       ];
     };
+
+    nix.package = pkgs.lixPackageSets.stable.lix;
 
     # Prevent GC
     nix.registry = {
