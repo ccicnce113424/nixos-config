@@ -21,14 +21,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - uses: wimpysworld/nothing-but-nix@v9
-        with:
-          hatchet-protocol: "rampage"
+      # - uses: wimpysworld/nothing-but-nix@v9
+      #   with:
+      #     hatchet-protocol: "rampage"
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
+        uses: cachix/install-nix-action@v31
         with:
-          extra-conf: |
+          extra_nix_config: |
             accept-flake-config = true
 
       - name: Set up Cachix
@@ -39,4 +39,4 @@ jobs:
 
       - name: Build Packages
         run: |
-          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --no-link --flake .#legacyPackages."x86_64-linux".ci-build | cachix push ccicnce113424
+          nix run nixpkgs#nix-fast-build -- --skip-cached --no-nom --no-link --flake .#legacyPackages."x86_64-linux".ci-build | cachix push ccicnce113424

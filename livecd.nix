@@ -13,7 +13,8 @@
           isoImage.squashfsCompression = "zstd";
           imports = [
             inputs.daeuniverse.nixosModules.daed
-            (modulesPath + "/installer/cd-dvd/installation-cd-minimal-new-kernel-no-zfs.nix")
+            (modulesPath + "/installer/cd-dvd/latest-kernel.nix")
+            (modulesPath + "/installer/cd-dvd/installation-cd-graphical-calamares-plasma6.nix")
           ];
           services.daed = {
             enable = true;

@@ -22,6 +22,7 @@
         ci-build = lib.recurseIntoAttrs (
           outInputs.config.lib'.findPkgs [
             "virtualbox"
+            "wine-tkg-full"
           ] self.nixosConfigurations.ccic-desktop.config.environment.systemPackages
         )
         # // {
