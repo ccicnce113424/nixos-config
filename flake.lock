@@ -298,11 +298,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770270079,
-        "narHash": "sha256-BxtcmjgX+pGZ1ZsrCs6afFbLdSGiNjQGKrQdi1x5UXM=",
+        "lastModified": 1770289633,
+        "narHash": "sha256-WK+Wvg404b7GWWYFfYwmIlPlw2eQnrxWTXt0Mp9eFBM=",
         "owner": "ccicnce113424",
         "repo": "nix-packages",
-        "rev": "b1eff461673a31fc3ae47c930fe280d7f2ce0661",
+        "rev": "34efaecc0519c60048e29463379ea725ae4bc0ec",
         "type": "github"
       },
       "original": {
@@ -352,11 +352,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770270187,
-        "narHash": "sha256-+vK4PsLWiDZ9IO8FdBI9bmZp62Py3DPV1aa+iEueR6w=",
+        "lastModified": 1770290507,
+        "narHash": "sha256-0d5GN66TUXBQLqu+Fz+oZCI2MHdEckQw2l7Lgr6VRm0=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "27c438bb3ed9d4c6f4a25c689b3fb2a855a646a9",
+        "rev": "4a544c9c09075d1646a02a08e3a3d10b362d4146",
         "type": "github"
       },
       "original": {
@@ -468,7 +468,7 @@
         "rev": "f5cac914bdeeecac7fca07e99c8fee18336f5bd5",
         "revCount": 82,
         "type": "tarball",
-        "url": "https://api.flakehub.com/f/pinned/Svenum/Solaar-Flake/0.1.7/019b9ec0-91a0-71bb-a11f-fd6fd16eb839/source.tar.gz"
+        "url": "https://api.flakehub.com/f/pinned/Svenum/Solaar-Flake/0.1.7/019b9ec0-91a0-71bb-a11f-fd6fd16eb839/source.tar.gz?rev=f5cac914bdeeecac7fca07e99c8fee18336f5bd5&revCount=82"
       },
       "original": {
         "type": "tarball",
