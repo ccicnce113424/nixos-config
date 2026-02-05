@@ -19,23 +19,24 @@ jobs:
 
       - uses: wimpysworld/nothing-but-nix@v9
         with:
-          hatchet-protocol: "rampage"
+          hatchet-protocol: "cleave"
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@main
+        uses: samueldr/lix-gha-installer-action@v2025-10-27
         with:
-          extra-conf: |
+          extra_nix_config: |
             accept-flake-config = true
+            build-dir = /nix/build
 
-      # - name: Set up Cachix
-      #   uses: cachix/cachix-action@v16
-      #   with:
-      #     name: ccicnce113424 # replace with your Cachix cache name
-      #     authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      - name: Set up Cachix
+        uses: cachix/cachix-action@v16
+        with:
+          name: ccicnce113424 # replace with your Cachix cache name
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Build LiveCD
         run: |
-          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --flake .#nixosConfigurations.livecd.config.system.build.isoImage
+          nix build .#nixosConfigurations.livecd.config.system.build.isoImage
 
       - name: Upload LiveCD ISO
         uses: actions/upload-artifact@v6

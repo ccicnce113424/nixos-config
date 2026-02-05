@@ -18,35 +18,11 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v34
+        uses: canidae-solutions/lix-quick-install-action@v4
         with:
-          nix_conf: |
+          lix_conf: |
             accept-flake-config = true
-            keep-env-derivations = true
-            keep-outputs = true
-
-      # - name: Restore and save Nix store
-      #   uses: nix-community/cache-nix-action@v7
-      #   with:
-      #     primary-key: nix-update-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
-      #     restore-prefixes-first-match: nix-update-${{ runner.os }}-
-      #     gc-max-store-size-linux: 1G
-      #     purge: true
-      #     purge-prefixes: nix-update-${{ runner.os }}-
-      #     purge-created: 0
-      #     purge-last-accessed: 0
-      #     purge-primary-key: never
 
       - name: Check
         run: |
-          nix run nixpkgs#nix-eval-jobs -- --flake .#legacyPackages."x86_64-linux".top-levels \
-            | tee nix-eval-jobs.log
-
-          # 如果有任意 JSON 对象包含 error 字段，则失败
-          if jq 'select(has("error"))' nix-eval-jobs.log | grep -q .; then
-            echo "nix-eval-jobs has error:"
-            jq 'select(has("error"))' nix-eval-jobs.log
-            exit 1
-          fi
-
-          nix run nixpkgs#nix-fast-build -- --debug --skip-cached --no-nom --no-link
+          nix flake check
