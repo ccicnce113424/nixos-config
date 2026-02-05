@@ -27,11 +27,11 @@ jobs:
           extra-conf: |
             accept-flake-config = true
 
-      - name: Set up Cachix
-        uses: cachix/cachix-action@v16
-        with:
-          name: ccicnce113424 # replace with your Cachix cache name
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+      # - name: Set up Cachix
+      #   uses: cachix/cachix-action@v16
+      #   with:
+      #     name: ccicnce113424 # replace with your Cachix cache name
+      #     authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Build LiveCD
         run: |
