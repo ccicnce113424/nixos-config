@@ -31,6 +31,7 @@ jobs:
           extra_nix_config: |
             accept-flake-config = true
             build-dir = /nix/build
+            extra-experimental-features = nix-command flakes pipe-operators
 
       - name: Set up Cachix
         uses: cachix/cachix-action@v16
