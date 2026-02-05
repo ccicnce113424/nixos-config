@@ -106,7 +106,6 @@ rec {
     extra-experimental-features = [
       "nix-command"
       "flakes"
-      # "pipe-operators"
     ];
     accept-flake-config = true;
     extra-substituters = [

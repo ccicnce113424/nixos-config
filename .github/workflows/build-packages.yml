@@ -23,15 +23,14 @@ jobs:
 
       - uses: wimpysworld/nothing-but-nix@v9
         with:
-          hatchet-protocol: "rampage"
+          hatchet-protocol: "cleave"
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: samueldr/lix-gha-installer-action@v2025-10-27
         with:
           extra_nix_config: |
             accept-flake-config = true
             build-dir = /nix/build
-            extra-experimental-features = nix-command flakes pipe-operators
 
       - name: Set up Cachix
         uses: cachix/cachix-action@v16
@@ -41,4 +40,4 @@ jobs:
 
       - name: Build Packages
         run: |
-          nix run nixpkgs#nix-fast-build -- --skip-cached --no-nom --no-link --flake .#legacyPackages."x86_64-linux".ci-build | cachix push ccicnce113424
+          nix-build -A legacyPackages.x86_64-linux.ci-build | cachix push ccicnce113424
