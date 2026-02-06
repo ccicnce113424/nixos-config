@@ -11,7 +11,7 @@
     tor-browser
     qbittorrent-enhanced
     imfile
-    nheko
+    fluffychat
     cherry-studio
 
     nur.repos.xddxdd.peerbanhelper
