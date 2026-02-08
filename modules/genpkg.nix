@@ -19,7 +19,7 @@ let
   modulePatches = map unpatchedPkgs.fetchpatch [
     {
       url = "https://github.com/NixOS/nixpkgs/pull/482959.patch";
-      hash = "sha256-LRkAm4QRQq/guCFE7l89tCwAG7Pjmv2D2cxM4pvynis=";
+      hash = "sha256-R/CxS2rgjh1oonYifMb09kMd1M76fnBYo6IWVZxc9cM=";
     }
     {
       url = "https://github.com/NixOS/nixpkgs/pull/391574.patch";
