@@ -75,6 +75,10 @@ rec {
       url = "https://flakehub.com/f/Svenum/Solaar-Flake/*";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-github-actions = {
+      url = "github:nix-community/nix-github-actions";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
@@ -93,6 +97,7 @@ rec {
         ./treefmt.nix
         ./livecd.nix
         ./nixpkgs.nix
+        ./github-actions.nix
       ];
       perSystem =
         { pkgs, ... }:

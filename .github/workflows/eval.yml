@@ -1,4 +1,4 @@
-name: Build Packages
+name: Check Configurations
 
 on:
   push:
@@ -8,10 +8,6 @@ on:
     branches:
       - main
   workflow_dispatch: # allows manual triggering
-
-concurrency:
-  group: build-pkgs
-  cancel-in-progress: true
 
 jobs:
   nix-matrix:
@@ -32,10 +28,10 @@ jobs:
         name: Generate Nix Matrix
         run: |
           set -Eeu
-          matrix="$(nix eval --json '.#githubActions.build.matrix')"
+          matrix="$(nix eval --json '.#githubActions.eval.matrix')"
           echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
 
-  nix-build:
+  nix-eval:
     name: ${{ matrix.name }} (${{ matrix.system }})
     needs: nix-matrix
     runs-on: ${{ matrix.os }}
@@ -46,28 +42,22 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: nixbuild/nix-quick-install-action@v34
         with:
-          extra_nix_config: |
+          nix_conf: |
             accept-flake-config = true
 
-      - name: Set up Cachix
-        uses: cachix/cachix-action@v16
-        with:
-          name: ccicnce113424 # replace with your Cachix cache name
-          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-
-      - name: Build
+      - name: Eval
         run: |
-          nix build -L '.#${{ matrix.attr }}'
+          nix eval --show-trace '.#${{ matrix.attr }}'
 
-  all:
-    name: All Builds
+  all-eval:
+    name: All Eval
     needs:
-      - nix-build
+      - nix-eval
     runs-on: ubuntu-latest
     if: ${{ success() }}
     steps:
-      - name: All matrix builds succeeded
+      - name: All Eval
         run: |
-          echo "All matrix builds succeeded."
+          echo "All configurations have been evaluated successfully."

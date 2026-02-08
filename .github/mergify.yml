@@ -3,7 +3,8 @@ pull_request_rules:
     conditions:
       - and:
           - label=dependencies
-          - check-success=Check Flake
+          - check-success=All Eval
+          - check-success=All Builds
     actions:
       update:
       merge:
