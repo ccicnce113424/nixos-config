@@ -6,6 +6,7 @@
     ./direnv.nix
     ./c.nix
     ./rust.nix
+    ./git.nix
   ];
   home.packages = with pkgs; [
     just
