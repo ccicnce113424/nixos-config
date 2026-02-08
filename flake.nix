@@ -65,6 +65,7 @@ rec {
         flake-parts.follows = "flake-parts";
         treefmt-nix.follows = "treefmt-nix";
         flake-compat.follows = "flake-compat";
+        nix-github-actions.follows = "nix-github-actions";
       };
     };
     nix-index-database = {
