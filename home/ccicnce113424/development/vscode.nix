@@ -6,7 +6,6 @@
     profiles.default.extensions = with pkgs.vscode-extensions; [
       ms-ceintl.vscode-language-pack-zh-hans
       github.vscode-github-actions
-      github.copilot
       github.copilot-chat
       github.vscode-pull-request-github
       skellock.just
@@ -14,6 +13,7 @@
       yzane.markdown-pdf
       ms-vscode.live-server
       tomoki1207.pdf
+      donjayamanne.githistory
     ];
     # userSettings = {
     #   "files.autoGuessEncoding" = true;
