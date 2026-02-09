@@ -1,7 +1,6 @@
 {
   pkgs,
   inputs,
-  inputs',
   ...
 }:
 {
@@ -13,9 +12,8 @@
     ntsync = true;
   };
   environment.systemPackages = with pkgs; [
-    inputs'.nix-packages.packages.rpc-bridge
-
     # following packages are from nix-gaming
+    rpc-bridge
     (wineprefix-preparer.override {
       withDdraw = true;
       dxvk-w64 = pkgs.dxvk-gplall-bin-w64;
