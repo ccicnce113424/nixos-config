@@ -65,6 +65,8 @@
     protonup-qt
 
     hmcl
+    glfw3-minecraft
+    graalvmPackages.graalvm-ce
 
     # following packages are from nix0gaming
     dxvk-nvapi-vkreflex-layer
