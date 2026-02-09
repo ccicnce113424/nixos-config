@@ -80,7 +80,7 @@ in
         inputs.nur.overlays.default
         inputs.nix-packages.overlays.default
         inputs.nix-gaming.overlays.default
-        (import "${inputs.chaotic}/overlays/cache-friendly.nix" {
+        (import (inputs.chaotic.outPath + "/overlays/cache-friendly.nix") {
           flakes = inputs.chaotic.inputs // {
             self = inputs.chaotic;
           };
