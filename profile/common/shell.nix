@@ -8,8 +8,8 @@
     python3
     zip
     unzipNLS
-    p7zip
-    unar
+    _7zip-zstd-rar
+    unrar
     libarchive
     progress
     colorized-logs
