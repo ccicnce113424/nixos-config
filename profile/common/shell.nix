@@ -11,6 +11,7 @@
     _7zip-zstd-rar
     unrar
     libarchive
+    fxz
     progress
     colorized-logs
     man-pages
