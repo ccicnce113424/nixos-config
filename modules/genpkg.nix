@@ -18,18 +18,12 @@ let
   # Add patches which modify nixpkgs modules here to prevent infinite recursion
   modulePatches = map unpatchedPkgs.fetchpatch [
     {
-      url = "https://github.com/NixOS/nixpkgs/pull/482959.patch";
-      hash = "sha256-R/CxS2rgjh1oonYifMb09kMd1M76fnBYo6IWVZxc9cM=";
-    }
-    {
-      url = "https://github.com/NixOS/nixpkgs/pull/391574.patch";
-      hash = "sha256-VPJ84atxP4CgkkzGkNmmWI4sDxwvjX5H/+YRi3/uXqk=";
+      url = "https://github.com/NixOS/nixpkgs/pull/489469.patch";
+      hash = "sha256-7OkhDyCby5q8FvoXbv7+vSx22g95nUvv/DG6s+b6/Cg=";
     }
   ];
   replaceModules = [
-    # 482959
-    "services/networking/ntp/chrony.nix"
-    # 391574
+    # 489469
     "services/ttys/getty.nix"
     "services/ttys/kmscon.nix"
   ];
