@@ -30,4 +30,6 @@
     enable = true;
     flake = "$HOME/code/nixos-config";
   };
+
+  nix.package = pkgs.lixPackageSets.latest.lix;
 }

@@ -1,12 +1,19 @@
 { pkgs, ... }:
 {
-  home.packages = with pkgs; [
-    nixd
-    nixfmt
-    nix-tree
-    nix-output-monitor
-    hydra-check
-  ];
+  home.packages =
+    (with pkgs; [
+      nixd
+      nixfmt
+      nix-tree
+      nix-output-monitor
+      hydra-check
+    ])
+    ++ (with pkgs.lixPackageSets.latest; [
+      nixpkgs-reviewFull
+      nix-eval-jobs
+      nix-fast-build
+      nix-update
+    ]);
   programs.vscode = {
     profiles.default.extensions = with pkgs.vscode-extensions; [
       jnoortheen.nix-ide

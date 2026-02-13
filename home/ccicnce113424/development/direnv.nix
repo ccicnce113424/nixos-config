@@ -3,7 +3,10 @@
   programs.direnv = {
     enable = true;
     enableZshIntegration = true;
-    nix-direnv.enable = true;
+    nix-direnv = {
+      enable = true;
+      package = pkgs.lixPackageSets.latest.nix-direnv;
+    };
     config = {
       global.hide_env_diff = true;
       whitelist.prefix = [ "~/code" ];
