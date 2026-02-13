@@ -28,7 +28,6 @@ in
       builtins.mapAttrs (
         _: machines:
         config.lib'.findPkgs [
-          "virtualbox"
           "wine-tkg-full"
         ] (builtins.head machines).value.config.environment.systemPackages
       ) grouped
