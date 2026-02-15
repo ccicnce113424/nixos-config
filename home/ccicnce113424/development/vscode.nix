@@ -6,7 +6,6 @@
     profiles.default.extensions = with pkgs.vscode-extensions; [
       ms-ceintl.vscode-language-pack-zh-hans
       github.vscode-github-actions
-      github.copilot-chat
       github.vscode-pull-request-github
       skellock.just
       yzhang.markdown-all-in-one
@@ -20,6 +19,7 @@
     #   "security.workspace.trust.enabled" = false;
     # };
   };
+  home.packages = with pkgs; [ vscode-runner ];
   # home.file.".vscode/argv.json".text = builtins.toJSON {
   #   "enable-crash-reporter" = false;
   #   "locale" = "zh-cn";
