@@ -2,7 +2,7 @@
 {
   programs.vscode = {
     enable = true;
-    mutableExtensionsDir = false;
+    mutableExtensionsDir = true;
     profiles.default.extensions = with pkgs.vscode-extensions; [
       ms-ceintl.vscode-language-pack-zh-hans
       github.vscode-github-actions
