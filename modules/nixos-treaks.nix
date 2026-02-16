@@ -47,6 +47,7 @@ let
       ++ lib.mapAttrsToList writeShellScriptBin config.cmdAlias;
 
     nix.settings = nixConfig;
+    nix.package = config.nixPackages.nix;
     chaotic.nyx = {
       overlay.enable = false;
       cache.enable = false;
@@ -86,6 +87,10 @@ in
     };
   };
   options.enable32Bit = lib.mkEnableOption "32-bit dependencies";
+  options.nixPackages = lib.mkOption {
+    type = lib.types.attrs;
+    default = pkgs;
+  };
 
   config = cfg;
 }

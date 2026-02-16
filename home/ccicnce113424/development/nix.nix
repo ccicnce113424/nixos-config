@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, osConfig, ... }:
 {
   home.packages =
     (with pkgs; [
@@ -8,7 +8,7 @@
       nix-output-monitor
       hydra-check
     ])
-    ++ (with pkgs.lixPackageSets.latest; [
+    ++ (with osConfig.nixPackages; [
       nixpkgs-reviewFull
       nix-eval-jobs
       nix-fast-build

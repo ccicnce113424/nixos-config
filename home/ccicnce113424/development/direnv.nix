@@ -1,11 +1,11 @@
-{ pkgs, ... }:
+{ pkgs, osConfig, ... }:
 {
   programs.direnv = {
     enable = true;
     enableZshIntegration = true;
     nix-direnv = {
       enable = true;
-      package = pkgs.lixPackageSets.latest.nix-direnv;
+      package = osConfig.nixPackages.nix-direnv;
     };
     config = {
       global.hide_env_diff = true;
