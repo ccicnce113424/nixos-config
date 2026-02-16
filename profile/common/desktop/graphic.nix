@@ -18,7 +18,7 @@
     enable = true;
     hwRender = true;
     term = "xterm-256color";
-    extraConfig = "font-size=18";
+    extraConfig = "font-dpi=144";
   };
 
   environment.systemPackages = with pkgs; [
