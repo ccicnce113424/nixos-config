@@ -19,7 +19,7 @@ let
   modulePatches = map unpatchedPkgs.fetchpatch [
     {
       url = "https://github.com/NixOS/nixpkgs/pull/489469.patch";
-      hash = "sha256-y/XWByRN6J1WwFLbkgo95ErhjRwvxdlE8ty+TMaxgGg=";
+      hash = "sha256-uI1qRWYxRzGBRVVxVOTQwoywS83rOMgGiozmJUAhUoc=";
     }
   ];
   replaceModules = [
