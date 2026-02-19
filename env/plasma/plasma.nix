@@ -3,13 +3,12 @@
   services.desktopManager.plasma6.enable = true;
   programs.kdeconnect.enable = true;
   environment.systemPackages =
-    with pkgs;
-    [
+    (with pkgs; [
       dmidecode
       qpwgraph
       smartmontools
       lm_sensors
-    ]
+    ])
     ++ (with pkgs.kdePackages; [
       plasma-disks
       krdc
@@ -22,12 +21,20 @@
       filelight
       kfind
       kdialog
-      sddm-kcm
       plasma-firewall
 
       kdepim-addons
       akonadi-calendar
+      (spectacle.override {
+        tesseractLanguages = [
+          "eng"
+          "osd"
+          "equ"
+          "chi_sim"
+        ];
+      })
     ]);
+  environment.plasma6.excludePackages = with pkgs.kdePackages; [ spectacle ];
 
   programs.kde-pim = {
     enable = true;
@@ -47,18 +54,4 @@
     });
   '';
 
-  # Open port for remote control
-  networking.firewall = {
-    allowedTCPPorts = [
-      3389
-      5900
-    ];
-    allowedUDPPorts = [
-      3389
-      5900
-    ];
-  };
-  # environment.sessionVariables = {
-  #   ENABLE_HDR_WSI = "1";
-  # };
 }
