@@ -23,6 +23,7 @@
       kfind
       kdialog
       plasma-firewall
+      qrca
 
       kdepim-addons
       akonadi-calendar
