@@ -30,7 +30,8 @@ in
         config.lib'.findPkgs [
           "virtualbox"
           "wine-tkg-full"
-          "gimp-with-plugins"
+          "xwayland"
+          "spectacle"
         ] (builtins.head machines).value.config.environment.systemPackages
       ) grouped
     );
