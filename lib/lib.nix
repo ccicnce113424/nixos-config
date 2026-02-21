@@ -14,9 +14,8 @@
         )).name;
       filtered = builtins.filter (p: builtins.hasAttr (getPackageName p) nameSet) pkgsList;
       groups = builtins.groupBy getPackageName filtered;
-      # groups = builtins.groupBy (p: p.pname) filtered;
     in
+    assert builtins.attrNames nameSet == builtins.attrNames groups;
     builtins.mapAttrs (_name: pkgs: builtins.head pkgs) groups;
-  # builtins.mapAttrs (name: _: builtins.head groups.${name} or [ null ]) nameSet;
 
 }
