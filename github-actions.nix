@@ -32,6 +32,7 @@ in
           "wine-tkg-full"
           "xwayland"
           "spectacle"
+          "xsane"
         ] (builtins.head machines).value.config.environment.systemPackages
       ) grouped
     );
