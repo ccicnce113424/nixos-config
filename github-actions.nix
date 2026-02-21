@@ -30,6 +30,7 @@ in
         config.lib'.findPkgs [
           "virtualbox"
           "wine-tkg-full"
+          "gimp-with-plugins"
         ] (builtins.head machines).value.config.environment.systemPackages
       ) grouped
     );
