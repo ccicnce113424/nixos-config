@@ -1,6 +1,7 @@
 { pkgs, ... }:
 {
   services.desktopManager.plasma6.enable = true;
+  services.displayManager.plasma-login-manager.enable = true;
   programs.kdeconnect.enable = true;
   environment.systemPackages =
     (with pkgs; [
