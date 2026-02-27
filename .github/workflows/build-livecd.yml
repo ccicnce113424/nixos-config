@@ -34,6 +34,6 @@ jobs:
           nix build -L .#nixosConfigurations.livecd.config.system.build.isoImage
 
       - name: Upload LiveCD ISO
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           path: ./result*/iso/*.iso
