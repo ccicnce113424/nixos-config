@@ -1,5 +1,6 @@
 { pkgs, ... }:
 {
+  boot.kernelModules = [ "pcspkr" ];
   services.pipewire.extraConfig.pipewire = {
     "10-no-resample-and-low-quantum" = {
       "context.properties" = {
