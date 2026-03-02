@@ -19,8 +19,9 @@
           "org.kde.plasma.marginsseparator"
           {
             name = pkgs.lyrica-plasmoid.passthru.id;
-            config.Backend = {
-              tlyricMode = 3;
+            config = {
+              Backend.tlyricMode = 3;
+              Frontend.shouldUseDefaultThemeTextColor = false;
             };
           }
           # {
