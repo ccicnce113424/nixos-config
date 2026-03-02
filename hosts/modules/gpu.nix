@@ -28,7 +28,7 @@ let
         nvidiaSettings = true;
         videoAcceleration = true;
         powerManagement.enable = true;
-        package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+        # package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
       };
 
       boot.kernelParams = [
@@ -52,16 +52,22 @@ let
       ];
 
       # custom driver package
-      # hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver rec {
-      #   version = "580.94.16";
-      #   persistencedVersion = "580.95.05";
-      #   settingsVersion = "580.95.05";
-      #   sha256_64bit = "sha256-DqwALfSNPjLsat4Q9Sg44BACNUyqK+kpUxL5CFzLlRc=";
-      #   openSha256 = "sha256-WWql/WBQyWNG+skZgvUFbNCClVjty3s3+QR6NnJhSF4=";
-      #   settingsSha256 = "sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
-      #   persistencedSha256 = "sha256-QCwxXQfG/Pa7jSTBB0xD3lsIofcerAWWAHKvWjWGQtg=";
-      #   url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
-      # };
+      hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver rec {
+        version = "580.94.16";
+        persistencedVersion = "580.95.05";
+        settingsVersion = "580.95.05";
+        sha256_64bit = "sha256-DqwALfSNPjLsat4Q9Sg44BACNUyqK+kpUxL5CFzLlRc=";
+        openSha256 = "sha256-WWql/WBQyWNG+skZgvUFbNCClVjty3s3+QR6NnJhSF4=";
+        settingsSha256 = "sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
+        persistencedSha256 = "sha256-QCwxXQfG/Pa7jSTBB0xD3lsIofcerAWWAHKvWjWGQtg=";
+        url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
+        patchesOpen = [
+          (pkgs.fetchpatch {
+            url = "https://github.com/CachyOS/CachyOS-PKGBUILDS/raw/d5629d64ac1f9e298c503e407225b528760ffd37/nvidia/nvidia-580xx/nvidia-580xx-utils/kernel-6.19.patch";
+            hash = "sha256-XlRDAC780oWvD3uY9pgqG8YWvZFVGhc4f18f5ZDFM1g=";
+          })
+        ];
+      };
     };
     nouveau = {
       services.xserver.videoDrivers = [ "nouveau" ];
