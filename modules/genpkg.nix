@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   self,
   inputs,
@@ -15,15 +14,11 @@ let
       nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ unpatchedPkgs.fuc ];
       installPhase = "cpz ./ $out";
     });
-  # Add patches which modify nixpkgs modules here to prevent infinite recursion
-  modulePatches = map unpatchedPkgs.fetchpatch [
+  # patches
+  patches = map unpatchedPkgs.fetchpatch [
     {
       url = "https://github.com/NixOS/nixpkgs/pull/489469.patch";
       hash = "sha256-YURNV8eaBNcrl9+nwaQlg2QANlCluuxVQcxmfWptWBg=";
-    }
-    {
-      url = "https://github.com/NixOS/nixpkgs/pull/495704.patch";
-      hash = "sha256-MQSXcP64azee9Mt9DBI35wEMGh/iueA8RVhQiKgyge8=";
     }
   ];
   replaceModules = [
@@ -31,20 +26,12 @@ let
     "services/ttys/getty.nix"
     "services/ttys/kmscon.nix"
   ];
-  modulePatchedPkgs' = applyPatches {
-    name = "source";
-    src = inputs.nixpkgs;
-    patches = modulePatches;
-  };
-  modulePatchedPkgs = if [ ] == modulePatches then inputs.nixpkgs else modulePatchedPkgs';
-  # Apply package patches
-  patches = map (p: p unpatchedPkgs) config.pkgsPatch;
   patchedPkgs = applyPatches {
     name = "source";
-    src = modulePatchedPkgs;
+    src = inputs.nixpkgs;
     inherit patches;
   };
-  finalPkgs = if [ ] == patches then modulePatchedPkgs else patchedPkgs;
+  finalPkgs = if [ ] == patches then inputs.nixpkgs else patchedPkgs;
 in
 {
   options.pkgsArch = lib.mkOption {
@@ -89,10 +76,6 @@ in
 
     # Prevent GC
     nix.registry = {
-      nixpkgs-module-patched.to = {
-        type = "path";
-        path = modulePatchedPkgs.outPath;
-      };
       nixpkgs-patched.to = {
         type = "path";
         path = finalPkgs.outPath;
@@ -103,7 +86,7 @@ in
   imports = [
     inputs.nixpkgs.nixosModules.readOnlyPkgs
   ]
-  ++ (map (path: modulePatchedPkgs.outPath + "/nixos/modules/" + path) replaceModules);
+  ++ (map (path: finalPkgs.outPath + "/nixos/modules/" + path) replaceModules);
 
   disabledModules = replaceModules;
 }
