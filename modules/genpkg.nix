@@ -23,7 +23,7 @@ let
     }
     {
       url = "https://github.com/NixOS/nixpkgs/pull/495704.patch";
-      hash = "sha256-+QbtuX4rGVnitTfj7ot7KIheTLkmXHMAmGyvfJ76Bko=";
+      hash = "sha256-MQSXcP64azee9Mt9DBI35wEMGh/iueA8RVhQiKgyge8=";
     }
   ];
   replaceModules = [
