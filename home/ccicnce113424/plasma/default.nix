@@ -17,6 +17,12 @@
           "org.kde.plasma.pager"
           "org.kde.plasma.icontasks"
           "org.kde.plasma.marginsseparator"
+          {
+            name = pkgs.lyrica-plasmoid.passthru.id;
+            config.Backend = {
+              tlyricMode = 3;
+            };
+          }
           # {
           #   name = "plasmusic-toolbar";
           #   config.General = {
@@ -83,6 +89,7 @@
   };
 
   home.packages = with pkgs; [
+    lyrica-plasmoid
     kurve
     plasmusic-toolbar
     kdePackages.wallpaper-engine-plugin
