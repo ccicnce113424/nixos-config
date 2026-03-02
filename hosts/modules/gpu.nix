@@ -28,7 +28,7 @@ let
         nvidiaSettings = true;
         videoAcceleration = true;
         powerManagement.enable = true;
-        package = config.boot.kernelPackages.nvidiaPackages.vulkan_beta;
+        package = config.boot.kernelPackages.nvidiaPackages.latest;
       };
 
       boot.kernelParams = [
