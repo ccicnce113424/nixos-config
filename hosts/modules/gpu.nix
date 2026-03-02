@@ -53,11 +53,11 @@ let
 
       # custom driver package
       hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver rec {
-        version = "580.94.16";
+        version = "580.94.18";
         persistencedVersion = "580.95.05";
         settingsVersion = "580.95.05";
-        sha256_64bit = "sha256-DqwALfSNPjLsat4Q9Sg44BACNUyqK+kpUxL5CFzLlRc=";
-        openSha256 = "sha256-WWql/WBQyWNG+skZgvUFbNCClVjty3s3+QR6NnJhSF4=";
+        sha256_64bit = "sha256-FcbmHcwyrUt+1k31UgmX2WZNLLJ4BB5L3pbYUMrwtYo=";
+        openSha256 = "sha256-1Zt8DY2P43L+k2u90rfGCK1dFLnlnaASqoe+qyVNw7k=";
         settingsSha256 = "sha256-F2wmUEaRrpR1Vz0TQSwVK4Fv13f3J9NJLtBe4UP2f14=";
         persistencedSha256 = "sha256-QCwxXQfG/Pa7jSTBB0xD3lsIofcerAWWAHKvWjWGQtg=";
         url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
