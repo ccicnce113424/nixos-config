@@ -16,7 +16,7 @@
     venera
     pixes-git
     piliplus
-    # loveiwara is broken
+    loveiwara
   ];
 
   # https://github.com/nix-community/home-manager/issues/8185
