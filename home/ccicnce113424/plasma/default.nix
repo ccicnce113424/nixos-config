@@ -78,7 +78,7 @@
 
     configFile = {
       kwinrc.Wayland.InputMethod = "/run/current-system/sw/share/applications/org.fcitx.Fcitx5.desktop";
-      ksmserverrc.General.loginMode = "restoreSavedSession";
+      ksmserverrc.General.loginMode = "emptySession";
       dolphinrc.IconsMode.IconSize = 64;
 
       plasma_calendar_alternatecalendar.General.calendarSystem = "Chinese";
