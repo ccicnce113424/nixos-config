@@ -20,21 +20,11 @@ let
       url = "https://github.com/NixOS/nixpkgs/pull/489469.patch";
       hash = "sha256-YURNV8eaBNcrl9+nwaQlg2QANlCluuxVQcxmfWptWBg=";
     }
-    {
-      url = "https://github.com/NixOS/nixpkgs/pull/497106.patch";
-      hash = "sha256-Am2iZB2lAoSaDe4r4+ypaWOIMZWLjQLuB8890eHb298=";
-    }
-    {
-      url = "https://github.com/NixOS/nixpkgs/pull/497206.patch";
-      hash = "sha256-G8DtYuOuoa6DwxlQmkyxuKRedMszHskvLnWpmrm/RcE=";
-    }
   ];
   replaceModules = [
     # 489469
     "services/ttys/getty.nix"
     "services/ttys/kmscon.nix"
-    # 497206
-    "hardware/video/nvidia.nix"
   ];
   patchedPkgs = applyPatches {
     name = "source";
