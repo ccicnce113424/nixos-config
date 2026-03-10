@@ -23,6 +23,7 @@
           outInputs.config.lib'.findPkgs [
             "virtualbox"
             "wine-tkg-full"
+            "plasma-workspace"
           ] self.nixosConfigurations.ccic-desktop.config.environment.systemPackages
         )
         # // {

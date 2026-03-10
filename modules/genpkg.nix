@@ -15,16 +15,22 @@ let
       installPhase = "cpz ./ $out";
     });
   # patches
-  patches = map unpatchedPkgs.fetchpatch [
+  patches = map unpatchedPkgs.fetchpatch2 [
     {
-      url = "https://github.com/NixOS/nixpkgs/pull/489469.patch";
-      hash = "sha256-YURNV8eaBNcrl9+nwaQlg2QANlCluuxVQcxmfWptWBg=";
+      url = "https://github.com/NixOS/nixpkgs/pull/489469.diff?full_index=1";
+      hash = "sha256-L0jItNvvUbyE8nwPsjSZ93djYDifWoTWB5uO6YJ89ag=";
+    }
+    {
+      url = "https://github.com/NixOS/nixpkgs/pull/498612.diff?full_index=1";
+      hash = "sha256-47ajDmwW2OGRVgvbpsIWrYzkE+EId3cFX+PoLxrNeno=";
     }
   ];
   replaceModules = [
     # 489469
     "services/ttys/getty.nix"
     "services/ttys/kmscon.nix"
+    # 498612
+    "hardware/video/nvidia.nix"
   ];
   patchedPkgs = applyPatches {
     name = "source";
