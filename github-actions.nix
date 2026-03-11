@@ -33,6 +33,7 @@ in
           "xwayland"
           "spectacle"
           "xsane"
+          "plasma-workspace"
         ] (builtins.head machines).value.config.environment.systemPackages
       ) grouped
     );
