@@ -31,9 +31,14 @@ in
           "virtualbox"
           "wine-tkg-full"
           "xwayland"
-          "spectacle"
           "xsane"
-          "plasma-workspace"
+
+          "spectacle"
+          "kwin"
+          "kwin-x11"
+          "plasma-desktop"
+          "plasma-desktop"
+          "kdeplasma-addons"
         ] (builtins.head machines).value.config.environment.systemPackages
       ) grouped
     );

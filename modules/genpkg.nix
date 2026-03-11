@@ -22,7 +22,7 @@ let
     }
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.diff?full_index=1";
-      hash = "sha256-8lJrQ3mi5R8P52+yUmdoH9iuIyT/CnQmRc5+rOzTwGY=";
+      hash = "sha256-Yr7s6MRY1Mx7GFD7wn7+IXIIGs2X2+2pgIHg80ItVSA=";
     }
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498802.diff?full_index=1";
