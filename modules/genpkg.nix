@@ -45,12 +45,6 @@ in
     default = "pkgs";
   };
 
-  options.pkgsPatch = lib.mkOption {
-    type = with lib.types; listOf (functionTo package);
-    # [ (p: p.fetchpatch {...}) ]
-    default = [ ];
-  };
-
   config = {
     nixpkgs.pkgs = import finalPkgs rec {
       inherit (host) system;
