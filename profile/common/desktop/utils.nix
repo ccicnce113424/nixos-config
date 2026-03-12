@@ -11,6 +11,8 @@
           webkitgtk_4_1
           libsoup_3
           libepoxy
+          libxkbfile
+          libxau
         ];
     };
   };
