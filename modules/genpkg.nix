@@ -18,7 +18,7 @@ let
   patches = map unpatchedPkgs.fetchpatch2 [
     {
       url = "https://github.com/NixOS/nixpkgs/pull/489469.diff?full_index=1";
-      hash = "sha256-L0jItNvvUbyE8nwPsjSZ93djYDifWoTWB5uO6YJ89ag=";
+      hash = "sha256-mtCs2/2vXAAns5jn8gzgVtikkbaTLdtmGGVxmWGLTGM=";
     }
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.diff?full_index=1";
