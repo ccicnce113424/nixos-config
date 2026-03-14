@@ -18,7 +18,7 @@ let
       ++ [
         (pkgs.runCommand "gimp-plugin-xsane" { buildInputs = [ xsane ]; } ''
           mkdir -p $out/${gimp-base.targetPluginDir}/xsane
-          ln -s ${xsane}/bin/xsane $out/${gimp-base.targetPluginDir}/xsane
+          ln -s ${lib.getExe xsane} $out/${gimp-base.targetPluginDir}/xsane
         '')
       ];
   };

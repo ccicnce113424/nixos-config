@@ -16,7 +16,7 @@
       overlayAttrs = config.legacyPackages;
       apps.ccic-hello = {
         type = "app";
-        program = "${config.legacyPackages.ccic-hello}/bin/ccic-hello";
+        program = "${lib.getExe config.legacyPackages.ccic-hello}";
       };
       legacyPackages = import ./default.nix { inherit pkgs; } // {
         top-levels = lib.recurseIntoAttrs (
