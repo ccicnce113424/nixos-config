@@ -41,11 +41,10 @@ in
       # Secure Boot
       ${sbctl} create-keys
       echo "Remember to enroll the keys into your firmware!" 1>&2
-      ${findutils} -name "*.efi" -exec ${sbctl} sign {} \;
-      ${findutils}/bin/find "${XBOOTLDR}" \
-        -type f \( -name "*.efi" -o -name "*linux*" \) \
+      ${findutils} "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${sbctl} sign {} \;
+      ${findutils} "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) \
         ! -name "*init*" ! -wholename "*.extra-files/*" \
-        -exec ${sbctl} sign {} \;
+         -exec ${sbctl} sign {} \;
 
       echo "Removing systemd-boot related efi variables." 1>&2
       bootctl set-default ""
