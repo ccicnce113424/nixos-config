@@ -18,11 +18,11 @@ let
   patches = map unpatchedPkgs.fetchpatch2 [
     {
       url = "https://github.com/NixOS/nixpkgs/pull/489469.diff?full_index=1";
-      hash = "sha256-MCMlUPexoxLsfS3U2aqI0bi92WJ8JkzzTmPtGag5nFU=";
+      hash = "sha256-4zKJmqc6pnzD0mOAqClTCrBppZKhxw0bKCg/p/ji2sU=";
     }
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.diff?full_index=1";
-      hash = "sha256-D7lY4Yqp3GvIsE709o5ZhlFVCOkTj99ldskYrOBT5fI=";
+      hash = "sha256-k83Sjmuoa1GBpl6F+1URribWAdvqW/gex9gcBSXHAs8=";
     }
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498802.diff?full_index=1";

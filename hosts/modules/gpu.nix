@@ -28,14 +28,16 @@ let
         videoAcceleration = true;
         powerManagement.enable = true;
         package = config.boot.kernelPackages.nvidiaPackages.beta;
+        moduleParams = {
+          nvidia = {
+            NVreg_RegistryDwords = "EnableBrightnessControl=1";
+            NVreg_EnablePCIERelaxedOrderingMode = 1;
+            NVreg_EnableStreamMemOPs = 1;
+            NVreg_UsePageAttributeTable = 1;
+          };
+        };
       };
 
-      boot.kernelParams = [
-        "nvidia.NVreg_RegistryDwords=EnableBrightnessControl=1"
-        "nvidia.NVreg_EnablePCIERelaxedOrderingMode=1"
-        "nvidia.NVreg_EnableStreamMemOPs=1"
-        "nvidia.NVreg_UsePageAttributeTable=1"
-      ];
       hardware.nvidia-container-toolkit.enable = true;
 
       environment.systemPackages = with pkgs; [
