@@ -24,10 +24,6 @@ let
       url = "https://github.com/NixOS/nixpkgs/pull/498612.diff?full_index=1";
       hash = "sha256-o0L4YCFnPIdXHS0PALnaH0xvPauOIqeMTAijwVxbwbA=";
     }
-    {
-      url = "https://github.com/NixOS/nixpkgs/pull/498802.diff?full_index=1";
-      hash = "sha256-LMAL0iDcd9ryWMny/SVXHnlOCkqMsUMHgFbRUR4XmEQ=";
-    }
   ];
   replaceModules = [
     # 489469
