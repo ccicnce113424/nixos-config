@@ -9,6 +9,7 @@
       qpwgraph
       smartmontools
       lm_sensors
+      aha
     ])
     ++ (with pkgs.kdePackages; [
       plasma-disks
