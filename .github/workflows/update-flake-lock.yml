@@ -1,9 +1,9 @@
 name: Update Flake Lock
 
 on:
-  push:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
   workflow_dispatch: # allows manual triggering
   schedule:
     - cron: "30 0 * * *"
