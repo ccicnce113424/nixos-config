@@ -35,14 +35,17 @@ in
   boot.loader.systemd-boot.extraInstallCommands =
     let
       sbctl = lib.getExe pkgs.sbctl;
-      findutils = lib.getExe pkgs.findutils;
+      find = lib.getExe' pkgs.findutils "find";
     in
     lib.mkAfter ''
       # Secure Boot
-      ${sbctl} create-keys
-      echo "Remember to enroll the keys into your firmware!" 1>&2
-      ${findutils} "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${sbctl} sign {} \;
-      ${findutils} "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) \
+      if [ ! -d "/var/lib/sbctl/keys/" ]; then
+        ${sbctl} create-keys
+        ${sbctl} enroll-keys -m
+        echo "You need to enroll the keys into your firmware manually if you are not in setup mode of Secure Boot." 1>&2
+      fi
+      ${find} "${ESP}/EFI/systemd" -type f -name "*.efi" -exec ${sbctl} sign {} \;
+      ${find} "${XBOOTLDR}" -type f \( -name "*.efi" -o -name "*linux*" \) \
         ! -name "*init*" ! -wholename "*.extra-files/*" \
          -exec ${sbctl} sign {} \;
 
