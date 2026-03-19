@@ -15,14 +15,14 @@ let
       installPhase = "cpz ./ $out";
     });
   # patches
-  patches = map unpatchedPkgs.fetchpatch2 [
+  patches = map builtins.fetchurl [
     {
-      url = "https://github.com/NixOS/nixpkgs/pull/489469.diff?full_index=1";
-      hash = "sha256-4gwgAQ2EcmQeG68S20Y67jTm2grYLFlwGN+ZeHfjllg=";
+      url = "https://github.com/NixOS/nixpkgs/pull/489469.patch";
+      sha256 = "sha256-pgIOI8OvPIVUt7+MWJiicWuycIMcT0pF7CdlKDbvlbE=";
     }
     {
-      url = "https://github.com/NixOS/nixpkgs/pull/498612.diff?full_index=1";
-      hash = "sha256-pYZmAMK1WgczM9BQU8Em1t93mpRfnfFUtmk0jmgq2cQ=";
+      url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
+      sha256 = "sha256-DQafvuKmZfs3/iVFAiohqpIlbb5KFFRa6KGFTq62n7s=";
     }
   ];
   replaceModules = [
