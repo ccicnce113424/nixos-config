@@ -19,5 +19,6 @@
     (pkgs.discord-krisp.override {
       withOpenASAR = true;
     })
+    (pkgs.olympus.override { celesteWrapper = "steam-run"; })
   ];
 }
