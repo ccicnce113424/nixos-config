@@ -12,6 +12,7 @@ username: importlist:
       "rtkit"
       "audio"
       "pipewire"
+      "uinput"
     ];
     shell = pkgs.zsh;
     initialPassword = "000000";
