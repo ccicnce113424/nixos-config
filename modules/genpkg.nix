@@ -22,9 +22,6 @@ let
     }
   ];
   replaceModules = [
-    # 489469
-    "services/ttys/getty.nix"
-    "services/ttys/kmscon.nix"
     # 498612
     "hardware/video/nvidia.nix"
   ];
