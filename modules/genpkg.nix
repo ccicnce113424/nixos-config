@@ -18,7 +18,11 @@ let
   patches = map builtins.fetchurl [
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
-      sha256 = "sha256-KjdOnpToOeafqeB4pQ3GNVgX+lfdGRZF2SmnkhcHQ3w=";
+      sha256 = "sha256-Eprj+fZ809XVm7u6s7Jhg3xB1Udid+q14p6uJloeemU=";
+    }
+    {
+      url = "https://github.com/NixOS/nixpkgs/pull/500731.patch";
+      sha256 = "sha256-OibfS0pz0okHbMIvGY5Y46Eqe6zfmOWmCuckLEHB0mA=";
     }
   ];
   replaceModules = [
@@ -44,7 +48,7 @@ in
       config = {
         allowUnfree = true;
         permittedInsecurePackages = [
-          "electron-38.8.4"
+          # "electron-38.8.4"
         ];
       }
       // lib.optionalAttrs host.hostCfg.gpu.nvidia or false {
