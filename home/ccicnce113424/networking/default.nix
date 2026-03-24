@@ -8,7 +8,7 @@
     ayugram-desktop
     tor-browser
     qbittorrent-enhanced
-    imfile
+    motrix-next
     fluffychat
     cherry-studio
 
