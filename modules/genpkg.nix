@@ -24,6 +24,10 @@ let
       url = "https://github.com/NixOS/nixpkgs/pull/500731.patch";
       sha256 = "sha256-OibfS0pz0okHbMIvGY5Y46Eqe6zfmOWmCuckLEHB0mA=";
     }
+    {
+      url = "https://github.com/NixOS/nixpkgs/pull/503107.patch";
+      sha256 = "sha256-3adM3OxTZX2CwVkm66C0RgeD1u3bBerdzNE/vz/OX2g=";
+    }
   ];
   replaceModules = [
     # 498612
