@@ -10,7 +10,7 @@
     qbittorrent-enhanced
     motrix-next
     fluffychat
-    cherry-studio
+    # cherry-studio
 
     nur.repos.xddxdd.peerbanhelper
     nur.repos.lonerOrz.qq
