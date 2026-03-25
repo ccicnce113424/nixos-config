@@ -17,8 +17,12 @@ let
   # patches
   patches = map builtins.fetchurl [
     {
+      url = "https://github.com/NixOS/nixpkgs/pull/499412.patch";
+      sha256 = "sha256-ouelcCw4y0JW0RSR+RW+AcmRgCOppQpZdJ7x0BM5GUY=";
+    }
+    {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
-      sha256 = "sha256-r4ruHh/ox38JXGm42t9NauTDoUgc1WHyZu70SnXMmFc=";
+      sha256 = "sha256-FCvIq82WuTrqVWZ1/Gj8w7ysaWF58v9rdh+L0mUvzp4=";
     }
     # {
     #   url = "https://github.com/NixOS/nixpkgs/pull/500731.patch";
