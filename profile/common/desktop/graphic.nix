@@ -18,7 +18,10 @@
     enable = true;
     hwRender = true;
     term = "xterm-256color";
-    extraConfig = "font-dpi=144";
+    extraConfig = ''
+      font-dpi=144
+      font-engine=freetype
+    '';
   };
 
   environment.systemPackages = with pkgs; [
