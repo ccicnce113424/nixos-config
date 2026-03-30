@@ -7,7 +7,6 @@
       ms-ceintl.vscode-language-pack-zh-hans
       github.vscode-github-actions
       github.vscode-pull-request-github
-      github.copilot-chat
       skellock.just
       yzhang.markdown-all-in-one
       yzane.markdown-pdf
