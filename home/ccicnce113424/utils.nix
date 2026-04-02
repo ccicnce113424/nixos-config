@@ -19,5 +19,6 @@
     shijima-qt
     kdePackages.francis
     kdePackages.skanpage
+    winboat
   ];
 }
