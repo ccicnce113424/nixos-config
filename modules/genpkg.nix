@@ -18,12 +18,8 @@ let
   patches = map builtins.fetchurl [
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
-      sha256 = "sha256-FCvIq82WuTrqVWZ1/Gj8w7ysaWF58v9rdh+L0mUvzp4=";
+      sha256 = "sha256-SMOoTGs2kxienw/PU3TmQA1sKf/mqGSmkkxhxk6F/tQ=";
     }
-    # {
-    #   url = "https://github.com/NixOS/nixpkgs/pull/500731.patch";
-    #   sha256 = "sha256-X+LPhTggfnGMe0s830mNl3OJqq4MYgXGGG7cSS4nF4c=";
-    # }
   ];
   replaceModules = [
     # 498612
