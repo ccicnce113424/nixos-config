@@ -27,7 +27,9 @@
   programs.nix-ld.enable = true;
 
   boot = {
-    kernelParams = [ "iommu=pt" ];
+    kernelParams = [
+      "iommu=pt"
+    ];
     supportedFilesystems = [
       "btrfs"
       "ext4"
@@ -38,6 +40,11 @@
       "bcachefs"
     ];
     initrd.systemd.enable = true;
+
+    tmp = {
+      useTmpfs = true;
+      tmpfsHugeMemoryPages = "within_size";
+    };
   };
 
   services.userborn.enable = true;
