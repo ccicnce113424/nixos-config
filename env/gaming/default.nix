@@ -16,13 +16,13 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
-    gamescopeSession = {
-      enable = true;
-      args = [
-        "--rt"
-      ]
-      ++ lib.optional (config.networking.hostName == "ccic-desktop") "-r 165";
-    };
+    # gamescopeSession = {
+    #   enable = true;
+    #   args = [
+    #     "--rt"
+    #   ]
+    #   ++ lib.optional (config.networking.hostName == "ccic-desktop") "-r 165";
+    # };
     protontricks.enable = true;
   };
   programs.gamescope = {
@@ -49,6 +49,7 @@
   environment.systemPackages = with pkgs; [
     mangohud
     libstrangle
+    gamescope-wsi
 
     # moved to user config
     # lutris
