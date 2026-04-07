@@ -34,7 +34,7 @@
   hardware.bluetooth.enable = true;
   services.hardware.bolt.enable = true;
 
-  services.solaar.enable = true;
+  # services.solaar.enable = true;
 
   zramSwap = {
     enable = true;

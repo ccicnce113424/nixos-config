@@ -37,6 +37,7 @@ rec {
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
+        git-hooks.follows = "git-hooks";
       };
     };
     rust-overlay = {
@@ -49,6 +50,7 @@ rec {
         nixpkgs.follows = "nixpkgs";
         home-manager.follows = "home-manager";
         rust-overlay.follows = "rust-overlay";
+        jovian.follows = "";
       };
     };
     lan-mouse = {
@@ -72,10 +74,10 @@ rec {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    solaar = {
-      url = "https://flakehub.com/f/Svenum/Solaar-Flake/*";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # solaar = {
+    #   url = "https://flakehub.com/f/Svenum/Solaar-Flake/*";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
     nix-github-actions = {
       url = "github:nix-community/nix-github-actions";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -84,6 +86,15 @@ rec {
     flake-parts.url = "github:hercules-ci/flake-parts";
     nix-flatpak.url = "github:gmodena/nix-flatpak";
     flake-compat.url = "github:edolstra/flake-compat";
+
+    # not used directly
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+      };
+    };
   };
 
   outputs =
