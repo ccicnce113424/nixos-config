@@ -17,6 +17,7 @@
     pixes-git
     piliplus
     loveiwara
+    kikoflu
   ];
 
   # https://github.com/nix-community/home-manager/issues/8185
