@@ -20,7 +20,6 @@
     term = "xterm-256color";
     extraConfig = ''
       font-dpi=144
-      font-engine=freetype
     '';
   };
 
