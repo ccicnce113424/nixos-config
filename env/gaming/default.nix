@@ -64,7 +64,7 @@
     protonup-qt
 
     hmcl
-    graalvmPackages.graalvm-ce
+    jdk25_headless
 
     # following packages are from nix0gaming
     dxvk-nvapi-vkreflex-layer
