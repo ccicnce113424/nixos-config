@@ -16,13 +16,21 @@ let
     });
   # patches
   patches = map builtins.fetchurl [
+    # nixos/nvidia, linuxPackages.nvidia-x11: split proprietary kernel modules, use source-built ICDs, write params via modprobe
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
       sha256 = "sha256-1xsY5u0bjaTBgBcNvtVIRA4UF7LqiJ2ilWX3lUzeeis=";
     }
+    # flutterPackages: fix hostPlatform rename evaluation warning
+    # merged, remove after next channel update
     {
       url = "https://github.com/NixOS/nixpkgs/pull/507484.patch";
       sha256 = "sha256-8sJymfgEVzuoGXQRuXPvX5bdYu3ee3SPKuimsYQXFR4=";
+    }
+    # treewide: fix icon by adding 512x512 image
+    {
+      url = "https://github.com/NixOS/nixpkgs/pull/508397.patch";
+      sha256 = "sha256-Jbac8sf64s1PliwAU2K1RCbRpedh7ieVOVKeB657FFU=";
     }
   ];
   replaceModules = [

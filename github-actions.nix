@@ -27,19 +27,27 @@ in
     checks = lib.recursiveUpdate self.checks (
       builtins.mapAttrs (
         _: machines:
-        config.lib'.findPkgs [
-          "virtualbox"
-          "wine-tkg-full"
-          "xwayland"
-          "xsane"
+        config.lib'.findPkgs
+          [
+            "virtualbox"
+            "wine-tkg-full"
+            "xwayland"
+            "xsane"
 
-          "spectacle"
-          "kwin"
-          "kwin-x11"
-          "plasma-desktop"
-          "plasma-desktop"
-          "kdeplasma-addons"
-        ] (builtins.head machines).value.config.environment.systemPackages
+            "spectacle"
+            "kwin"
+            "kwin-x11"
+            "plasma-desktop"
+            "plasma-desktop"
+            "kdeplasma-addons"
+
+            "venera"
+            "cherry-studio"
+          ]
+          (
+            with (builtins.head machines).value.config;
+            environment.systemPackages ++ home-manager.users.ccicnce113424.home.packages
+          )
       ) grouped
     );
     attrPrefix = "githubActions.build.checks";
