@@ -4,6 +4,7 @@
 }:
 {
   home.packages = with pkgs; [
+    lumine
     wemeet
     ayugram-desktop
     tor-browser
