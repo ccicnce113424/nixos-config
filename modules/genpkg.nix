@@ -35,7 +35,7 @@ let
     # hmcl: add libxkbcommon and jdk 25, don't use system glfw by default
     {
       url = "https://github.com/NixOS/nixpkgs/pull/508813.patch";
-      sha256 = "sha256-l1/85npFE5r1+/lGgLv86FRmEdmBfnwDP3IxrNtBQpI=";
+      sha256 = "sha256-ryziHMsFYzmrMfdyXk0TM/9TFwJ5Xn9RqDoFjV+3dE4=";
     }
   ];
   replaceModules = [
