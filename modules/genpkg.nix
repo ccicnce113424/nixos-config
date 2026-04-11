@@ -19,7 +19,7 @@ let
     # nixos/nvidia, linuxPackages.nvidia-x11: split proprietary kernel modules, use source-built ICDs, write params via modprobe
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
-      sha256 = "sha256-5xilVjwKXkJdgYZ/459YGTNDtgyRJk+1WCK+AlTlkaA=";
+      sha256 = "sha256-CWXJFZXLfJZXtFVYm/wSwRU7asJbJ65kY61n6TceYwY=";
     }
     # flutterPackages: fix hostPlatform rename evaluation warning
     # merged, remove after next channel update
