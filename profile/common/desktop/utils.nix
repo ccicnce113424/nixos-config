@@ -13,6 +13,11 @@
           libepoxy
           libxkbfile
           libxau
+          mpv-unwrapped
+          libayatana-appindicator
+          libayatana-indicator
+          ayatana-ido
+          libdbusmenu
         ];
     };
   };
