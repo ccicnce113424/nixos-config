@@ -32,10 +32,10 @@ let
       url = "https://github.com/NixOS/nixpkgs/pull/508397.patch";
       sha256 = "sha256-MspBLvyZGycLN2bKBlEPoJfOwZInqQhWA5sWUsSaapo=";
     }
-    # hmcl: add libxkbcommon, don't use system glfw by default
+    # hmcl: add libxkbcommon and jdk 25, don't use system glfw by default
     {
       url = "https://github.com/NixOS/nixpkgs/pull/508813.patch";
-      sha256 = "sha256-su0pKDvWl1vDQqm7GxTZv9Hv7N+GFFWZVIv6AWIta2c=";
+      sha256 = "sha256-l1/85npFE5r1+/lGgLv86FRmEdmBfnwDP3IxrNtBQpI=";
     }
   ];
   replaceModules = [

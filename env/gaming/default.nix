@@ -56,7 +56,6 @@
     protonup-qt
 
     hmcl
-    jdk25_headless
 
     # following packages are from nix0gaming
     dxvk-nvapi-vkreflex-layer
