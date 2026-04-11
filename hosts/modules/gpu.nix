@@ -27,7 +27,7 @@ let
         nvidiaSettings = true;
         videoAcceleration = true;
         powerManagement.enable = true;
-        package = config.boot.kernelPackages.nvidiaPackages.beta;
+        package = config.boot.kernelPackages.nvidiaPackages.bleedingEdge;
         moduleParams = {
           nvidia = {
             NVreg_RegistryDwords = "EnableBrightnessControl=1";
