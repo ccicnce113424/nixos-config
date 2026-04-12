@@ -18,10 +18,32 @@
           fcitx5-pinyin-cedict
           fcitx5-pinyin-chinese-idiom
         ]);
-      settings.addons.classicui.globalSection = {
-        Theme = "plasma";
-        DarkTheme = "plasma";
-        UseDarkTheme = "True";
+      settings = {
+        addons = {
+          classicui.globalSection = {
+            Theme = "plasma";
+            DarkTheme = "plasma";
+            UseDarkTheme = true;
+          };
+        };
+        inputMethod = {
+          GroupOrder."0" = "Default";
+          "Groups/0" = {
+            Name = "Default";
+            "Default Layout" = "us";
+            DefaultIM = "pinyin";
+          };
+          "Groups/0/Items/0".Name = "keyboard-us";
+          "Groups/0/Items/1".Name = "pinyin";
+
+          GroupOrder."1" = "English";
+          "Groups/1" = {
+            Name = "English";
+            "Default Layout" = "us";
+            DefaultIM = "keyboard-us";
+          };
+          "Groups/1/Items/0".Name = "keyboard-us";
+        };
       };
 
       waylandFrontend = true;

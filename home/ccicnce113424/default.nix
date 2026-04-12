@@ -5,10 +5,10 @@
     ./multimedia
     ./networking
     ./plasma
+    ./inputs
     ./utils.nix
     ./documents
     ./zsh.nix
-    ./inputs.nix
     ./gaming.nix
   ];
 
