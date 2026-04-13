@@ -1,6 +1,6 @@
 {
   flake.nixosModules = {
-    nixos-treaks = import ./nixos-treaks.nix;
+    nixos-tweaks = import ./nixos-tweaks.nix;
     genpkg = import ./genpkg.nix;
   };
 }

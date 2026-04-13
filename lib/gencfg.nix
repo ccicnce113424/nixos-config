@@ -12,7 +12,7 @@
       let
         sharedModules = [
           self.nixosModules.genpkg
-          self.nixosModules.nixos-treaks
+          self.nixosModules.nixos-tweaks
           inputs.chaotic.nixosModules.default
           inputs.daeuniverse.nixosModules.daed
           inputs.nix-flatpak.nixosModules.nix-flatpak
