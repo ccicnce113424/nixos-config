@@ -1,6 +1,6 @@
 { ... }:
 {
   imports = [
-    ../common
+    ./x86_64-linux
   ];
 }

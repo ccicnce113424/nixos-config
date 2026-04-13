@@ -1,17 +1,12 @@
-let
-  ESP = "/efi";
-in
+{ lib, config, ... }:
 {
-  # Settings for bootloader
-  boot.loader.timeout = 5;
+  imports = [
+    ../../common/boot-systemd.nix
+  ];
 
-  boot.loader.efi = {
-    efiSysMountPoint = ESP;
-    canTouchEfiVariables = true;
-  };
-
-  boot.loader.systemd-boot = {
-    enable = true;
-    graceful = true;
+  config = lib.mkIf (config.runtime.profile == "minimal" || config.runtime.profile == "vm-test") {
+    profile.bootSystemd = {
+      enable = true;
+    };
   };
 }

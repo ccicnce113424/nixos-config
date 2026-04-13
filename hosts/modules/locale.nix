@@ -7,6 +7,12 @@ let
       };
 
       i18n.defaultLocale = "zh_CN.UTF-8";
+      i18n.supportedLocales = [
+        "zh_CN.UTF-8/UTF-8"
+        "en_US.UTF-8/UTF-8"
+        "ja_JP.UTF-8/UTF-8"
+        "C.UTF-8/UTF-8"
+      ];
 
       nix.settings.substituters = [
         # "https://mirrors.ustc.edu.cn/nix-channels/store"
