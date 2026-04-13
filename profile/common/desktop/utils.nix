@@ -1,109 +1,116 @@
-{ pkgs, ... }:
 {
-  programs.appimage = {
-    enable = true;
-    binfmt = true;
-    package = pkgs.appimage-run.override {
-      extraPkgs =
-        pkgs: with pkgs; [
-          icu
-          libxshmfence
-          webkitgtk_4_1
-          libsoup_3
-          libepoxy
-          libxkbfile
-          libxau
-          mpv-unwrapped
-          libayatana-appindicator
-          libayatana-indicator
-          ayatana-ido
-          libdbusmenu
-        ];
-    };
-  };
-
-  services.flatpak = {
-    enable = true;
-    update.onActivation = true;
-    # remotes = [
-    #   {
-    #     name = "flathub";
-    #     location = "https://mirror.sjtu.edu.cn/flathub";
-    #   }
-    # ];
-    uninstallUnmanaged = true;
-  };
-  services.fwupd.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    wl-clipboard-rs
-
-    resources
-
-    podman-compose
-    podman-desktop
-    xwininfo
-
-    moonlight-qt
-  ];
-  services.smartd.enable = true;
-
-  virtualisation.podman = {
-    enable = true;
-    dockerCompat = true;
-    dockerSocket.enable = true;
-    defaultNetwork.settings.dns_enabled = true;
-  };
-
-  xdg.portal = {
-    enable = true;
-    xdgOpenUsePortal = true;
-  };
-
-  services.samba = {
-    enable = true;
-    # package = pkgs.sambaFull;
-    openFirewall = true;
-    nsswins = true;
-    usershares.enable = true;
-  };
-
-  services.samba-wsdd = {
-    enable = true;
-    openFirewall = true;
-  };
-
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
-    publish = {
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+{
+  config = lib.mkIf (config.runtime.profile == "desktop") {
+    programs.appimage = {
       enable = true;
-      userServices = true;
+      binfmt = true;
+      package = pkgs.appimage-run.override {
+        extraPkgs =
+          pkgs: with pkgs; [
+            icu
+            libxshmfence
+            webkitgtk_4_1
+            libsoup_3
+            libepoxy
+            libxkbfile
+            libxau
+            mpv-unwrapped
+            libayatana-appindicator
+            libayatana-indicator
+            ayatana-ido
+            libdbusmenu
+          ];
+      };
     };
-  };
 
-  # open port for lan-mouse and qbittorrent
-  # set qbittorrent port to 62180
-  networking.firewall = {
-    allowedTCPPorts = [ 62180 ];
-    allowedUDPPorts = [
-      62180
-      4242
+    services.flatpak = {
+      enable = true;
+      update.onActivation = true;
+      # remotes = [
+      #   {
+      #     name = "flathub";
+      #     location = "https://mirror.sjtu.edu.cn/flathub";
+      #   }
+      # ];
+      uninstallUnmanaged = true;
+    };
+    services.fwupd.enable = true;
+
+    environment.systemPackages = with pkgs; [
+      wl-clipboard-rs
+
+      resources
+
+      podman-compose
+      podman-desktop
+      xwininfo
+
+      moonlight-qt
     ];
-  };
+    services.smartd.enable = true;
 
-  services.firewalld.package = pkgs.firewalld-gui;
+    virtualisation.podman = {
+      enable = true;
+      dockerCompat = true;
+      dockerSocket.enable = true;
+      defaultNetwork.settings.dns_enabled = true;
+    };
 
-  services.sunshine = {
-    enable = true;
-    autoStart = true;
-    capSysAdmin = true;
-    openFirewall = true;
-  };
+    xdg.portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+    };
 
-  programs.localsend = {
-    enable = true;
-    openFirewall = true;
+    services.samba = {
+      enable = true;
+      # package = pkgs.sambaFull;
+      openFirewall = true;
+      nsswins = true;
+      usershares.enable = true;
+    };
+
+    services.samba-wsdd = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    services.avahi = {
+      enable = true;
+      nssmdns4 = true;
+      openFirewall = true;
+      publish = {
+        enable = true;
+        userServices = true;
+      };
+    };
+
+    # open port for lan-mouse and qbittorrent
+    # set qbittorrent port to 62180
+    networking.firewall = {
+      allowedTCPPorts = [ 62180 ];
+      allowedUDPPorts = [
+        62180
+        4242
+      ];
+    };
+
+    services.firewalld.package = pkgs.firewalld-gui;
+
+    services.sunshine = {
+      enable = true;
+      autoStart = true;
+      capSysAdmin = true;
+      openFirewall = true;
+    };
+
+    programs.localsend = {
+      enable = true;
+      openFirewall = true;
+    };
   };
 }

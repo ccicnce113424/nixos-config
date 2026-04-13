@@ -2,20 +2,32 @@ let
   desktop-template = {
     system = "x86_64-linux";
     profile = "desktop";
-    env = [
-      "plasma"
-      "image"
-      "gaming"
-      "obs"
-      "vbox"
-      "wine"
-    ];
-    users = [ "ccicnce113424" ];
-    thin = false;
+    runtime = {
+      profile = "desktop";
+      homeManager = {
+        enable = true;
+      };
+      features = [
+        "plasma"
+        "browsers"
+        "image"
+        "gaming"
+        "obs"
+        "vbox"
+        "wine"
+      ];
+      users = [ "ccicnce113424" ];
+    };
   };
-  thin = {
+  thin-template = {
     system = "x86_64-linux";
-    thin = true;
+    runtime = {
+      profile = "minimal";
+      homeManager = {
+        enable = false;
+      };
+      users = [ ];
+    };
   };
 in
 {
@@ -31,10 +43,12 @@ in
       gpu.amdgpu = true;
     };
   };
-  vbox-test = thin // {
+  vbox-test = thin-template // {
     profile = "vm-test";
+    runtime.profile = "vm-test";
   };
-  vmware-test = thin // {
+  vmware-test = thin-template // {
     profile = "vm-test";
+    runtime.profile = "vm-test";
   };
 }

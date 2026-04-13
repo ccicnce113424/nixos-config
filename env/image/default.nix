@@ -1,7 +1,7 @@
 {
-  pkgs,
+  config,
   lib,
-  host,
+  pkgs,
   ...
 }:
 let
@@ -24,14 +24,16 @@ let
   };
 in
 {
-  environment.systemPackages = [
-    gimp-combined
-    xsane
-  ];
+  config = lib.mkIf (builtins.elem "image" config.runtime.features) {
+    environment.systemPackages = [
+      gimp-combined
+      xsane
+    ];
 
-  programs.weylus = {
-    enable = true;
-    openFirewall = true;
-    inherit (host) users;
+    programs.weylus = {
+      enable = true;
+      openFirewall = true;
+      users = config.runtime.users;
+    };
   };
 }

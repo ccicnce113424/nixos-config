@@ -1,3 +1,7 @@
-import ../../common/desktop [
-  ./boot.nix
-]
+{ ... }:
+{
+  imports = [
+    ../../common/desktop
+    ./boot.nix
+  ];
+}

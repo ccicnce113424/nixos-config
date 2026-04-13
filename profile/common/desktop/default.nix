@@ -1,4 +1,3 @@
-extraModules:
 { ... }:
 {
   imports = [
@@ -6,7 +5,5 @@ extraModules:
     ./fonts.nix
     ./graphic.nix
     ./utils.nix
-    ../minimal
-  ]
-  ++ extraModules;
+  ];
 }
