@@ -46,7 +46,7 @@
       # moved to user config
       # lutris
 
-      heroic
+      # heroic
       lsfg-vk
       lsfg-vk-ui
 
@@ -55,7 +55,7 @@
       #   withOpenASAR = true;
       # })
 
-      protonup-qt
+      # protonup-qt
 
       hmcl
 
