@@ -46,7 +46,7 @@
       # moved to user config
       # lutris
 
-      # heroic
+      heroic
       lsfg-vk
       lsfg-vk-ui
 
