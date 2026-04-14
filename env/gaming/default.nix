@@ -57,7 +57,7 @@
 
       # protonup-qt
 
-      hmcl
+      prismlauncher
 
       # following packages are from nix0gaming
       dxvk-nvapi-vkreflex-layer
