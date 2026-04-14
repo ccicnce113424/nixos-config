@@ -7,6 +7,7 @@
     ./c.nix
     ./rust.nix
     ./git.nix
+    ./zed.nix
   ];
   home.packages = with pkgs; [
     just

@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   programs.git.enable = true;
   programs.difftastic = {
@@ -9,4 +9,10 @@
     };
   };
   programs.mergiraf.enable = true;
+
+  programs.zed-editor.extensions = [ "git-firefly" ];
+
+  home.packages = with pkgs; [
+    github-copilot-cli
+  ];
 }
