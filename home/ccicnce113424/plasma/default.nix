@@ -94,6 +94,11 @@
     kurve
     plasmusic-toolbar
     kdePackages.wallpaper-engine-plugin
+    krunner-fd-plugin
+  ];
+
+  dbus.packages = with pkgs; [
+    krunner-fd-plugin
   ];
 
   imports = [ ./power.nix ];
