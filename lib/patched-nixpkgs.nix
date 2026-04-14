@@ -12,7 +12,7 @@ let
     # nixos/nvidia, linuxPackages.nvidia-x11: split proprietary kernel modules, use source-built ICDs, write params via modprobe
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
-      sha256 = "sha256-gr9YNei4NshAx/CRQE3dgK5X+DGO1O07lE9w1qfzzic=";
+      sha256 = "sha256-meUI48tlQEvOw59qFNumYQPRRaaHaqT11hHl1lK3Ric=";
     }
     # flutterPackages: fix hostPlatform rename evaluation warning
     # merged, remove after next channel update
@@ -23,12 +23,12 @@ let
     # treewide: fix icon by adding 512x512 image
     {
       url = "https://github.com/NixOS/nixpkgs/pull/508397.patch";
-      sha256 = "sha256-MspBLvyZGycLN2bKBlEPoJfOwZInqQhWA5sWUsSaapo=";
+      sha256 = "sha256-oqo8EYoiXlz1B6XrN6KVD3wJMFVYeOlfy8JB9AQ/iBQ=";
     }
     # hmcl: add libxkbcommon and jdk 25, don't use system glfw by default
     {
       url = "https://github.com/NixOS/nixpkgs/pull/508813.patch";
-      sha256 = "sha256-ryziHMsFYzmrMfdyXk0TM/9TFwJ5Xn9RqDoFjV+3dE4=";
+      sha256 = "sha256-K6j1tVrZv3uoy8fBVasUnk0ecYvwk2N/tsJU1qYbv3E=";
     }
   ];
 
