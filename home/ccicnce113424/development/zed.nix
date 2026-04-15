@@ -22,7 +22,7 @@
       # Features
       git_panel.tree_view = true;
       document_symbols = "off";
-      document_folding_ranges = "off";
+      document_folding_ranges = "on";
       semantic_tokens = "combined";
       terminal.env."GIT_EDITOR" = "zeditor --wait";
       # AI
