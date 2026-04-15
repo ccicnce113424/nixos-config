@@ -11,6 +11,7 @@
       "make"
       "just"
       "ini"
+      "log"
       "vscode-dark-modern"
     ];
     userSettings = {
