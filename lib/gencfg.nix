@@ -11,7 +11,6 @@
     default =
       let
         sharedModules = [
-          self.nixosModules.genpkg
           self.nixosModules.nixos-tweaks
           inputs.chaotic.nixosModules.default
           inputs.daeuniverse.nixosModules.daed
@@ -38,11 +37,22 @@
                     host
                     ;
                 };
+                patchedRegistryModule = {
+                  nix.registry = {
+                    nixpkgs-patched.to = {
+                      type = "path";
+                      path = patched.finalNixpkgs.outPath;
+                    };
+                  };
+                };
               in
-              (import (patched.finalNixpkgs + "/nixos/lib/eval-config.nix")) {
+              (import (patched.finalNixpkgs.outPath + "/nixos/lib/eval-config.nix")) {
                 lib = inputs.nixpkgs.lib;
                 inherit (host) system;
-                modules = sharedModules ++ [ ../hosts/${name} ];
+                modules = sharedModules ++ [
+                  patchedRegistryModule
+                  ../hosts/${name}
+                ];
                 pkgs = patched.hostPkgs;
                 specialArgs = {
                   inherit

@@ -8,7 +8,6 @@ let
     intel = {
       boot.kernelParams = [ "intel_iommu=on" ];
       hardware.cpu.intel.updateMicrocode = true;
-      pkgsArch = "pkgsx86_64_v3";
       nix.settings.system-features = [ "gccarch-x86-64-v3" ];
     };
     amd = {
@@ -16,7 +15,6 @@ let
         updateMicrocode = true;
         ryzen-smu.enable = true;
       };
-      pkgsArch = "pkgsx86_64_v3";
       nix.settings.system-features = [ "gccarch-x86-64-v3" ];
     };
   };
