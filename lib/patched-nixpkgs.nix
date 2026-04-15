@@ -15,10 +15,6 @@ let
       sha256 = "sha256-QD0nNYu/xojg+E5hqyIisHk1L1sCWTbRD857kmsGXaw=";
     }
     # flutterPackages: fix hostPlatform rename evaluation warning
-    # merged, remove after next channel update
-    {
-      url = "https://github.com/NixOS/nixpkgs/pull/507484.patch";
-      sha256 = "sha256-8sJymfgEVzuoGXQRuXPvX5bdYu3ee3SPKuimsYQXFR4=";
     }
     # we're not using this package, but we need this to avoid a hunk failure
     {
