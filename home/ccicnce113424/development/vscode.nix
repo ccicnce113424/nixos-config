@@ -19,7 +19,7 @@
     #   "security.workspace.trust.enabled" = false;
     # };
   };
-  home.packages = with pkgs; [ vscode-runner ];
+  # home.packages = with pkgs; [ vscode-runner ];
   # home.file.".vscode/argv.json".text = builtins.toJSON {
   #   "enable-crash-reporter" = false;
   #   "locale" = "zh-cn";

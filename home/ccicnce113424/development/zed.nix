@@ -1,4 +1,5 @@
 {
+  pkgs,
   ...
 }:
 {
@@ -29,4 +30,12 @@
       agent_servers.github-copilot-cli.type = "registry";
     };
   };
+
+  home.packages = with pkgs; [
+    krunner-zed
+  ];
+
+  dbus.packages = with pkgs; [
+    krunner-zed
+  ];
 }

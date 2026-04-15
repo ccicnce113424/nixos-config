@@ -99,6 +99,7 @@
 
   dbus.packages = with pkgs; [
     krunner-fd-plugin
+    krunner-zed
   ];
 
   imports = [ ./power.nix ];
