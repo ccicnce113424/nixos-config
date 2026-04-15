@@ -28,7 +28,7 @@ let
     # hmcl: add libxkbcommon and jdk 25, don't use system glfw by default
     {
       url = "https://github.com/NixOS/nixpkgs/pull/508813.patch";
-      sha256 = "sha256-K6j1tVrZv3uoy8fBVasUnk0ecYvwk2N/tsJU1qYbv3E=";
+      sha256 = "sha256-AvMZRctv03czZ28RffoACM/BwRmcU14xeRPlb8uoIkw=";
     }
   ];
 
