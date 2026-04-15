@@ -1,6 +1,4 @@
-username: importlist:
-{ pkgs, ... }:
-{
+pkgs: username: {
   users.users.${username} = {
     isNormalUser = true;
     extraGroups = [
@@ -16,6 +14,6 @@ username: importlist:
     ];
     shell = pkgs.zsh;
     initialPassword = "000000";
+    autoSubUidGidRange = true;
   };
-  imports = importlist;
 }
