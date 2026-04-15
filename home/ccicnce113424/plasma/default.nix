@@ -20,7 +20,10 @@
           {
             name = pkgs.lyrica-plasmoid.passthru.id;
             config = {
-              Backend.tlyricMode = 3;
+              Backend = {
+                tlyricMode = 3;
+                enabledLyricProviders = "Mpris2Text,File,YesPlayMusic,NeteaseTrackID,FeelUOwnNetease,Netease";
+              };
               Frontend.shouldUseDefaultThemeTextColor = false;
             };
           }
