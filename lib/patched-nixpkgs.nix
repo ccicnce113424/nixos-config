@@ -14,8 +14,6 @@ let
       url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
       sha256 = "sha256-QD0nNYu/xojg+E5hqyIisHk1L1sCWTbRD857kmsGXaw=";
     }
-    # flutterPackages: fix hostPlatform rename evaluation warning
-    }
     # we're not using this package, but we need this to avoid a hunk failure
     {
       url = "https://github.com/ccicnce113424/nixpkgs/commit/eda0c70a7e0ccc8a48ae23361571431af85b7f5a.patch";
