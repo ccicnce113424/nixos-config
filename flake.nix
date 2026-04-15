@@ -100,6 +100,7 @@ rec {
   outputs =
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
+      debug = true;
       _module.args = { inherit nixConfig; };
       imports = [
         ./lib/flake-module.nix
