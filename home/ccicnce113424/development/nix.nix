@@ -31,5 +31,11 @@
     # };
   };
 
-  programs.zed-editor.extensions = [ "nix" ];
+  programs.zed-editor = {
+    extensions = [ "nix" ];
+    userSettings.languages.Nix.language_servers = [
+      "nixd"
+      "!nil"
+    ];
+  };
 }
