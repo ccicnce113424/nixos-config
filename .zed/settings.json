@@ -3,12 +3,15 @@
 // For a full list of overridable settings, and general information on folder-specific settings,
 // see the documentation: https://zed.dev/docs/configuring-zed#settings-files
 {
+  "formatter": {
+    "external": {
+      "command": "nix",
+      "arguments": ["fmt", "--", "{buffer_path}", "--stdin"]
+    }
+  },
   "languages": {
     "Nix": {
-      "language_servers": [
-        "nixd",
-        "!nil"
-      ]
+      "language_servers": ["nixd", "!nil"]
     }
   },
   "lsp": {
