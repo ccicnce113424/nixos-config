@@ -9,6 +9,7 @@
       "bash"
       "make"
       "just"
+      "ini"
       "vscode-dark-modern"
     ];
     userSettings = {
