@@ -10,7 +10,6 @@ let
     environment.systemPackages =
       with pkgs;
       [
-        git
         ccic-hello
       ]
       ++ lib.mapAttrsToList writeShellScriptBin config.cmdAlias;
@@ -21,6 +20,8 @@ let
       overlay.enable = false;
       cache.enable = false;
     };
+
+    programs.git.enable = true;
 
     system.stateVersion = lib.trivial.release;
   };

@@ -1,6 +1,9 @@
 { pkgs, ... }:
 {
-  programs.git.enable = true;
+  programs.git = {
+    enable = true;
+    package = pkgs.gitFull;
+  };
   programs.difftastic = {
     enable = true;
     git = {
