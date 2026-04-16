@@ -32,7 +32,7 @@ in
             "virtualbox"
             "wine-tkg-full"
             "xwayland"
-            "xsane"
+            "gimp-with-plugins"
 
             "spectacle"
             "kwin"
