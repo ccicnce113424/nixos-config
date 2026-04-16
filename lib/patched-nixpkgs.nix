@@ -15,14 +15,22 @@ let
       sha256 = "sha256-QD0nNYu/xojg+E5hqyIisHk1L1sCWTbRD857kmsGXaw=";
     }
     # we're not using this package, but we need this to avoid a hunk failure
+    # remove after the next channel update
     {
       url = "https://github.com/ccicnce113424/nixpkgs/commit/eda0c70a7e0ccc8a48ae23361571431af85b7f5a.patch";
       sha256 = "sha256-5BAN7mD5zEo/UGbmofgDYk2f8+uV9Y0G/n92nwkaxu8=";
     }
-    # treewide: fix icon by adding 512x512 image
+    # treewide: fix icon by moving to valid path
+    # merged, remove after the next channel update
     {
-      url = "https://github.com/NixOS/nixpkgs/pull/508397.patch";
-      sha256 = "sha256-ibV+WxQ8emrUOaOuOcjoGVsHLXfiJYdykYbe+vNHQJE=";
+      url = "https://github.com/NixOS/nixpkgs/pull/510472.patch";
+      sha256 = "sha256-Arjxr4WKlpSvgZO8mif89k28unYXG0SITzrhRnAwyEw=";
+    }
+    # kmscon: 9.3.3 -> 9.3.4-unstable-2026-04-13, nixos/kmscon: make agetty optional
+    # test upcoming package and module updates
+    {
+      url = "https://github.com/NixOS/nixpkgs/pull/508807.patch";
+      sha256 = "sha256-fu67ERvM6iNi5VQi9XMmD9e+v5lvD8PHtJDC+6uvza4=";
     }
   ];
 
