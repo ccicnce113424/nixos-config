@@ -37,7 +37,10 @@ in
       '';
       cswitch = ''
         rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup
-        systemd-inhibit sudo nixos-rebuild switch --flake $HOME/code/nixos-config --install-bootloader --option substituters 'https://cache.nixos.org' "$@"
+        systemd-inhibit sudo nixos-rebuild switch --flake $HOME/code/nixos-config \
+          --log-format bar-with-logs -L --install-bootloader \
+          --option substituters 'https://cache.nixos.org' \
+          "$@"
       '';
       sgc = ''systemd-inhibit nix store gc "$@"'';
       up = ''
