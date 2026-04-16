@@ -43,7 +43,10 @@
           ];
         })
       ]);
-    environment.plasma6.excludePackages = with pkgs.kdePackages; [ spectacle ];
+    environment.plasma6.excludePackages = with pkgs.kdePackages; [
+      spectacle
+      kwin-x11
+    ];
 
     programs.kde-pim = {
       enable = true;

@@ -36,8 +36,6 @@ in
 
             "spectacle"
             "kwin"
-            "kwin-x11"
-            "plasma-desktop"
             "plasma-desktop"
             "kdeplasma-addons"
 
