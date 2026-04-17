@@ -7,12 +7,15 @@
     enable = true;
     extensions = [
       "toml"
-      "bash"
       "make"
       "just"
       "ini"
       "log"
       "vscode-dark-modern"
+    ];
+    extraPackages = with pkgs; [
+      just-lsp
+      bash-language-server
     ];
     userSettings = {
       session.trust_all_worktrees = true;
