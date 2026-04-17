@@ -8,6 +8,7 @@
     ./diff-tools.nix
     ./rust.nix
     ./git.nix
+    ./jujutsu.nix
     ./zed.nix
   ];
   home.packages = with pkgs; [

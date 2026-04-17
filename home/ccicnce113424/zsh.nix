@@ -13,6 +13,16 @@
         src = ./p10k-cfg;
         file = "p10k.zsh";
       }
+      {
+        name = "p10k-jj-status";
+        src = pkgs.fetchFromGitHub {
+          owner = "xs5871";
+          repo = "p10k-jj-status";
+          rev = "a98672e1cd23f1010875bf6fb376a33b1740a484";
+          hash = "sha256-hTKzE7hNgKwASC4RbyCW8S9F7KaTqqyLBKtkTM7Sz/w=";
+        };
+        file = "p10k-jj-status.plugin.zsh";
+      }
     ];
     autocd = true;
     autosuggestion.enable = true;
