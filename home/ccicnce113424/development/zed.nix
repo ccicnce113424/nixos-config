@@ -28,7 +28,7 @@
       document_symbols = "off";
       document_folding_ranges = "on";
       semantic_tokens = "combined";
-      terminal.env."GIT_EDITOR" = "zeditor --wait";
+      terminal.env."EDITOR" = "zeditor --wait";
       # AI
       edit_predictions.provider = "copilot";
       agent_servers.github-copilot-cli.type = "registry";
