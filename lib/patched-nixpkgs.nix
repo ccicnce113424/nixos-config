@@ -32,6 +32,11 @@ let
       url = "https://github.com/NixOS/nixpkgs/pull/508807.patch";
       sha256 = "sha256-fu67ERvM6iNi5VQi9XMmD9e+v5lvD8PHtJDC+6uvza4=";
     }
+    # daed: 1.0.0 -> 1.27.0, add nixos module and maintainer
+    {
+      url = "https://github.com/NixOS/nixpkgs/pull/510895.patch";
+      sha256 = "sha256-S6I5NUwMrvcN5uigyKcYr/pjsRWFD5Xk3GKET4MjlaM=";
+    }
   ];
 
   patchedNixpkgs =

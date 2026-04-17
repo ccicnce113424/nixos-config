@@ -13,7 +13,6 @@
         sharedModules = [
           self.nixosModules.nixos-tweaks
           inputs.chaotic.nixosModules.default
-          inputs.daeuniverse.nixosModules.daed
           inputs.nix-flatpak.nixosModules.nix-flatpak
           ../hosts/runtime.nix
           # inputs.solaar.nixosModules.default
