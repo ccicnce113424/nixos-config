@@ -12,7 +12,7 @@ let
     # nixos/nvidia, linuxPackages.nvidia-x11: split proprietary kernel modules, use source-built ICDs, write params via modprobe
     {
       url = "https://github.com/NixOS/nixpkgs/pull/498612.patch";
-      sha256 = "sha256-QD0nNYu/xojg+E5hqyIisHk1L1sCWTbRD857kmsGXaw=";
+      sha256 = "sha256-TvFFa7x2oCsmFKL68GPMEuz/ezELPR5YG2D5kOJuyZE=";
     }
     # we're not using this package, but we need this to avoid a hunk failure
     # remove after the next channel update
@@ -30,12 +30,12 @@ let
     # test upcoming package and module updates
     {
       url = "https://github.com/NixOS/nixpkgs/pull/508807.patch";
-      sha256 = "sha256-fu67ERvM6iNi5VQi9XMmD9e+v5lvD8PHtJDC+6uvza4=";
+      sha256 = "sha256-8cw696EdE1fB7Ikc49CQsPItC8hnCNggmLJT7+l4JXA=";
     }
     # daed: 1.0.0 -> 1.27.0, add nixos module and maintainer
     {
       url = "https://github.com/NixOS/nixpkgs/pull/510895.patch";
-      sha256 = "sha256-S6I5NUwMrvcN5uigyKcYr/pjsRWFD5Xk3GKET4MjlaM=";
+      sha256 = "sha256-h2RZ7S+L6rAUGJn8rfDWLi/58kYKotZrEyT8k66D0qA=";
     }
   ];
 
