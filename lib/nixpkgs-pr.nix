@@ -37,6 +37,7 @@ in
           runtimeInputs = with pkgs; [
             curl
           ];
+          preferLocalBuild = true;
           text = ''
             output_dir="''${1:-patches/nixpkgs-pr}"
 
