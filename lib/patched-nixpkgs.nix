@@ -30,7 +30,7 @@ let
     # test upcoming package and module updates
     {
       url = "https://github.com/NixOS/nixpkgs/pull/508807.patch";
-      sha256 = "sha256-kZLPubV9gtMD1E9df0J6CsuUmRDStSM1Nil6dB2qhCc=";
+      sha256 = "sha256-uaaZqOf1qX558kkG0fuCJg1VA/FXo8f/U/mpt82+8po=";
     }
     # daed: 1.0.0 -> 1.27.0, add nixos module and maintainer
     {
