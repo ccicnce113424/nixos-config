@@ -2,6 +2,7 @@
   self,
   inputs,
   lib,
+  config,
   nixConfig,
   withSystem,
   ...
@@ -28,14 +29,7 @@
                 ...
               }:
               let
-                patched = import ./patched-nixpkgs.nix {
-                  inherit
-                    inputs
-                    lib
-                    self
-                    host
-                    ;
-                };
+                patched = config.lib'.patchedNixpkgs host;
                 patchedRegistryModule = {
                   nix.registry = {
                     nixpkgs-patched.to = {
