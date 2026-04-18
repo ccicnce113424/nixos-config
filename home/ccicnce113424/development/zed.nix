@@ -16,6 +16,7 @@
     extraPackages = with pkgs; [
       just-lsp
       bash-language-server
+      ruff
     ];
     userSettings = {
       session.trust_all_worktrees = true;
