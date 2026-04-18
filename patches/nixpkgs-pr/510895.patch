@@ -172,9 +172,9 @@ index 3a7ff752a325d..bd6e82fc1d576 100644
 -}
 +})
 
-From c3ab8284b69578d3d525199ead415cae856210ef Mon Sep 17 00:00:00 2001
+From 9355f9d646d3d2194e1dbf0613210099ea17f382 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Fri, 17 Apr 2026 22:54:20 +0800
+Date: Sun, 19 Apr 2026 02:17:23 +0800
 Subject: [PATCH 2/2] nixos/daed: init
 
 ---
@@ -197,7 +197,7 @@ index f72dcccf3e879..f895e8256d0a9 100644
    ./services/networking/ddns-updater.nix
 diff --git a/nixos/modules/services/networking/daed.nix b/nixos/modules/services/networking/daed.nix
 new file mode 100644
-index 0000000000000..6e57594b54e76
+index 0000000000000..23a8719f1cd7d
 --- /dev/null
 +++ b/nixos/modules/services/networking/daed.nix
 @@ -0,0 +1,143 @@
@@ -251,7 +251,7 @@ index 0000000000000..6e57594b54e76
 +{
 +  options = {
 +    services.daed = {
-+      enable = mkEnableOption "daed, a modern web dashboard with dae.";
++      enable = mkEnableOption "daed, a modern web dashboard with dae";
 +
 +      package = mkPackageOption pkgs "daed" { };
 +
@@ -293,7 +293,7 @@ index 0000000000000..6e57594b54e76
 +      };
 +
 +      openFirewall = {
-+        enable = mkEnableOption "opening `port` in the firewall." // {
++        enable = mkEnableOption "opening `port` in the firewall" // {
 +          default = true;
 +        };
 +        port = mkOption {
