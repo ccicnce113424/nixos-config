@@ -11,16 +11,9 @@ in
 {
   options = {
     patchedNixpkgs = {
-      patchesHighPriority = lib.mkOption {
+      patchesHiPrio = lib.mkOption {
         type = lib.types.listOf lib.types.path;
-        default = map builtins.fetchurl [
-          # we're not using this package, but we need this to avoid a hunk failure
-          # remove after the next channel update
-          {
-            url = "https://github.com/ccicnce113424/nixpkgs/commit/eda0c70a7e0ccc8a48ae23361571431af85b7f5a.patch";
-            sha256 = "sha256-5BAN7mD5zEo/UGbmofgDYk2f8+uV9Y0G/n92nwkaxu8=";
-          }
-        ];
+        default = config.lib'.pathToPatchList ../patches/hiprio;
       };
       patches = lib.mkOption {
         type = lib.types.listOf lib.types.path;
@@ -32,7 +25,7 @@ in
         let
           bootstrapPkgs = import inputs.nixpkgs { inherit (host) system; };
           hostCfg = host.hostCfg or { };
-          patches = cfg.patchesHighPriority ++ cfg.patches;
+          patches = cfg.patchesHiPrio ++ cfg.patches;
 
           patchedNixpkgs =
             (bootstrapPkgs.applyPatches {

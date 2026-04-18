@@ -1,0 +1,387 @@
+From 57ef295d60871d2c671b038deeb24fdfa8eb447f Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Thu, 16 Apr 2026 11:29:23 +0800
+Subject: [PATCH] treewide: fix icon by moving to valid path
+
+---
+ pkgs/applications/misc/qtbitcointrader/default.nix | 2 +-
+ pkgs/by-name/ai/airgorah/package.nix               | 2 +-
+ pkgs/by-name/al/alisthelper/package.nix            | 5 +----
+ pkgs/by-name/az/azuredatastudio/package.nix        | 2 +-
+ pkgs/by-name/ba/badlion-client/package.nix         | 2 +-
+ pkgs/by-name/bl/blackvoxel/package.nix             | 2 +-
+ pkgs/by-name/bl/bluemail/package.nix               | 4 ++--
+ pkgs/by-name/bo/bombsquad/package.nix              | 2 +-
+ pkgs/by-name/ch/cherry-studio/package.nix          | 2 +-
+ pkgs/by-name/cl/clockify/package.nix               | 2 +-
+ pkgs/by-name/gr/graphest/package.nix               | 2 +-
+ pkgs/by-name/no/notable/package.nix                | 6 ++++--
+ pkgs/by-name/sh/show-midi/package.nix              | 2 +-
+ pkgs/by-name/si/simple-live-app/package.nix        | 2 +-
+ pkgs/by-name/sn/snowemu/package.nix                | 2 +-
+ pkgs/by-name/th/thorium-reader/package.nix         | 2 +-
+ pkgs/by-name/tk/tk-safe/package.nix                | 4 ++--
+ pkgs/by-name/tt/tts-mod-vault/package.nix          | 2 +-
+ pkgs/by-name/ve/venera/package.nix                 | 2 +-
+ pkgs/by-name/vo/volanta/package.nix                | 2 +-
+ pkgs/by-name/wi/winbox4/build-from-zip.nix         | 2 +-
+ pkgs/by-name/wi/windterm/package.nix               | 2 +-
+ pkgs/by-name/wo/wootility/package.nix              | 2 +-
+ pkgs/by-name/wo/wox/package.nix                    | 2 +-
+ pkgs/by-name/zo/zoho-mail-desktop/package.nix      | 6 ++++--
+ 25 files changed, 33 insertions(+), 32 deletions(-)
+
+diff --git a/pkgs/applications/misc/qtbitcointrader/default.nix b/pkgs/applications/misc/qtbitcointrader/default.nix
+index 70e587f175c35..5a2a838b03b81 100644
+--- a/pkgs/applications/misc/qtbitcointrader/default.nix
++++ b/pkgs/applications/misc/qtbitcointrader/default.nix
+@@ -32,7 +32,7 @@ stdenv.mkDerivation (finalAttrs: {
+     qmake $qmakeFlags \
+       PREFIX=$out \
+       DESKTOPDIR=$out/share/applications \
+-      ICONDIR=$out/share/icons/hicolor/1024x1024/apps \
++      ICONDIR=$out/share/icons \
+       QtBitcoinTrader_Desktop.pro
+ 
+     runHook postConfigure
+diff --git a/pkgs/by-name/ai/airgorah/package.nix b/pkgs/by-name/ai/airgorah/package.nix
+index 77f28ec81e439..16f5694ed4381 100644
+--- a/pkgs/by-name/ai/airgorah/package.nix
++++ b/pkgs/by-name/ai/airgorah/package.nix
+@@ -41,7 +41,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
+   ];
+ 
+   postInstall = ''
+-    install -Dm644 icons/app_icon.png $out/share/icons/hicolor/1024x1024/apps/airgorah.png
++    install -Dm644 icons/app_icon.png $out/share/icons/airgorah.png
+   '';
+ 
+   desktopItems = [
+diff --git a/pkgs/by-name/al/alisthelper/package.nix b/pkgs/by-name/al/alisthelper/package.nix
+index 0e79e0f962c0a..9c0b0fa4b7a03 100644
+--- a/pkgs/by-name/al/alisthelper/package.nix
++++ b/pkgs/by-name/al/alisthelper/package.nix
+@@ -7,7 +7,6 @@
+   makeDesktopItem,
+   runCommand,
+   yq-go,
+-  imagemagick,
+   _experimental-update-script-combinators,
+   nix-update-script,
+ }:
+@@ -26,7 +25,6 @@ flutter341.buildFlutterApplication (finalAttrs: {
+   pubspecLock = lib.importJSON ./pubspec.lock.json;
+ 
+   nativeBuildInputs = [
+-    imagemagick
+     copyDesktopItems
+   ];
+ 
+@@ -47,8 +45,7 @@ flutter341.buildFlutterApplication (finalAttrs: {
+   ];
+ 
+   postInstall = ''
+-    mkdir -p $out/share/icons/hicolor/1024x1024/apps
+-    magick assets/alisthelper.png -resize 1024x1024 $out/share/icons/hicolor/1024x1024/apps/alisthelper.png
++    install -D assets/alisthelper.png $out/share/icons/alisthelper.png
+   '';
+ 
+   passthru = {
+diff --git a/pkgs/by-name/az/azuredatastudio/package.nix b/pkgs/by-name/az/azuredatastudio/package.nix
+index 6c1aa4a1bb77b..6739d0cac6535 100644
+--- a/pkgs/by-name/az/azuredatastudio/package.nix
++++ b/pkgs/by-name/az/azuredatastudio/package.nix
+@@ -129,7 +129,7 @@ stdenv.mkDerivation rec {
+   installPhase = ''
+     runHook preInstall
+ 
+-    install -D ${targetPath}/resources/app/resources/linux/code.png $out/share/icons/hicolor/1024x1024/apps/azuredatastudio.png
++    install -D ${targetPath}/resources/app/resources/linux/code.png $out/share/icons/azuredatastudio.png
+ 
+     runHook postInstall
+   '';
+diff --git a/pkgs/by-name/ba/badlion-client/package.nix b/pkgs/by-name/ba/badlion-client/package.nix
+index aac370315d63f..c309ec2983a33 100644
+--- a/pkgs/by-name/ba/badlion-client/package.nix
++++ b/pkgs/by-name/ba/badlion-client/package.nix
+@@ -23,7 +23,7 @@ appimageTools.wrapAppImage rec {
+ 
+   extraInstallCommands = ''
+     install -Dm444 ${src}/BadlionClient.desktop $out/share/applications/BadlionClient.desktop
+-    install -Dm444 ${src}/BadlionClient.png -t $out/share/icons/hicolor/1024x1024/apps
++    install -Dm444 ${src}/BadlionClient.png -t $out/share/icons
+     substituteInPlace $out/share/applications/BadlionClient.desktop \
+       --replace-fail "Exec=AppRun --no-sandbox %U" "Exec=badlion-client"
+     wrapProgram $out/bin/badlion-client \
+diff --git a/pkgs/by-name/bl/blackvoxel/package.nix b/pkgs/by-name/bl/blackvoxel/package.nix
+index 38faa31818c6b..24428ad8a3631 100644
+--- a/pkgs/by-name/bl/blackvoxel/package.nix
++++ b/pkgs/by-name/bl/blackvoxel/package.nix
+@@ -50,7 +50,7 @@ stdenv.mkDerivation (finalAttrs: {
+   ];
+ 
+   postInstall = ''
+-    install -Dm644 blackvoxel.png $out/share/icons/hicolor/1024x1024/apps/blackvoxel.png
++    install -Dm644 blackvoxel.png $out/share/icons/blackvoxel.png
+   '';
+ 
+   desktopItems = [
+diff --git a/pkgs/by-name/bl/bluemail/package.nix b/pkgs/by-name/bl/bluemail/package.nix
+index b131da910a02b..6e48420afe4d3 100644
+--- a/pkgs/by-name/bl/bluemail/package.nix
++++ b/pkgs/by-name/bl/bluemail/package.nix
+@@ -92,8 +92,8 @@ stdenv.mkDerivation rec {
+     mv * $out/opt/bluemail
+     ln -s $out/opt/bluemail/bluemail $out/bin/bluemail
+ 
+-    mkdir -p $out/share/icons/hicolor/1024x1024/apps
+-    ln -s $out/opt/bluemail/resources/assets/icons/bluemailx-icon.png $out/share/icons/hicolor/1024x1024/apps/bluemail.png
++    mkdir -p $out/share/icons
++    ln -s $out/opt/bluemail/resources/assets/icons/bluemailx-icon.png $out/share/icons/bluemail.png
+ 
+     runHook postInstall
+   '';
+diff --git a/pkgs/by-name/bo/bombsquad/package.nix b/pkgs/by-name/bo/bombsquad/package.nix
+index 054f1b11d4917..700b2930652b6 100644
+--- a/pkgs/by-name/bo/bombsquad/package.nix
++++ b/pkgs/by-name/bo/bombsquad/package.nix
+@@ -87,7 +87,7 @@ stdenv.mkDerivation (finalAttrs: {
+       --add-flags ${lib.escapeShellArg commandLineArgs} \
+       --add-flags "-d $out/share/bombsquad"
+ 
+-    install -Dm755 ${bombsquadIcon} $out/share/icons/hicolor/1024x1024/apps/bombsquad.png
++    install -Dm755 ${bombsquadIcon} $out/share/icons/bombsquad.png
+ 
+     runHook postInstall
+   '';
+diff --git a/pkgs/by-name/ch/cherry-studio/package.nix b/pkgs/by-name/ch/cherry-studio/package.nix
+index 87b79a3b9452a..890c5aed22e32 100644
+--- a/pkgs/by-name/ch/cherry-studio/package.nix
++++ b/pkgs/by-name/ch/cherry-studio/package.nix
+@@ -139,7 +139,7 @@ stdenv.mkDerivation (finalAttrs: {
+       else
+         "cp -r dist/linux-unpacked/{resources,LICENSE*} $out/opt/cherry-studio"
+     }
+-    install -Dm644 build/icon.png $out/share/icons/hicolor/1024x1024/apps/cherry-studio.png
++    install -Dm644 build/icon.png $out/share/icons/cherry-studio.png
+     makeWrapper ${lib.getExe electron} $out/bin/cherry-studio \
+       --inherit-argv0 \
+       --add-flags $out/opt/cherry-studio/resources/app.asar \
+diff --git a/pkgs/by-name/cl/clockify/package.nix b/pkgs/by-name/cl/clockify/package.nix
+index 133293f75f872..0c20d0f69d0e0 100644
+--- a/pkgs/by-name/cl/clockify/package.nix
++++ b/pkgs/by-name/cl/clockify/package.nix
+@@ -19,7 +19,7 @@ appimageTools.wrapType2 rec {
+     in
+     ''
+       install -Dm 444 ${appimageContents}/clockify.desktop -t $out/share/applications
+-      install -Dm 444 ${appimageContents}/clockify.png -t $out/share/icons/hicolor/1024x1024/apps
++      install -Dm 444 ${appimageContents}/clockify.png -t $out/share/icons
+ 
+       substituteInPlace $out/share/applications/clockify.desktop \
+         --replace-fail 'Exec=AppRun' 'Exec=${pname}'
+diff --git a/pkgs/by-name/gr/graphest/package.nix b/pkgs/by-name/gr/graphest/package.nix
+index 2c6093b385d2b..1486521d5bad3 100644
+--- a/pkgs/by-name/gr/graphest/package.nix
++++ b/pkgs/by-name/gr/graphest/package.nix
+@@ -91,7 +91,7 @@ stdenv.mkDerivation (finalAttrs: {
+       --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}" \
+       --inherit-argv0
+ 
+-    install -Dm444 build/icon.png $out/share/icons/hicolor/1024x1024/apps/graphest.png
++    install -Dm444 build/icon.png $out/share/icons/graphest.png
+     install -Dm444 ${./mime.xml} $out/share/mime/packages/graphest.xml
+   ''
+   + lib.optionalString stdenv.hostPlatform.isDarwin ''
+diff --git a/pkgs/by-name/no/notable/package.nix b/pkgs/by-name/no/notable/package.nix
+index 771d0c4b5d75f..9bea6881a001c 100644
+--- a/pkgs/by-name/no/notable/package.nix
++++ b/pkgs/by-name/no/notable/package.nix
+@@ -36,8 +36,10 @@ appimageTools.wrapType2 rec {
+ 
+   extraInstallCommands = ''
+     install -m 444 -D ${appimageContents}/notable.desktop $out/share/applications/notable.desktop
+-    install -m 444 -D ${appimageContents}/usr/share/icons/hicolor/1024x1024/apps/notable.png \
+-      $out/share/icons/hicolor/1024x1024/apps/notable.png
++    for size in 16 32 48 64 128 256 512 1024; do
++      install -m 444 -D ${appimageContents}/usr/share/icons/hicolor/''${size}x''${size}/apps/notable.png \
++        $out/share/icons/hicolor/''${size}x''${size}/apps/notable.png
++    done
+     substituteInPlace $out/share/applications/notable.desktop \
+       --replace 'Exec=AppRun' 'Exec=${pname}'
+     wrapProgram "$out/bin/${pname}" \
+diff --git a/pkgs/by-name/sh/show-midi/package.nix b/pkgs/by-name/sh/show-midi/package.nix
+index cc1001fac017d..66971ddf716d5 100644
+--- a/pkgs/by-name/sh/show-midi/package.nix
++++ b/pkgs/by-name/sh/show-midi/package.nix
+@@ -59,7 +59,7 @@ stdenv.mkDerivation (finalAttrs: {
+ 
+     install -Dt $out/share/ShowMIDI/themes Themes/*
+ 
+-    install -D Design/icon.png $out/share/icons/hicolor/1024x1024/apps/show-midi.png
++    install -D Design/icon.png $out/share/icons/show-midi.png
+ 
+     mkdir -p $out/bin $out/lib/lv2 $out/lib/vst3
+     cd Builds/LinuxMakefile/build/
+diff --git a/pkgs/by-name/si/simple-live-app/package.nix b/pkgs/by-name/si/simple-live-app/package.nix
+index ebc2cab183249..24959753cb62d 100644
+--- a/pkgs/by-name/si/simple-live-app/package.nix
++++ b/pkgs/by-name/si/simple-live-app/package.nix
+@@ -44,7 +44,7 @@ flutter332.buildFlutterApplication rec {
+   ];
+ 
+   postInstall = ''
+-    install -Dm644 assets/logo.png $out/share/icons/hicolor/1024x1024/apps/simple-live-app.png
++    install -Dm644 assets/logo.png $out/share/icons/simple-live-app.png
+   '';
+ 
+   extraWrapProgramArgs = ''
+diff --git a/pkgs/by-name/sn/snowemu/package.nix b/pkgs/by-name/sn/snowemu/package.nix
+index 143ce6b49cf75..47c145d826023 100644
+--- a/pkgs/by-name/sn/snowemu/package.nix
++++ b/pkgs/by-name/sn/snowemu/package.nix
+@@ -44,7 +44,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
+   postInstall = ''
+     mv $out/bin/snow_frontend_egui $out/bin/snowemu
+ 
+-    install -Dm644 assets/snow_icon.png $out/share/icons/hicolor/1024x1024/apps/snowemu.png
++    install -Dm644 assets/snow_icon.png $out/share/icons/snowemu.png
+ 
+     wrapProgram $out/bin/snowemu \
+       --prefix LD_LIBRARY_PATH : ${
+diff --git a/pkgs/by-name/th/thorium-reader/package.nix b/pkgs/by-name/th/thorium-reader/package.nix
+index ecb79563e9cfa..13ae3960b747d 100644
+--- a/pkgs/by-name/th/thorium-reader/package.nix
++++ b/pkgs/by-name/th/thorium-reader/package.nix
+@@ -31,7 +31,7 @@ buildNpmPackage (finalAttrs: {
+   ];
+ 
+   postInstall = ''
+-    install -Dpm644 resources/icon.png $out/share/icons/hicolor/1024x1024/apps/thorium-reader.png
++    install -Dpm644 resources/icon.png $out/share/icons/thorium-reader.png
+ 
+     cp -r dist/* $out/lib/node_modules/EDRLab.ThoriumReader/
+ 
+diff --git a/pkgs/by-name/tk/tk-safe/package.nix b/pkgs/by-name/tk/tk-safe/package.nix
+index 63659292d6cde..395801cce4d6b 100644
+--- a/pkgs/by-name/tk/tk-safe/package.nix
++++ b/pkgs/by-name/tk/tk-safe/package.nix
+@@ -80,8 +80,8 @@ stdenv.mkDerivation rec {
+     mv * $out/opt/tk-safe
+     ln -s $out/opt/tk-safe/app/tk-safe $out/bin/tk-safe
+ 
+-    mkdir -p $out/share/icons/hicolor/1024x1024/apps
+-    ln -s $out/opt/tk-safe/meta/gui/icon.png $out/share/icons/hicolor/1024x1024/apps/tk-safe.png
++    mkdir -p $out/share/icons
++    ln -s $out/opt/tk-safe/meta/gui/icon.png $out/share/icons/tk-safe.png
+ 
+     runHook postInstall
+   '';
+diff --git a/pkgs/by-name/tt/tts-mod-vault/package.nix b/pkgs/by-name/tt/tts-mod-vault/package.nix
+index addbe5f6c9d35..8a4a0bd5bc6cd 100644
+--- a/pkgs/by-name/tt/tts-mod-vault/package.nix
++++ b/pkgs/by-name/tt/tts-mod-vault/package.nix
+@@ -42,7 +42,7 @@ flutter341.buildFlutterApplication (finalAttrs: {
+   '';
+ 
+   postInstall = ''
+-    install -m 444 -D assets/icon/tts_mod_vault_icon.png $out/share/icons/hicolor/1024x1024/apps/tts_mod_vault.png
++    install -m 444 -D assets/icon/tts_mod_vault_icon.png $out/share/icons/tts_mod_vault.png
+   '';
+ 
+   passthru = {
+diff --git a/pkgs/by-name/ve/venera/package.nix b/pkgs/by-name/ve/venera/package.nix
+index 60b873425482f..b8536ed9848c4 100644
+--- a/pkgs/by-name/ve/venera/package.nix
++++ b/pkgs/by-name/ve/venera/package.nix
+@@ -50,7 +50,7 @@ flutter341.buildFlutterApplication (finalAttrs: {
+   ];
+ 
+   postInstall = ''
+-    install -D --mode=0644 debian/gui/venera.png $out/share/icons/hicolor/1024x1024/apps/venera.png
++    install -D --mode=0644 debian/gui/venera.png $out/share/icons/venera.png
+   '';
+ 
+   extraWrapProgramArgs = ''
+diff --git a/pkgs/by-name/vo/volanta/package.nix b/pkgs/by-name/vo/volanta/package.nix
+index ada4ec6a9c0dd..7a8fcd3f64bb9 100644
+--- a/pkgs/by-name/vo/volanta/package.nix
++++ b/pkgs/by-name/vo/volanta/package.nix
+@@ -26,7 +26,7 @@ appimageTools.wrapType2 {
+   extraInstallCommands = ''
+     install -m 444 -D ${appImageContents}/volanta.desktop $out/share/applications/volanta.desktop
+     install -m 444 -D ${appImageContents}/volanta.png \
+-      $out/share/icons/hicolor/1024x1024/apps/volanta.png
++      $out/share/icons/volanta.png
+     substituteInPlace $out/share/applications/volanta.desktop \
+       --replace-fail 'Exec=AppRun' 'Exec=env APPIMAGE=true volanta'
+     wrapProgram $out/bin/volanta \
+diff --git a/pkgs/by-name/wi/winbox4/build-from-zip.nix b/pkgs/by-name/wi/winbox4/build-from-zip.nix
+index b8292df399b60..3407520a589c7 100644
+--- a/pkgs/by-name/wi/winbox4/build-from-zip.nix
++++ b/pkgs/by-name/wi/winbox4/build-from-zip.nix
+@@ -61,7 +61,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
+   installPhase = ''
+     runHook preInstall
+ 
+-    install -Dm644 "assets/img/winbox.png" -t "$out/share/icons/hicolor/1024x1024/apps"
++    install -Dm644 "assets/img/winbox.png" -t "$out/share/icons"
+     install -Dm755 "WinBox" "$out/bin/WinBox"
+ 
+     wrapProgram "$out/bin/WinBox" --run "${lib.getExe finalAttrs.migrationScript}"
+diff --git a/pkgs/by-name/wi/windterm/package.nix b/pkgs/by-name/wi/windterm/package.nix
+index 9a9db4d4af503..eb8f89de010e6 100644
+--- a/pkgs/by-name/wi/windterm/package.nix
++++ b/pkgs/by-name/wi/windterm/package.nix
+@@ -79,7 +79,7 @@ stdenv.mkDerivation (finalAttrs: {
+     ${builtins.toJSON profiles}
+     EOF
+     install -Dm644 $out/app/windterm/license.txt $out/share/licenses/windterm/license.txt
+-    install -Dm644 $out/app/windterm/windterm.png -t $out/share/icons/hicolor/1024x1024/apps
++    install -Dm644 $out/app/windterm/windterm.png -t $out/share/icons
+     substituteInPlace $out/app/windterm/windterm.desktop \
+       --replace-fail "/usr/bin/" ""
+     install -Dm644 $out/app/windterm/windterm.desktop $out/share/applications/windterm.desktop
+diff --git a/pkgs/by-name/wo/wootility/package.nix b/pkgs/by-name/wo/wootility/package.nix
+index 3ed0d5691ad16..2cd24f49b32ac 100644
+--- a/pkgs/by-name/wo/wootility/package.nix
++++ b/pkgs/by-name/wo/wootility/package.nix
+@@ -28,7 +28,7 @@ appimageTools.wrapType2 {
+         --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations --enable-wayland-ime=true}}"
+ 
+       install -Dm444 ${contents}/wootility.desktop -t $out/share/applications
+-      install -Dm444 ${contents}/wootility.png -t $out/share/icons/hicolor/1024x1024/apps
++      install -Dm444 ${contents}/wootility.png -t $out/share/icons
+       substituteInPlace $out/share/applications/wootility.desktop \
+         --replace-fail 'Exec=AppRun --no-sandbox' 'Exec=wootility'
+     '';
+diff --git a/pkgs/by-name/wo/wox/package.nix b/pkgs/by-name/wo/wox/package.nix
+index e1a4ad1f19783..b9bc340f85e7d 100644
+--- a/pkgs/by-name/wo/wox/package.nix
++++ b/pkgs/by-name/wo/wox/package.nix
+@@ -206,7 +206,7 @@ buildGoModule {
+   ];
+ 
+   postInstall = ''
+-    install -Dm644 ../assets/app.png $out/share/icons/hicolor/1024x1024/apps/wox.png
++    install -Dm644 ../assets/app.png $out/share/icons/wox.png
+   '';
+ 
+   meta = metaCommon // {
+diff --git a/pkgs/by-name/zo/zoho-mail-desktop/package.nix b/pkgs/by-name/zo/zoho-mail-desktop/package.nix
+index a891a7f31e1dc..eb9fad51bdc0b 100644
+--- a/pkgs/by-name/zo/zoho-mail-desktop/package.nix
++++ b/pkgs/by-name/zo/zoho-mail-desktop/package.nix
+@@ -25,8 +25,10 @@ appimageTools.wrapType2 {
+     install -Dm444 ${appimageContents}/zoho-mail-desktop.desktop \
+       $out/share/applications/zoho-mail-desktop.desktop
+ 
+-    install -Dm444 ${appimageContents}/usr/share/icons/hicolor/1024x1024/apps/zoho-mail-desktop.png \
+-      $out/share/icons/hicolor/1024x1024/apps/zoho-mail-desktop.png
++    for size in 16 32 48 64 128 256 512 1024; do
++      install -Dm444 ${appimageContents}/usr/share/icons/hicolor/''${size}x''${size}/apps/zoho-mail-desktop.png \
++        $out/share/icons/hicolor/''${size}x''${size}/apps/zoho-mail-desktop.png
++    done
+ 
+     substituteInPlace $out/share/applications/zoho-mail-desktop.desktop \
+       --replace-fail 'Exec=AppRun' 'Exec=${pname}'

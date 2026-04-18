@@ -1,0 +1,1362 @@
+From ff9568073070e0e44c26c55b6d1333355a59af5d Mon Sep 17 00:00:00 2001
+From: Chris Marchesi <chrism@vancluevertech.com>
+Date: Fri, 6 Mar 2026 11:51:28 -0800
+Subject: [PATCH 01/10] egl-wayland2: init at 1.0.1
+
+This adds egl-wayland2 (the dmabuf-based EGL driver) as an independent
+package.
+
+While the 590 driver appears to currently be bundling it, this makes it
+available for eligible driver versions outside of this (i.e., 580).
+
+This package is based on the egl-wayland one, with a few minor changes
+and the removal of X11 as it does not seem to be needed for the build,
+and nothing in the logs indicates that it is an optional feature.
+---
+ pkgs/by-name/eg/egl-wayland2/package.nix | 68 ++++++++++++++++++++++++
+ 1 file changed, 68 insertions(+)
+ create mode 100644 pkgs/by-name/eg/egl-wayland2/package.nix
+
+diff --git a/pkgs/by-name/eg/egl-wayland2/package.nix b/pkgs/by-name/eg/egl-wayland2/package.nix
+new file mode 100644
+index 0000000000000..8b98eb3612a02
+--- /dev/null
++++ b/pkgs/by-name/eg/egl-wayland2/package.nix
+@@ -0,0 +1,68 @@
++{
++  lib,
++  stdenv,
++  fetchFromGitHub,
++  eglexternalplatform,
++  pkg-config,
++  meson,
++  ninja,
++  wayland-scanner,
++  libGL,
++  libgbm,
++  libdrm,
++  wayland,
++  wayland-protocols,
++}:
++
++stdenv.mkDerivation (finalAttrs: {
++  pname = "egl-wayland2";
++  version = "1.0.1";
++
++  outputs = [
++    "out"
++    "dev"
++  ];
++
++  src = fetchFromGitHub {
++    owner = "NVIDIA";
++    repo = "egl-wayland2";
++    tag = "v${finalAttrs.version}";
++    hash = "sha256-Udr+tihx/Si2ynFyM1FW2CIUgTg9SQn7AgrOPpGTxpY=";
++  };
++
++  depsBuildBuild = [
++    pkg-config
++  ];
++
++  nativeBuildInputs = [
++    meson
++    ninja
++    pkg-config
++    wayland-scanner
++  ];
++
++  buildInputs = [
++    libGL
++    libgbm
++    libdrm
++    wayland
++    wayland-protocols
++  ];
++
++  propagatedBuildInputs = [
++    eglexternalplatform
++  ];
++
++  postInstall = ''
++    substituteInPlace $out/share/egl/egl_external_platform.d/09_nvidia_wayland2.json \
++      --replace-fail "libnvidia-egl-wayland2.so.1" "$out/lib/libnvidia-egl-wayland2.so.1"
++  '';
++
++  meta = {
++    description = "Dma-buf-based Wayland external platform library";
++    homepage = "https://github.com/NVIDIA/egl-wayland2/";
++    license = lib.licenses.asl20;
++    platforms = lib.platforms.linux;
++    maintainers = with lib.maintainers; [ vancluever ];
++  };
++})
+
+From 9e48efe0830d68e1d8b860e1d9f33425f554966d Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Wed, 11 Mar 2026 00:21:42 +0800
+Subject: [PATCH 02/10] linuxPackages.nvidia-x11: separate proprietary kernel
+ modules
+
+---
+ nixos/modules/hardware/video/bumblebee.nix    |  5 +-
+ nixos/modules/hardware/video/nvidia.nix       |  4 +-
+ pkgs/os-specific/linux/nvidia-x11/builder.sh  | 29 ++-----
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 12 +--
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 62 ++++++--------
+ .../linux/nvidia-x11/kernel-modules.nix       | 81 +++++++++++++++++++
+ pkgs/os-specific/linux/nvidia-x11/open.nix    | 59 --------------
+ 7 files changed, 116 insertions(+), 136 deletions(-)
+ create mode 100644 pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+ delete mode 100644 pkgs/os-specific/linux/nvidia-x11/open.nix
+
+diff --git a/nixos/modules/hardware/video/bumblebee.nix b/nixos/modules/hardware/video/bumblebee.nix
+index fca939797b698..3aebc4a800f56 100644
+--- a/nixos/modules/hardware/video/bumblebee.nix
++++ b/nixos/modules/hardware/video/bumblebee.nix
+@@ -93,7 +93,10 @@ in
+     ];
+     boot.kernelModules = lib.optional useBbswitch "bbswitch";
+     boot.extraModulePackages =
+-      lib.optional useBbswitch kernel.bbswitch ++ lib.optional useNvidia kernel.nvidia_x11.bin;
++      lib.optional useBbswitch kernel.bbswitch
++      ++ lib.optional useNvidia (
++        if config.hardware.nvidia.open == true then kernel.nvidia_x11.open else kernel.nvidia_x11.mod
++      );
+ 
+     environment.systemPackages = [
+       bumblebee
+diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
+index d8c42c1284387..f41077958e4ec 100644
+--- a/nixos/modules/hardware/video/nvidia.nix
++++ b/nixos/modules/hardware/video/nvidia.nix
+@@ -674,7 +674,7 @@ in
+               "L+ /run/nvidia-docker/extras/bin/nvidia-persistenced - - - - ${nvidia_x11.persistenced}/origBin/nvidia-persistenced";
+ 
+           boot = {
+-            extraModulePackages = if useOpenModules then [ nvidia_x11.open ] else [ nvidia_x11.bin ];
++            extraModulePackages = if useOpenModules then [ nvidia_x11.open ] else [ nvidia_x11.mod ];
+             # nvidia-uvm is required by CUDA applications.
+             kernelModules = lib.optionals config.services.xserver.enable [
+               "nvidia"
+@@ -728,7 +728,7 @@ in
+         })
+         # Data Center
+         (lib.mkIf (cfg.datacenter.enable) {
+-          boot.extraModulePackages = [ nvidia_x11.bin ];
++          boot.extraModulePackages = if useOpenModules then [ nvidia_x11.open ] else [ nvidia_x11.mod ];
+ 
+           systemd = {
+             tmpfiles.rules =
+diff --git a/pkgs/os-specific/linux/nvidia-x11/builder.sh b/pkgs/os-specific/linux/nvidia-x11/builder.sh
+index 290ee1da2b000..12ef9f9e5698b 100755
+--- a/pkgs/os-specific/linux/nvidia-x11/builder.sh
++++ b/pkgs/os-specific/linux/nvidia-x11/builder.sh
+@@ -10,23 +10,6 @@ unpackFile() {
+ }
+ 
+ 
+-buildPhase() {
+-    runHook preBuild
+-
+-    if [ -n "$bin" ]; then
+-        # Create the module.
+-        echo "Building linux driver against kernel: $kernel";
+-        cd kernel
+-        unset src # used by the nv makefile
+-        make $makeFlags -j $NIX_BUILD_CORES module
+-
+-        cd ..
+-    fi
+-
+-    runHook postBuild
+-}
+-
+-
+ installPhase() {
+     runHook preInstall
+ 
+@@ -152,13 +135,6 @@ installPhase() {
+         mkdir -p $bin/lib/xorg/modules/extensions
+         cp -p libglx*.so* $bin/lib/xorg/modules/extensions
+ 
+-        # Install the kernel module.
+-        mkdir -p $bin/lib/modules/$kernelVersion/misc
+-        for i in $(find ./kernel -name '*.ko'); do
+-            nuke-refs $i
+-            cp $i $bin/lib/modules/$kernelVersion/misc/
+-        done
+-
+         # Install application profiles.
+         if [ "$useProfiles" = "1" ]; then
+             mkdir -p $bin/share/nvidia
+@@ -167,6 +143,11 @@ installPhase() {
+         fi
+     fi
+ 
++    # Install the proprietary kernel module build files.
++    if [ -n "$modsrc" ]; then
++        cp -r kernel $modsrc
++    fi
++
+     if [ -n "$firmware" ]; then
+         # Install the GSP firmware
+         install -Dm644 -t $firmware/lib/firmware/nvidia/$version firmware/gsp*.bin
+diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
+index 709f3d838af58..dd202fee576c3 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/default.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
+@@ -6,6 +6,7 @@
+   fetchpatch,
+   stdenv,
+   pkgsi686Linux,
++  kernel,
+ }:
+ 
+ let
+@@ -18,20 +19,9 @@ let
+       lib32 =
+         (pkgsi686Linux.callPackage imported {
+           libsOnly = true;
+-          kernel = null;
+         }).out;
+     };
+ 
+-  kernel =
+-    # a hacky way of extracting parameters from callPackage
+-    callPackage (
+-      {
+-        kernel,
+-        libsOnly ? false,
+-      }:
+-      if libsOnly then { } else kernel
+-    ) { };
+-
+   selectHighestVersion = a: b: if lib.versionOlder a.version b.version then b else a;
+ 
+   # https://forums.developer.nvidia.com/t/linux-6-7-3-545-29-06-550-40-07-error-modpost-gpl-incompatible-module-nvidia-ko-uses-gpl-only-symbol-rcu-read-lock/280908/19
+diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+index 4ee461ed8cbfb..ade9ada2cb839 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+@@ -41,16 +41,12 @@
+   pkgsi686Linux,
+   fetchurl,
+   fetchzip,
+-  kernel ? null,
+-  kernelModuleMakeFlags ? [ ],
+-  perl,
+-  nukeReferences,
+   which,
+   libarchive,
+   jq,
+-  # Whether to build the libraries only (i.e. not the kernel module or
+-  # nvidia-settings).  Used to support 32-bit binaries on 64-bit
+-  # Linux.
++  zstd,
++  # Whether to build only userspace libraries (without bin/modsrc/firmware
++  # outputs). Used to support 32-bit binaries on 64-bit Linux.
+   libsOnly ? false,
+   # don't include the bundled 32-bit libraries on 64-bit platforms,
+   # even if it’s in downloaded binary
+@@ -65,7 +61,6 @@
+   acceptLicense ? config.nvidia.acceptLicense or false,
+ }:
+ 
+-assert !libsOnly -> kernel != null;
+ assert lib.versionOlder version "391" -> sha256_32bit != null;
+ assert useSettings -> settingsSha256 != null;
+ assert usePersistenced -> persistencedSha256 != null;
+@@ -96,7 +91,6 @@ let
+           --clean "$patch" > "$out"
+       '';
+ 
+-  nameSuffix = lib.optionalString (!libsOnly) "-${kernel.version}";
+   pkgSuffix = lib.optionalString (lib.versionOlder version "304") "-pkg0";
+   i686bundled = lib.versionAtLeast version "391" && !disable32Bit;
+ 
+@@ -143,7 +137,6 @@ let
+ in
+ 
+ stdenv.mkDerivation (finalAttrs: {
+-  name = "${finalAttrs.pname}-${finalAttrs.version}${nameSuffix}";
+   pname = "nvidia-${if useFabricmanager then "dc" else "x11"}";
+ 
+   builder = ./builder.sh;
+@@ -201,31 +194,13 @@ stdenv.mkDerivation (finalAttrs: {
+     "out"
+   ]
+   ++ lib.optional i686bundled "lib32"
+-  ++ lib.optional (!libsOnly) "bin"
++  ++ lib.optionals (!libsOnly) [
++    "bin"
++    "modsrc"
++  ]
+   ++ lib.optional (!libsOnly && firmware) "firmware";
+   outputDev = if libsOnly then null else "bin";
+ 
+-  kernel = if libsOnly then null else kernel.dev;
+-  kernelVersion = if libsOnly then null else kernel.modDirVersion;
+-
+-  makeFlags = lib.optionals (!libsOnly) (
+-    kernelModuleMakeFlags
+-    ++ [
+-      "IGNORE_PREEMPT_RT_PRESENCE=1"
+-      "NV_BUILD_SUPPORTS_HMM=1"
+-      "SYSSRC=${kernel.dev}/lib/modules/${kernel.modDirVersion}/source"
+-      "SYSOUT=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
+-    ]
+-    ++ lib.optionals stdenv.cc.isClang [
+-      "C_INCLUDE_PATH=${lib.getLib stdenv.cc.cc}/lib/clang/${lib.versions.major stdenv.cc.cc.version}/include"
+-    ]
+-  );
+-
+-  hardeningDisable = [
+-    "pic"
+-    "format"
+-  ];
+-
+   dontStrip = true;
+   dontPatchELF = true;
+ 
+@@ -233,15 +208,12 @@ stdenv.mkDerivation (finalAttrs: {
+   libPath32 = lib.optionalString i686bundled (libPathFor pkgsi686Linux);
+ 
+   nativeBuildInputs = [
+-    perl
+-    nukeReferences
+-    which
+     libarchive
+     jq
+   ]
+-  ++ lib.optionals (!libsOnly) kernel.moduleBuildDependencies;
+-
+-  disallowedReferences = lib.optionals (!libsOnly) [ kernel.dev ];
++  # NVIDIA has changed the compression format of their driver to zstd since version 530.30.02
++  # https://forums.developer.nvidia.com/t/linux-solaris-and-freebsd-driver-530-30-02-beta/244406
++  ++ (if (lib.versionAtLeast version "530") then [ zstd ] else [ which ]);
+ 
+   passthru =
+     let
+@@ -274,9 +246,17 @@ stdenv.mkDerivation (finalAttrs: {
+         );
+     in
+     {
++      mod = callPackage ./kernel-modules.nix {
++        open = false;
++        nvidia_x11 = finalAttrs.finalPackage;
++        # build files already patched when building the main package, so no need to patch them again
++        patches = [ ];
++        inherit broken;
++      };
+       open = lib.mapNullable (
+         hash:
+-        callPackage ./open.nix {
++        callPackage ./kernel-modules.nix {
++          open = true;
+           inherit hash;
+           nvidia_x11 = finalAttrs.finalPackage;
+           patches =
+@@ -339,6 +319,10 @@ stdenv.mkDerivation (finalAttrs: {
+     ]
+     ++ lib.optionals (sha256_32bit != null) [ "i686-linux" ]
+     ++ lib.optionals (sha256_aarch64 != null) [ "aarch64-linux" ];
++    sourceProvenance = with lib.sourceTypes; [
++      binaryNativeCode
++      binaryFirmware
++    ];
+     maintainers = with lib.maintainers; [
+       kiskae
+       edwtjo
+diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+new file mode 100644
+index 0000000000000..9e6998017f87e
+--- /dev/null
++++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+@@ -0,0 +1,81 @@
++{
++  stdenv,
++  lib,
++  fetchFromGitHub,
++  kernel,
++  kernelModuleMakeFlags,
++  nvidia_x11,
++  open,
++  patches,
++  broken,
++  hash ? null,
++}:
++
++assert open -> hash != null;
++
++stdenv.mkDerivation {
++  pname = "nvidia-${if open then "open" else "kernel-modules"}";
++  version = "${nvidia_x11.version}-${kernel.version}";
++
++  src =
++    if open then
++      fetchFromGitHub {
++        owner = "NVIDIA";
++        repo = "open-gpu-kernel-modules";
++        tag = nvidia_x11.version;
++        inherit hash;
++      }
++    else
++      nvidia_x11.modsrc;
++
++  inherit patches;
++
++  nativeBuildInputs = kernel.moduleBuildDependencies;
++
++  makeFlags =
++    kernelModuleMakeFlags
++    ++ [
++      "IGNORE_PREEMPT_RT_PRESENCE=1"
++      "SYSSRC=${kernel.dev}/lib/modules/${kernel.modDirVersion}/source"
++      "SYSOUT=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
++      "MODLIB=$(out)/lib/modules/${kernel.modDirVersion}"
++      "DATE="
++      "TARGET_ARCH=${stdenv.hostPlatform.parsed.cpu.name}"
++    ]
++    ++ lib.optionals stdenv.cc.isClang [
++      "C_INCLUDE_PATH=${lib.getLib stdenv.cc.cc}/lib/clang/${lib.versions.major stdenv.cc.cc.version}/include"
++    ];
++
++  buildTargets = [ "modules" ];
++  installTargets = [ "modules_install" ];
++  enableParallelBuilding = true;
++
++  allowedReferences = [ ];
++
++  meta = {
++    description = "NVIDIA Linux ${lib.optionalString open "Open "}GPU Kernel Modules";
++    homepage =
++      if open then "https://github.com/NVIDIA/open-gpu-kernel-modules" else nvidia_x11.meta.homepage;
++    license =
++      if open then
++        with lib.licenses;
++        [
++          gpl2Plus
++          mit
++        ]
++      else
++        nvidia_x11.meta.license;
++    platforms = [
++      "x86_64-linux"
++      "aarch64-linux"
++    ];
++    sourceProvenance =
++      with lib.sourceTypes;
++      [
++        fromSource
++      ]
++      ++ lib.optional (!open) binaryNativeCode;
++    maintainers = with lib.maintainers; [ nickcao ];
++    inherit broken;
++  };
++}
+diff --git a/pkgs/os-specific/linux/nvidia-x11/open.nix b/pkgs/os-specific/linux/nvidia-x11/open.nix
+deleted file mode 100644
+index 5a897e0dd1384..0000000000000
+--- a/pkgs/os-specific/linux/nvidia-x11/open.nix
++++ /dev/null
+@@ -1,59 +0,0 @@
+-{
+-  stdenv,
+-  lib,
+-  fetchFromGitHub,
+-  kernel,
+-  kernelModuleMakeFlags,
+-  nvidia_x11,
+-  hash,
+-  patches ? [ ],
+-  broken ? false,
+-}:
+-
+-stdenv.mkDerivation {
+-  pname = "nvidia-open";
+-  version = "${kernel.version}-${nvidia_x11.version}";
+-
+-  src = fetchFromGitHub {
+-    owner = "NVIDIA";
+-    repo = "open-gpu-kernel-modules";
+-    rev = nvidia_x11.version;
+-    inherit hash;
+-  };
+-
+-  inherit patches;
+-
+-  nativeBuildInputs = kernel.moduleBuildDependencies;
+-
+-  makeFlags =
+-    kernelModuleMakeFlags
+-    ++ [
+-      "IGNORE_PREEMPT_RT_PRESENCE=1"
+-      "SYSSRC=${kernel.dev}/lib/modules/${kernel.modDirVersion}/source"
+-      "SYSOUT=${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
+-      "MODLIB=$(out)/lib/modules/${kernel.modDirVersion}"
+-      "DATE="
+-      "TARGET_ARCH=${stdenv.hostPlatform.parsed.cpu.name}"
+-    ]
+-    ++ lib.optionals stdenv.cc.isClang [
+-      "C_INCLUDE_PATH=${lib.getLib stdenv.cc.cc}/lib/clang/${lib.versions.major stdenv.cc.cc.version}/include"
+-    ];
+-
+-  installTargets = [ "modules_install" ];
+-  enableParallelBuilding = true;
+-
+-  meta = {
+-    description = "NVIDIA Linux Open GPU Kernel Module";
+-    homepage = "https://github.com/NVIDIA/open-gpu-kernel-modules";
+-    license = with lib.licenses; [
+-      gpl2Plus
+-      mit
+-    ];
+-    platforms = [
+-      "x86_64-linux"
+-      "aarch64-linux"
+-    ];
+-    maintainers = with lib.maintainers; [ nickcao ];
+-    inherit broken;
+-  };
+-}
+
+From 467da6add643d9049d750ecbe7e8ea2806e7a0b3 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Wed, 25 Mar 2026 03:06:09 +0800
+Subject: [PATCH 03/10] eglexternalplatform: add update script and setup hook,
+ add maintainer
+
+---
+ .../eg/eglexternalplatform/package.nix        | 22 ++++++++--
+ .../eg/eglexternalplatform/setup-hook.sh      | 43 +++++++++++++++++++
+ 2 files changed, 62 insertions(+), 3 deletions(-)
+ create mode 100644 pkgs/by-name/eg/eglexternalplatform/setup-hook.sh
+
+diff --git a/pkgs/by-name/eg/eglexternalplatform/package.nix b/pkgs/by-name/eg/eglexternalplatform/package.nix
+index 3208fbcd02eb2..c8ac9db06298b 100644
+--- a/pkgs/by-name/eg/eglexternalplatform/package.nix
++++ b/pkgs/by-name/eg/eglexternalplatform/package.nix
+@@ -4,6 +4,9 @@
+   fetchFromGitHub,
+   meson,
+   ninja,
++  buildPackages,
++  replaceVars,
++  nix-update-script,
+ }:
+ 
+ stdenv.mkDerivation (finalAttrs: {
+@@ -11,9 +14,9 @@ stdenv.mkDerivation (finalAttrs: {
+   version = "1.2.1";
+ 
+   src = fetchFromGitHub {
+-    owner = "Nvidia";
++    owner = "NVIDIA";
+     repo = "eglexternalplatform";
+-    rev = finalAttrs.version;
++    tag = finalAttrs.version;
+     hash = "sha256-tDKh1oSnOSG/XztHHYCwg1tDB7M6olOtJ8te+uan9ko=";
+   };
+ 
+@@ -22,11 +25,24 @@ stdenv.mkDerivation (finalAttrs: {
+     ninja
+   ];
+ 
++  setupHook = replaceVars ./setup-hook.sh {
++    jq = lib.getExe buildPackages.jq;
++    sponge = lib.getExe' buildPackages.moreutils "sponge";
++  };
++
++  strictDeps = true;
++  __structuredAttrs = true;
++
++  passthru.updateScript = nix-update-script { extraArgs = [ "--use-github-releases" ]; };
++
+   meta = {
+     description = "EGL External Platform interface";
+     homepage = "https://github.com/NVIDIA/eglexternalplatform";
+     license = lib.licenses.mit;
+     platforms = lib.platforms.linux ++ lib.platforms.freebsd;
+-    maintainers = with lib.maintainers; [ hedning ];
++    maintainers = with lib.maintainers; [
++      hedning
++      ccicnce113424
++    ];
+   };
+ })
+diff --git a/pkgs/by-name/eg/eglexternalplatform/setup-hook.sh b/pkgs/by-name/eg/eglexternalplatform/setup-hook.sh
+new file mode 100644
+index 0000000000000..2beca684e793d
+--- /dev/null
++++ b/pkgs/by-name/eg/eglexternalplatform/setup-hook.sh
+@@ -0,0 +1,43 @@
++# shellcheck shell=bash
++
++absolutizeIcdLibraryPath() {
++  local jsonFile="$1"
++  local libPath="$2"
++
++  if [[ -z "$jsonFile" || -z "$libPath" ]]; then
++    nixErrorLog "absolutizeIcdLibraryPath: expected <json-file> <library-prefix>"
++    return 1
++  fi
++
++  if [[ ! -f "$jsonFile" ]]; then
++    nixErrorLog "absolutizeIcdLibraryPath: JSON file not found: $jsonFile"
++    return 1
++  fi
++
++  @jq@ --arg lib "$libPath" \
++    '.ICD.library_path |= $lib + .' \
++    "$jsonFile" | @sponge@ "$jsonFile"
++}
++
++fixupEglExternalPlatformIcdJsonHook() {
++  case "${absolutizeEglExternalPlatformIcdJson-}" in
++    1|true|yes) ;;
++    *) return 0 ;;
++  esac
++
++  local jsonDir="$prefix/share/egl/egl_external_platform.d"
++
++  if [[ ! -d "$jsonDir" ]]; then
++    return 0
++  fi
++
++  local f
++  for f in "$jsonDir"/*.json; do
++    if [[ ! -e "$f" ]]; then
++      continue
++    fi
++    absolutizeIcdLibraryPath "$f" "$prefix/lib/"
++  done
++}
++
++fixupOutputHooks+=(fixupEglExternalPlatformIcdJsonHook)
+
+From 67456f4425c5266badedcd7cd062973ae628b983 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Wed, 25 Mar 2026 03:09:25 +0800
+Subject: [PATCH 04/10] {egl-wayland, egl-wayland2}: add update script, add
+ maintainer, make library path absolute
+
+---
+ pkgs/by-name/eg/egl-wayland/package.nix  | 19 ++++++++++++++-----
+ pkgs/by-name/eg/egl-wayland2/package.nix | 24 +++++++++++-------------
+ 2 files changed, 25 insertions(+), 18 deletions(-)
+
+diff --git a/pkgs/by-name/eg/egl-wayland/package.nix b/pkgs/by-name/eg/egl-wayland/package.nix
+index acf88b480295a..c16988d026a07 100644
+--- a/pkgs/by-name/eg/egl-wayland/package.nix
++++ b/pkgs/by-name/eg/egl-wayland/package.nix
+@@ -8,10 +8,10 @@
+   ninja,
+   wayland-scanner,
+   libGL,
+-  libx11,
+   libdrm,
+   wayland,
+   wayland-protocols,
++  nix-update-script,
+ }:
+ 
+ stdenv.mkDerivation (finalAttrs: {
+@@ -24,9 +24,9 @@ stdenv.mkDerivation (finalAttrs: {
+   ];
+ 
+   src = fetchFromGitHub {
+-    owner = "Nvidia";
++    owner = "NVIDIA";
+     repo = "egl-wayland";
+-    rev = finalAttrs.version;
++    tag = finalAttrs.version;
+     hash = "sha256-a98DzmzCG6DlLJ1HCl/LeD21Q7yyNbTce1poOoAnTjA=";
+   };
+ 
+@@ -49,7 +49,6 @@ stdenv.mkDerivation (finalAttrs: {
+ 
+   buildInputs = [
+     libGL
+-    libx11
+     libdrm
+     wayland
+     wayland-protocols
+@@ -59,11 +58,21 @@ stdenv.mkDerivation (finalAttrs: {
+     eglexternalplatform
+   ];
+ 
++  absolutizeEglExternalPlatformIcdJson = true;
++
++  strictDeps = true;
++  __structuredAttrs = true;
++
++  passthru.updateScript = nix-update-script { extraArgs = [ "--use-github-releases" ]; };
++
+   meta = {
+     description = "EGLStream-based Wayland external platform";
+     homepage = "https://github.com/NVIDIA/egl-wayland/";
+     license = lib.licenses.mit;
+     platforms = lib.platforms.linux ++ lib.platforms.freebsd;
+-    maintainers = with lib.maintainers; [ hedning ];
++    maintainers = with lib.maintainers; [
++      hedning
++      ccicnce113424
++    ];
+   };
+ })
+diff --git a/pkgs/by-name/eg/egl-wayland2/package.nix b/pkgs/by-name/eg/egl-wayland2/package.nix
+index 8b98eb3612a02..5af0b014e10a5 100644
+--- a/pkgs/by-name/eg/egl-wayland2/package.nix
++++ b/pkgs/by-name/eg/egl-wayland2/package.nix
+@@ -12,17 +12,13 @@
+   libdrm,
+   wayland,
+   wayland-protocols,
++  nix-update-script,
+ }:
+ 
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "egl-wayland2";
+   version = "1.0.1";
+ 
+-  outputs = [
+-    "out"
+-    "dev"
+-  ];
+-
+   src = fetchFromGitHub {
+     owner = "NVIDIA";
+     repo = "egl-wayland2";
+@@ -47,22 +43,24 @@ stdenv.mkDerivation (finalAttrs: {
+     libdrm
+     wayland
+     wayland-protocols
+-  ];
+-
+-  propagatedBuildInputs = [
+     eglexternalplatform
+   ];
+ 
+-  postInstall = ''
+-    substituteInPlace $out/share/egl/egl_external_platform.d/09_nvidia_wayland2.json \
+-      --replace-fail "libnvidia-egl-wayland2.so.1" "$out/lib/libnvidia-egl-wayland2.so.1"
+-  '';
++  absolutizeEglExternalPlatformIcdJson = true;
++
++  strictDeps = true;
++  __structuredAttrs = true;
++
++  passthru.updateScript = nix-update-script { extraArgs = [ "--use-github-releases" ]; };
+ 
+   meta = {
+     description = "Dma-buf-based Wayland external platform library";
+     homepage = "https://github.com/NVIDIA/egl-wayland2/";
+     license = lib.licenses.asl20;
+     platforms = lib.platforms.linux;
+-    maintainers = with lib.maintainers; [ vancluever ];
++    maintainers = with lib.maintainers; [
++      vancluever
++      ccicnce113424
++    ];
+   };
+ })
+
+From 4631cea4bd1b1e309326e4677a813d0a25b0d549 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Wed, 11 Mar 2026 01:39:00 +0800
+Subject: [PATCH 05/10] egl-gbm: init at 1.1.3, egl-x11: init at 1.0.5
+
+---
+ pkgs/by-name/eg/egl-gbm/package.nix | 59 +++++++++++++++++++++++++++
+ pkgs/by-name/eg/egl-x11/package.nix | 63 +++++++++++++++++++++++++++++
+ 2 files changed, 122 insertions(+)
+ create mode 100644 pkgs/by-name/eg/egl-gbm/package.nix
+ create mode 100644 pkgs/by-name/eg/egl-x11/package.nix
+
+diff --git a/pkgs/by-name/eg/egl-gbm/package.nix b/pkgs/by-name/eg/egl-gbm/package.nix
+new file mode 100644
+index 0000000000000..bda8f607105aa
+--- /dev/null
++++ b/pkgs/by-name/eg/egl-gbm/package.nix
+@@ -0,0 +1,59 @@
++{
++  lib,
++  stdenv,
++  fetchFromGitHub,
++  eglexternalplatform,
++  pkg-config,
++  meson,
++  ninja,
++  libGL,
++  libgbm,
++  libdrm,
++  nix-update-script,
++}:
++
++stdenv.mkDerivation (finalAttrs: {
++  pname = "egl-gbm";
++  version = "1.1.3";
++
++  src = fetchFromGitHub {
++    owner = "NVIDIA";
++    repo = "egl-gbm";
++    tag = finalAttrs.version;
++    hash = "sha256-OoHgvFbyd6JakSKyN7N97FMJHNYV1spj7zy3f1g/PN0=";
++  };
++
++  depsBuildBuild = [
++    pkg-config
++  ];
++
++  nativeBuildInputs = [
++    meson
++    ninja
++    pkg-config
++  ];
++
++  buildInputs = [
++    libGL
++    libgbm
++    libdrm
++    eglexternalplatform
++  ];
++
++  absolutizeEglExternalPlatformIcdJson = true;
++
++  strictDeps = true;
++  __structuredAttrs = true;
++
++  passthru.updateScript = nix-update-script { extraArgs = [ "--use-github-releases" ]; };
++
++  meta = {
++    description = "GBM EGL external platform library";
++    homepage = "https://github.com/NVIDIA/egl-gbm/";
++    license = lib.licenses.mit;
++    platforms = lib.platforms.linux;
++    maintainers = with lib.maintainers; [
++      ccicnce113424
++    ];
++  };
++})
+diff --git a/pkgs/by-name/eg/egl-x11/package.nix b/pkgs/by-name/eg/egl-x11/package.nix
+new file mode 100644
+index 0000000000000..28b5a8474e560
+--- /dev/null
++++ b/pkgs/by-name/eg/egl-x11/package.nix
+@@ -0,0 +1,63 @@
++{
++  lib,
++  stdenv,
++  fetchFromGitHub,
++  eglexternalplatform,
++  pkg-config,
++  meson,
++  ninja,
++  libGL,
++  libgbm,
++  libdrm,
++  libx11,
++  libxcb,
++  nix-update-script,
++}:
++
++stdenv.mkDerivation (finalAttrs: {
++  pname = "egl-x11";
++  version = "1.0.5";
++
++  src = fetchFromGitHub {
++    owner = "NVIDIA";
++    repo = "egl-x11";
++    tag = "v${finalAttrs.version}";
++    hash = "sha256-Sl/qc39H29wXsb5UYKGK7IciwTlbRBqA9omL2sgXpx0=";
++  };
++
++  depsBuildBuild = [
++    pkg-config
++  ];
++
++  nativeBuildInputs = [
++    meson
++    ninja
++    pkg-config
++  ];
++
++  buildInputs = [
++    libGL
++    libgbm
++    libdrm
++    libx11
++    libxcb
++    eglexternalplatform
++  ];
++
++  absolutizeEglExternalPlatformIcdJson = true;
++
++  strictDeps = true;
++  __structuredAttrs = true;
++
++  passthru.updateScript = nix-update-script { extraArgs = [ "--use-github-releases" ]; };
++
++  meta = {
++    description = "X11/XCB external platform library";
++    homepage = "https://github.com/NVIDIA/egl-x11/";
++    license = lib.licenses.asl20;
++    platforms = lib.platforms.linux;
++    maintainers = with lib.maintainers; [
++      ccicnce113424
++    ];
++  };
++})
+
+From 543a912cea2933ec51c938ccc1ac33475f08c76f Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Wed, 11 Mar 2026 02:10:10 +0800
+Subject: [PATCH 06/10] nixos/nvidia: utilize ICD libraries built from source
+
+This changes the NVIDIA NixOS module to use ICD libraries built from
+source rather than relying on the pre-compiled bundled versions.
+
+Additionally, this adds a necessary workaround for driver versions
+below 595 to ensure proper compatibility.
+
+For more context on the workaround, see the discussion at:
+https://github.com/NixOS/nixpkgs/pull/497342#issuecomment-4034876793
+---
+ nixos/modules/hardware/video/nvidia.nix      | 50 ++++++++++++++++++--
+ pkgs/os-specific/linux/nvidia-x11/builder.sh | 22 +++------
+ 2 files changed, 53 insertions(+), 19 deletions(-)
+
+diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
+index f41077958e4ec..3f16542f2e289 100644
+--- a/nixos/modules/hardware/video/nvidia.nix
++++ b/nixos/modules/hardware/video/nvidia.nix
+@@ -394,10 +394,52 @@ in
+             KERNEL=="nvidia_uvm", RUN+="${pkgs.runtimeShell} -c 'mknod -m 666 /dev/nvidia-uvm c $$(grep nvidia-uvm /proc/devices | cut -d \  -f 1) 0'"
+             KERNEL=="nvidia_uvm", RUN+="${pkgs.runtimeShell} -c 'mknod -m 666 /dev/nvidia-uvm-tools c $$(grep nvidia-uvm /proc/devices | cut -d \  -f 1) 1'"
+           '';
+-          hardware.graphics = {
+-            extraPackages = [ nvidia_x11.out ];
+-            extraPackages32 = [ nvidia_x11.lib32 ];
+-          };
++          hardware.graphics =
++            let
++              icd = [
++                "egl-wayland"
++              ]
++              # GBM support was added in 495.
++              ++ lib.optionals (lib.versionAtLeast nvidia_x11.version "495") [
++                "egl-gbm"
++              ]
++              # ICDs below use a new driver interface, which is added in the 560 series drivers.
++              ++ lib.optionals (lib.versionAtLeast nvidia_x11.version "560") [
++                "egl-wayland2"
++                "egl-x11"
++              ];
++              combineIcdPkgs =
++                icd: pkgs:
++                pkgs.symlinkJoin {
++                  name = "nvidia-egl-external-platforms${lib.optionalString pkgs.stdenv.is32bit "-x32"}";
++                  paths = lib.attrVals icd pkgs;
++                  # Remediate reversed priorities in pre-595 drivers,
++                  # https://github.com/NixOS/nixpkgs/pull/497342#issuecomment-4034876793
++                  postBuild = lib.optionalString (lib.versionOlder nvidia_x11.version "595") ''
++                    pushd $out/share/egl/egl_external_platform.d
++                    for f in [0-9][0-9]_*; do
++                      num=''${f:0:2}
++                      rest=''${f:2}
++                      new=$(printf "%02d" $((99 - 10#$num)))
++                      mv -- "$f" "tmp-$new$rest"
++                    done
++                    for f in tmp-*; do
++                      mv -- "$f" "''${f#tmp-}"
++                    done
++                    popd
++                  '';
++                };
++            in
++            {
++              extraPackages = [
++                nvidia_x11.out
++                (combineIcdPkgs icd pkgs)
++              ];
++              extraPackages32 = [
++                nvidia_x11.lib32
++                (combineIcdPkgs icd pkgs.pkgsi686Linux)
++              ];
++            };
+           environment.systemPackages = [ nvidia_x11.bin ];
+         }
+ 
+diff --git a/pkgs/os-specific/linux/nvidia-x11/builder.sh b/pkgs/os-specific/linux/nvidia-x11/builder.sh
+index 12ef9f9e5698b..8fa9b8b8fe8b4 100755
+--- a/pkgs/os-specific/linux/nvidia-x11/builder.sh
++++ b/pkgs/os-specific/linux/nvidia-x11/builder.sh
+@@ -51,6 +51,7 @@ installPhase() {
+         rm -f $i/lib/lib{glx,nvidia-wfb}.so.* # handled separately
+         rm -f $i/lib/libnvidia-gtk* # built from source
+         rm -f $i/lib/libnvidia-wayland-client* # built from source
++        rm -f $i/lib/libnvidia-egl-* # built from source
+         if [ "$useGLVND" = "1" ]; then
+             # Pre-built libglvnd
+             rm $i/lib/lib{GL,GLX,EGL,GLESv1_CM,GLESv2,OpenGL,GLdispatch}.so.*
+@@ -79,13 +80,7 @@ installPhase() {
+             else
+                 sed -E "s#(libGLX_nvidia)#$i/lib/\\1#" nvidia_icd.json > nvidia_icd.json.fixed
+             fi
+-
+-            # nvidia currently only supports x86_64 and i686
+-            if [ "$i" == "$lib32" ]; then
+-                install -Dm644 nvidia_icd.json.fixed $i/share/vulkan/icd.d/nvidia_icd.i686.json
+-            else
+-                install -Dm644 nvidia_icd.json.fixed $i/share/vulkan/icd.d/nvidia_icd.x86_64.json
+-            fi
++            install -Dm644 nvidia_icd.json.fixed $i/share/vulkan/icd.d/nvidia_icd.json
+         fi
+ 
+         if [ -e nvidia_layers.json ]; then
+@@ -95,17 +90,14 @@ installPhase() {
+ 
+         # EGL
+         if [ "$useGLVND" = "1" ]; then
+-            mkdir -p "$i/share/egl/egl_external_platform.d"
+-            for icdname in $(find . -name '*_nvidia*.json')
+-            do
+-                cat "$icdname" | jq ".ICD.library_path |= \"$i/lib/\(.)\"" | tee "$i/share/egl/egl_external_platform.d/$icdname"
+-            done
+-
+             # glvnd icd
+             mkdir -p "$i/share/glvnd/egl_vendor.d"
+-            mv "$i/share/egl/egl_external_platform.d/10_nvidia.json" "$i/share/glvnd/egl_vendor.d/10_nvidia.json"
++            for icdname in "10_nvidia.json";
++            do
++                cat "$icdname" | jq ".ICD.library_path |= \"$i/lib/\(.)\"" | tee "$i/share/glvnd/egl_vendor.d/$icdname"
++            done
+ 
+-            if [[ -f "$i/share/egl/egl_external_platform.d/15_nvidia_gbm.json" ]]; then
++            if [[ -f "15_nvidia_gbm.json" ]]; then
+               mkdir -p $i/lib/gbm
+               ln -s $i/lib/libnvidia-allocator.so $i/lib/gbm/nvidia-drm_gbm.so
+             fi
+
+From 84845e7504f1cafca5a2e9fc54c0ce29902dee03 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sun, 15 Mar 2026 21:40:27 +0800
+Subject: [PATCH 07/10] nixos/nvidia: write module params to modprobe
+
+---
+ nixos/modules/hardware/video/nvidia.nix | 73 ++++++++++++++++++-------
+ 1 file changed, 52 insertions(+), 21 deletions(-)
+
+diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
+index 3f16542f2e289..e20b0a145a665 100644
+--- a/nixos/modules/hardware/video/nvidia.nix
++++ b/nixos/modules/hardware/video/nvidia.nix
+@@ -332,6 +332,20 @@ in
+       videoAcceleration = lib.mkEnableOption "video acceleration (VA-API)" // {
+         default = true;
+       };
++
++      moduleParams = lib.mkOption {
++        type = lib.types.attrsOf (lib.types.attrsOf lib.types.raw);
++        default = { };
++        example = ''
++          {
++            nvidia = {
++              NVreg_UsePageAttributeTable = 1;
++              NVreg_RegistryDwords = "EnableBrightnessControl=1"
++            };
++          }
++        '';
++        description = "Additional parameters to pass to the NVIDIA kernel module.";
++      };
+     };
+   };
+ 
+@@ -524,6 +538,17 @@ in
+                 -> (useOpenModules && lib.versionAtLeast nvidia_x11.version "595");
+               message = "NVIDIA driver support for kernel suspend notifiers requires NVIDIA driver version 595 or newer, and the open source kernel modules.";
+             }
++
++            {
++              assertion =
++                removeAttrs cfg.moduleParams [
++                  "nvidia"
++                  "nvidia-drm"
++                  "nvidia-modeset"
++                  "nvidia-uvm"
++                ] == { };
++              message = "You can only use `hardware.nvidia.moduleParams` to set parameters for the kernel modules of NVIDIA drivers.";
++            }
+           ];
+ 
+           # If Optimus/PRIME is enabled, we:
+@@ -715,6 +740,23 @@ in
+             lib.optional (nvidia_x11.persistenced != null && config.virtualisation.docker.enableNvidia)
+               "L+ /run/nvidia-docker/extras/bin/nvidia-persistenced - - - - ${nvidia_x11.persistenced}/origBin/nvidia-persistenced";
+ 
++          hardware.nvidia.moduleParams = lib.mkMerge (
++            lib.optional (offloadCfg.enable || cfg.modesetting.enable) { nvidia-drm.modeset = 1; }
++            ++ lib.optional (
++              (offloadCfg.enable || cfg.modesetting.enable) && lib.versionAtLeast nvidia_x11.version "545"
++            ) { nvidia-drm.fbdev = 1; }
++            ++ lib.optional (cfg.powerManagement.enable && cfg.powerManagement.kernelSuspendNotifier) {
++              nvidia.NVreg_UseKernelSuspendNotifiers = 1;
++            }
++            ++ lib.optional cfg.powerManagement.enable { nvidia.NVreg_PreserveVideoMemoryAllocations = 1; }
++            ++ lib.optional (
++              useOpenModules
++              && lib.versionAtLeast nvidia_x11.version "515.43.04"
++              && lib.versionOlder nvidia_x11.version "545.23.06"
++            ) { nvidia.NVreg_OpenRmEnableUnsupportedGpus = 1; }
++            ++ lib.optional cfg.powerManagement.finegrained { nvidia.NVreg_DynamicPowerManagement = "0x02"; }
++          );
++
+           boot = {
+             extraModulePackages = if useOpenModules then [ nvidia_x11.open ] else [ nvidia_x11.mod ];
+             # nvidia-uvm is required by CUDA applications.
+@@ -724,27 +766,16 @@ in
+               "nvidia_drm"
+             ];
+ 
+-            # If requested enable modesetting via kernel parameters.
+-            kernelParams =
+-              lib.optional (offloadCfg.enable || cfg.modesetting.enable) "nvidia-drm.modeset=1"
+-              ++ lib.optional (
+-                (offloadCfg.enable || cfg.modesetting.enable) && lib.versionAtLeast nvidia_x11.version "545"
+-              ) "nvidia-drm.fbdev=1"
+-              ++ lib.optional (
+-                cfg.powerManagement.enable && cfg.powerManagement.kernelSuspendNotifier
+-              ) "nvidia.NVreg_UseKernelSuspendNotifiers=1"
+-              ++ lib.optional cfg.powerManagement.enable "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+-              ++ lib.optional (
+-                useOpenModules
+-                && lib.versionAtLeast nvidia_x11.version "515.43.04"
+-                && lib.versionOlder nvidia_x11.version "545.23.06"
+-              ) "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"
+-              ++ lib.optional (config.boot.kernelPackages.kernel.kernelAtLeast "6.2" && !ibtSupport) "ibt=off";
+-
+-            # enable finegrained power management
+-            extraModprobeConfig = lib.optionalString cfg.powerManagement.finegrained ''
+-              options nvidia "NVreg_DynamicPowerManagement=0x02"
+-            '';
++            kernelParams = lib.optional (
++              config.boot.kernelPackages.kernel.kernelAtLeast "6.2" && !ibtSupport
++            ) "ibt=off";
++
++            extraModprobeConfig =
++              let
++                mergeParams = lib.concatMapAttrsStringSep " " (k: v: "${k}=${toString v}");
++                genModprobeLine = module: params: "options ${module} ${mergeParams params}";
++              in
++              lib.concatMapAttrsStringSep "\n" genModprobeLine cfg.moduleParams;
+           };
+           services.udev.extraRules = lib.optionalString cfg.powerManagement.finegrained (
+             lib.optionalString (lib.versionOlder config.boot.kernelPackages.kernel.version "5.5") ''
+
+From bdca3c8ec7fc3381f3872bed1c5169519cd4c0ce Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sun, 12 Apr 2026 06:16:57 +0800
+Subject: [PATCH 08/10] linuxPackages.nvidiaPackages: respect NVIDIA release
+ branches
+
+---
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
+index dd202fee576c3..8f882db4e5178 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/default.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
+@@ -66,6 +66,10 @@ rec {
+   # Policy: use the highest stable version as the default (on our master).
+   stable = if stdenv.hostPlatform.system == "i686-linux" then legacy_390 else production;
+ 
++  latest = selectHighestVersion production new_feature;
++
++  bleeding_edge = selectHighestVersion latest beta;
++
+   production = generic {
+     version = "595.58.03";
+     sha256_64bit = "sha256-jA1Plnt5MsSrVxQnKu6BAzkrCnAskq+lVRdtNiBYKfk=";
+@@ -75,7 +79,7 @@ rec {
+     persistencedSha256 = "sha256-AtjM/ml/ngZil8DMYNH+P111ohuk9mWw5t4z7CHjPWw=";
+   };
+ 
+-  latest = selectHighestVersion production (generic {
++  new_feature = generic {
+     version = "590.48.01";
+     sha256_64bit = "sha256-ueL4BpN4FDHMh/TNKRCeEz3Oy1ClDWto1LO/LWlr1ok=";
+     sha256_aarch64 = "sha256-FOz7f6pW1NGM2f74kbP6LbNijxKj5ZtZ08bm0aC+/YA=";
+@@ -83,16 +87,16 @@ rec {
+     settingsSha256 = "sha256-NWsqUciPa4f1ZX6f0By3yScz3pqKJV1ei9GvOF8qIEE=";
+     persistencedSha256 = "sha256-wsNeuw7IaY6Qc/i/AzT/4N82lPjkwfrhxidKWUtcwW8=";
+     patchesOpen = [ kernel_6_19_patch ];
+-  });
++  };
+ 
+-  beta = selectHighestVersion latest (generic {
++  beta = generic {
+     version = "595.45.04";
+     sha256_64bit = "sha256-zUllSSRsuio7dSkcbBTuxF+dN12d6jEPE0WgGvVOj14=";
+     sha256_aarch64 = "sha256-jl6lQWsgF6ya22sAhYPpERJ9r+wjnWzbGnINDpUMzsk=";
+     openSha256 = "sha256-uqNfImwTKhK8gncUdP1TPp0D6Gog4MSeIJMZQiJWDoE=";
+     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
+     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
+-  });
++  };
+ 
+   # Vulkan developer beta driver
+   # See here for more information: https://developer.nvidia.com/vulkan-driver
+
+From b4788a85974f17c5369db216204a8b197a4f93f4 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sun, 12 Apr 2026 19:56:10 +0800
+Subject: [PATCH 09/10] nixos/nvidia: add branch option
+
+---
+ nixos/modules/hardware/video/nvidia.nix | 64 ++++++++++++++++++++++---
+ 1 file changed, 57 insertions(+), 7 deletions(-)
+
+diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
+index e20b0a145a665..50b16236745be 100644
+--- a/nixos/modules/hardware/video/nvidia.nix
++++ b/nixos/modules/hardware/video/nvidia.nix
+@@ -6,10 +6,12 @@
+ }:
+ let
+   nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
+-  nvidia_x11 = if nvidiaEnabled || cfg.datacenter.enable then cfg.package else null;
++  nvidia_x11 = if cfg.enabled then cfg.package else null;
+ 
+   cfg = config.hardware.nvidia;
+ 
++  nvidiaPackages = config.boot.kernelPackages.nvidiaPackages;
++
+   useOpenModules = cfg.open == true;
+ 
+   pCfg = cfg.prime;
+@@ -27,7 +29,7 @@ in
+       enabled = lib.mkOption {
+         readOnly = true;
+         type = lib.types.bool;
+-        default = nvidia_x11 != null;
++        default = nvidiaEnabled || cfg.datacenter.enable;
+         defaultText = lib.literalMD "`true` if NVIDIA support is enabled";
+         description = "True if NVIDIA support is enabled";
+       };
+@@ -296,15 +298,63 @@ in
+         It also drastically increases the time the driver needs to clock down after load
+       '';
+ 
+-      package = lib.mkOption {
+-        default =
+-          config.boot.kernelPackages.nvidiaPackages."${if cfg.datacenter.enable then "dc" else "stable"}";
++      branch = lib.mkOption {
++        type =
++          (lib.types.enum (builtins.attrNames (lib.filterAttrs (_: lib.isDerivation) nvidiaPackages)))
++          // {
++            description = "one of the available driver branches in `pkgs/os-specific/linux/nvidia-x11/default.nix`";
++          };
++        default = if cfg.datacenter.enable then "dc" else "stable";
+         defaultText = lib.literalExpression ''
+-          config.boot.kernelPackages.nvidiaPackages."\$\{if cfg.datacenter.enable then "dc" else "stable"}"
++          if config.hardware.nvidia.datacenter.enable then "dc" else "stable"
+         '';
+-        example = "config.boot.kernelPackages.nvidiaPackages.legacy_470";
++        example = "bleeding_edge";
++        description = ''
++          The branch of the NVIDIA driver to use.
++
++          Note: if {option}`hardware.nvidia.package` is set, it overrides this option.
++
++          Commonly interesting branches for end users:
++
++          - production, new_feature, beta:
++            NVIDIA's official production / new feature / beta release branches.
++
++          - stable:
++            The default; the highest stable version.
++
++          - latest:
++            Whichever is newer of `production` and `new_feature`.
++
++          - bleeding_edge:
++            Whichever is newer of `latest` and `beta`.
++
++          - legacy_580:
++            The long-lived 580 series (LTSB), for GPUs that newer driver branches
++            no longer support (often Maxwell through Volta; roughly GeForce GTX 9xx
++            through 10xx, plus rare Volta cards like TITAN V).
++
++          - vulkan_beta:
++            The Vulkan developer beta driver, for users interested in testing new
++            Vulkan features.
++        '';
++      };
++
++      package = lib.mkOption {
++        type = lib.types.package;
++        default = nvidiaPackages.${cfg.branch};
++        defaultText = lib.literalExpression "config.boot.kernelPackages.nvidiaPackages.\${config.hardware.nvidia.branch}";
++        example = lib.literalExpression "config.boot.kernelPackages.nvidiaPackages.legacy_470";
+         description = ''
+           The NVIDIA driver package to use.
++
++          Prefer using {option}`hardware.nvidia.branch` when possible.
++
++          If you set this option, it is recommended to pick a package from
++          `config.boot.kernelPackages.nvidiaPackages` so the driver build matches
++          your configured kernel.
++
++          For custom versions, you can use `nvidiaPackages.mkDriver`; see
++          `pkgs/os-specific/linux/nvidia-x11/default.nix` for examples.
+         '';
+       };
+ 
+
+From 7bd94198d4fd4265481f3b749f2a551806518679 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Mon, 16 Mar 2026 01:16:35 +0800
+Subject: [PATCH 10/10] doc: add release notes for nvidia module and driver
+ changes
+
+---
+ doc/release-notes/rl-2605.section.md              | 4 ++++
+ nixos/doc/manual/release-notes/rl-2605.section.md | 8 ++++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/doc/release-notes/rl-2605.section.md b/doc/release-notes/rl-2605.section.md
+index 74248d2317f68..f4c7bdd566dcb 100644
+--- a/doc/release-notes/rl-2605.section.md
++++ b/doc/release-notes/rl-2605.section.md
+@@ -268,6 +268,10 @@
+ 
+ <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
+ 
++- `nvidia-x11` proprietary kernel modules are now provided separately as `nvidia_x11.mod`, while `nvidia_x11.open` remains the open-source kernel module package.
++
++- `linuxPackages.nvidiaPackages` now follows NVIDIA's official release branches by exposing `production`, `new_feature`, and `beta`. The convenience aliases `latest` (newer of `production` and `new_feature`) and `bleeding_edge` (newer of `latest` and `beta`) are provided; note that `beta` now refers strictly to the beta branch.
++
+ - `balatro` now supports the Google Play and Xbox PC versions of the game.  Pass the `apk` or `Assets.zip` as `balatro.override { src = "…" }`.
+ 
+ - `uptime-kuma` has been updated to v2, which requires an automated migration that can take a few hours. **A backup is highly recommended.**
+diff --git a/nixos/doc/manual/release-notes/rl-2605.section.md b/nixos/doc/manual/release-notes/rl-2605.section.md
+index a62b8b5ac0eab..b599e13c87e0b 100644
+--- a/nixos/doc/manual/release-notes/rl-2605.section.md
++++ b/nixos/doc/manual/release-notes/rl-2605.section.md
+@@ -313,6 +313,14 @@ See <https://github.com/NixOS/nixpkgs/issues/481673>.
+ 
+ <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
+ 
++- [`hardware.nvidia.branch`](#opt-hardware.nvidia.branch) was added to select the NVIDIA driver branch; setting [`hardware.nvidia.package`](#opt-hardware.nvidia.package) overrides this.
++
++- The NixOS NVIDIA module wiring has been updated to match the new `nvidia-x11` output layout.
++
++- `nixos/nvidia` now uses EGL external platform ICD libraries built from source (`egl-gbm`, `egl-wayland`, `egl-wayland2`, `egl-x11`) instead of relying on vendor-provided binaries for these components.
++
++- `hardware.nvidia.moduleParams` was added to configure NVIDIA kernel module parameters declaratively. These parameters are now written to `modprobe` configuration instead of being passed through global kernel command-line parameters.
++
+ - [hardware.xpadneo](#opt-hardware.xpadneo.enable) now supports configuring kernel module parameters via a freeform [settings](#opt-hardware.xpadneo.settings) option, with convenience options for [rumble attenuation](#opt-hardware.xpadneo.rumbleAttenuation) and [controller quirks](#opt-hardware.xpadneo.quirks).
+ 
+ - The `services.prometheus.exporters` module interface now accepts an optional `socketOpts` attribute, allowing individual exporter modules to describe an accompanying `systemd.sockets.prometheus-${name}-exporter` unit alongside their service, enabling socket activation support.
