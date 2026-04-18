@@ -1,4 +1,4 @@
-From 41558b43568ca97370395c4ad57976f1dccb4091 Mon Sep 17 00:00:00 2001
+From f08ec350e97eb20ae806917fdc9ee0a1225c87c1 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 17 Apr 2026 21:09:14 +0800
 Subject: [PATCH 1/2] daed: 1.0.0 -> 1.27.0, add maintainer
@@ -172,15 +172,15 @@ index 3a7ff752a325d..bd6e82fc1d576 100644
 -}
 +})
 
-From 431bb69a89411a650ac6a19c81a310b2d12639a1 Mon Sep 17 00:00:00 2001
+From c3ab8284b69578d3d525199ead415cae856210ef Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 17 Apr 2026 22:54:20 +0800
 Subject: [PATCH 2/2] nixos/daed: init
 
 ---
  nixos/modules/module-list.nix              |   1 +
- nixos/modules/services/networking/daed.nix | 159 +++++++++++++++++++++
- 2 files changed, 160 insertions(+)
+ nixos/modules/services/networking/daed.nix | 143 +++++++++++++++++++++
+ 2 files changed, 144 insertions(+)
  create mode 100644 nixos/modules/services/networking/daed.nix
 
 diff --git a/nixos/modules/module-list.nix b/nixos/modules/module-list.nix
@@ -197,10 +197,10 @@ index f72dcccf3e879..f895e8256d0a9 100644
    ./services/networking/ddns-updater.nix
 diff --git a/nixos/modules/services/networking/daed.nix b/nixos/modules/services/networking/daed.nix
 new file mode 100644
-index 0000000000000..2fee52d2c7e68
+index 0000000000000..6e57594b54e76
 --- /dev/null
 +++ b/nixos/modules/services/networking/daed.nix
-@@ -0,0 +1,159 @@
+@@ -0,0 +1,143 @@
 +/*
 +  This file contains code derived from https://github.com/daeuniverse/flake.nix
 +  Licensed under the ISC License.
@@ -251,7 +251,7 @@ index 0000000000000..2fee52d2c7e68
 +{
 +  options = {
 +    services.daed = {
-+      enable = mkEnableOption "daed, a modern web dashboard for dae";
++      enable = mkEnableOption "daed, a modern web dashboard with dae.";
 +
 +      package = mkPackageOption pkgs "daed" { };
 +
@@ -268,7 +268,7 @@ index 0000000000000..2fee52d2c7e68
 +      };
 +
 +      assets = mkOption {
-+        type = with types; (listOf path);
++        type = with types; listOf path;
 +        default = with pkgs; [
 +          v2ray-geoip
 +          v2ray-domain-list-community
@@ -282,8 +282,8 @@ index 0000000000000..2fee52d2c7e68
 +        default = "${genAssetsDrv assets}/share/v2ray";
 +        defaultText = literalExpression ''
 +          "''${pkgs.symlinkJoin {
-+            name = "dae-assets";
-+            paths = assets;
++            name = "daed-assets";
++            paths = config.services.daed.assets;
 +          }}/share/v2ray"
 +        '';
 +        description = ''
@@ -292,29 +292,17 @@ index 0000000000000..2fee52d2c7e68
 +        '';
 +      };
 +
-+      openFirewall = mkOption {
-+        type = types.submodule {
-+          options = {
-+            enable = mkEnableOption "enable";
-+            port = mkOption {
-+              type = types.int;
-+              description = ''
-+                Port to be opened. Consist with field `tproxy_port` in config file.
-+              '';
-+            };
-+          };
++      openFirewall = {
++        enable = mkEnableOption "opening `port` in the firewall." // {
++          default = true;
 +        };
-+        default = {
-+          enable = true;
-+          port = 12345;
++        port = mkOption {
++          type = types.port;
++          default = 12345;
++          description = ''
++            Port to be opened. Consist with field `tproxy_port` in config file.
++          '';
 +        };
-+        defaultText = literalExpression ''
-+          {
-+            enable = true;
-+            port = 12345;
-+          }
-+        '';
-+        description = "Open the firewall port.";
 +      };
 +    };
 +  };
@@ -322,7 +310,7 @@ index 0000000000000..2fee52d2c7e68
 +  config = lib.mkIf cfg.enable {
 +    assertions = [
 +      {
-+        assertion = lib.pathExists (toString (genAssetsDrv cfg.assets) + "/share/v2ray");
++        assertion = lib.pathExists (toString (genAssetsDrv assets) + "/share/v2ray");
 +        message = ''
 +          Packages in `assets` has no preset paths included.
 +          Please set `assetsPath` instead.
@@ -343,20 +331,16 @@ index 0000000000000..2fee52d2c7e68
 +        };
 +    };
 +
-+    systemd.services.daed =
-+      let
-+        daedBin = lib.getExe cfg.package;
-+      in
-+      {
-+        wantedBy = [ "multi-user.target" ];
-+        serviceConfig = {
-+          ExecStart = [
-+            ""
-+            "${daedBin} run -c ${cfg.configDir} -l ${cfg.listen}"
-+          ];
-+          Environment = "DAE_LOCATION_ASSET=${cfg.assetsPath}";
-+        };
++    systemd.services.daed = {
++      wantedBy = [ "multi-user.target" ];
++      serviceConfig = {
++        ExecStart = [
++          ""
++          "${lib.getExe cfg.package} run -c ${cfg.configDir} -l ${cfg.listen}"
++        ];
++        Environment = "DAE_LOCATION_ASSET=${cfg.assetsPath}";
 +      };
++    };
 +  };
 +  meta.maintainers = with lib.maintainers; [ ccicnce113424 ];
 +}
