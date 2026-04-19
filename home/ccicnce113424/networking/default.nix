@@ -9,7 +9,7 @@
     ayugram-desktop
     tor-browser
     qbittorrent-enhanced
-    motrix-next
+    motrix-next-beta
     fluffychat
     cherry-studio
 
