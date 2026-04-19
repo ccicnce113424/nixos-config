@@ -5,7 +5,10 @@
   ];
   programs.difftastic.jujutsu.enable = true;
   programs.mergiraf.enableJujutsuIntegration = true;
-  programs.zed-editor.extensions = [ "jj-lsp" ];
+  programs.zed-editor = {
+    extensions = [ "jj-lsp" ];
+    extraPackages = with pkgs; [ jj-lsp ];
+  };
 
   programs.jujutsu = {
     enable = true;
