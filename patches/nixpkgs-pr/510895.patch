@@ -1,4 +1,4 @@
-From 1faf2c60ca53d60720a3f3763588967d8efd54fa Mon Sep 17 00:00:00 2001
+From 8c45420fbd8f4138f053da0ba9c211d024c9e19d Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 17 Apr 2026 21:09:14 +0800
 Subject: [PATCH 1/2] daed: 1.0.0 -> 1.27.0, add maintainer
@@ -172,7 +172,7 @@ index 3a7ff752a325d..bd6e82fc1d576 100644
 -}
 +})
 
-From 66ba34514173f4ffbc4d2c64d307315363fd35b9 Mon Sep 17 00:00:00 2001
+From 619456a049634eb83841ff1b947d4e391465557b Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 19 Apr 2026 02:17:23 +0800
 Subject: [PATCH 2/2] nixos/daed: init
