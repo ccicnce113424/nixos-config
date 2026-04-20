@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   programs.difftastic = {
     enable = true;
@@ -6,9 +6,12 @@
       enable = true;
       diffToolMode = true;
     };
+    jujutsu.enable = true;
   };
   programs.mergiraf = {
     enable = true;
-    enableGitIntegration = true;
+    enableGitIntegration = false;
+    enableJujutsuIntegration = false;
   };
+  home.packages = with pkgs; [ meld ];
 }
