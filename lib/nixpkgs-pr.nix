@@ -12,9 +12,6 @@ in
     default = [
       # nixos/nvidia, linuxPackages.nvidia-x11: split proprietary kernel modules, use source-built ICDs, write params via modprobe
       498612
-      # treewide: fix icon by moving to valid path
-      # merged, remove after the next channel update
-      510472
       # kmscon: 9.3.3 -> 9.3.4-unstable-2026-04-13, nixos/kmscon: make agetty optional
       # test upcoming package and module updates
       508807
