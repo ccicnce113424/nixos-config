@@ -14,7 +14,9 @@ let
       ]
       ++ lib.mapAttrsToList writeShellScriptBin config.cmdAlias;
 
-    nix.settings = nixConfig;
+    nix.settings = nixConfig // {
+      auto-optimise-store = true;
+    };
     nix.package = config.nixPackages.nix or config.nixPackages.lix;
     chaotic.nyx = {
       overlay.enable = false;
@@ -49,7 +51,7 @@ in
         systemd-inhibit git fetch origin && git rebase main
         switch "$@"
       '';
-      pclean = ''systemd-inhibit nh clean all "$@"'';
+      pclean = ''systemd-inhibit nh clean all --optimise "$@"'';
       clr = ''
         set -e
         pclean
