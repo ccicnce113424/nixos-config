@@ -73,7 +73,6 @@
       };
       backupFileExtension = "backup";
       sharedModules = [
-        inputs.nix-flatpak.homeManagerModules.nix-flatpak
         inputs.lan-mouse.homeManagerModules.default
         inputs.nix-index-database.homeModules.nix-index
         ../home/common

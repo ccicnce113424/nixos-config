@@ -28,17 +28,8 @@
       };
     };
 
-    services.flatpak = {
-      enable = true;
-      update.onActivation = true;
-      # remotes = [
-      #   {
-      #     name = "flathub";
-      #     location = "https://mirror.sjtu.edu.cn/flathub";
-      #   }
-      # ];
-      uninstallUnmanaged = true;
-    };
+    services.flatpak.enable = true;
+
     services.fwupd.enable = true;
 
     environment.systemPackages = with pkgs; [

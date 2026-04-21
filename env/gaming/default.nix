@@ -33,11 +33,6 @@
 
     services.joycond.enable = true;
 
-    services.flatpak.packages = [
-      # "net.lutris.Lutris"
-      # "com.heroicgameslauncher.hgl"
-    ];
-
     environment.systemPackages = with pkgs; [
       mangohud
       libstrangle
