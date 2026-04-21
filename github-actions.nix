@@ -38,9 +38,6 @@ in
             "kwin"
             "plasma-desktop"
             "kdeplasma-addons"
-
-            "venera"
-            "cherry-studio"
           ]
           (
             with (builtins.head machines).value.config;
