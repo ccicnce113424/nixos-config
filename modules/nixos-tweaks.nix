@@ -46,7 +46,7 @@ in
       up = ''
         set -e
         cd $HOME/code/nixos-config
-        systemd-inhibit git pull origin main
+        systemd-inhibit git fetch origin && git rebase main
         switch "$@"
       '';
       pclean = ''systemd-inhibit nh clean all "$@"'';
