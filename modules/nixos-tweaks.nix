@@ -34,31 +34,35 @@ in
     default = {
       # Commands to add
       switch = ''
-        rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup
+        set -euo pipefail
+        rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
         systemd-inhibit nh os switch "$@"
       '';
       cswitch = ''
-        rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup
+        set -euo pipefail
+        rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
         systemd-inhibit sudo nixos-rebuild switch --flake $HOME/code/nixos-config \
           --log-format bar-with-logs -L --install-bootloader \
           --option substituters 'https://cache.nixos.org' \
           "$@"
       '';
-      sgc = ''systemd-inhibit nix store gc "$@"'';
+      sgc = ''exec systemd-inhibit nix store gc "$@"'';
       up = ''
-        set -e
+        set -euo pipefail
         cd $HOME/code/nixos-config
-        systemd-inhibit git fetch origin && git rebase main
+        systemd-inhibit git fetch origin
+        git branch -f main origin/main
+        git rebase origin/main
         switch "$@"
       '';
-      pclean = ''systemd-inhibit nh clean all --optimise "$@"'';
+      pclean = ''exec systemd-inhibit nh clean all --optimise "$@"'';
       clr = ''
-        set -e
+        set -euo pipefail
         pclean
         switch "$@"
       '';
-      win = ''systemctl reboot --boot-loader-entry=auto-windows "$@"'';
-      fw = ''systemctl reboot --firmware-setup "$@"'';
+      win = ''exec systemctl reboot --boot-loader-entry=auto-windows "$@"'';
+      fw = ''exec systemctl reboot --firmware-setup "$@"'';
     };
   };
   options.enable32Bit = lib.mkEnableOption "32-bit dependencies";
