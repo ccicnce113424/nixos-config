@@ -84,7 +84,7 @@ rec {
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    flake-compat.url = "github:edolstra/flake-compat";
+    flake-compat.url = "https://git.lix.systems/lix-project/flake-compat/archive/main.tar.gz";
 
     # not used directly
     git-hooks = {

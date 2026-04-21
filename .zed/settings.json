@@ -6,7 +6,16 @@
   "formatter": {
     "external": {
       "command": "nix",
-      "arguments": ["fmt", "--", "--stdin", "--", "{buffer_path}"]
+      "arguments": [
+        "run",
+        "-f",
+        "./default.nix",
+        "currentSystem.formatter",
+        "--",
+        "--stdin",
+        "--",
+        "{buffer_path}"
+      ]
     }
   },
   "languages": {
