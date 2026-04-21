@@ -23,15 +23,18 @@
     pathToPatchList = lib.mkOption {
       default =
         path:
-        lib.fileset.toList (
-          lib.fileset.fileFilter (
-            file:
-            lib.any (ext: lib.hasSuffix ext file.name) [
-              ".patch"
-              ".diff"
-            ]
-          ) path
-        );
+        if builtins.pathExists path then
+          lib.fileset.toList (
+            lib.fileset.fileFilter (
+              file:
+              lib.any (ext: lib.hasSuffix ext file.name) [
+                ".patch"
+                ".diff"
+              ]
+            ) path
+          )
+        else
+          [ ];
     };
   };
 }
