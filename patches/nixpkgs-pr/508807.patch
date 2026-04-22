@@ -1,7 +1,7 @@
-From 2987a6c7a530c61074901d91bdccb96627a87084 Mon Sep 17 00:00:00 2001
+From 832a681c96bf753a44a9964d966aa4e199a17779 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 11 Apr 2026 09:59:00 +0800
-Subject: [PATCH 1/3] nixosTests.kmscon: wait for default target before waiting
+Subject: [PATCH 1/4] nixosTests.kmscon: wait for default target before waiting
  for the text
 
 ---
@@ -22,109 +22,163 @@ index 1c67a16af2bab..f0fb27d9b0d57 100644
      with subtest("ensure we can open a tty"):
        machine.wait_for_text("alice@machine")
 
-From 5ace9a11a5ffd00503e24de5fb24e21157d69feb Mon Sep 17 00:00:00 2001
+From a1294b52d1fa57e7575ea1530212e5125124b0b0 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Sat, 11 Apr 2026 09:59:20 +0800
-Subject: [PATCH 2/3] kmscon: 9.3.3 -> 9.3.4
+Date: Wed, 22 Apr 2026 14:35:43 +0800
+Subject: [PATCH 2/4] libtsm: 4.4.3 -> 4.5.0
 
 ---
- pkgs/by-name/km/kmscon/package.nix | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ pkgs/by-name/li/libtsm/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
-index 329c49f59af33..9d3bc5dea78fb 100644
---- a/pkgs/by-name/km/kmscon/package.nix
-+++ b/pkgs/by-name/km/kmscon/package.nix
-@@ -29,13 +29,14 @@
- }:
+diff --git a/pkgs/by-name/li/libtsm/package.nix b/pkgs/by-name/li/libtsm/package.nix
+index f83c1082fba5e..5cca1ae05a7b2 100644
+--- a/pkgs/by-name/li/libtsm/package.nix
++++ b/pkgs/by-name/li/libtsm/package.nix
+@@ -12,13 +12,13 @@
+ 
  stdenv.mkDerivation (finalAttrs: {
-   pname = "kmscon";
--  version = "9.3.3";
-+  version = "9.3.3-unstable-2026-04-17";
+   pname = "libtsm";
+-  version = "4.4.3";
++  version = "4.5.0";
  
    src = fetchFromGitHub {
      owner = "kmscon";
-     repo = "kmscon";
--    tag = "v${finalAttrs.version}";
--    hash = "sha256-U9jDlZb5aBzQ7IErtLsajxcN1W5/8/eNwhGIuz7aUCw=";
-+    # tag = "v${finalAttrs.version}";
-+    rev = "6343ecddf1773df71eca1bd2903958d70782204f";
-+    hash = "sha256-yEd3ewe3qojCiUy6xzj/Tl6NSqVWR9BcHZAaQ2BlQw0=";
+     repo = "libtsm";
+     tag = "v${finalAttrs.version}";
+-    hash = "sha256-AKwS088lP3dByKh3dQRW76+L6ouD8EmVms2qWIC5IiE=";
++    hash = "sha256-5Lv/Hb0FGWARk3Wv3IuAbtCDII7qOMmcZSmKTkgTEsc=";
    };
  
    strictDeps = true;
 
-From 28e020fafe30cc5ac31063f9a218386d8083c68d Mon Sep 17 00:00:00 2001
+From 41855a7a9933bcb963c308879fb4a37879140e23 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Thu, 16 Apr 2026 18:54:25 +0800
-Subject: [PATCH 3/3] nixos/kmscon: make agetty optional
+Date: Sat, 11 Apr 2026 09:59:20 +0800
+Subject: [PATCH 3/4] kmscon: 9.3.3 -> 9.3.4
 
 ---
- nixos/modules/services/ttys/kmscon.nix | 65 ++++++++++++++------------
- 1 file changed, 35 insertions(+), 30 deletions(-)
+ pkgs/by-name/km/kmscon/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
+index 329c49f59af33..5298f0b2391d6 100644
+--- a/pkgs/by-name/km/kmscon/package.nix
++++ b/pkgs/by-name/km/kmscon/package.nix
+@@ -29,13 +29,13 @@
+ }:
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "kmscon";
+-  version = "9.3.3";
++  version = "9.3.4";
+ 
+   src = fetchFromGitHub {
+     owner = "kmscon";
+     repo = "kmscon";
+     tag = "v${finalAttrs.version}";
+-    hash = "sha256-U9jDlZb5aBzQ7IErtLsajxcN1W5/8/eNwhGIuz7aUCw=";
++    hash = "sha256-S6a/m2gfYOsacq4uq3d05WZPH1C8RQowmZM7f6On4ic=";
+   };
+ 
+   strictDeps = true;
+
+From 0ddd357f3bd4aedb0c1f3a0e94caad8cc1d1ebfb Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Thu, 16 Apr 2026 18:54:25 +0800
+Subject: [PATCH 4/4] nixos/kmscon: remove dependency on agetty
+
+---
+ nixos/modules/services/ttys/kmscon.nix | 108 +++++++++----------------
+ 1 file changed, 38 insertions(+), 70 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index a7fdb726dd03b..f4ea0033a62c9 100644
+index 63bf9432c501c..4639b6dad7a04 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
-@@ -25,7 +25,7 @@ let
+@@ -25,50 +25,29 @@ let
      text = cfg.extraConfig;
    };
  
 -  baseLoginOptions = "-p -- \\u";
-+  baseLoginOptions = "-p";
++  baseLoginOptions =
++    "-p" + lib.optionalString (gettyCfg.loginOptions != null) (" " + gettyCfg.loginOptions);
  
-   agettyCmd =
-     enableAutologin:
-@@ -36,7 +36,7 @@ let
-           (toString gettyCfg.loginProgram)
-           "--login-options"
-           # these options are passed as a single parameter
--          "${lib.optionalString enableAutologin "-f "}${baseLoginOptions}"
-+          "${lib.optionalString enableAutologin "-f "}${baseLoginOptions} -- \\u"
-         ]
-         ++ lib.optionals enableAutologin [
-           "--autologin"
-@@ -52,6 +52,13 @@ let
-       )
-     } $TERM";
- 
+-  agettyCmd =
 +  loginCmd =
-+    if cfg.useAgetty then
-+      agettyCmd
-+    else
-+      enableAutologin:
-+      "${toString gettyCfg.loginProgram} ${baseLoginOptions} ${lib.optionalString enableAutologin "-f -- ${gettyCfg.autologinUser}"}";
+     enableAutologin:
+-    "${lib.getExe' pkgs.util-linux "agetty"} ${
+-      lib.escapeShellArgs (
+-        [
+-          "--login-program"
+-          (toString gettyCfg.loginProgram)
+-          "--login-options"
+-          # these options are passed as a single parameter
+-          "${lib.optionalString enableAutologin "-f "}${baseLoginOptions}"
+-        ]
+-        ++ lib.optionals enableAutologin [
+-          "--autologin"
+-          gettyCfg.autologinUser
+-        ]
+-        ++ gettyCfg.extraArgs
+-        ++ [
+-          "--8bits"
+-          "--noclear"
+-          "--"
+-          "-"
+-        ]
+-      )
+-    } $TERM";
+-
+-  loginScript = pkgs.writers.writeDash "kmscon-login" ''
+-    kms_tty=
+-    active_tty_file=/sys/class/tty/tty0/active
+-    if [ -f "$active_tty_file" ]; then
+-      read -r kms_tty < "$active_tty_file"
+-    fi
++    "${gettyCfg.loginProgram} ${baseLoginOptions}${lib.optionalString enableAutologin " -f -- ${gettyCfg.autologinUser}"}";
 +
-   loginScript = pkgs.writers.writeDash "kmscon-login" ''
-     kms_tty=
-     active_tty_file=/sys/class/tty/tty0/active
-@@ -63,11 +70,11 @@ let
++  loginScript = pkgs.writers.writeDash "kmscon-login" (
++    lib.optionalString (gettyCfg.autologinUser != null && gettyCfg.autologinOnce) ''
++      kms_tty=
++      active_tty_file=/sys/class/tty/tty0/active
++      if [ -f "$active_tty_file" ]; then
++        read -r kms_tty < "$active_tty_file"
++      fi
+ 
+-    ${lib.optionalString (gettyCfg.autologinUser != null && gettyCfg.autologinOnce) ''
        autologged="/run/kmscon.autologged"
        if [ "$kms_tty" = tty1 ] && [ ! -f "$autologged" ]; then
          touch "$autologged"
 -        exec ${agettyCmd true}
 +        exec ${loginCmd true}
        fi
-     ''}
- 
+-    ''}
+-
 -    exec ${agettyCmd (gettyCfg.autologinUser != null && !gettyCfg.autologinOnce)}
-+    exec ${loginCmd (gettyCfg.autologinUser != null && !gettyCfg.autologinOnce)}
-   '';
+-  '';
++    ''
++    + "exec ${loginCmd (gettyCfg.autologinUser != null && !gettyCfg.autologinOnce)}"
++  );
  in
  {
-@@ -117,6 +124,8 @@ in
+   imports = [
+@@ -141,13 +120,6 @@ in
+   };
  
-       useXkbConfig = mkEnableOption "configure keymap from xserver keyboard settings.";
+   config = mkIf cfg.enable {
+-    assertions = [
+-      {
+-        assertion = gettyCfg.loginOptions == null;
+-        message = "services.getty.loginOptions is not supported when services.kmscon is enabled.";
+-      }
+-    ];
+-
+     environment.systemPackages = [ cfg.package ];
+     systemd.packages = [ cfg.package ];
  
-+      useAgetty = mkEnableOption "use agetty as the login program for kmscon.";
-+
-       term = mkOption {
-         description = "Value for the TERM environment variable.";
-         type = types.nullOr types.str;
-@@ -177,32 +186,28 @@ in
+@@ -182,32 +154,28 @@ in
  
-     systemd.suppressedSystemUnits = [ "autovt@.service" ];
+     systemd.suppressedSystemUnits = [ "getty@.service" ];
  
 -    services.kmscon.extraConfig =
 -      let

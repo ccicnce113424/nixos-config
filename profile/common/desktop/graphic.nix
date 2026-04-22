@@ -20,7 +20,9 @@
       hwRender = true;
       term = "xterm-256color";
       extraConfig = ''
-        font-dpi=144
+        # font-engine=pango
+        font-size=24
+        bell
       '';
     };
 

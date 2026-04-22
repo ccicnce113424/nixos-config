@@ -1,4 +1,4 @@
-From 3f06927b2ba0728d9385298fb3c52080c19bef0e Mon Sep 17 00:00:00 2001
+From d23b04e5f12c76cef3e4e19abfa9aae870ca08cc Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 17 Apr 2026 21:09:14 +0800
 Subject: [PATCH 1/2] daed: 1.0.0 -> 1.27.0, add maintainer
@@ -172,15 +172,15 @@ index 3a7ff752a325d..bd6e82fc1d576 100644
 -}
 +})
 
-From fcd4f10e32dfbfb9af00c2b5549c977aaafe2eae Mon Sep 17 00:00:00 2001
+From fb3cabc5b3d3e4fd04c7f3ab12c39e26515dd22a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 19 Apr 2026 02:17:23 +0800
 Subject: [PATCH 2/2] nixos/daed: init
 
 ---
  nixos/modules/module-list.nix              |   1 +
- nixos/modules/services/networking/daed.nix | 143 +++++++++++++++++++++
- 2 files changed, 144 insertions(+)
+ nixos/modules/services/networking/daed.nix | 148 +++++++++++++++++++++
+ 2 files changed, 149 insertions(+)
  create mode 100644 nixos/modules/services/networking/daed.nix
 
 diff --git a/nixos/modules/module-list.nix b/nixos/modules/module-list.nix
@@ -197,14 +197,17 @@ index 774140f86d922..2c051c577a239 100644
    ./services/networking/ddns-updater.nix
 diff --git a/nixos/modules/services/networking/daed.nix b/nixos/modules/services/networking/daed.nix
 new file mode 100644
-index 0000000000000..23a8719f1cd7d
+index 0000000000000..ddd3dcae63fc2
 --- /dev/null
 +++ b/nixos/modules/services/networking/daed.nix
-@@ -0,0 +1,143 @@
+@@ -0,0 +1,148 @@
 +/*
-+  This file contains code derived from https://github.com/daeuniverse/flake.nix
-+  Licensed under the ISC License.
++  SPDX-License-Identifier: ISC AND MIT
 +
++  This file is dual-licensed under the ISC License and the MIT License.
++  It contains code derived from https://github.com/daeuniverse/flake.nix
++
++  --- ISC License ---
 +  Copyright (c) 2023, daeuniverse
 +
 +  Permission to use, copy, modify, and/or distribute this software for any
@@ -219,8 +222,12 @@ index 0000000000000..23a8719f1cd7d
 +  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 +  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 +
-+  Modifications Copyright (c) 2026 Nixpkgs/NixOS contributors
-+  Licensed under the MIT License, the same license as the rest of Nixpkgs.
++  --- MIT License ---
++  Copyright (c) 2026 Nixpkgs/NixOS contributors
++
++  Licensed under the MIT License (the same license as the rest of Nixpkgs).
++  The full text of the MIT License can be found in the LICENSE file at the
++  root of this repository.
 +*/
 +
 +{
@@ -249,60 +256,58 @@ index 0000000000000..23a8719f1cd7d
 +    };
 +in
 +{
-+  options = {
-+    services.daed = {
-+      enable = mkEnableOption "daed, a modern web dashboard with dae";
++  options.services.daed = {
++    enable = mkEnableOption "daed, a modern web dashboard with dae";
 +
-+      package = mkPackageOption pkgs "daed" { };
++    package = mkPackageOption pkgs "daed" { };
 +
-+      configDir = mkOption {
-+        type = types.str;
-+        default = "/etc/daed";
-+        description = "The daed work directory.";
++    configDir = mkOption {
++      type = types.str;
++      default = "/etc/daed";
++      description = "The daed work directory.";
++    };
++
++    listen = mkOption {
++      type = types.str;
++      default = "127.0.0.1:2023";
++      description = "The daed listen address.";
++    };
++
++    assets = mkOption {
++      type = with types; listOf path;
++      default = with pkgs; [
++        v2ray-geoip
++        v2ray-domain-list-community
++      ];
++      defaultText = literalExpression "with pkgs; [ v2ray-geoip v2ray-domain-list-community ]";
++      description = "Assets required to run daed.";
++    };
++
++    assetsPath = mkOption {
++      type = types.str;
++      default = "${genAssetsDrv assets}/share/v2ray";
++      defaultText = literalExpression ''
++        "''${pkgs.symlinkJoin {
++          name = "daed-assets";
++          paths = config.services.daed.assets;
++        }}/share/v2ray"
++      '';
++      description = ''
++        The path which contains geolocation database.
++        This option will override `assets`.
++      '';
++    };
++
++    openFirewall = {
++      enable = mkEnableOption "opening `port` in the firewall" // {
++        default = true;
 +      };
-+
-+      listen = mkOption {
-+        type = types.str;
-+        default = "127.0.0.1:2023";
-+        description = "The daed listen address.";
-+      };
-+
-+      assets = mkOption {
-+        type = with types; listOf path;
-+        default = with pkgs; [
-+          v2ray-geoip
-+          v2ray-domain-list-community
-+        ];
-+        defaultText = literalExpression "with pkgs; [ v2ray-geoip v2ray-domain-list-community ]";
-+        description = "Assets required to run daed.";
-+      };
-+
-+      assetsPath = mkOption {
-+        type = types.str;
-+        default = "${genAssetsDrv assets}/share/v2ray";
-+        defaultText = literalExpression ''
-+          "''${pkgs.symlinkJoin {
-+            name = "daed-assets";
-+            paths = config.services.daed.assets;
-+          }}/share/v2ray"
-+        '';
++      port = mkOption {
++        type = types.port;
++        default = 12345;
 +        description = ''
-+          The path which contains geolocation database.
-+          This option will override `assets`.
++          Port to be opened. Consist with field `tproxy_port` in config file.
 +        '';
-+      };
-+
-+      openFirewall = {
-+        enable = mkEnableOption "opening `port` in the firewall" // {
-+          default = true;
-+        };
-+        port = mkOption {
-+          type = types.port;
-+          default = 12345;
-+          description = ''
-+            Port to be opened. Consist with field `tproxy_port` in config file.
-+          '';
-+        };
 +      };
 +    };
 +  };
