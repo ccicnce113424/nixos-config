@@ -20,7 +20,7 @@
   },
   "languages": {
     "Nix": {
-      "language_servers": ["nixd", "!nil"]
+      "language_servers": ["nixd", "jj_lsp", "!nil"]
     }
   },
   "lsp": {
