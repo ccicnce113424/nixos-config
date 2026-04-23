@@ -92,7 +92,7 @@ index 0000000000000..8b98eb3612a02
 +  };
 +})
 
-From 6a690987a52547ee73e85d3e7039c17b3a248d78 Mon Sep 17 00:00:00 2001
+From 2653cc25e1105b06a9de5c8c6c18bcd4817b5fc8 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 11 Mar 2026 00:21:42 +0800
 Subject: [PATCH 02/10] linuxPackages.nvidia-x11: separate proprietary kernel
@@ -527,7 +527,7 @@ index 5a897e0dd1384..0000000000000
 -  };
 -}
 
-From 6a75f4348ed7b873b1e4fc70064d414f26bebf9c Mon Sep 17 00:00:00 2001
+From 7f3eb35fb011988f5c98fbd3960efce33d8fb0f1 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 25 Mar 2026 03:06:09 +0800
 Subject: [PATCH 03/10] eglexternalplatform: add update script and setup hook,
@@ -641,7 +641,7 @@ index 0000000000000..2beca684e793d
 +
 +fixupOutputHooks+=(fixupEglExternalPlatformIcdJsonHook)
 
-From 148409eceea5660bbcfb94ddca7bdf4612f3548d Mon Sep 17 00:00:00 2001
+From 4752a1e641e9b9322ddff3e11534ce83099e098f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 25 Mar 2026 03:09:25 +0800
 Subject: [PATCH 04/10] {egl-wayland, egl-wayland2}: add update script, add
@@ -768,7 +768,7 @@ index 8b98eb3612a02..5af0b014e10a5 100644
    };
  })
 
-From 7631538b74147f24351b9d708bb2e20a027608a4 Mon Sep 17 00:00:00 2001
+From ec7d0f99bcfdfddd1b0e5ef25c5d519f64c4eaea Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 11 Mar 2026 01:39:00 +0800
 Subject: [PATCH 05/10] egl-gbm: init at 1.1.3, egl-x11: init at 1.0.5
@@ -915,7 +915,7 @@ index 0000000000000..28b5a8474e560
 +  };
 +})
 
-From b7471654dee6c979e56a0574d62286baec27ca28 Mon Sep 17 00:00:00 2001
+From 78115c4f9603f9e5068b2ce8c20fccb881b13932 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 11 Mar 2026 02:10:10 +0800
 Subject: [PATCH 06/10] nixos/nvidia: utilize ICD libraries built from source
@@ -1045,7 +1045,7 @@ index 12ef9f9e5698b..8fa9b8b8fe8b4 100755
                ln -s $i/lib/libnvidia-allocator.so $i/lib/gbm/nvidia-drm_gbm.so
              fi
 
-From e6668533a20520b55e1961beae43ab5d6b47d528 Mon Sep 17 00:00:00 2001
+From 9f5fdeb0ee53cdc819b2264210bbe70e795ae94f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 15 Mar 2026 21:40:27 +0800
 Subject: [PATCH 07/10] nixos/nvidia: write module params to modprobe
@@ -1160,7 +1160,7 @@ index 2d49a937a277e..727b7ba22c6de 100644
            services.udev.extraRules = lib.optionalString cfg.powerManagement.finegrained (
              lib.optionalString (lib.versionOlder config.boot.kernelPackages.kernel.version "5.5") ''
 
-From be41e7f78f18511b2fce0d3d184170844bf04001 Mon Sep 17 00:00:00 2001
+From 5d500bcadd1664488ad58d5b13a0413274c25188 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 12 Apr 2026 06:16:57 +0800
 Subject: [PATCH 08/10] linuxPackages.nvidiaPackages: respect NVIDIA release
@@ -1215,7 +1215,7 @@ index fa948b2240892..ecdc9fd765d2f 100644
    # Vulkan developer beta driver
    # See here for more information: https://developer.nvidia.com/vulkan-driver
 
-From e97199e8ae6e7b612e62fe8ad4cf252d9ebe918b Mon Sep 17 00:00:00 2001
+From abc9fd408798aa32d9e0c3fac144eaded2d03247 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 12 Apr 2026 19:56:10 +0800
 Subject: [PATCH 09/10] nixos/nvidia: add branch option
@@ -1321,7 +1321,7 @@ index 727b7ba22c6de..dc3d6cb134f78 100644
        };
  
 
-From 4e0cae4f57a63857053a5fa6e2bb56c81c26ef12 Mon Sep 17 00:00:00 2001
+From 630ff968ffb5d25c030b604b8120c62e74bdd490 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 19 Apr 2026 13:17:23 +0800
 Subject: [PATCH 10/10] doc: add release notes for nvidia module and driver
@@ -1348,10 +1348,10 @@ index e429d0aeb5996..5959e81a10967 100644
  
  - `uptime-kuma` has been updated to v2, which requires an automated migration that can take a few hours. **A backup is highly recommended.**
 diff --git a/nixos/doc/manual/release-notes/rl-2605.section.md b/nixos/doc/manual/release-notes/rl-2605.section.md
-index 1c5fd30ad64e7..296ccf8b86fba 100644
+index 89c971d54e380..9bd408177aa72 100644
 --- a/nixos/doc/manual/release-notes/rl-2605.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2605.section.md
-@@ -325,6 +325,14 @@ See <https://github.com/NixOS/nixpkgs/issues/481673>.
+@@ -329,6 +329,14 @@ See <https://github.com/NixOS/nixpkgs/issues/481673>.
  
  <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
  

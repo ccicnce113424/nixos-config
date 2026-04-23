@@ -82,26 +82,25 @@ index 329c49f59af33..5298f0b2391d6 100644
  
    strictDeps = true;
 
-From 0ddd357f3bd4aedb0c1f3a0e94caad8cc1d1ebfb Mon Sep 17 00:00:00 2001
+From 54f2c962004de96ffaea2bb08e350a311a413b5f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Thu, 16 Apr 2026 18:54:25 +0800
 Subject: [PATCH 4/4] nixos/kmscon: remove dependency on agetty
 
 ---
- nixos/modules/services/ttys/kmscon.nix | 108 +++++++++----------------
- 1 file changed, 38 insertions(+), 70 deletions(-)
+ nixos/modules/services/ttys/kmscon.nix | 100 +++++++++----------------
+ 1 file changed, 37 insertions(+), 63 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index 63bf9432c501c..4639b6dad7a04 100644
+index 63bf9432c501c..cc69137a63453 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
-@@ -25,50 +25,29 @@ let
+@@ -25,50 +25,28 @@ let
      text = cfg.extraConfig;
    };
  
 -  baseLoginOptions = "-p -- \\u";
-+  baseLoginOptions =
-+    "-p" + lib.optionalString (gettyCfg.loginOptions != null) (" " + gettyCfg.loginOptions);
++  baseLoginOptions = "-p";
  
 -  agettyCmd =
 +  loginCmd =
@@ -162,21 +161,7 @@ index 63bf9432c501c..4639b6dad7a04 100644
  in
  {
    imports = [
-@@ -141,13 +120,6 @@ in
-   };
- 
-   config = mkIf cfg.enable {
--    assertions = [
--      {
--        assertion = gettyCfg.loginOptions == null;
--        message = "services.getty.loginOptions is not supported when services.kmscon is enabled.";
--      }
--    ];
--
-     environment.systemPackages = [ cfg.package ];
-     systemd.packages = [ cfg.package ];
- 
-@@ -182,32 +154,28 @@ in
+@@ -182,32 +160,28 @@ in
  
      systemd.suppressedSystemUnits = [ "getty@.service" ];
  
