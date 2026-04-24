@@ -1,0 +1,32 @@
+From 7a6b2619a09ecfc44b9740def38eeb7eb7a2cfdb Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Fri, 24 Apr 2026 17:56:27 +0800
+Subject: [PATCH] kmscon: 9.3.4 -> 9.3.5
+
+Diff: https://github.com/kmscon/kmscon/compare/v9.3.4...v9.3.5
+
+Changelog: https://github.com/kmscon/kmscon/releases/tag/v9.3.5
+---
+ pkgs/by-name/km/kmscon/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
+index 5298f0b2391d6..bcecb5c8b5eb8 100644
+--- a/pkgs/by-name/km/kmscon/package.nix
++++ b/pkgs/by-name/km/kmscon/package.nix
+@@ -29,13 +29,13 @@
+ }:
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "kmscon";
+-  version = "9.3.4";
++  version = "9.3.5";
+ 
+   src = fetchFromGitHub {
+     owner = "kmscon";
+     repo = "kmscon";
+     tag = "v${finalAttrs.version}";
+-    hash = "sha256-S6a/m2gfYOsacq4uq3d05WZPH1C8RQowmZM7f6On4ic=";
++    hash = "sha256-QBN1rSDmwVg7cgljhe6kVIg/xLoolmOPqS8JXZuQiXs=";
+   };
+ 
+   strictDeps = true;

@@ -17,6 +17,9 @@ in
       508807
       # daed: 1.0.0 -> 1.27.0, add nixos module and maintainer
       510895
+      # kmscon: 9.3.4 -> 9.3.5
+      # bug fixes
+      513042
     ];
   };
 
