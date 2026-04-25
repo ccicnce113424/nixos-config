@@ -1,4 +1,4 @@
-From 52b222bcd0ad91ec896c04d90dc1cfe7718641f6 Mon Sep 17 00:00:00 2001
+From a8160ef57d40f2206ce19fe97a7ce7804c5cd2e0 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 24 Apr 2026 17:56:27 +0800
 Subject: [PATCH 1/2] kmscon: 9.3.4 -> 9.3.5
@@ -31,7 +31,7 @@ index 5298f0b2391d6..bcecb5c8b5eb8 100644
  
    strictDeps = true;
 
-From 8876f43fd7008410daad52a96b33a1bb4630757c Mon Sep 17 00:00:00 2001
+From d5a4670393b9d462fb0ae6c611abe9592417b01f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 25 Apr 2026 14:17:23 +0800
 Subject: [PATCH 2/2] nixos/kmscon: spawn kmscon on tty1 only if the display
