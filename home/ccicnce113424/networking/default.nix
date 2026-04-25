@@ -5,7 +5,7 @@
 {
   home.packages = with pkgs; [
     lumine
-    wemeet
+    # wemeet
     ayugram-desktop
     tor-browser
     qbittorrent-enhanced
