@@ -1,7 +1,7 @@
 From 52b222bcd0ad91ec896c04d90dc1cfe7718641f6 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 24 Apr 2026 17:56:27 +0800
-Subject: [PATCH] kmscon: 9.3.4 -> 9.3.5
+Subject: [PATCH 1/2] kmscon: 9.3.4 -> 9.3.5
 
 Diff: https://github.com/kmscon/kmscon/compare/v9.3.4...v9.3.5
 
@@ -30,3 +30,29 @@ index 5298f0b2391d6..bcecb5c8b5eb8 100644
    };
  
    strictDeps = true;
+
+From 8876f43fd7008410daad52a96b33a1bb4630757c Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sat, 25 Apr 2026 14:17:23 +0800
+Subject: [PATCH 2/2] nixos/kmscon: spawn kmscon on tty1 only if the display
+ manager is disabled
+
+---
+ nixos/modules/services/ttys/kmscon.nix | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
+index cc69137a63453..e7d6070847fe9 100644
+--- a/nixos/modules/services/ttys/kmscon.nix
++++ b/nixos/modules/services/ttys/kmscon.nix
+@@ -156,7 +156,9 @@ in
+ 
+     # tty1 is special: logind does not spawn autovt@tty1, it expects a static
+     # pull-in via getty.target. With getty@ suppressed, we must replace it.
+-    systemd.services."kmsconvt@tty1".wantedBy = [ "getty.target" ];
++    systemd.services."kmsconvt@tty1".wantedBy = lib.optionals (!config.services.displayManager.enable) [
++      "getty.target"
++    ];
+ 
+     systemd.suppressedSystemUnits = [ "getty@.service" ];
+ 
