@@ -5,8 +5,11 @@
   ...
 }:
 let
+  common = {
+    services.lact.enable = true;
+  };
   gpuCfg = {
-    amdgpu = {
+    amdgpu = lib.recursiveUpdate common {
       services.xserver.videoDrivers = [ "amdgpu" ];
       hardware.amdgpu = {
         opencl.enable = true;
@@ -18,7 +21,7 @@ let
         nvtopPackages.amd
       ];
     };
-    nvidia = {
+    nvidia = lib.recursiveUpdate common {
       services.xserver.videoDrivers = [ "nvidia" ];
       hardware.nvidia = {
         open = true;
@@ -38,7 +41,7 @@ let
         };
       };
 
-      # hardware.nvidia-container-toolkit.enable = true;
+      hardware.nvidia-container-toolkit.enable = true;
 
       environment.systemPackages = with pkgs; [
         nvtopPackages.nvidia
@@ -48,7 +51,7 @@ let
         CUDA_DISABLE_PERF_BOOST = 1;
       };
     };
-    nouveau = {
+    nouveau = lib.recursiveUpdate common {
       services.xserver.videoDrivers = [ "nouveau" ];
       boot.kernelParams = [
         "nouveau.config=NvGspRm=1"
