@@ -92,7 +92,7 @@ index 0000000000000..8b98eb3612a02
 +  };
 +})
 
-From 5716789cc027e978f382267b1ee1c571432a4e9a Mon Sep 17 00:00:00 2001
+From 42afa2260e73e9bc1d9c664044766a9157c48fba Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 11 Mar 2026 00:21:42 +0800
 Subject: [PATCH 02/10] linuxPackages.nvidia-x11: separate proprietary kernel
@@ -527,7 +527,7 @@ index 5a897e0dd1384..0000000000000
 -  };
 -}
 
-From 13dafaa466b11c4b56443047357b570f93e1353d Mon Sep 17 00:00:00 2001
+From 01da20626ecb5f19376dee5145391dac20fbc1ba Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 25 Mar 2026 03:06:09 +0800
 Subject: [PATCH 03/10] eglexternalplatform: add update script and setup hook,
@@ -641,7 +641,7 @@ index 0000000000000..2beca684e793d
 +
 +fixupOutputHooks+=(fixupEglExternalPlatformIcdJsonHook)
 
-From 0520e1663c523c909feaa26ac0f52376167f7372 Mon Sep 17 00:00:00 2001
+From 20bdaa4aa198662d531d10e6be6a50f8331fc4c0 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 25 Mar 2026 03:09:25 +0800
 Subject: [PATCH 04/10] {egl-wayland, egl-wayland2}: add update script, add
@@ -768,7 +768,7 @@ index 8b98eb3612a02..5af0b014e10a5 100644
    };
  })
 
-From e50433973cb8502ebc7cca47266d78d211fcd376 Mon Sep 17 00:00:00 2001
+From ef0fecbe45484d3b55feae88c1d226f667b7797a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 11 Mar 2026 01:39:00 +0800
 Subject: [PATCH 05/10] egl-gbm: init at 1.1.3, egl-x11: init at 1.0.5
@@ -915,7 +915,7 @@ index 0000000000000..28b5a8474e560
 +  };
 +})
 
-From 958998c69e5ffcb79fbc7c508653acaa791929ab Mon Sep 17 00:00:00 2001
+From a8d279878d9d116c49b90c0de5bce9d30a5714f3 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 11 Mar 2026 02:10:10 +0800
 Subject: [PATCH 06/10] nixos/nvidia: utilize ICD libraries built from source
@@ -1045,7 +1045,7 @@ index 12ef9f9e5698b..8fa9b8b8fe8b4 100755
                ln -s $i/lib/libnvidia-allocator.so $i/lib/gbm/nvidia-drm_gbm.so
              fi
 
-From 5b08811660c8af87a7856b9463d01380a2954625 Mon Sep 17 00:00:00 2001
+From d90b13e1792bd1f0bd15644d52d45134c54704d4 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 15 Mar 2026 21:40:27 +0800
 Subject: [PATCH 07/10] nixos/nvidia: write module params to modprobe
@@ -1160,7 +1160,7 @@ index 2d49a937a277e..727b7ba22c6de 100644
            services.udev.extraRules = lib.optionalString cfg.powerManagement.finegrained (
              lib.optionalString (lib.versionOlder config.boot.kernelPackages.kernel.version "5.5") ''
 
-From 9cfe8d11354c481df33ac9c817b708d924f69722 Mon Sep 17 00:00:00 2001
+From 0231ddcd89346b8fb10dbb7b87c5f9ada1efd7fa Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 12 Apr 2026 06:16:57 +0800
 Subject: [PATCH 08/10] linuxPackages.nvidiaPackages: respect NVIDIA release
@@ -1215,7 +1215,7 @@ index fa948b2240892..ecdc9fd765d2f 100644
    # Vulkan developer beta driver
    # See here for more information: https://developer.nvidia.com/vulkan-driver
 
-From db3fdd74133e83affa7aa81c7ed07e4537424de4 Mon Sep 17 00:00:00 2001
+From 4ef72c17dfc304573918b1c437053a442c9be03e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 12 Apr 2026 19:56:10 +0800
 Subject: [PATCH 09/10] nixos/nvidia: add branch option
@@ -1321,7 +1321,7 @@ index 727b7ba22c6de..dc3d6cb134f78 100644
        };
  
 
-From 6f3b536c503fdb0d99f1f8886dce72bb7064fb67 Mon Sep 17 00:00:00 2001
+From b0f6a3990d3c88c67687bfa5f9f1c28f166779b2 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 19 Apr 2026 13:17:23 +0800
 Subject: [PATCH 10/10] doc: add release notes for nvidia module and driver
@@ -1333,10 +1333,10 @@ Subject: [PATCH 10/10] doc: add release notes for nvidia module and driver
  2 files changed, 12 insertions(+)
 
 diff --git a/doc/release-notes/rl-2605.section.md b/doc/release-notes/rl-2605.section.md
-index 4dde72103dfba..3365bc1edba2c 100644
+index b133b37cd5c7c..40e17f1e31979 100644
 --- a/doc/release-notes/rl-2605.section.md
 +++ b/doc/release-notes/rl-2605.section.md
-@@ -276,6 +276,10 @@
+@@ -278,6 +278,10 @@
  
  <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
  
