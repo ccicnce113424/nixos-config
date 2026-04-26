@@ -25,13 +25,6 @@ rec {
         flake-parts.follows = "flake-parts";
       };
     };
-    daeuniverse = {
-      url = "github:daeuniverse/flake.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-      };
-    };
     nix-gaming = {
       url = "github:fufexan/nix-gaming";
       inputs = {

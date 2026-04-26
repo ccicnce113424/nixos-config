@@ -12,7 +12,7 @@
         {
           isoImage.squashfsCompression = "zstd";
           imports = [
-            inputs.daeuniverse.nixosModules.daed
+            inputs.nix-packages.nixosModules.daed
             (modulesPath + "/installer/cd-dvd/latest-kernel.nix")
             (modulesPath + "/installer/cd-dvd/installation-cd-graphical-calamares-plasma6.nix")
           ];
