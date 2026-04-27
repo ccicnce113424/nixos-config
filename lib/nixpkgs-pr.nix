@@ -11,14 +11,13 @@ in
     type = lib.types.listOf lib.types.ints.positive;
     default = [
       # nixos/nvidia, linuxPackages.nvidia-x11: split proprietary kernel modules, use source-built ICDs, write params via modprobe
+      # merged, remove after next nixpkgs update
       498612
       # kmscon: 9.3.3 -> 9.3.4, nixos/kmscon: remove dependency on agetty
       # merged, remove after next nixpkgs update
       508807
-      # daed: 1.0.0 -> 1.27.0, add nixos module and maintainer
-      510895
       # kmscon: 9.3.4 -> 9.3.5
-      # bug fixes
+      # bug fixes, merged, remove after next nixpkgs update
       513042
     ];
   };
