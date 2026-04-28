@@ -33,7 +33,6 @@ let
         branch = "bleeding_edge";
         moduleParams = {
           nvidia = {
-            NVreg_RegistryDwords = "EnableBrightnessControl=1";
             NVreg_EnablePCIERelaxedOrderingMode = 1;
             NVreg_EnableStreamMemOPs = 1;
             NVreg_UsePageAttributeTable = 1;
