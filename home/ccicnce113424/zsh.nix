@@ -39,27 +39,34 @@
     };
   };
 
-  programs.autojump = {
-    enable = true;
-    enableZshIntegration = true;
-  };
+  home.shell.enableZshIntegration = true;
 
-  programs.pay-respects = {
-    enable = true;
-    enableZshIntegration = true;
-  };
+  programs.autojump.enable = true;
+
+  programs.pay-respects.enable = true;
 
   home.packages = with pkgs; [
     dust
     tokei
   ];
 
-  programs.nix-index = {
-    enable = true;
-    enableZshIntegration = true;
-  };
+  programs.nix-index.enable = true;
 
   programs.nix-index-database.comma.enable = true;
+
+  programs.fzf = {
+    enable = true;
+    changeDirWidgetCommand = "fd --type d";
+    defaultCommand = "fd --type f";
+    fileWidgetCommand = "fd --type f";
+    tmux.enableShellIntegration = true;
+  };
+
+  programs.tmux = {
+    enable = true;
+    focusEvents = true;
+    mouse = true;
+  };
 
   programs = {
     fd.enable = true;
