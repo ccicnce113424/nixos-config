@@ -68,7 +68,8 @@ in
   options.enable32Bit = lib.mkEnableOption "32-bit dependencies";
   options.nixPackages = lib.mkOption {
     type = lib.types.attrs;
-    default = pkgs.lixPackageSets.latest;
+    # default = pkgs.lixPackageSets.latest;
+    default = pkgs;
   };
 
   config = cfg;
