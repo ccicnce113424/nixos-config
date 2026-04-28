@@ -12,13 +12,8 @@ in
     default = [
       # nixos/nvidia, linuxPackages.nvidia-x11: split proprietary kernel modules, use source-built ICDs, write params via modprobe
       # merged, remove after next nixpkgs update
+      # THE LAST PATCH!
       498612
-      # kmscon: 9.3.3 -> 9.3.4, nixos/kmscon: remove dependency on agetty
-      # merged, remove after next nixpkgs update
-      508807
-      # kmscon: 9.3.4 -> 9.3.5
-      # bug fixes, merged, remove after next nixpkgs update
-      513042
     ];
   };
 
@@ -52,12 +47,18 @@ in
               rm -f -- "''${old_patches[@]}"
             fi
 
-            for pr_number in ${toString cfg}; do
-              echo "Downloading PR #$pr_number..." >&2
-              url=https://patch-diff.githubusercontent.com/raw/NixOS/nixpkgs/pull/$pr_number.patch
-              patch_file="$output_dir/$pr_number.patch"
-              curl -fL --retry 3 --retry-delay 1 --output "$patch_file" "$url"
-            done
+            ${lib.concatMapStringsSep "\n" (
+              p:
+              let
+                pr = toString p;
+              in
+              ''
+                echo "Downloading PR #${pr}..." >&2
+                url=https://patch-diff.githubusercontent.com/raw/NixOS/nixpkgs/pull/${pr}.patch
+                patch_file="$output_dir/${pr}.patch"
+                curl -fL --retry 3 --retry-delay 1 --output "$patch_file" "$url"
+              ''
+            ) cfg}
 
             echo "Downloaded patches to: $output_dir"
           '';
