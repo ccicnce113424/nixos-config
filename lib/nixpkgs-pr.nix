@@ -12,8 +12,9 @@ in
     default = [
       # nixos/nvidia, linuxPackages.nvidia-x11: split proprietary kernel modules, use source-built ICDs, write params via modprobe
       # merged, remove after next nixpkgs update
-      # THE LAST PATCH!
       498612
+      # linuxPackages.nvidiaPackages.production: 595.58.03 -> 595.71.05
+      514481
     ];
   };
 
