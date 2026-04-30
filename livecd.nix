@@ -29,7 +29,6 @@
           networking.firewall.allowedTCPPorts = [ 2023 ];
           environment.systemPackages = with pkgs; [
             git
-            elinks
             ntfsprogs-plus
           ];
           services.openssh = {
