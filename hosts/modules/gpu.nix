@@ -10,7 +10,6 @@ let
   };
   gpuCfg = {
     amdgpu = lib.recursiveUpdate common {
-      services.xserver.videoDrivers = [ "amdgpu" ];
       hardware.amdgpu = {
         opencl.enable = true;
       };
