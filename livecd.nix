@@ -38,6 +38,15 @@
             openFirewall = true;
           };
           boot.supportedFilesystems.bcachefs = true;
+
+          services.xserver.videoDrivers = [ "nvidia" ];
+          hardware.nvidia = {
+            open = true;
+            gsp.enable = true;
+            modesetting.enable = true;
+            powerManagement.enable = true;
+            branch = "bleeding_edge";
+          };
         }
       )
     ];
