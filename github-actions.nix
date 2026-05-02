@@ -33,7 +33,7 @@ in
             "wine-tkg-full"
             "xwayland"
             "gimp-with-plugins"
-            "mpv"
+            "mpv-with-scripts"
           ]
           (
             with (builtins.head machines).value.config;
