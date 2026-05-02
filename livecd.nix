@@ -10,6 +10,7 @@
           ...
         }:
         {
+          nixpkgs.config.allowUnfree = true;
           isoImage.squashfsCompression = "zstd";
           imports = [
             inputs.nix-packages.nixosModules.daed

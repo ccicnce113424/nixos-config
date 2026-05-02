@@ -33,11 +33,7 @@ in
             "wine-tkg-full"
             "xwayland"
             "gimp-with-plugins"
-
-            "spectacle"
-            "kwin"
-            "plasma-desktop"
-            "kdeplasma-addons"
+            "mpv"
           ]
           (
             with (builtins.head machines).value.config;
