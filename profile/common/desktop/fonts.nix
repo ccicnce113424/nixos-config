@@ -22,8 +22,10 @@
         lxgw-wenkai-gb
         zhuque
         nerd-fonts.symbols-only
-        nur.repos.rewine.ttf-wps-fonts
-        nur.repos.rewine.ttf-ms-win10
+        nur.repos.chillcicada.ttf-wps-fonts
+        nur.repos.chillcicada.ttf-ms-win10
+        nur.repos.chillcicada.ttf-ms-win10-sc-sup
+        nur.repos.chillcicada.font-office
       ];
 
       fontconfig = {

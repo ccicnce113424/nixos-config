@@ -124,7 +124,7 @@ rec {
 
       "https://nix-gaming.cachix.org"
       "https://ccicnce113424.cachix.org"
-      "https://rewine.cachix.org"
+      "https://chillcicada.cachix.org"
       "https://rycee.cachix.org"
       "https://xddxdd.cachix.org"
 
@@ -136,7 +136,7 @@ rec {
 
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
       "ccicnce113424.cachix.org-1:OWV4fSkx7o7TinVCSD98zPG8udShCIjhyaAdOIRNetw="
-      "rewine.cachix.org-1:aOIg9PvwuSefg59gVXXxGIInHQI9fMpskdyya2xO+7I="
+      "chillcicada.cachix.org-1:nW+OhwrpD0z5oGcBFt/aLEtzN94XcJBm81/cAHsEwVU="
       "rycee.cachix.org-1:TiiXyeSk0iRlzlys4c7HiXLkP3idRf20oQ/roEUAh/A="
       "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
 
