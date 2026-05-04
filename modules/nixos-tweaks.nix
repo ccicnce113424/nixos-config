@@ -16,6 +16,12 @@ let
 
     nix.settings = nixConfig // {
       auto-optimise-store = true;
+      extra-experimental-features = nixConfig.extra-experimental-features ++ [
+        "auto-allocate-uids"
+        "cgroups"
+      ];
+      auto-allocate-uids = true;
+      system-features = [ "uid-range" ];
     };
     nix.package = config.nixPackages.nix or config.nixPackages.lix;
     chaotic.nyx = {
