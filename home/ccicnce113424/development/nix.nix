@@ -3,7 +3,7 @@
   home.packages =
     (with pkgs; [
       nixd
-      nixfmt
+      nixfmt-rs
       nix-tree
       nix-output-monitor
       hydra-check
