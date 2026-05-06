@@ -3,8 +3,12 @@
   networking = {
     firewall.enable = true;
     nftables.enable = true;
-    networkmanager.enable = true;
     iproute2.enable = true;
+  };
+
+  networking.networkmanager = {
+    enable = true;
+    wifi.backend = "iwd";
   };
 
   services.firewalld.enable = true;
