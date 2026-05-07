@@ -22,8 +22,7 @@
   ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = with config.boot.kernelPackages; [ r8168 ];
-  boot.blacklistedKernelModules = [ "r8169" ];
+  boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/b6c84fbc-e1e1-4d4c-a803-dc1962a8d6d5";
