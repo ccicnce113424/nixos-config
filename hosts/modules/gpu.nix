@@ -32,6 +32,7 @@ let
         branch = "bleeding_edge";
         moduleParams = {
           nvidia = {
+            NVreg_TemporaryFilePath = "/var/tmp";
             NVreg_EnablePCIERelaxedOrderingMode = 1;
             NVreg_EnableStreamMemOPs = 1;
             NVreg_UsePageAttributeTable = 1;
