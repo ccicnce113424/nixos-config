@@ -10,6 +10,8 @@ in
   options.nixpkgsPrs = lib.mkOption {
     type = lib.types.listOf lib.types.ints.positive;
     default = [
+      # linuxPackages.ntfs
+      519075
     ];
   };
 

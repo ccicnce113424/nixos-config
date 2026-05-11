@@ -12,7 +12,6 @@
     (lib.hiPrio uutils-diffutils)
     (lib.hiPrio uutils-sed)
     coreutils-prefixed
-    ntfsprogs-plus
   ];
 
   # environment.memoryAllocator.provider = "mimalloc";
@@ -36,7 +35,7 @@
       "f2fs"
       "xfs"
       "vfat"
-      # "ntfs"  we use ntfsprogs-plus package instead
+      "ntfsplus"
       "bcachefs"
     ];
     initrd.systemd.enable = true;

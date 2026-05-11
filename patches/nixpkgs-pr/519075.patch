@@ -1,0 +1,163 @@
+From ddfe4d939d9c4470f4493983bec520edb2ffde37 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Tue, 12 May 2026 00:00:52 +0800
+Subject: [PATCH 1/2] linuxPackages.ntfs: init at 0-unstable-2026-05-03
+
+---
+ pkgs/os-specific/linux/ntfs/default.nix | 61 +++++++++++++++++++++++++
+ pkgs/top-level/linux-kernels.nix        |  3 ++
+ 2 files changed, 64 insertions(+)
+ create mode 100644 pkgs/os-specific/linux/ntfs/default.nix
+
+diff --git a/pkgs/os-specific/linux/ntfs/default.nix b/pkgs/os-specific/linux/ntfs/default.nix
+new file mode 100644
+index 0000000000000..5ece686ba2809
+--- /dev/null
++++ b/pkgs/os-specific/linux/ntfs/default.nix
+@@ -0,0 +1,61 @@
++{
++  stdenv,
++  lib,
++  fetchFromGitHub,
++  kernel,
++  kernelModuleMakeFlags,
++  unstableGitUpdater,
++}:
++stdenv.mkDerivation {
++  pname = "linux-ntfs";
++  version = "0-unstable-2026-05-03";
++
++  src = fetchFromGitHub {
++    owner = "namjaejeon";
++    repo = "linux-ntfs";
++    rev = "9e031cf453d8b3c226aac7cb7105af46efd79690";
++    hash = "sha256-Dbh1r86X0uNx8keTkdg+uzq4/+DHm+IiTuxrHXlklXA=";
++  };
++
++  nativeBuildInputs = kernel.moduleBuildDependencies;
++
++  strictDeps = true;
++  __structuredAttrs = true;
++
++  enableParallelBuilding = true;
++
++  setSourceRoot = ''
++    export sourceRoot=$(pwd)/source
++  '';
++
++  makeFlags =
++    kernelModuleMakeFlags
++    ++ [
++      "-C"
++      "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build"
++      "M=$(sourceRoot)"
++    ]
++    # override kernel config
++    ++ lib.optionals (kernel.kernelAtLeast "5.15" && kernel.kernelOlder "6.9") [ "CONFIG_NTFS_FS=m" ];
++
++  buildFlags = [ "modules" ];
++  installFlags = [
++    "INSTALL_MOD_PATH=${placeholder "out"}"
++    # same as Makefile
++    "INSTALL_MOD_DIR=kernel/fs/ntfs"
++  ];
++  installTargets = [ "modules_install" ];
++
++  passthru.updateScript = unstableGitUpdater { };
++
++  meta = {
++    description = "NTFS(NTFS PLUS) driver for Linux";
++    homepage = "https://github.com/namjaejeon/linux-ntfs";
++    license = lib.licenses.gpl2Plus;
++    maintainers = with lib.maintainers; [
++      ccicnce113424
++    ];
++    platforms = lib.platforms.linux;
++    broken = kernel.kernelOlder "6.1";
++  };
++}
+diff --git a/pkgs/top-level/linux-kernels.nix b/pkgs/top-level/linux-kernels.nix
+index fb5e3498c376e..175f81051e14d 100644
+--- a/pkgs/top-level/linux-kernels.nix
++++ b/pkgs/top-level/linux-kernels.nix
+@@ -390,6 +390,9 @@ in
+ 
+         mstflint_access = callPackage ../os-specific/linux/mstflint_access { };
+ 
++        ntfs =
++          if lib.versionAtLeast kernel.version "6.1" then callPackage ../os-specific/linux/ntfs { } else null;
++
+         broadcom_sta = callPackage ../os-specific/linux/broadcom-sta { };
+ 
+         tbs = callPackage ../os-specific/linux/tbs { };
+
+From 185e07ac8d1d4f5b5425deec284fad7c2111e292 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Tue, 12 May 2026 00:00:52 +0800
+Subject: [PATCH 2/2] nixos/ntfs: add option to use new NTFS(NTFSPLUS) module
+
+---
+ nixos/modules/tasks/filesystems/ntfs.nix | 49 ++++++++++++++++++++----
+ 1 file changed, 41 insertions(+), 8 deletions(-)
+
+diff --git a/nixos/modules/tasks/filesystems/ntfs.nix b/nixos/modules/tasks/filesystems/ntfs.nix
+index 8ec839fed7eb8..af032d0b2cbf0 100644
+--- a/nixos/modules/tasks/filesystems/ntfs.nix
++++ b/nixos/modules/tasks/filesystems/ntfs.nix
+@@ -4,15 +4,48 @@
+   pkgs,
+   ...
+ }:
+-
+-with lib;
+-
+ {
+-  config =
+-    mkIf (config.boot.supportedFilesystems.ntfs or config.boot.supportedFilesystems.ntfs-3g or false)
++  config = lib.mkMerge [
++    (lib.mkIf
++      (
++        (config.boot.supportedFilesystems.ntfs or false && config.boot.kernelPackages.kernelOlder "7.1")
++        || config.boot.supportedFilesystems.ntfs-3g or false
++      )
+       {
+-
+         system.fsPackages = [ pkgs.ntfs3g ];
+-
+-      };
++      }
++    )
++    (lib.mkIf
++      (
++        (config.boot.supportedFilesystems.ntfs or false && config.boot.kernelPackages.kernelAtLeast "7.1")
++        || config.boot.supportedFilesystems.ntfsplus or false
++      )
++      {
++        system.fsPackages = [ pkgs.ntfsprogs-plus ];
++      }
++    )
++    (lib.mkIf
++      (config.boot.supportedFilesystems.ntfsplus or false && config.boot.kernelPackages.kernelOlder "7.1")
++      {
++        boot = {
++          blacklistedKernelModules = [ "ntfs3" ];
++          extraModulePackages = [
++            config.boot.kernelPackages.ntfs
++          ];
++        };
++      }
++    )
++    (lib.mkIf
++      (
++        (
++          config.boot.initrd.supportFilesystems.ntfs or false
++          && config.boot.kernelPackages.kernelAtLeast "7.1"
++        )
++        || config.boot.initrd.supportedFilesystems.ntfsplus or false
++      )
++      {
++        boot.initrd.availableKernelModules = [ "ntfs" ];
++      }
++    )
++  ];
+ }
