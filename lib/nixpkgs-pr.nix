@@ -12,6 +12,8 @@ in
     default = [
       # linuxPackages.ntfs
       519075
+      # linuxPackages.nvidiaPackages: separate and refactor
+      519313
     ];
   };
 
