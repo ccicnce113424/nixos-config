@@ -15,11 +15,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778609292,
-        "narHash": "sha256-MfgFqPviOhr0HrvIDG4zAEiwu5ek6K/d2tfLmOiDHKs=",
+        "lastModified": 1778695759,
+        "narHash": "sha256-HheXy8W6AAh+hh+Sf7o7EAeuvbGSW4Zirf2XjchdOXY=",
         "owner": "lonerOrz",
         "repo": "nyx-loner",
-        "rev": "642ef488c7162e915e991fc43c2f3d2e64deaa41",
+        "rev": "4cf22aaef1fcd0d48a249486436d139f3e9e1b19",
         "type": "github"
       },
       "original": {
