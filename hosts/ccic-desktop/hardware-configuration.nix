@@ -2,6 +2,7 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
+  pkgs,
   config,
   lib,
   modulesPath,
@@ -87,4 +88,19 @@
 
   # nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  # disable damaged USB controller
+  systemd.services.disable-faulty-usb-port = {
+    description = "Disable faulty USB 3.0 port (usb2-port1) caused by physical damage";
+    after = [
+      "systemd-modules-load.service"
+      "local-fs.target"
+    ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${lib.getExe pkgs.bash} -c 'if [ -e /sys/bus/usb/devices/usb2/2-0:1.0/usb2-port1/disable ]; then echo 1 > /sys/bus/usb/devices/usb2/2-0:1.0/usb2-port1/disable; fi'";
+    };
+  };
 }
