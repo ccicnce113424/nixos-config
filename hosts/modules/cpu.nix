@@ -15,12 +15,15 @@ let
         updateMicrocode = true;
         ryzen-smu.enable = true;
       };
-      nix.settings.system-features = [ "gccarch-x86-64-v3" ];
+      nix.settings.system-features = [ "gccarch-x86-64-v4" ];
     };
   };
   cfg = config.hostCfg.cpu;
 in
 {
   options.hostCfg.cpu = builtins.mapAttrs (n: _: lib.mkEnableOption n) cpuCfg;
-  config = lib.mkMerge (lib.mapAttrsToList (type: c: (lib.mkIf cfg.${type} c)) cpuCfg);
+  config = lib.mkMerge (
+    [ { boot.kernelParams = [ "iommu=pt" ]; } ]
+    ++ lib.mapAttrsToList (type: c: (lib.mkIf cfg.${type} c)) cpuCfg
+  );
 }

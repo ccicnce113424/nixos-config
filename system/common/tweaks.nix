@@ -26,9 +26,6 @@
   programs.nix-ld.enable = true;
 
   boot = {
-    kernelParams = [
-      "iommu=pt"
-    ];
     supportedFilesystems = [
       "btrfs"
       "ext4"
