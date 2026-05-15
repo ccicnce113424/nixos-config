@@ -34,6 +34,8 @@ in
             "xwayland"
             "gimp-with-plugins"
             "mpv-with-scripts"
+
+            "fast-nix-gc"
           ]
           (
             with (builtins.head machines).value.config;

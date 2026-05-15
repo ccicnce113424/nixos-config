@@ -3,6 +3,7 @@
   lib,
   config,
   nixConfig,
+  inputs,
   ...
 }:
 let
@@ -11,11 +12,11 @@ let
       with pkgs;
       [
         ccic-hello
+        (callPackage (inputs.fast-nix-gc.outPath + "/nix/package.nix") { })
       ]
       ++ lib.mapAttrsToList writeShellScriptBin config.cmdAlias;
 
     nix.settings = nixConfig // {
-      auto-optimise-store = true;
       extra-experimental-features = nixConfig.extra-experimental-features ++ [
         "auto-allocate-uids"
         "cgroups"
@@ -85,7 +86,13 @@ in
         git rebase origin/main
         switch "$@"
       '';
-      pclean = ''exec systemd-inhibit nh clean all --optimise "$@"'';
+      pclean = ''
+        set -euo pipefail
+        echo -e "\033[1;36m:: Cleaning up old generations...\033[0m"
+        systemd-inhibit sudo fast-nix-gc -d
+        echo -e "\033[1;36m:: Optimising the Nix store...\033[0m"
+        systemd-inhibit sudo fast-nix-optimise
+      '';
       clr = ''
         set -euo pipefail
         pclean
