@@ -57,28 +57,28 @@
       xdgOpenUsePortal = true;
     };
 
-    services.samba = {
-      enable = true;
-      package = pkgs.sambaFull;
-      openFirewall = true;
-      nsswins = true;
-      usershares.enable = true;
-    };
+    # services.samba = {
+    #   enable = true;
+    #   package = pkgs.sambaFull;
+    #   openFirewall = true;
+    #   nsswins = true;
+    #   usershares.enable = true;
+    # };
 
-    services.samba-wsdd = {
-      enable = true;
-      openFirewall = true;
-    };
+    # services.samba-wsdd = {
+    #   enable = true;
+    #   openFirewall = true;
+    # };
 
-    services.avahi = {
-      enable = true;
-      nssmdns4 = true;
-      openFirewall = true;
-      publish = {
-        enable = true;
-        userServices = true;
-      };
-    };
+    # services.avahi = {
+    #   enable = true;
+    #   nssmdns4 = true;
+    #   openFirewall = true;
+    #   publish = {
+    #     enable = true;
+    #     userServices = true;
+    #   };
+    # };
 
     # open port for lan-mouse and qbittorrent
     # set qbittorrent port to 62180
