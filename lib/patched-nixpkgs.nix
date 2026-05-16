@@ -45,7 +45,7 @@ in
             config = {
               allowUnfree = true;
               permittedInsecurePackages = [
-                # "electron-38.8.4"
+                "olm-3.2.16"
               ];
             }
             // lib.optionalAttrs (hostCfg.gpu.nvidia or false) {

@@ -10,7 +10,6 @@
     tor-browser
     qbittorrent-enhanced
     motrix-next-beta
-    fluffychat
     cherry-studio
 
     nur.repos.xddxdd.peerbanhelper
@@ -29,6 +28,7 @@
       '';
     })
   ];
+  programs.nheko.enable = true;
 
   imports = [
     ./firefox.nix
