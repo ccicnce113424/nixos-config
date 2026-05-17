@@ -17,6 +17,8 @@ in
       # kmscon: 9.3.5 -> 9.3.5-2026-05-15
       # test upcoming kmscon update
       520693
+      # discord: disable module updates with OpenASAR
+      520078
     ];
   };
 
