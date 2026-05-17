@@ -42,8 +42,6 @@
       xwininfo
 
       moonlight-qt
-
-      linux-wifi-hotspot
     ];
     services.smartd.enable = true;
 
