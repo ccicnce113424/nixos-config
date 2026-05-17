@@ -36,6 +36,7 @@ in
             "mpv-with-scripts"
 
             "fast-nix-gc"
+            "opencode-desktop"
           ]
           (
             with (builtins.head machines).value.config;

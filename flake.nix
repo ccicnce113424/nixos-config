@@ -82,6 +82,10 @@ rec {
         treefmt-nix.follows = "treefmt-nix";
       };
     };
+    opencode = {
+      url = "github:anomalyco/opencode";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-compat.url = "github:lix-project/flake-compat";

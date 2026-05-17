@@ -15,5 +15,7 @@
     just
     gh
     shellcheck
+    opencode
+    opencode-desktop
   ];
 }

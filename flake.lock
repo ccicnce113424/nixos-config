@@ -385,6 +385,26 @@
         "type": "github"
       }
     },
+    "opencode": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1779016020,
+        "narHash": "sha256-ari8phHcTt8njo0s02mGWB68fGhP0C79qvSl6DZigPk=",
+        "owner": "anomalyco",
+        "repo": "opencode",
+        "rev": "e4cc4e1682766853bccfb7acbd937a90728eeac2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "anomalyco",
+        "repo": "opencode",
+        "type": "github"
+      }
+    },
     "plasma-manager": {
       "inputs": {
         "home-manager": [
@@ -423,6 +443,7 @@
         "nix-packages": "nix-packages",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
+        "opencode": "opencode",
         "plasma-manager": "plasma-manager",
         "rust-overlay": "rust-overlay",
         "treefmt-nix": "treefmt-nix"

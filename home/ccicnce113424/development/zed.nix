@@ -33,6 +33,7 @@
       # AI
       edit_predictions.provider = "copilot";
       agent_servers.github-copilot-cli.type = "registry";
+      agent_servers.opencode.type = "registry";
     };
   };
 
