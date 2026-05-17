@@ -28,7 +28,7 @@
       '';
     })
   ];
-  programs.nheko.enable = true;
+  programs.element-desktop.enable = true;
 
   imports = [
     ./firefox.nix
