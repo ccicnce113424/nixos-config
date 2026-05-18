@@ -91,13 +91,16 @@
     };
   };
 
-  home.packages = with pkgs; [
-    lyrica
-    kurve
-    plasmusic-toolbar
-    kdePackages.wallpaper-engine-plugin
-    krunner-fd-plugin
-  ];
+  home.packages =
+    with pkgs;
+    [
+      lyrica
+      kurve
+      plasmusic-toolbar
+      kdePackages.wallpaper-engine-plugin
+      krunner-fd-plugin
+    ]
+    ++ lib.optional (osConfig.networking.hostName == "ccic-laptop") pkgs.plasma-vantage;
 
   dbus.packages = with pkgs; [
     krunner-fd-plugin
