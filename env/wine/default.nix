@@ -25,5 +25,6 @@
       })
       winetricks-git
     ];
+    environment.sessionVariables.WINEDLLPATH = lib.makeSearchPath "lib/wine" [ pkgs.pwasio ];
   };
 }
