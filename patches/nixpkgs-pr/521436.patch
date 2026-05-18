@@ -1,19 +1,19 @@
-From 5119c716390866805fbaef0c2c6f94b354a12617 Mon Sep 17 00:00:00 2001
+From fbd4a6b484f569710220679769292916cc2bacb1 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 18 May 2026 12:28:26 +0800
 Subject: [PATCH] plasma-vantage: init at 0.29
 
 ---
- pkgs/by-name/pl/plasma-vantage/package.nix | 43 ++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ pkgs/by-name/pl/plasma-vantage/package.nix | 41 ++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
  create mode 100644 pkgs/by-name/pl/plasma-vantage/package.nix
 
 diff --git a/pkgs/by-name/pl/plasma-vantage/package.nix b/pkgs/by-name/pl/plasma-vantage/package.nix
 new file mode 100644
-index 0000000000000..24a48f6d192da
+index 0000000000000..8031ea41a43ba
 --- /dev/null
 +++ b/pkgs/by-name/pl/plasma-vantage/package.nix
-@@ -0,0 +1,43 @@
+@@ -0,0 +1,41 @@
 +{
 +  lib,
 +  stdenvNoCC,
@@ -33,10 +33,8 @@ index 0000000000000..24a48f6d192da
 +  strictDeps = true;
 +  __structuredAttrs = true;
 +
-+  phases = [
-+    "unpackPhase"
-+    "installPhase"
-+  ];
++  dontConfigure = true;
++  dontBuild = true;
 +
 +  installPhase = ''
 +    runHook preInstall
