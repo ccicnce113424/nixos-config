@@ -1,19 +1,19 @@
-From bfbae1dbf6348dab6bd02470a1a9c60bdc6e3077 Mon Sep 17 00:00:00 2001
+From 5119c716390866805fbaef0c2c6f94b354a12617 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 18 May 2026 12:28:26 +0800
 Subject: [PATCH] plasma-vantage: init at 0.29
 
 ---
- pkgs/by-name/pl/plasma-vantage/package.nix | 42 ++++++++++++++++++++++
- 1 file changed, 42 insertions(+)
+ pkgs/by-name/pl/plasma-vantage/package.nix | 43 ++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
  create mode 100644 pkgs/by-name/pl/plasma-vantage/package.nix
 
 diff --git a/pkgs/by-name/pl/plasma-vantage/package.nix b/pkgs/by-name/pl/plasma-vantage/package.nix
 new file mode 100644
-index 0000000000000..0714bf3d3a554
+index 0000000000000..24a48f6d192da
 --- /dev/null
 +++ b/pkgs/by-name/pl/plasma-vantage/package.nix
-@@ -0,0 +1,42 @@
+@@ -0,0 +1,43 @@
 +{
 +  lib,
 +  stdenvNoCC,
@@ -54,5 +54,6 @@ index 0000000000000..0714bf3d3a554
 +    homepage = "https://gitlab.com/Scias/plasmavantage";
 +    license = lib.licenses.mpl20;
 +    maintainers = with lib.maintainers; [ ccicnce113424 ];
++    platforms = lib.platforms.linux;
 +  };
 +})

@@ -1,7 +1,79 @@
-From 8f683bcfb45f80967dfe5eb2f631f694efed5970 Mon Sep 17 00:00:00 2001
+From d8a2c1487143027bb00f02bda5c7e6e1465a2a3f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
-Subject: [PATCH 1/2] linuxPackages.ntfs: init at 0-unstable-2026-05-03
+Subject: [PATCH 1/3] nixos/ntfs: install userspace utils for the new
+ NTFS(NTFSPLUS) driver
+
+---
+ .../manual/release-notes/rl-2611.section.md   |  2 +-
+ nixos/modules/tasks/filesystems/ntfs.nix      | 38 +++++++++++++++----
+ 2 files changed, 31 insertions(+), 9 deletions(-)
+
+diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
+index 3d53f1f209307..ce1c6ca4d52dd 100644
+--- a/nixos/doc/manual/release-notes/rl-2611.section.md
++++ b/nixos/doc/manual/release-notes/rl-2611.section.md
+@@ -27,4 +27,4 @@
+ 
+ <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
+ 
+-- Create the first release note entry in this section!
++- `boot.supportedFilesystems.ntfs` installs `ntfsprogs-plus` instead of `ntfs3g` on kernel version 7.1 and later.
+diff --git a/nixos/modules/tasks/filesystems/ntfs.nix b/nixos/modules/tasks/filesystems/ntfs.nix
+index 8ec839fed7eb8..e3182a7647ce1 100644
+--- a/nixos/modules/tasks/filesystems/ntfs.nix
++++ b/nixos/modules/tasks/filesystems/ntfs.nix
+@@ -4,15 +4,37 @@
+   pkgs,
+   ...
+ }:
+-
+-with lib;
+-
+ {
+-  config =
+-    mkIf (config.boot.supportedFilesystems.ntfs or config.boot.supportedFilesystems.ntfs-3g or false)
++  config = lib.mkMerge [
++    (lib.mkIf
++      (
++        (config.boot.supportedFilesystems.ntfs or false && config.boot.kernelPackages.kernelOlder "7.1")
++        || config.boot.supportedFilesystems.ntfs-3g or false
++      )
+       {
+-
+         system.fsPackages = [ pkgs.ntfs3g ];
+-
+-      };
++      }
++    )
++    (lib.mkIf
++      (
++        (config.boot.supportedFilesystems.ntfs or false && config.boot.kernelPackages.kernelAtLeast "7.1")
++        || config.boot.supportedFilesystems.ntfsplus or false
++      )
++      {
++        system.fsPackages = [ pkgs.ntfsprogs-plus ];
++      }
++    )
++    (lib.mkIf
++      (
++        (
++          config.boot.initrd.supportFilesystems.ntfs or false
++          && config.boot.kernelPackages.kernelAtLeast "7.1"
++        )
++        || config.boot.initrd.supportedFilesystems.ntfsplus or false
++      )
++      {
++        boot.initrd.availableKernelModules = [ "ntfs" ];
++      }
++    )
++  ];
+ }
+
+From ea88a11fe1738c2570ab55ec193a64d8f28756d8 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Tue, 12 May 2026 00:00:52 +0800
+Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-03
 
 ---
  pkgs/os-specific/linux/ntfs/default.nix | 62 +++++++++++++++++++++++++
@@ -92,51 +164,24 @@ index fb5e3498c376e..175f81051e14d 100644
  
          tbs = callPackage ../os-specific/linux/tbs { };
 
-From 5d6e480e94e66fa5a38a02e7b742ef8f05476f64 Mon Sep 17 00:00:00 2001
+From 8ccc168c390514769a62a8f4ae2595f38bdbc221 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
-Subject: [PATCH 2/2] nixos/ntfs: add option to use new NTFS(NTFSPLUS) module
+Subject: [PATCH 3/3] nixos/ntfs: add option to force use new NTFS(NTFSPLUS)
+ module
 
 ---
- nixos/modules/tasks/filesystems/ntfs.nix | 49 ++++++++++++++++++++----
- 1 file changed, 41 insertions(+), 8 deletions(-)
+ nixos/modules/tasks/filesystems/ntfs.nix | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/nixos/modules/tasks/filesystems/ntfs.nix b/nixos/modules/tasks/filesystems/ntfs.nix
-index 8ec839fed7eb8..af032d0b2cbf0 100644
+index e3182a7647ce1..af032d0b2cbf0 100644
 --- a/nixos/modules/tasks/filesystems/ntfs.nix
 +++ b/nixos/modules/tasks/filesystems/ntfs.nix
-@@ -4,15 +4,48 @@
-   pkgs,
-   ...
- }:
--
--with lib;
--
- {
--  config =
--    mkIf (config.boot.supportedFilesystems.ntfs or config.boot.supportedFilesystems.ntfs-3g or false)
-+  config = lib.mkMerge [
-+    (lib.mkIf
-+      (
-+        (config.boot.supportedFilesystems.ntfs or false && config.boot.kernelPackages.kernelOlder "7.1")
-+        || config.boot.supportedFilesystems.ntfs-3g or false
-+      )
-       {
--
-         system.fsPackages = [ pkgs.ntfs3g ];
--
--      };
-+      }
-+    )
-+    (lib.mkIf
-+      (
-+        (config.boot.supportedFilesystems.ntfs or false && config.boot.kernelPackages.kernelAtLeast "7.1")
-+        || config.boot.supportedFilesystems.ntfsplus or false
-+      )
-+      {
-+        system.fsPackages = [ pkgs.ntfsprogs-plus ];
-+      }
-+    )
+@@ -24,6 +24,17 @@
+         system.fsPackages = [ pkgs.ntfsprogs-plus ];
+       }
+     )
 +    (lib.mkIf
 +      (config.boot.supportedFilesystems.ntfsplus or false && config.boot.kernelPackages.kernelOlder "7.1")
 +      {
@@ -148,17 +193,6 @@ index 8ec839fed7eb8..af032d0b2cbf0 100644
 +        };
 +      }
 +    )
-+    (lib.mkIf
-+      (
-+        (
-+          config.boot.initrd.supportFilesystems.ntfs or false
-+          && config.boot.kernelPackages.kernelAtLeast "7.1"
-+        )
-+        || config.boot.initrd.supportedFilesystems.ntfsplus or false
-+      )
-+      {
-+        boot.initrd.availableKernelModules = [ "ntfs" ];
-+      }
-+    )
-+  ];
- }
+     (lib.mkIf
+       (
+         (
