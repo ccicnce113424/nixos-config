@@ -21,4 +21,5 @@
   };
 
   home.file.".config/fcitx5/conf/pinyin.conf".source = ./pinyin.conf;
+  home.file.".config/fcitx5/conf/cloudpinyin.conf".source = ./cloudpinyin.conf;
 }
