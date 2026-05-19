@@ -1,4 +1,4 @@
-From 78a2ddf515769399c7fc26e7608081c9ce7fc1f2 Mon Sep 17 00:00:00 2001
+From 4e782f37292d52ab83f28133c4ad7fe9c5d2e065 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
 Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -17,7 +17,7 @@ Assisted-by: Zed Agent:DeepSeek V4 Pro
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/utils.nix
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index fc1809109537b..82749d4bb32fc 100644
+index 8970e60aa4265..ec2a90c4ae2ba 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -10,17 +10,7 @@
@@ -945,7 +945,7 @@ index 0000000000000..be8d3a0d37177
 +  };
 +})
 
-From 77fa2a1c0cec0a731a692969de3df58c434ab982 Mon Sep 17 00:00:00 2001
+From 5dd5890d6a8cd0b17b3265fd61800c3697bace1c Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 2/2] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -986,7 +986,7 @@ index aef01c5c46967..3de64c712fc3b 100644
        (replaceVars ./modprobe.patch {
          inherit modprobeVersion;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 82749d4bb32fc..8194a6abdb61d 100644
+index ec2a90c4ae2ba..7cfcb1a858b3f 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -67,6 +67,7 @@ rec {
@@ -1014,12 +1014,12 @@ index 82749d4bb32fc..8194a6abdb61d 100644
  
    # Vulkan developer beta driver
 @@ -94,10 +97,12 @@ rec {
-     version = "595.44.06";
+     version = "595.44.08";
      persistencedVersion = "595.45.04";
      settingsVersion = "595.45.04";
 +    modprobeVersion = "595.45.04";
-     sha256_64bit = "sha256-Gq7peoXLeYVuVHBx+2EIx3/bZIVl56c35qS/30Q7208=";
-     openSha256 = "sha256-RSlpdGhYTxxywMQ+0tBkpJG5ohnmJYh8pzedin1sBBs=";
+     sha256_64bit = "sha256-slPOKXeI3Y2ebiytS20c8bbwWbUdn2dFkwJih9Mbmyc=";
+     openSha256 = "sha256-PpfrDfBkrzszROLDfgeBUISIZm3BimmXTRhkL/X4+p8=";
      settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
      persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
 +    modprobeSha256 = "sha256-DDeSu6R1JsUux77LfsrAVBTwW6MPu6P1v8W4o2VCN2g=";

@@ -1,4 +1,4 @@
-From 7b02d89dd386e4ebc2176912b7906c2e33a9b19b Mon Sep 17 00:00:00 2001
+From 10497129d402e79b48084962802cbaebe86233a5 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:43:42 +0800
 Subject: [PATCH 1/2] kmscon: 9.3.5 -> 9.3.5-2026-05-15
@@ -46,7 +46,7 @@ index bcecb5c8b5eb8..13af2f338c2e0 100644
      # Needed for autoPatchShebangs when strictDeps = true
      bash
 
-From e0a8f1fcc37af24f9d279e38ec7958080343ba55 Mon Sep 17 00:00:00 2001
+From a1af0312b440ecf73a0a97bad06ea8fa7bc8fd42 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:48:54 +0800
 Subject: [PATCH 2/2] nixos/kmscon: add pam service for using libseat

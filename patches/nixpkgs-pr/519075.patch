@@ -1,4 +1,4 @@
-From d59a5c51cd6ca893b4979ae13e7e00d67a84b41d Mon Sep 17 00:00:00 2001
+From a966c3622cf797598aee098be4103a20bd915483 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 1/3] nixos/ntfs: install userspace utils for the new
@@ -6,8 +6,8 @@ Subject: [PATCH 1/3] nixos/ntfs: install userspace utils for the new
 
 ---
  .../manual/release-notes/rl-2611.section.md   |  2 +-
- nixos/modules/tasks/filesystems/ntfs.nix      | 35 ++++++++++++++-----
- 2 files changed, 28 insertions(+), 9 deletions(-)
+ nixos/modules/tasks/filesystems/ntfs.nix      | 38 +++++++++++++++----
+ 2 files changed, 31 insertions(+), 9 deletions(-)
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
 index 3d53f1f209307..ce1c6ca4d52dd 100644
@@ -20,10 +20,10 @@ index 3d53f1f209307..ce1c6ca4d52dd 100644
 -- Create the first release note entry in this section!
 +- `boot.supportedFilesystems.ntfs` installs `ntfsprogs-plus` instead of `ntfs3g` on kernel version 7.1 and later.
 diff --git a/nixos/modules/tasks/filesystems/ntfs.nix b/nixos/modules/tasks/filesystems/ntfs.nix
-index 8ec839fed7eb8..d3f63a2215246 100644
+index 8ec839fed7eb8..b056e8b654e69 100644
 --- a/nixos/modules/tasks/filesystems/ntfs.nix
 +++ b/nixos/modules/tasks/filesystems/ntfs.nix
-@@ -4,15 +4,34 @@
+@@ -4,15 +4,37 @@
    pkgs,
    ...
  }:
@@ -57,8 +57,11 @@ index 8ec839fed7eb8..d3f63a2215246 100644
 +    )
 +    (lib.mkIf
 +      (
-+        config.boot.initrd.supportFilesystems.ntfs or false
-+        && config.boot.kernelPackages.kernelAtLeast "7.1"
++        (
++          config.boot.initrd.supportFilesystems.ntfs or false
++          && config.boot.kernelPackages.kernelAtLeast "7.1"
++        )
++        || config.boot.initrd.supportFilesystems.ntfsplus or false
 +      )
 +      {
 +        boot.initrd.availableKernelModules = [ "ntfs" ];
@@ -67,7 +70,7 @@ index 8ec839fed7eb8..d3f63a2215246 100644
 +  ];
  }
 
-From 0384fffe99633b1bc6522019e2f2e1b295444c4f Mon Sep 17 00:00:00 2001
+From 60abbc80b4aa8c32bdc32d921ad9a358f3bdc33f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-03
@@ -147,7 +150,7 @@ index 0000000000000..fdb841038a06f
 +  };
 +}
 diff --git a/pkgs/top-level/linux-kernels.nix b/pkgs/top-level/linux-kernels.nix
-index fb5e3498c376e..175f81051e14d 100644
+index fe8ebd43504fb..a0fe011e83f9f 100644
 --- a/pkgs/top-level/linux-kernels.nix
 +++ b/pkgs/top-level/linux-kernels.nix
 @@ -390,6 +390,9 @@ in
@@ -161,7 +164,7 @@ index fb5e3498c376e..175f81051e14d 100644
  
          tbs = callPackage ../os-specific/linux/tbs { };
 
-From e0daf56ba3d6bb2081dd67f04f79eb363f46140e Mon Sep 17 00:00:00 2001
+From 5f62a2ff2dfb7d3444e8f566c0318eac527b52c0 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 3/3] nixos/ntfs: add option to force use new NTFS(NTFSPLUS)
@@ -172,7 +175,7 @@ Subject: [PATCH 3/3] nixos/ntfs: add option to force use new NTFS(NTFSPLUS)
  1 file changed, 11 insertions(+)
 
 diff --git a/nixos/modules/tasks/filesystems/ntfs.nix b/nixos/modules/tasks/filesystems/ntfs.nix
-index d3f63a2215246..e330e9965a420 100644
+index b056e8b654e69..112e928b38794 100644
 --- a/nixos/modules/tasks/filesystems/ntfs.nix
 +++ b/nixos/modules/tasks/filesystems/ntfs.nix
 @@ -24,6 +24,17 @@
@@ -192,4 +195,4 @@ index d3f63a2215246..e330e9965a420 100644
 +    )
      (lib.mkIf
        (
-         config.boot.initrd.supportFilesystems.ntfs or false
+         (

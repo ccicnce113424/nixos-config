@@ -1,18 +1,18 @@
-From fbd4a6b484f569710220679769292916cc2bacb1 Mon Sep 17 00:00:00 2001
+From 71d8c56a8083cecb6fa0cc72d6bd9d59bfedbda0 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 18 May 2026 12:28:26 +0800
 Subject: [PATCH] plasma-vantage: init at 0.29
 
 ---
- pkgs/by-name/pl/plasma-vantage/package.nix | 41 ++++++++++++++++++++++
+ pkgs/by-name/pl/plasmavantage/package.nix | 41 +++++++++++++++++++++++
  1 file changed, 41 insertions(+)
- create mode 100644 pkgs/by-name/pl/plasma-vantage/package.nix
+ create mode 100644 pkgs/by-name/pl/plasmavantage/package.nix
 
-diff --git a/pkgs/by-name/pl/plasma-vantage/package.nix b/pkgs/by-name/pl/plasma-vantage/package.nix
+diff --git a/pkgs/by-name/pl/plasmavantage/package.nix b/pkgs/by-name/pl/plasmavantage/package.nix
 new file mode 100644
-index 0000000000000..8031ea41a43ba
+index 0000000000000..048b6de832469
 --- /dev/null
-+++ b/pkgs/by-name/pl/plasma-vantage/package.nix
++++ b/pkgs/by-name/pl/plasmavantage/package.nix
 @@ -0,0 +1,41 @@
 +{
 +  lib,
@@ -21,7 +21,7 @@ index 0000000000000..8031ea41a43ba
 +  nix-update-script,
 +}:
 +stdenvNoCC.mkDerivation (finalAttrs: {
-+  pname = "plasma-vantage";
++  pname = "plasmavantage";
 +  version = "0.29";
 +  src = fetchFromGitLab {
 +    owner = "Scias";
