@@ -100,7 +100,7 @@
       kdePackages.wallpaper-engine-plugin
       krunner-fd-plugin
     ]
-    ++ lib.optional (osConfig.networking.hostName == "ccic-laptop") pkgs.plasma-vantage;
+    ++ lib.optional (osConfig.networking.hostName == "ccic-laptop") pkgs.plasmavantage;
 
   dbus.packages = with pkgs; [
     krunner-fd-plugin

@@ -1,7 +1,7 @@
-From 71d8c56a8083cecb6fa0cc72d6bd9d59bfedbda0 Mon Sep 17 00:00:00 2001
+From 57fbee5d466e7956739e3a8e2d4c4c3fda61b458 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 18 May 2026 12:28:26 +0800
-Subject: [PATCH] plasma-vantage: init at 0.29
+Subject: [PATCH] plasmavantage: init at 0.29
 
 ---
  pkgs/by-name/pl/plasmavantage/package.nix | 41 +++++++++++++++++++++++
