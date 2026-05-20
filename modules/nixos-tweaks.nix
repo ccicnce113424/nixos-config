@@ -25,10 +25,6 @@ let
       system-features = [ "uid-range" ];
     };
     nix.package = config.nixPackages.nix or config.nixPackages.lix;
-    chaotic.nyx = {
-      overlay.enable = false;
-      cache.enable = false;
-    };
 
     programs.git.enable = true;
 

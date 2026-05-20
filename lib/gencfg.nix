@@ -13,7 +13,6 @@
       let
         sharedModules = [
           self.nixosModules.nixos-tweaks
-          inputs.chaotic.nixosModules.default
           inputs.nix-packages.nixosModules.daed
           ../hosts/runtime.nix
           # inputs.solaar.nixosModules.default

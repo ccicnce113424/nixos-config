@@ -37,15 +37,6 @@ rec {
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    chaotic = {
-      url = "github:lonerOrz/nyx-loner/main";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        home-manager.follows = "home-manager";
-        rust-overlay.follows = "rust-overlay";
-        jovian.follows = "";
-      };
-    };
     lan-mouse = {
       url = "github:feschber/lan-mouse";
       inputs = {

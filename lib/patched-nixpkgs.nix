@@ -40,7 +40,7 @@ in
 
           finalNixpkgs = if [ ] == patches then inputs.nixpkgs else patchedNixpkgs;
 
-          hostPkgs = import finalNixpkgs rec {
+          hostPkgs = import finalNixpkgs {
             inherit (host) system;
             config = {
               allowUnfree = true;
@@ -59,12 +59,6 @@ in
               inputs.nur.overlays.default
               inputs.nix-packages.overlays.default
               inputs.nix-gaming.overlays.default
-              (import (inputs.chaotic.outPath + "/overlays/cache-friendly.nix") {
-                flakes = inputs.chaotic.inputs // {
-                  self = inputs.chaotic;
-                };
-                nixpkgsConfig = config;
-              })
             ];
           };
         in
