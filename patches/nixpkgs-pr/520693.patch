@@ -1,7 +1,7 @@
 From 4247fbc4dc671cebfe2a942875ef5920d6f830dc Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:43:42 +0800
-Subject: [PATCH 1/2] kmscon: 9.3.5 -> 9.3.5-2026-05-20
+Subject: [PATCH 1/3] kmscon: 9.3.5 -> 9.3.5-2026-05-20
 
 ---
  pkgs/by-name/km/kmscon/package.nix    | 18 +++++++++++++++---
@@ -97,7 +97,7 @@ index 0000000000000..2d0f4dc2a79df
 From edab63c18c117360e3c30c9a02cbb9a665f1b95e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:48:54 +0800
-Subject: [PATCH 2/2] nixos/kmscon: add pam service for using libseat
+Subject: [PATCH 2/3] nixos/kmscon: add pam service for using libseat
 
 ---
  nixos/modules/services/ttys/kmscon.nix | 46 ++++++++++++++++++++++++++
@@ -167,3 +167,35 @@ index 85b47e1b62cee..d61c7535bc64e 100644
      services.kmscon.extraConfig = lib.concatLines (
        optionals cfg.useXkbConfig (
          lib.mapAttrsToList (n: v: "xkb-${n}=${v}") (
+
+From 9481d23f45849b5d4029798b32f1a3f4185acec1 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Thu, 21 May 2026 02:47:51 +0800
+Subject: [PATCH 3/3] nixosTests.kmscon: set $TERM to `kmscon`
+
+---
+ nixos/tests/kmscon.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/nixos/tests/kmscon.nix b/nixos/tests/kmscon.nix
+index f0fb27d9b0d57..6cf490a885e71 100644
+--- a/nixos/tests/kmscon.nix
++++ b/nixos/tests/kmscon.nix
+@@ -23,7 +23,7 @@
+             package = pkgs.nerd-fonts.jetbrains-mono;
+           }
+         ];
+-        term = "xterm-256color";
++        term = "kmscon";
+         package = pkgs.kmscon;
+       };
+     };
+@@ -39,7 +39,7 @@
+       machine.send_chars("echo $TERM | tee /tmp/term.txt\n")
+       machine.wait_until_succeeds("test -s /tmp/term.txt")
+       term = machine.succeed("cat /tmp/term.txt").strip()
+-      assert term == "xterm-256color", f"Unexpected TERM value: {term!r}"
++      assert term == "kmscon", f"Unexpected TERM value: {term!r}"
+ 
+       machine.screenshot("tty.png")
+   '';
