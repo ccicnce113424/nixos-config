@@ -26,6 +26,7 @@
       buffer_font_family = "Maple Mono NF CN";
       # Features
       git_panel.tree_view = true;
+      git.enable_status = false;
       document_symbols = "off";
       document_folding_ranges = "on";
       semantic_tokens = "combined";
