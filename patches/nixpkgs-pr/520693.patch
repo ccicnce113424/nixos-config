@@ -1,30 +1,36 @@
-From 10497129d402e79b48084962802cbaebe86233a5 Mon Sep 17 00:00:00 2001
+From 4247fbc4dc671cebfe2a942875ef5920d6f830dc Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:43:42 +0800
-Subject: [PATCH 1/2] kmscon: 9.3.5 -> 9.3.5-2026-05-15
+Subject: [PATCH 1/2] kmscon: 9.3.5 -> 9.3.5-2026-05-20
 
 ---
- pkgs/by-name/km/kmscon/package.nix | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ pkgs/by-name/km/kmscon/package.nix    | 18 +++++++++++++++---
+ pkgs/by-name/km/kmscon/terminfo.patch | 13 +++++++++++++
+ 2 files changed, 28 insertions(+), 3 deletions(-)
+ create mode 100644 pkgs/by-name/km/kmscon/terminfo.patch
 
 diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
-index bcecb5c8b5eb8..13af2f338c2e0 100644
+index bcecb5c8b5eb8..df681eb1f5272 100644
 --- a/pkgs/by-name/km/kmscon/package.nix
 +++ b/pkgs/by-name/km/kmscon/package.nix
-@@ -18,6 +18,7 @@
+@@ -16,8 +16,11 @@
+   pkg-config,
+   docbook_xsl,
    docbook_xml_dtd_42,
++  python3,
++  ncurses,
    libxslt,
    libgbm,
 +  seatd,
    ninja,
    check,
    bash,
-@@ -29,13 +30,14 @@
+@@ -29,13 +32,14 @@
  }:
  stdenv.mkDerivation (finalAttrs: {
    pname = "kmscon";
 -  version = "9.3.5";
-+  version = "9.3.5-2026-05-15";
++  version = "9.3.5-2026-05-20";
  
    src = fetchFromGitHub {
      owner = "kmscon";
@@ -32,12 +38,12 @@ index bcecb5c8b5eb8..13af2f338c2e0 100644
 -    tag = "v${finalAttrs.version}";
 -    hash = "sha256-QBN1rSDmwVg7cgljhe6kVIg/xLoolmOPqS8JXZuQiXs=";
 +    # tag = "v${finalAttrs.version}";
-+    rev = "f4c37004a186610edc2dbc68b0b0c3fa7440d476";
-+    hash = "sha256-VO8Tsb1QclyfcL7I06Tjj8fdz8nkjowXq5yDPAIKr80=";
++    rev = "bfe38ec8e188ea82882f1a122b15f4e4eb2363cb";
++    hash = "sha256-n6fuc0/wqln4sOt8RL4FDq6IaWFHfO8q/fUXS3d50Q0=";
    };
  
    strictDeps = true;
-@@ -57,6 +59,7 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -57,6 +61,7 @@ stdenv.mkDerivation (finalAttrs: {
      pango
      systemdLibs
      libgbm
@@ -45,8 +51,50 @@ index bcecb5c8b5eb8..13af2f338c2e0 100644
      check
      # Needed for autoPatchShebangs when strictDeps = true
      bash
+@@ -69,6 +74,8 @@ stdenv.mkDerivation (finalAttrs: {
+     pkg-config
+     libxslt # xsltproc
+     docbook_xml_dtd_42
++    python3
++    ncurses
+   ];
+ 
+   outputs = [
+@@ -78,8 +85,13 @@ stdenv.mkDerivation (finalAttrs: {
+ 
+   patches = [
+     ./sandbox.patch # Generate system units where they should be (nix store) instead of /etc/systemd/system
++    ./terminfo.patch # Fix destination of terminfo files
+   ];
+ 
++  postPatch = ''
++    patchShebangs scripts/terminfo
++  '';
++
+   postFixup = ''
+     substituteInPlace $out/bin/kmscon \
+       --replace-fail "awk" "${lib.getExe gawk}"
+diff --git a/pkgs/by-name/km/kmscon/terminfo.patch b/pkgs/by-name/km/kmscon/terminfo.patch
+new file mode 100644
+index 0000000000000..2d0f4dc2a79df
+--- /dev/null
++++ b/pkgs/by-name/km/kmscon/terminfo.patch
+@@ -0,0 +1,13 @@
++diff --git a/scripts/terminfo/build_terminfo.py b/scripts/terminfo/build_terminfo.py
++index cacc6fd..a42dbf6 100755
++--- a/scripts/terminfo/build_terminfo.py
+++++ b/scripts/terminfo/build_terminfo.py
++@@ -4,7 +4,7 @@ import subprocess
++ import sys
++ 
++ # Meson passes DESTDIR automatically via the environment
++-destdir = os.environ.get('DESTDIR', '')
+++destdir = os.environ.get('DESTDIR', '/')
++ datadir = sys.argv[1]
++ terminfo_src = sys.argv[2]
++ 
 
-From a1af0312b440ecf73a0a97bad06ea8fa7bc8fd42 Mon Sep 17 00:00:00 2001
+From edab63c18c117360e3c30c9a02cbb9a665f1b95e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:48:54 +0800
 Subject: [PATCH 2/2] nixos/kmscon: add pam service for using libseat
