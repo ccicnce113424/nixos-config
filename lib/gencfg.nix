@@ -36,6 +36,10 @@
                       type = "path";
                       path = patched.finalNixpkgs.outPath;
                     };
+                    mypkgs.to = {
+                      type = "path";
+                      path = inputs.nix-packages.outPath;
+                    };
                   };
                 };
               in
