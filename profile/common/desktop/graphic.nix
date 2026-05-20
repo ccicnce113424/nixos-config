@@ -18,7 +18,6 @@
     services.kmscon = {
       enable = true;
       hwRender = true;
-      term = "xterm-256color";
       extraConfig = ''
         # font-engine=pango
         font-size=24
