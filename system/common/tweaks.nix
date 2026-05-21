@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ ... }:
 {
   services.dbus.implementation = "broker";
   services.scx = {
@@ -6,15 +6,13 @@
     scheduler = "scx_lavd";
   };
 
-  environment.systemPackages = with pkgs; [
-    (lib.hiPrio uutils-coreutils-noprefix)
-    (lib.hiPrio uutils-findutils)
-    (lib.hiPrio uutils-diffutils)
-    (lib.hiPrio uutils-sed)
-    coreutils-prefixed
-  ];
-
-  # environment.memoryAllocator.provider = "mimalloc";
+  # environment.systemPackages = with pkgs; [
+  #   (lib.hiPrio uutils-coreutils-noprefix)
+  #   (lib.hiPrio uutils-findutils)
+  #   (lib.hiPrio uutils-diffutils)
+  #   (lib.hiPrio uutils-sed)
+  #   coreutils-prefixed
+  # ];
 
   security = {
     sudo.enable = false;
