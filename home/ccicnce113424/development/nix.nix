@@ -7,6 +7,7 @@
       nix-tree
       nix-output-monitor
       hydra-check
+      cachix
     ])
     ++ (with osConfig.nixPackages; [
       nixpkgs-reviewFull
