@@ -49,7 +49,19 @@ in
           --option substituters 'https://cache.nixos.org' \
           "$@"
       '';
-      sgc = ''exec systemd-inhibit nix store gc "$@"'';
+      nb = ''
+        set -euo pipefail
+        rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
+        systemd-inhibit nh os boot "$@"
+      '';
+      cnb = ''
+        set -euo pipefail
+        rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
+        systemd-inhibit sudo nixos-rebuild boot --flake $HOME/code/nixos-config \
+          --log-format bar-with-logs -L --install-bootloader \
+          --option substituters 'https://cache.nixos.org' \
+          "$@"
+      '';
       up = ''
         set -euo pipefail
         cd $HOME/code/nixos-config
@@ -80,7 +92,7 @@ in
 
         git branch -f main origin/main
         git rebase origin/main
-        switch "$@"
+        nb "$@"
       '';
       pclean = ''
         set -euo pipefail
@@ -92,7 +104,7 @@ in
       clr = ''
         set -euo pipefail
         pclean
-        switch "$@"
+        nb "$@"
       '';
       win = ''exec systemctl reboot --boot-loader-entry=auto-windows "$@"'';
       fw = ''exec systemctl reboot --firmware-setup "$@"'';
