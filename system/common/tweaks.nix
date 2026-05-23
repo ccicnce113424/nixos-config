@@ -1,10 +1,10 @@
 { ... }:
 {
   services.dbus.implementation = "broker";
-  services.scx = {
+  services.scx-loader = {
     enable = true;
-    scheduler = "scx_lavd";
-    extraArgs = [ "--autopower" ];
+    defaultSched = "scx_lavd";
+    schedsCfg."scx_lavd".auto = [ "--autopower" ];
   };
 
   # environment.systemPackages = with pkgs; [

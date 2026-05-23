@@ -1,0 +1,205 @@
+From 84f54e555f36c2880bb4fca3b913691c2bff3ee8 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sun, 24 May 2026 00:52:10 +0800
+Subject: [PATCH 1/2] scx-loader: init at 1.1.1
+
+---
+ pkgs/by-name/sc/scx-loader/package.nix | 47 ++++++++++++++++++++++++++
+ 1 file changed, 47 insertions(+)
+ create mode 100644 pkgs/by-name/sc/scx-loader/package.nix
+
+diff --git a/pkgs/by-name/sc/scx-loader/package.nix b/pkgs/by-name/sc/scx-loader/package.nix
+new file mode 100644
+index 0000000000000..a3ca7d67725d6
+--- /dev/null
++++ b/pkgs/by-name/sc/scx-loader/package.nix
+@@ -0,0 +1,47 @@
++{
++  fetchFromGitHub,
++  rustPlatform,
++  lib,
++  nix-update-script,
++}:
++rustPlatform.buildRustPackage (finalAttrs: {
++  pname = "scx-loader";
++  version = "1.1.1";
++
++  cargoHash = "sha256-uX2lCVDa8eAKWi/bj94+JQHoOLll0OjKRHT0EPZELNc=";
++
++  src = fetchFromGitHub {
++    owner = "sched-ext";
++    repo = "scx-loader";
++    tag = "v${finalAttrs.version}";
++    hash = "sha256-5OvdtW/Li+ubHDBSKe2ssE9ZyNSCcxNFSJffzxQ9WMk=";
++  };
++
++  postInstall = ''
++    VENDOR_PREFIX="" VENDOR_DATADIR="/share" cargo xtask install --destdir $out
++    rm $out/bin/xtask
++  '';
++
++  postFixup = ''
++    substituteInPlace $out/lib/systemd/system/scx_loader.service \
++      --replace-fail "/usr/bin/scx_loader" "$out/bin/scx_loader"
++    substituteInPlace $out/share/dbus-1/system-services/org.scx.Loader.service \
++      --replace-fail "/usr/bin/scx_loader" "$out/bin/scx_loader"
++  '';
++
++  passthru.updateScript = nix-update-script { };
++
++  meta = {
++    mainProgram = "scxctl";
++    homepage = "https://github.com/sched-ext/scx-loader";
++    changelog = "https://github.com/sched-ext/scx-loader/releases/tag/v${finalAttrs.version}";
++    license = lib.licenses.gpl2Only;
++    platforms = lib.platforms.linux;
++    badPlatforms = [ "aarch64-linux" ];
++    maintainers = with lib.maintainers; [
++      Gliczy
++      michaelBelsanti
++      ccicnce113424
++    ];
++  };
++})
+
+From e1e8225117d1558e98ec4061913d9e9512d97b5a Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sun, 24 May 2026 00:52:10 +0800
+Subject: [PATCH 2/2] nixos/scx-loader: init
+
+---
+ nixos/modules/module-list.nix                 |   1 +
+ .../services/scheduling/scx-loader.nix        | 112 ++++++++++++++++++
+ 2 files changed, 113 insertions(+)
+ create mode 100644 nixos/modules/services/scheduling/scx-loader.nix
+
+diff --git a/nixos/modules/module-list.nix b/nixos/modules/module-list.nix
+index 6995f3ba1ed2b..8103da983c7d2 100644
+--- a/nixos/modules/module-list.nix
++++ b/nixos/modules/module-list.nix
+@@ -1482,6 +1482,7 @@
+   ./services/scheduling/cron.nix
+   ./services/scheduling/fcron.nix
+   ./services/scheduling/prefect.nix
++  ./services/scheduling/scx-loader.nix
+   ./services/scheduling/scx.nix
+   ./services/search/elasticsearch-curator.nix
+   ./services/search/elasticsearch.nix
+diff --git a/nixos/modules/services/scheduling/scx-loader.nix b/nixos/modules/services/scheduling/scx-loader.nix
+new file mode 100644
+index 0000000000000..8958d205b4ab7
+--- /dev/null
++++ b/nixos/modules/services/scheduling/scx-loader.nix
+@@ -0,0 +1,112 @@
++{
++  lib,
++  pkgs,
++  config,
++  ...
++}:
++let
++  cfg = config.services.scx-loader;
++  modes = [
++    "Auto"
++    "Gaming"
++    "LowLatency"
++    "PowerSave"
++    "Server"
++  ];
++  configFile =
++    let
++      tableLine = sched: "[scheds.${sched}]";
++      flagLine = mode: flags: "${lib.toLower mode}_mode=${lib.toJSON flags}";
++      schedTable =
++        sched: flags: lib.concatLines ([ (tableLine sched) ] ++ lib.mapAttrsToList flagLine flags);
++    in
++    pkgs.writeText "scx_loader.toml" ''
++      default_sched = "${cfg.defaultSched}"
++      default_mode = "${cfg.defaultMode}"
++      ${lib.concatMapAttrsStringSep "\n" schedTable cfg.schedsCfg}
++    '';
++in
++{
++  options.services.scx-loader = {
++    enable = lib.mkEnableOption ''
++      SCX Loader service, a daemon to run schedulers from userspace using dbus. This requires kernel version 6.12 and later.
++    '';
++
++    package = lib.mkPackageOption pkgs "scx-loader" { };
++
++    schedsPackages = lib.mkOption {
++      type = lib.types.listOf lib.types.package;
++      default = [ pkgs.scx.rustscheds ];
++      defaultText = lib.literalExpression "[ pkgs.scx.rustscheds ]";
++      example = lib.literalExpression "[ pkgs.scx.full ]";
++      description = ''
++        `scx` package to use. `scx.rustscheds`, which includes all schedulers currently supported by `scx_loader`, is the default.
++      '';
++    };
++
++    defaultSched = lib.mkOption {
++      type = lib.types.str;
++      default = "scx_bpfland";
++      example = "scx_lavd";
++      description = ''
++        Default scheduler that will be started automatically when `scx_loader` starts.
++        If not specified, `scx_loader` will not start any scheduler by default.
++      '';
++    };
++
++    defaultMode = lib.mkOption {
++      type = lib.types.enum modes;
++      default = "Auto";
++      description = ''
++        Default scheduler mode that will be used when starting a scheduler.
++      '';
++    };
++
++    schedsCfg = lib.mkOption {
++      type = lib.types.attrsOf (
++        lib.types.submodule {
++          options = lib.genAttrs (map lib.toCamelCase modes) (
++            mode:
++            lib.mkOption {
++              type = lib.types.listOf lib.types.str;
++              default = [ ];
++              description = ''
++                Specify the flags to be used for schedulers in "${lib.toSentenceCase mode}" mode.
++                If an empty list is provided, the default flags for that mode will be used.
++              '';
++            }
++          );
++        }
++      );
++      description = ''
++        The custom flags for a specific scheduler.
++      '';
++    };
++  };
++
++  config = lib.mkIf cfg.enable {
++    assertions = [
++      {
++        assertion = lib.versionAtLeast config.boot.kernelPackages.kernel.version "6.12";
++        message = "SCX is only supported on kernel version >= 6.12.";
++      }
++      {
++        assertion = !config.services.scx.enable;
++        message = "services.scx and services.scx_loader cannot be enabled simultaneously. Please enable only one of them.";
++      }
++    ];
++
++    environment.systemPackages = [ cfg.package ] ++ cfg.schedsPackages;
++    systemd.packages = [ cfg.package ];
++    services.dbus.packages = [ cfg.package ];
++
++    systemd.services.scx_loader = {
++      path = cfg.schedsPackages;
++      wantedBy = [ "multi-user.target" ];
++    };
++
++    environment.etc."scx_loader.toml".source = configFile;
++
++    meta.maintainers = with lib.maintainers; [ ccicnce113424 ];
++  };
++}
