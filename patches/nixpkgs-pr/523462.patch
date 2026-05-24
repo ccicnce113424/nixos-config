@@ -1,19 +1,19 @@
-From 7bf4c82d881b4c12a4bae3a89d93cbc631c8771e Mon Sep 17 00:00:00 2001
+From 81eaa657eb00715bd2e671e0c2378296b59e14d5 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 1/3] scx-loader: init at 1.1.1
 
 ---
- pkgs/by-name/sc/scx-loader/package.nix | 48 ++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+ pkgs/by-name/sc/scx-loader/package.nix | 53 ++++++++++++++++++++++++++
+ 1 file changed, 53 insertions(+)
  create mode 100644 pkgs/by-name/sc/scx-loader/package.nix
 
 diff --git a/pkgs/by-name/sc/scx-loader/package.nix b/pkgs/by-name/sc/scx-loader/package.nix
 new file mode 100644
-index 0000000000000..2667c61a8b71d
+index 0000000000000..10d76a2765df6
 --- /dev/null
 +++ b/pkgs/by-name/sc/scx-loader/package.nix
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,53 @@
 +{
 +  fetchFromGitHub,
 +  rustPlatform,
@@ -35,8 +35,13 @@ index 0000000000000..2667c61a8b71d
 +
 +  __structuredAttrs = true;
 +
++  env = {
++    VENDOR_PREFIX = "";
++    VENDOR_DATADIR = "/share";
++  };
++
 +  postInstall = ''
-+    VENDOR_PREFIX="" VENDOR_DATADIR="/share" cargo xtask install --destdir $out
++    cargo xtask install --destdir $out
 +    rm $out/bin/xtask
 +  '';
 +
@@ -63,7 +68,7 @@ index 0000000000000..2667c61a8b71d
 +  };
 +})
 
-From 6458a00edafce4ed8b218cc1cbf6bc504aac1ce7 Mon Sep 17 00:00:00 2001
+From f1aef7561dbd5ee8cab073c78c350066fb61d99c Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 2/3] nixos/scx-loader: init
@@ -71,8 +76,8 @@ Subject: [PATCH 2/3] nixos/scx-loader: init
 ---
  .../manual/release-notes/rl-2611.section.md   |   2 +-
  nixos/modules/module-list.nix                 |   1 +
- .../services/scheduling/scx-loader.nix        | 127 ++++++++++++++++++
- 3 files changed, 129 insertions(+), 1 deletion(-)
+ .../services/scheduling/scx-loader.nix        | 139 ++++++++++++++++++
+ 3 files changed, 141 insertions(+), 1 deletion(-)
  create mode 100644 nixos/modules/services/scheduling/scx-loader.nix
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
@@ -102,10 +107,10 @@ index c57b627e875c7..e977edb5782a6 100644
    ./services/search/elasticsearch.nix
 diff --git a/nixos/modules/services/scheduling/scx-loader.nix b/nixos/modules/services/scheduling/scx-loader.nix
 new file mode 100644
-index 0000000000000..8785c6baf22b8
+index 0000000000000..7889b0535b3b2
 --- /dev/null
 +++ b/nixos/modules/services/scheduling/scx-loader.nix
-@@ -0,0 +1,127 @@
+@@ -0,0 +1,139 @@
 +{
 +  lib,
 +  pkgs,
@@ -121,9 +126,12 @@ index 0000000000000..8785c6baf22b8
 +    "PowerSave"
 +    "Server"
 +  ];
++
 +  schedulers = lib.concatMap (
 +    scx: scx.passthru.schedulers or (throw "Scheduler not found in package ${scx.name}")
 +  ) cfg.schedsPackages;
++
++  # scx_loader does not recognize table names enclosed in quotation marks; therefore, we need to manually generate the configuration file content here.
 +  configFile =
 +    let
 +      tableLine = sched: "[scheds.${sched}]";
@@ -132,9 +140,10 @@ index 0000000000000..8785c6baf22b8
 +        sched: flags: lib.concatLines ([ (tableLine sched) ] ++ lib.mapAttrsToList flagLine flags);
 +    in
 +    pkgs.writeText "scx_loader.toml" ''
-+      default_sched = "${cfg.defaultSched}"
-+      default_mode = "${cfg.defaultMode}"
++      default_sched="${cfg.defaultSched}"
++      default_mode="${cfg.defaultMode}"
 +      ${lib.concatMapAttrsStringSep "\n" schedTable cfg.schedsCfg}
++      ${lib.optionalString (cfg.extraConfig != null) cfg.extraConfig}
 +    '';
 +in
 +{
@@ -161,7 +170,7 @@ index 0000000000000..8785c6baf22b8
 +      example = "scx_lavd";
 +      description = ''
 +        Default scheduler that will be started automatically when `scx_loader` starts.
-+        If not specified, `scx_loader` will not start any scheduler by default.
++        If set to an empty string, `scx_loader` will not start any scheduler by default.
 +      '';
 +    };
 +
@@ -191,6 +200,14 @@ index 0000000000000..8785c6baf22b8
 +      );
 +      description = ''
 +        The custom flags for a specific scheduler.
++      '';
++    };
++
++    extraConfig = lib.mkOption {
++      type = lib.types.nullOr lib.types.lines;
++      default = null;
++      description = ''
++        Extra configuration content to be appended to the generated configuration file.
 +      '';
 +    };
 +  };
@@ -234,7 +251,7 @@ index 0000000000000..8785c6baf22b8
 +  };
 +}
 
-From 6ba78faa92df2c4d28f7f85e3e72fb5f133bd8ab Mon Sep 17 00:00:00 2001
+From 1263a2aca0dc9e4e9928c4b70f944b9176f2b983 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 3/3] nixosTests.scx-loader: init
@@ -285,7 +302,7 @@ index 0000000000000..788d017f0633b
 +  '';
 +}
 diff --git a/pkgs/by-name/sc/scx-loader/package.nix b/pkgs/by-name/sc/scx-loader/package.nix
-index 2667c61a8b71d..c84da6a2d859e 100644
+index 10d76a2765df6..e0f91af71f1ab 100644
 --- a/pkgs/by-name/sc/scx-loader/package.nix
 +++ b/pkgs/by-name/sc/scx-loader/package.nix
 @@ -3,6 +3,7 @@
@@ -296,7 +313,7 @@ index 2667c61a8b71d..c84da6a2d859e 100644
  }:
  rustPlatform.buildRustPackage (finalAttrs: {
    pname = "scx-loader";
-@@ -31,7 +32,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
+@@ -36,7 +37,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
        --replace-fail "/usr/bin/scx_loader" "$out/bin/scx_loader"
    '';
  
