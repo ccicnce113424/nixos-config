@@ -1,4 +1,4 @@
-From 9cd8cc6abd9ebc01590cbce977ed7121c1fb0e44 Mon Sep 17 00:00:00 2001
+From 7bf4c82d881b4c12a4bae3a89d93cbc631c8771e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 1/3] scx-loader: init at 1.1.1
@@ -63,7 +63,7 @@ index 0000000000000..2667c61a8b71d
 +  };
 +})
 
-From 58108ced35ec59d2c2c8499be5ea48cf00d32a3b Mon Sep 17 00:00:00 2001
+From 6458a00edafce4ed8b218cc1cbf6bc504aac1ce7 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 2/3] nixos/scx-loader: init
@@ -71,8 +71,8 @@ Subject: [PATCH 2/3] nixos/scx-loader: init
 ---
  .../manual/release-notes/rl-2611.section.md   |   2 +-
  nixos/modules/module-list.nix                 |   1 +
- .../services/scheduling/scx-loader.nix        | 125 ++++++++++++++++++
- 3 files changed, 127 insertions(+), 1 deletion(-)
+ .../services/scheduling/scx-loader.nix        | 127 ++++++++++++++++++
+ 3 files changed, 129 insertions(+), 1 deletion(-)
  create mode 100644 nixos/modules/services/scheduling/scx-loader.nix
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
@@ -89,7 +89,7 @@ index 3d53f1f209307..1e6de73837f9a 100644
  ## Backward Incompatibilities {#sec-release-26.11-incompatibilities}
  
 diff --git a/nixos/modules/module-list.nix b/nixos/modules/module-list.nix
-index 6995f3ba1ed2b..8103da983c7d2 100644
+index c57b627e875c7..e977edb5782a6 100644
 --- a/nixos/modules/module-list.nix
 +++ b/nixos/modules/module-list.nix
 @@ -1482,6 +1482,7 @@
@@ -102,10 +102,10 @@ index 6995f3ba1ed2b..8103da983c7d2 100644
    ./services/search/elasticsearch.nix
 diff --git a/nixos/modules/services/scheduling/scx-loader.nix b/nixos/modules/services/scheduling/scx-loader.nix
 new file mode 100644
-index 0000000000000..1829a6067e0da
+index 0000000000000..8785c6baf22b8
 --- /dev/null
 +++ b/nixos/modules/services/scheduling/scx-loader.nix
-@@ -0,0 +1,125 @@
+@@ -0,0 +1,127 @@
 +{
 +  lib,
 +  pkgs,
@@ -121,7 +121,9 @@ index 0000000000000..1829a6067e0da
 +    "PowerSave"
 +    "Server"
 +  ];
-+  schedulers = lib.concatMap (scx: scx.passthru.schedulers) cfg.schedsPackages;
++  schedulers = lib.concatMap (
++    scx: scx.passthru.schedulers or (throw "Scheduler not found in package ${scx.name}")
++  ) cfg.schedsPackages;
 +  configFile =
 +    let
 +      tableLine = sched: "[scheds.${sched}]";
@@ -232,7 +234,7 @@ index 0000000000000..1829a6067e0da
 +  };
 +}
 
-From 2bb4bbf109e3d266d67eaa25e3bd6ee5366e21d7 Mon Sep 17 00:00:00 2001
+From 6ba78faa92df2c4d28f7f85e3e72fb5f133bd8ab Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 3/3] nixosTests.scx-loader: init
@@ -245,10 +247,10 @@ Subject: [PATCH 3/3] nixosTests.scx-loader: init
  create mode 100644 nixos/tests/scx/loader.nix
 
 diff --git a/nixos/tests/all-tests.nix b/nixos/tests/all-tests.nix
-index 0e2233ade92d2..e5a033d259d38 100644
+index f9ecf72845ede..c75356780dce8 100644
 --- a/nixos/tests/all-tests.nix
 +++ b/nixos/tests/all-tests.nix
-@@ -1489,6 +1489,7 @@ in
+@@ -1490,6 +1490,7 @@ in
    scion-freestanding-deployment = runTest ./scion/freestanding-deployment;
    scrutiny = runTest ./scrutiny.nix;
    scx = runTest ./scx/default.nix;
