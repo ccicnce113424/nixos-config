@@ -1,19 +1,19 @@
-From 84f54e555f36c2880bb4fca3b913691c2bff3ee8 Mon Sep 17 00:00:00 2001
+From 9cd8cc6abd9ebc01590cbce977ed7121c1fb0e44 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
-Subject: [PATCH 1/2] scx-loader: init at 1.1.1
+Subject: [PATCH 1/3] scx-loader: init at 1.1.1
 
 ---
- pkgs/by-name/sc/scx-loader/package.nix | 47 ++++++++++++++++++++++++++
- 1 file changed, 47 insertions(+)
+ pkgs/by-name/sc/scx-loader/package.nix | 48 ++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
  create mode 100644 pkgs/by-name/sc/scx-loader/package.nix
 
 diff --git a/pkgs/by-name/sc/scx-loader/package.nix b/pkgs/by-name/sc/scx-loader/package.nix
 new file mode 100644
-index 0000000000000..a3ca7d67725d6
+index 0000000000000..2667c61a8b71d
 --- /dev/null
 +++ b/pkgs/by-name/sc/scx-loader/package.nix
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,48 @@
 +{
 +  fetchFromGitHub,
 +  rustPlatform,
@@ -32,6 +32,8 @@ index 0000000000000..a3ca7d67725d6
 +    tag = "v${finalAttrs.version}";
 +    hash = "sha256-5OvdtW/Li+ubHDBSKe2ssE9ZyNSCcxNFSJffzxQ9WMk=";
 +  };
++
++  __structuredAttrs = true;
 +
 +  postInstall = ''
 +    VENDOR_PREFIX="" VENDOR_DATADIR="/share" cargo xtask install --destdir $out
@@ -53,7 +55,6 @@ index 0000000000000..a3ca7d67725d6
 +    changelog = "https://github.com/sched-ext/scx-loader/releases/tag/v${finalAttrs.version}";
 +    license = lib.licenses.gpl2Only;
 +    platforms = lib.platforms.linux;
-+    badPlatforms = [ "aarch64-linux" ];
 +    maintainers = with lib.maintainers; [
 +      Gliczy
 +      michaelBelsanti
@@ -62,17 +63,31 @@ index 0000000000000..a3ca7d67725d6
 +  };
 +})
 
-From e1e8225117d1558e98ec4061913d9e9512d97b5a Mon Sep 17 00:00:00 2001
+From 58108ced35ec59d2c2c8499be5ea48cf00d32a3b Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
-Subject: [PATCH 2/2] nixos/scx-loader: init
+Subject: [PATCH 2/3] nixos/scx-loader: init
 
 ---
+ .../manual/release-notes/rl-2611.section.md   |   2 +-
  nixos/modules/module-list.nix                 |   1 +
- .../services/scheduling/scx-loader.nix        | 112 ++++++++++++++++++
- 2 files changed, 113 insertions(+)
+ .../services/scheduling/scx-loader.nix        | 125 ++++++++++++++++++
+ 3 files changed, 127 insertions(+), 1 deletion(-)
  create mode 100644 nixos/modules/services/scheduling/scx-loader.nix
 
+diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
+index 3d53f1f209307..1e6de73837f9a 100644
+--- a/nixos/doc/manual/release-notes/rl-2611.section.md
++++ b/nixos/doc/manual/release-notes/rl-2611.section.md
+@@ -10,7 +10,7 @@
+ 
+ <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
+ 
+-- Create the first release note entry in this section!
++- [scx_loader](https://github.com/sched-ext/scx-loader), a system daemon and DBus-based loader for sched_ext schedulers. `scxctl` is the command-line client for interacting with the loader, allowing users to switch schedulers, modes, and arguments dynamically. Available as [services.scx-loader](#opt-services.scx-loader.enable)
+ 
+ ## Backward Incompatibilities {#sec-release-26.11-incompatibilities}
+ 
 diff --git a/nixos/modules/module-list.nix b/nixos/modules/module-list.nix
 index 6995f3ba1ed2b..8103da983c7d2 100644
 --- a/nixos/modules/module-list.nix
@@ -87,10 +102,10 @@ index 6995f3ba1ed2b..8103da983c7d2 100644
    ./services/search/elasticsearch.nix
 diff --git a/nixos/modules/services/scheduling/scx-loader.nix b/nixos/modules/services/scheduling/scx-loader.nix
 new file mode 100644
-index 0000000000000..8958d205b4ab7
+index 0000000000000..1829a6067e0da
 --- /dev/null
 +++ b/nixos/modules/services/scheduling/scx-loader.nix
-@@ -0,0 +1,112 @@
+@@ -0,0 +1,125 @@
 +{
 +  lib,
 +  pkgs,
@@ -106,6 +121,7 @@ index 0000000000000..8958d205b4ab7
 +    "PowerSave"
 +    "Server"
 +  ];
++  schedulers = lib.concatMap (scx: scx.passthru.schedulers) cfg.schedsPackages;
 +  configFile =
 +    let
 +      tableLine = sched: "[scheds.${sched}]";
@@ -187,19 +203,106 @@ index 0000000000000..8958d205b4ab7
 +        assertion = !config.services.scx.enable;
 +        message = "services.scx and services.scx_loader cannot be enabled simultaneously. Please enable only one of them.";
 +      }
++      {
++        assertion = lib.elem cfg.defaultSched ([ "" ] ++ schedulers);
++        message = "The default scheduler must be provided by the selected scx package.";
++      }
++      {
++        assertion = lib.all (sched: lib.elem sched schedulers) (lib.attrNames cfg.schedsCfg);
++        message = "All schedulers in the configuration must be provided by the selected scx package.";
++      }
 +    ];
 +
 +    environment.systemPackages = [ cfg.package ] ++ cfg.schedsPackages;
 +    systemd.packages = [ cfg.package ];
 +    services.dbus.packages = [ cfg.package ];
 +
++    security.polkit.enable = true;
++
 +    systemd.services.scx_loader = {
 +      path = cfg.schedsPackages;
 +      wantedBy = [ "multi-user.target" ];
++      serviceConfig = {
++        TemporaryFileSystem = [ "/etc" ];
++        BindReadOnlyPaths = [ "${configFile.outPath}:/etc/scx_loader.toml" ];
++      };
 +    };
-+
-+    environment.etc."scx_loader.toml".source = configFile;
 +
 +    meta.maintainers = with lib.maintainers; [ ccicnce113424 ];
 +  };
 +}
+
+From 2bb4bbf109e3d266d67eaa25e3bd6ee5366e21d7 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sun, 24 May 2026 00:52:10 +0800
+Subject: [PATCH 3/3] nixosTests.scx-loader: init
+
+---
+ nixos/tests/all-tests.nix              |  1 +
+ nixos/tests/scx/loader.nix             | 20 ++++++++++++++++++++
+ pkgs/by-name/sc/scx-loader/package.nix |  6 +++++-
+ 3 files changed, 26 insertions(+), 1 deletion(-)
+ create mode 100644 nixos/tests/scx/loader.nix
+
+diff --git a/nixos/tests/all-tests.nix b/nixos/tests/all-tests.nix
+index 0e2233ade92d2..e5a033d259d38 100644
+--- a/nixos/tests/all-tests.nix
++++ b/nixos/tests/all-tests.nix
+@@ -1489,6 +1489,7 @@ in
+   scion-freestanding-deployment = runTest ./scion/freestanding-deployment;
+   scrutiny = runTest ./scrutiny.nix;
+   scx = runTest ./scx/default.nix;
++  scx-loader = runTest ./scx/loader.nix;
+   sddm = import ./sddm.nix { inherit runTest; };
+   sdl3 = runTest ./sdl3.nix;
+   searx = runTest ./searx.nix;
+diff --git a/nixos/tests/scx/loader.nix b/nixos/tests/scx/loader.nix
+new file mode 100644
+index 0000000000000..788d017f0633b
+--- /dev/null
++++ b/nixos/tests/scx/loader.nix
+@@ -0,0 +1,20 @@
++{ pkgs, lib, ... }:
++
++{
++  name = "scx-loader";
++  meta.maintainers = with lib.maintainers; [ ccicnce113424 ];
++
++  nodes.machine = {
++    boot.kernelPackages = pkgs.linuxPackages_latest;
++    services.scx-loader = {
++      enable = true;
++      defaultSched = "scx_bpfland";
++    };
++  };
++
++  testScript = ''
++    machine.wait_for_unit("multi-user.target")
++    output = machine.succeed("scxctl get").strip()
++    assert output == "running Bpfland in Auto mode", f"Unexpected scxctl output: {output!r}"
++  '';
++}
+diff --git a/pkgs/by-name/sc/scx-loader/package.nix b/pkgs/by-name/sc/scx-loader/package.nix
+index 2667c61a8b71d..c84da6a2d859e 100644
+--- a/pkgs/by-name/sc/scx-loader/package.nix
++++ b/pkgs/by-name/sc/scx-loader/package.nix
+@@ -3,6 +3,7 @@
+   rustPlatform,
+   lib,
+   nix-update-script,
++  nixosTests,
+ }:
+ rustPlatform.buildRustPackage (finalAttrs: {
+   pname = "scx-loader";
+@@ -31,7 +32,10 @@ rustPlatform.buildRustPackage (finalAttrs: {
+       --replace-fail "/usr/bin/scx_loader" "$out/bin/scx_loader"
+   '';
+ 
+-  passthru.updateScript = nix-update-script { };
++  passthru = {
++    updateScript = nix-update-script { };
++    tests = { inherit (nixosTests) scx-loader; };
++  };
+ 
+   meta = {
+     mainProgram = "scxctl";
