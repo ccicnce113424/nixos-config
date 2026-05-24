@@ -68,7 +68,7 @@ index 0000000000000..10d76a2765df6
 +  };
 +})
 
-From 5b69603ffb1e2812726e9c7dfa75bb7bc4ebae6f Mon Sep 17 00:00:00 2001
+From ef01e56a1537f1624854d195963a289c4f71c091 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 2/3] nixos/scx-loader: init
@@ -76,8 +76,8 @@ Subject: [PATCH 2/3] nixos/scx-loader: init
 ---
  .../manual/release-notes/rl-2611.section.md   |  2 +-
  nixos/modules/module-list.nix                 |  1 +
- .../services/scheduling/scx-loader.nix        | 97 +++++++++++++++++++
- 3 files changed, 99 insertions(+), 1 deletion(-)
+ .../services/scheduling/scx-loader.nix        | 96 +++++++++++++++++++
+ 3 files changed, 98 insertions(+), 1 deletion(-)
  create mode 100644 nixos/modules/services/scheduling/scx-loader.nix
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
@@ -107,10 +107,10 @@ index c57b627e875c7..e977edb5782a6 100644
    ./services/search/elasticsearch.nix
 diff --git a/nixos/modules/services/scheduling/scx-loader.nix b/nixos/modules/services/scheduling/scx-loader.nix
 new file mode 100644
-index 0000000000000..1a9903c0da562
+index 0000000000000..c0a0616520e0e
 --- /dev/null
 +++ b/nixos/modules/services/scheduling/scx-loader.nix
-@@ -0,0 +1,97 @@
+@@ -0,0 +1,96 @@
 +{
 +  lib,
 +  pkgs,
@@ -155,10 +155,6 @@ index 0000000000000..1a9903c0da562
 +                  x: x.passthru.schedulers or (throw "Scheduler not found in package ${x.name}")
 +                ) cfg.schedsPackages
 +              )
-+              // {
-+                description = "one of the schedulers included in the packages specified by `schedsPackages` or an empty string";
-+                descriptionClass = "conjunction";
-+              }
 +            );
 +            default = null;
 +            example = "scx_bpfland";
@@ -204,12 +200,15 @@ index 0000000000000..1a9903c0da562
 +        BindReadOnlyPaths = [ "${configFile.outPath}:/etc/scx_loader.toml" ];
 +      };
 +    };
++  };
 +
-+    meta.maintainers = with lib.maintainers; [ ccicnce113424 ];
++  meta = {
++    maintainers = with lib.maintainers; [ ccicnce113424 ];
++    buildDocsInSandbox = false;
 +  };
 +}
 
-From 5396e49adb78d8e44a3a81d7de5210a6f77c5fb1 Mon Sep 17 00:00:00 2001
+From 9cd62b9fa58900561c44274149228280e52525b6 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 3/3] nixosTests.scx-loader: init
