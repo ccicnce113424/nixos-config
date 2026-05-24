@@ -3,8 +3,10 @@
   services.dbus.implementation = "broker";
   services.scx-loader = {
     enable = true;
-    defaultSched = "scx_lavd";
-    schedsCfg."scx_lavd".auto = [ "--autopower" ];
+    config = {
+      default_sched = "scx_lavd";
+      scheds."scx_lavd".auto_mode = [ "--autopower" ];
+    };
   };
 
   # environment.systemPackages = with pkgs; [

@@ -68,7 +68,7 @@ index 0000000000000..10d76a2765df6
 +  };
 +})
 
-From f1aef7561dbd5ee8cab073c78c350066fb61d99c Mon Sep 17 00:00:00 2001
+From 25217649bee296ed9da38fa74e61c2a7443763a5 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 2/3] nixos/scx-loader: init
@@ -76,8 +76,8 @@ Subject: [PATCH 2/3] nixos/scx-loader: init
 ---
  .../manual/release-notes/rl-2611.section.md   |   2 +-
  nixos/modules/module-list.nix                 |   1 +
- .../services/scheduling/scx-loader.nix        | 139 ++++++++++++++++++
- 3 files changed, 141 insertions(+), 1 deletion(-)
+ .../services/scheduling/scx-loader.nix        | 105 ++++++++++++++++++
+ 3 files changed, 107 insertions(+), 1 deletion(-)
  create mode 100644 nixos/modules/services/scheduling/scx-loader.nix
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
@@ -107,10 +107,10 @@ index c57b627e875c7..e977edb5782a6 100644
    ./services/search/elasticsearch.nix
 diff --git a/nixos/modules/services/scheduling/scx-loader.nix b/nixos/modules/services/scheduling/scx-loader.nix
 new file mode 100644
-index 0000000000000..7889b0535b3b2
+index 0000000000000..cd62a18d7f081
 --- /dev/null
 +++ b/nixos/modules/services/scheduling/scx-loader.nix
-@@ -0,0 +1,139 @@
+@@ -0,0 +1,105 @@
 +{
 +  lib,
 +  pkgs,
@@ -119,32 +119,14 @@ index 0000000000000..7889b0535b3b2
 +}:
 +let
 +  cfg = config.services.scx-loader;
-+  modes = [
-+    "Auto"
-+    "Gaming"
-+    "LowLatency"
-+    "PowerSave"
-+    "Server"
-+  ];
-+
 +  schedulers = lib.concatMap (
 +    scx: scx.passthru.schedulers or (throw "Scheduler not found in package ${scx.name}")
 +  ) cfg.schedsPackages;
 +
-+  # scx_loader does not recognize table names enclosed in quotation marks; therefore, we need to manually generate the configuration file content here.
-+  configFile =
-+    let
-+      tableLine = sched: "[scheds.${sched}]";
-+      flagLine = mode: flags: "${lib.toLower mode}_mode=${lib.toJSON flags}";
-+      schedTable =
-+        sched: flags: lib.concatLines ([ (tableLine sched) ] ++ lib.mapAttrsToList flagLine flags);
-+    in
-+    pkgs.writeText "scx_loader.toml" ''
-+      default_sched="${cfg.defaultSched}"
-+      default_mode="${cfg.defaultMode}"
-+      ${lib.concatMapAttrsStringSep "\n" schedTable cfg.schedsCfg}
-+      ${lib.optionalString (cfg.extraConfig != null) cfg.extraConfig}
-+    '';
++  settingsFormat = pkgs.formats.toml { };
++  configFile = settingsFormat.generate "scx_loader.toml" (
++    lib.filterAttrsRecursive (_: v: v != null) cfg.config
++  );
 +in
 +{
 +  options.services.scx-loader = {
@@ -164,50 +146,34 @@ index 0000000000000..7889b0535b3b2
 +      '';
 +    };
 +
-+    defaultSched = lib.mkOption {
-+      type = lib.types.str;
-+      default = "scx_bpfland";
-+      example = "scx_lavd";
-+      description = ''
-+        Default scheduler that will be started automatically when `scx_loader` starts.
-+        If set to an empty string, `scx_loader` will not start any scheduler by default.
-+      '';
-+    };
++    config = lib.mkOption {
++      type = lib.types.submodule {
++        freeformType = settingsFormat.type;
 +
-+    defaultMode = lib.mkOption {
-+      type = lib.types.enum modes;
-+      default = "Auto";
++        options = {
++          default_sched = lib.mkOption {
++            type = lib.types.nullOr lib.types.str;
++            default = null;
++            example = "scx_bpfland";
++            description = ''
++              Default scheduler that will be started automatically when `scx_loader` starts.
++              If not set or set to an empty string, `scx_loader` will not start any scheduler by default.
++            '';
++          };
++          default_mode = lib.mkOption {
++            type = lib.types.nullOr lib.types.str;
++            default = null;
++            description = ''
++              Default scheduler mode that will be used when starting a scheduler.
++            '';
++          };
++        };
++      };
++      default = { };
 +      description = ''
-+        Default scheduler mode that will be used when starting a scheduler.
-+      '';
-+    };
++        Configuration for `scx_loader`.
 +
-+    schedsCfg = lib.mkOption {
-+      type = lib.types.attrsOf (
-+        lib.types.submodule {
-+          options = lib.genAttrs (map lib.toCamelCase modes) (
-+            mode:
-+            lib.mkOption {
-+              type = lib.types.listOf lib.types.str;
-+              default = [ ];
-+              description = ''
-+                Specify the flags to be used for schedulers in "${lib.toSentenceCase mode}" mode.
-+                If an empty list is provided, the default flags for that mode will be used.
-+              '';
-+            }
-+          );
-+        }
-+      );
-+      description = ''
-+        The custom flags for a specific scheduler.
-+      '';
-+    };
-+
-+    extraConfig = lib.mkOption {
-+      type = lib.types.nullOr lib.types.lines;
-+      default = null;
-+      description = ''
-+        Extra configuration content to be appended to the generated configuration file.
++        See <https://github.com/sched-ext/scx-loader/blob/main/crates/scx_loader/configuration.md> for the full list of options.
 +      '';
 +    };
 +  };
@@ -223,12 +189,12 @@ index 0000000000000..7889b0535b3b2
 +        message = "services.scx and services.scx_loader cannot be enabled simultaneously. Please enable only one of them.";
 +      }
 +      {
-+        assertion = lib.elem cfg.defaultSched ([ "" ] ++ schedulers);
-+        message = "The default scheduler must be provided by the selected scx package.";
-+      }
-+      {
-+        assertion = lib.all (sched: lib.elem sched schedulers) (lib.attrNames cfg.schedsCfg);
-+        message = "All schedulers in the configuration must be provided by the selected scx package.";
++        assertion =
++          cfg.config.default_sched == null || lib.elem (cfg.config.default_sched) ([ "" ] ++ schedulers);
++        message =
++          "The default scheduler must be one of the supported schedulers: "
++          + lib.concatStringsSep ", " schedulers
++          + ", or an empty string to not start any scheduler on default.";
 +      }
 +    ];
 +
@@ -251,7 +217,7 @@ index 0000000000000..7889b0535b3b2
 +  };
 +}
 
-From 1263a2aca0dc9e4e9928c4b70f944b9176f2b983 Mon Sep 17 00:00:00 2001
+From 1f378228919fe8aae8de6c6b745a9a941075cef9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 3/3] nixosTests.scx-loader: init
@@ -277,7 +243,7 @@ index f9ecf72845ede..c75356780dce8 100644
    searx = runTest ./searx.nix;
 diff --git a/nixos/tests/scx/loader.nix b/nixos/tests/scx/loader.nix
 new file mode 100644
-index 0000000000000..788d017f0633b
+index 0000000000000..236e84017be62
 --- /dev/null
 +++ b/nixos/tests/scx/loader.nix
 @@ -0,0 +1,20 @@
@@ -291,7 +257,7 @@ index 0000000000000..788d017f0633b
 +    boot.kernelPackages = pkgs.linuxPackages_latest;
 +    services.scx-loader = {
 +      enable = true;
-+      defaultSched = "scx_bpfland";
++      config.default_sched = "scx_bpfland";
 +    };
 +  };
 +
