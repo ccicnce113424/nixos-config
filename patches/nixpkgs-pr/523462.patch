@@ -68,7 +68,7 @@ index 0000000000000..10d76a2765df6
 +  };
 +})
 
-From a3429ec89bc37f874a642d8abd878e592fc058df Mon Sep 17 00:00:00 2001
+From 5b69603ffb1e2812726e9c7dfa75bb7bc4ebae6f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 2/3] nixos/scx-loader: init
@@ -76,8 +76,8 @@ Subject: [PATCH 2/3] nixos/scx-loader: init
 ---
  .../manual/release-notes/rl-2611.section.md   |  2 +-
  nixos/modules/module-list.nix                 |  1 +
- .../services/scheduling/scx-loader.nix        | 98 +++++++++++++++++++
- 3 files changed, 100 insertions(+), 1 deletion(-)
+ .../services/scheduling/scx-loader.nix        | 97 +++++++++++++++++++
+ 3 files changed, 99 insertions(+), 1 deletion(-)
  create mode 100644 nixos/modules/services/scheduling/scx-loader.nix
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
@@ -107,10 +107,10 @@ index c57b627e875c7..e977edb5782a6 100644
    ./services/search/elasticsearch.nix
 diff --git a/nixos/modules/services/scheduling/scx-loader.nix b/nixos/modules/services/scheduling/scx-loader.nix
 new file mode 100644
-index 0000000000000..b98bcb0838cc5
+index 0000000000000..1a9903c0da562
 --- /dev/null
 +++ b/nixos/modules/services/scheduling/scx-loader.nix
-@@ -0,0 +1,98 @@
+@@ -0,0 +1,97 @@
 +{
 +  lib,
 +  pkgs,
@@ -119,10 +119,6 @@ index 0000000000000..b98bcb0838cc5
 +}:
 +let
 +  cfg = config.services.scx-loader;
-+  schedulers = lib.concatMap (
-+    scx: scx.passthru.schedulers or (throw "Scheduler not found in package ${scx.name}")
-+  ) cfg.schedsPackages;
-+
 +  settingsFormat = pkgs.formats.toml { };
 +  configFile = settingsFormat.generate "scx_loader.toml" (
 +    lib.filterAttrsRecursive (_: v: v != null) cfg.config
@@ -152,7 +148,18 @@ index 0000000000000..b98bcb0838cc5
 +
 +        options = {
 +          default_sched = lib.mkOption {
-+            type = lib.types.nullOr lib.types.str;
++            type = lib.types.nullOr (
++              lib.types.enum (
++                [ "" ]
++                ++ builtins.concatMap (
++                  x: x.passthru.schedulers or (throw "Scheduler not found in package ${x.name}")
++                ) cfg.schedsPackages
++              )
++              // {
++                description = "one of the schedulers included in the packages specified by `schedsPackages` or an empty string";
++                descriptionClass = "conjunction";
++              }
++            );
 +            default = null;
 +            example = "scx_bpfland";
 +            description = ''
@@ -181,14 +188,6 @@ index 0000000000000..b98bcb0838cc5
 +        assertion = !config.services.scx.enable;
 +        message = "services.scx and services.scx_loader cannot be enabled simultaneously. Please enable only one of them.";
 +      }
-+      {
-+        assertion =
-+          cfg.config.default_sched == null || lib.elem (cfg.config.default_sched) ([ "" ] ++ schedulers);
-+        message =
-+          "The default scheduler must be one of the supported schedulers: "
-+          + lib.concatStringsSep ", " schedulers
-+          + ", or an empty string to not start any scheduler on default.";
-+      }
 +    ];
 +
 +    environment.systemPackages = [ cfg.package ] ++ cfg.schedsPackages;
@@ -210,7 +209,7 @@ index 0000000000000..b98bcb0838cc5
 +  };
 +}
 
-From 4271c94d56c7eb32f5b95017636b6060e942f22e Mon Sep 17 00:00:00 2001
+From 5396e49adb78d8e44a3a81d7de5210a6f77c5fb1 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 3/3] nixosTests.scx-loader: init
