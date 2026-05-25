@@ -1,4 +1,4 @@
-From 790bcf2d2147216acf93bb13d07724dc05d78d84 Mon Sep 17 00:00:00 2001
+From bbe9ed14b2aee0cdf8fcc0a510f1b22f4c02e7e6 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 1/3] nixos/ntfs: install userspace utils for the new
@@ -70,7 +70,7 @@ index 8ec839fed7eb8..b056e8b654e69 100644
 +  ];
  }
 
-From 8d2034565cdadd448045d5ca4031343249229f56 Mon Sep 17 00:00:00 2001
+From efc0ca608e62f73766fe277f682337794b2fb472 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-03
@@ -164,7 +164,7 @@ index fe8ebd43504fb..a0fe011e83f9f 100644
  
          tbs = callPackage ../os-specific/linux/tbs { };
 
-From e73feaee792ba4eb5c7bc9b70648e6d2b9c36902 Mon Sep 17 00:00:00 2001
+From 48e21cc1de18ad841491773d61fdb56fc62f5044 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 3/3] nixos/ntfs: add option to force use new NTFS(NTFSPLUS)

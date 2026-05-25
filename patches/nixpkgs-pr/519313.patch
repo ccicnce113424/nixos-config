@@ -1,4 +1,4 @@
-From a4560eeead28bc9903943aa622fb4faf533c0f21 Mon Sep 17 00:00:00 2001
+From 5410f9d5222c0fb4382a9b6bb58b33636295ff37 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
 Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -945,7 +945,7 @@ index 0000000000000..be8d3a0d37177
 +  };
 +})
 
-From a35279344a8b068411e3636726173ad195247949 Mon Sep 17 00:00:00 2001
+From f9160b61da76a57209a1433d795a53ebb270980a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 2/2] nvidia-modprobe: move to linuxPackages.nvidiaPackages
