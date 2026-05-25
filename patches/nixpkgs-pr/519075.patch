@@ -70,10 +70,10 @@ index 8ec839fed7eb8..b056e8b654e69 100644
 +  ];
  }
 
-From efc0ca608e62f73766fe277f682337794b2fb472 Mon Sep 17 00:00:00 2001
+From fc1dcd5f10e774612577825698016fa01acbf07b Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
-Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-03
+Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-20
 
 ---
  pkgs/os-specific/linux/ntfs/default.nix | 62 +++++++++++++++++++++++++
@@ -83,7 +83,7 @@ Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-03
 
 diff --git a/pkgs/os-specific/linux/ntfs/default.nix b/pkgs/os-specific/linux/ntfs/default.nix
 new file mode 100644
-index 0000000000000..fdb841038a06f
+index 0000000000000..9717f7acfc03a
 --- /dev/null
 +++ b/pkgs/os-specific/linux/ntfs/default.nix
 @@ -0,0 +1,62 @@
@@ -97,13 +97,13 @@ index 0000000000000..fdb841038a06f
 +}:
 +stdenv.mkDerivation {
 +  pname = "linux-ntfs";
-+  version = "0-unstable-2026-05-03";
++  version = "0-unstable-2026-05-20";
 +
 +  src = fetchFromGitHub {
 +    owner = "namjaejeon";
 +    repo = "linux-ntfs";
-+    rev = "9e031cf453d8b3c226aac7cb7105af46efd79690";
-+    hash = "sha256-Dbh1r86X0uNx8keTkdg+uzq4/+DHm+IiTuxrHXlklXA=";
++    rev = "5893a4b30e4a821348ab158f594f2c3c9409694e";
++    hash = "sha256-wAK9GX2au7bCw2pQB2cYJp1U9bOuS44bKKlLgBURD5c=";
 +  };
 +
 +  nativeBuildInputs = kernel.moduleBuildDependencies;
@@ -164,7 +164,7 @@ index fe8ebd43504fb..a0fe011e83f9f 100644
  
          tbs = callPackage ../os-specific/linux/tbs { };
 
-From 48e21cc1de18ad841491773d61fdb56fc62f5044 Mon Sep 17 00:00:00 2001
+From 466afd2c4f3831ab07d62b670ce77c84f462cd13 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 3/3] nixos/ntfs: add option to force use new NTFS(NTFSPLUS)
