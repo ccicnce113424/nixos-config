@@ -17,12 +17,11 @@
 
     services.kmscon = {
       enable = true;
-      hwRender = true;
-      extraConfig = ''
-        # font-engine=pango
-        font-size=24
-        bell
-      '';
+      config = {
+        hwaccel = true;
+        font-size = 24;
+        bell = true;
+      };
     };
 
     environment.systemPackages = with pkgs; [

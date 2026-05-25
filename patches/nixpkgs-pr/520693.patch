@@ -1,7 +1,7 @@
 From 57e52e1cc39a7a17e82d35dc5b0ee945ab7ca303 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:43:42 +0800
-Subject: [PATCH 1/4] kmscon: 9.3.5 -> 10.0.0
+Subject: [PATCH 1/2] kmscon: 9.3.5 -> 10.0.0
 
 ---
  pkgs/by-name/km/kmscon/package.nix   | 21 ++++++++++++++++-----
@@ -96,17 +96,19 @@ index 9f896b7611437..0000000000000
 - #
 - # Required dependencies
 
-From 9552bdea146b69e24deb3ec4f66699b543d641a8 Mon Sep 17 00:00:00 2001
+From 6f1adccf356de8e9245bb7ad4e40f5fb1897db81 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Sat, 16 May 2026 09:48:54 +0800
-Subject: [PATCH 2/4] nixos/kmscon: add pam service for using libseat
+Date: Mon, 25 May 2026 21:15:13 +0800
+Subject: [PATCH 2/2] nixos/kmscon: RFC42 treatment, support version 10.0.0
 
+This commit includes changes from #483195, #523569, and #523955.
 ---
- nixos/modules/services/ttys/kmscon.nix | 46 ++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ nixos/modules/services/ttys/kmscon.nix | 207 ++++++++++++++-----------
+ nixos/tests/kmscon.nix                 |  22 +--
+ 2 files changed, 133 insertions(+), 96 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index 85b47e1b62cee..d61c7535bc64e 100644
+index 85b47e1b62cee..13d52296e8f66 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
 @@ -2,6 +2,7 @@
@@ -117,11 +119,222 @@ index 85b47e1b62cee..d61c7535bc64e 100644
    ...
  }:
  let
-@@ -162,6 +163,51 @@ in
+@@ -10,8 +11,6 @@ let
+     mkEnableOption
+     mkOption
+     mkPackageOption
+-    optional
+-    optionals
+     types
+     ;
+ 
+@@ -22,7 +21,12 @@ let
+   configDir = pkgs.writeTextFile {
+     name = "kmscon-config";
+     destination = "/kmscon.conf";
+-    text = cfg.extraConfig;
++    text =
++      let
++        mkKeyValue =
++          k: v: if lib.isBool v then (lib.optionalString (!v) "no-") + k else "${k}=${toString v}";
++      in
++      lib.generators.toKeyValue { inherit mkKeyValue; } cfg.config;
+   };
+ 
+   baseLoginOptions = "-p";
+@@ -55,6 +59,15 @@ in
+ 
+       Check `services.getty.autologinUser` instead.
+     '')
++    (lib.mkRenamedOptionModule [ "services" "kmscon" "extraConfig" ] [ "services" "kmscon" "config" ])
++    (lib.mkRenamedOptionModule
++      [ "services" "kmscon" "hwRender" ]
++      [ "services" "kmscon" "config" "hwaccel" ]
++    )
++    (lib.mkRenamedOptionModule
++      [ "services" "kmscon" "fonts" "name" ]
++      [ "services" "kmscon" "config" "font-name" ]
++    )
+   ];
+ 
+   options = {
+@@ -68,45 +81,35 @@ in
+ 
+       package = mkPackageOption pkgs "kmscon" { };
+ 
+-      hwRender = mkEnableOption "3D hardware acceleration to render the console";
+-
+-      fonts = mkOption {
+-        description = "Fonts used by kmscon, in order of priority.";
+-        default = null;
+-        example = lib.literalExpression ''[ { name = "Source Code Pro"; package = pkgs.source-code-pro; } ]'';
+-        type =
+-          with types;
+-          let
+-            fontType = submodule {
+-              options = {
+-                name = mkOption {
+-                  type = str;
+-                  description = "Font name, as used by fontconfig.";
+-                };
+-                package = mkOption {
+-                  type = package;
+-                  description = "Package providing the font.";
+-                };
+-              };
+-            };
+-          in
+-          nullOr (nonEmptyListOf fontType);
+-      };
+-
+       useXkbConfig = mkEnableOption "configure keymap from xserver keyboard settings.";
+ 
+-      term = mkOption {
+-        description = "Value for the TERM environment variable.";
+-        type = types.nullOr types.str;
+-        default = null;
+-        example = "xterm-256color";
+-      };
+-
+-      extraConfig = mkOption {
+-        description = "Extra contents of the kmscon.conf file.";
+-        type = types.lines;
+-        default = "";
+-        example = "font-size=14";
++      config = mkOption {
++        description = ''
++          Configuration for kmscon. See {manpage}`kmscon.conf(5)`
++          for available options.
++        '';
++        default = { };
++        type = types.submodule {
++          freeformType =
++            with types;
++            attrsOf (oneOf [
++              bool
++              int
++              str
++            ]);
++          options = {
++            hwaccel = mkEnableOption "use hardware acceleration for rendering.";
++            libseat = mkOption {
++              type = types.bool;
++              default = true;
++              description = ''
++                Whether to use libseat for session management.
++                This is the default for kmscon newer than 10.0.0 and prevents
++                launching another GUI from kmscon by `kmscon-launch-gui`.
++              '';
++            };
++          };
++        };
+       };
+ 
+       extraOptions = mkOption {
+@@ -124,30 +127,45 @@ in
+         assertion = gettyCfg.loginOptions == null;
+         message = "services.getty.loginOptions is not supported when services.kmscon is enabled.";
+       }
++      {
++        assertion = cfg.config.font-name or null != null -> config.fonts.fontconfig.enable;
++        message = "Font configuration for kmscon requires fontconfig to be enabled.";
++      }
++      {
++        assertion = cfg.config.hwaccel -> config.hardware.graphics.enable;
++        message = "Hardware acceleration for kmscon requires `hardware.graphics.enable` to be true.";
++      }
+     ];
+ 
+     environment.systemPackages = [ cfg.package ];
+     systemd.packages = [ cfg.package ];
+ 
+     systemd.services."kmsconvt@" = {
+-      serviceConfig.ExecStart = [
+-        "" # override upstream default with an empty ExecStart
+-        (builtins.concatStringsSep " " (
+-          [
+-            "${cfg.package}/bin/kmscon"
+-            "--configdir"
+-            configDir
+-            "--vt=%I"
+-            "--no-switchvt"
+-            "--login"
+-          ]
+-          ++ lib.optional (cfg.extraOptions != "") cfg.extraOptions
+-          ++ [
+-            "--"
+-            loginScript
+-          ]
+-        ))
+-      ];
++      serviceConfig = {
++        User = lib.mkIf (!cfg.config.libseat) "";
++        PAMName = lib.mkIf (!cfg.config.libseat) "";
++        Environment = lib.mkIf cfg.useXkbConfig [
++          "XKB_CONFIG_ROOT=${config.services.xserver.xkb.dir}"
++        ];
++        ExecStart = [
++          "" # override upstream default with an empty ExecStart
++          (builtins.concatStringsSep " " (
++            [
++              "${cfg.package}/bin/kmscon"
++              "--configdir"
++              configDir
++              "--vt=%I"
++              "--no-switchvt"
++              "--login"
++            ]
++            ++ lib.optional (cfg.extraOptions != "") cfg.extraOptions
++            ++ [
++              "--"
++              loginScript
++            ]
++          ))
++        ];
++      };
+ 
+       restartIfChanged = false;
+       # logind spawns autovt@ttyN.service on VT switch; point it at kmscon
+@@ -156,40 +174,55 @@ in
+ 
+     # tty1 is special: logind does not spawn autovt@tty1, it expects a static
+     # pull-in via getty.target. With getty@ suppressed, we must replace it.
+-    systemd.services."getty.target".wants = lib.mkIf (!config.services.displayManager.enable) [
++    systemd.targets.getty.wants = lib.mkIf (!config.services.displayManager.enable) [
+       "kmsconvt@tty1.service"
+     ];
  
      systemd.suppressedSystemUnits = [ "getty@.service" ];
  
-+    security.pam.services.kmscon = {
+-    services.kmscon.extraConfig = lib.concatLines (
+-      optionals cfg.useXkbConfig (
+-        lib.mapAttrsToList (n: v: "xkb-${n}=${v}") (
+-          lib.filterAttrs (
+-            n: v:
+-            builtins.elem n [
+-              "layout"
+-              "model"
+-              "options"
+-              "variant"
+-            ]
+-            && v != ""
+-          ) config.services.xserver.xkb
+-        )
+-      )
+-      ++ optionals cfg.hwRender [
+-        "drm"
+-        "hwaccel"
+-      ]
+-      ++ optional (cfg.fonts != null) "font-name=${lib.concatMapStringsSep ", " (f: f.name) cfg.fonts}"
+-      ++ optional (cfg.term != null) "term=${cfg.term}"
+-    );
+-
+-    hardware.graphics.enable = mkIf cfg.hwRender true;
+-
+-    fonts = mkIf (cfg.fonts != null) {
+-      fontconfig.enable = true;
+-      packages = map (f: f.package) cfg.fonts;
++    security.pam.services.kmscon = lib.mkIf cfg.config.libseat {
 +      useDefaultRules = false;
 +      rules = {
 +        auth = utils.pam.autoOrderRules [
@@ -164,35 +377,44 @@ index 85b47e1b62cee..d61c7535bc64e 100644
 +          }
 +        ];
 +      };
-+    };
-+
-     services.kmscon.extraConfig = lib.concatLines (
-       optionals cfg.useXkbConfig (
-         lib.mapAttrsToList (n: v: "xkb-${n}=${v}") (
-
-From fd28e9b8ad327b8f4c172da40e4143d98b8adfac Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Thu, 21 May 2026 02:47:51 +0800
-Subject: [PATCH 3/4] nixosTests.kmscon: set $TERM to `kmscon`
-
----
- nixos/tests/kmscon.nix | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
+     };
+   };
+ 
 diff --git a/nixos/tests/kmscon.nix b/nixos/tests/kmscon.nix
-index f0fb27d9b0d57..6cf490a885e71 100644
+index f0fb27d9b0d57..130db8f0bc4a6 100644
 --- a/nixos/tests/kmscon.nix
 +++ b/nixos/tests/kmscon.nix
-@@ -23,7 +23,7 @@
-             package = pkgs.nerd-fonts.jetbrains-mono;
-           }
-         ];
+@@ -14,17 +14,21 @@
+ 
+       services.getty.autologinUser = "alice";
+ 
++      hardware.graphics.enable = true;
++
++      fonts = {
++        fontconfig.enable = true;
++        packages = [ pkgs.nerd-fonts.jetbrains-mono ];
++      };
++
+       services.kmscon = {
+         enable = true;
+-        hwRender = true;
+-        fonts = [
+-          {
+-            name = "JetBrainsMono Nerd Font";
+-            package = pkgs.nerd-fonts.jetbrains-mono;
+-          }
+-        ];
 -        term = "xterm-256color";
-+        term = "kmscon";
          package = pkgs.kmscon;
++        config = {
++          font-name = "JetBrainsMono Nerd Font";
++          hwaccel = true;
++          term = "kmscon";
++        };
        };
      };
-@@ -39,7 +39,7 @@
+ 
+@@ -39,7 +43,7 @@
        machine.send_chars("echo $TERM | tee /tmp/term.txt\n")
        machine.wait_until_succeeds("test -s /tmp/term.txt")
        term = machine.succeed("cat /tmp/term.txt").strip()
@@ -201,94 +423,3 @@ index f0fb27d9b0d57..6cf490a885e71 100644
  
        machine.screenshot("tty.png")
    '';
-
-From caf717b55f62e10ebec4b2f181909176c785f54f Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Thu, 21 May 2026 22:14:03 +0800
-Subject: [PATCH 4/4] nixos/kmscon: add an option to disable libseat
-
----
- nixos/modules/services/ttys/kmscon.nix | 49 ++++++++++++++++----------
- 1 file changed, 30 insertions(+), 19 deletions(-)
-
-diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index d61c7535bc64e..26d654a2c6928 100644
---- a/nixos/modules/services/ttys/kmscon.nix
-+++ b/nixos/modules/services/ttys/kmscon.nix
-@@ -96,6 +96,12 @@ in
- 
-       useXkbConfig = mkEnableOption "configure keymap from xserver keyboard settings.";
- 
-+      useLibseat =
-+        mkEnableOption "use libseat for session management. This is the default for kmscon newer than 10.0.0 and prevents launching another GUI from kmscon."
-+        // {
-+          default = true;
-+        };
-+
-       term = mkOption {
-         description = "Value for the TERM environment variable.";
-         type = types.nullOr types.str;
-@@ -131,24 +137,28 @@ in
-     systemd.packages = [ cfg.package ];
- 
-     systemd.services."kmsconvt@" = {
--      serviceConfig.ExecStart = [
--        "" # override upstream default with an empty ExecStart
--        (builtins.concatStringsSep " " (
--          [
--            "${cfg.package}/bin/kmscon"
--            "--configdir"
--            configDir
--            "--vt=%I"
--            "--no-switchvt"
--            "--login"
--          ]
--          ++ lib.optional (cfg.extraOptions != "") cfg.extraOptions
--          ++ [
--            "--"
--            loginScript
--          ]
--        ))
--      ];
-+      serviceConfig = {
-+        User = lib.mkIf (!cfg.useLibseat) "";
-+        PAMName = lib.mkIf (!cfg.useLibseat) "";
-+        ExecStart = [
-+          "" # override upstream default with an empty ExecStart
-+          (builtins.concatStringsSep " " (
-+            [
-+              "${cfg.package}/bin/kmscon"
-+              "--configdir"
-+              configDir
-+              "--vt=%I"
-+              "--no-switchvt"
-+              "--login"
-+            ]
-+            ++ lib.optional (cfg.extraOptions != "") cfg.extraOptions
-+            ++ [
-+              "--"
-+              loginScript
-+            ]
-+          ))
-+        ];
-+      };
- 
-       restartIfChanged = false;
-       # logind spawns autovt@ttyN.service on VT switch; point it at kmscon
-@@ -163,7 +173,7 @@ in
- 
-     systemd.suppressedSystemUnits = [ "getty@.service" ];
- 
--    security.pam.services.kmscon = {
-+    security.pam.services.kmscon = lib.mkIf cfg.useLibseat {
-       useDefaultRules = false;
-       rules = {
-         auth = utils.pam.autoOrderRules [
-@@ -229,6 +239,7 @@ in
-       ]
-       ++ optional (cfg.fonts != null) "font-name=${lib.concatMapStringsSep ", " (f: f.name) cfg.fonts}"
-       ++ optional (cfg.term != null) "term=${cfg.term}"
-+      ++ optional (!cfg.useLibseat) "no-libseat"
-     );
- 
-     hardware.graphics.enable = mkIf cfg.hwRender true;
