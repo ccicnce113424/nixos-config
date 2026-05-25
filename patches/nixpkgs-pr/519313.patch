@@ -1,4 +1,4 @@
-From 6ba86111f72abfaf432596813c0f7983adb6deff Mon Sep 17 00:00:00 2001
+From a4560eeead28bc9903943aa622fb4faf533c0f21 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
 Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -17,7 +17,7 @@ Assisted-by: Zed Agent:DeepSeek V4 Pro
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/utils.nix
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 85f67b213d7ac..a3db60f7c76ea 100644
+index b01fb26204cea..bca37fb2e0dfb 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -10,17 +10,7 @@
@@ -945,7 +945,7 @@ index 0000000000000..be8d3a0d37177
 +  };
 +})
 
-From 14d339a16491a6f34a5e225be77f974d6d1c34ad Mon Sep 17 00:00:00 2001
+From a35279344a8b068411e3636726173ad195247949 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 2/2] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -986,7 +986,7 @@ index aef01c5c46967..3de64c712fc3b 100644
        (replaceVars ./modprobe.patch {
          inherit modprobeVersion;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index a3db60f7c76ea..ec7886ad36889 100644
+index bca37fb2e0dfb..01aaf5f23e7f5 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -67,6 +67,7 @@ rec {
@@ -1035,10 +1035,10 @@ index a3db60f7c76ea..ec7886ad36889 100644
      usePersistenced = true;
      useFabricmanager = true;
 @@ -123,6 +129,7 @@ rec {
-     persistencedSha256 = "sha256-cQ+qz4aSYeonKviufdQOHo0quun8yPBTSgOvRkdN6og=";
-     fabricmanagerSha256 = "sha256-wAmOTyGR6oxoYk5znEdOgRv0nYuAxO7Gl/wUDlx8Y88=";
-     openSha256 = "sha256-HlGJyfcmXWqKJw1NRjp35clLucQtCIWAxjJvicgI4zM=";
-+    modprobeSha256 = "sha256-ntxjTWCDo/eyzADS1Xpb0jfbQPsvufa3i/8W3ENhl7w=";
+     persistencedSha256 = "sha256-vDawiy52GB8JABUKZDiQUc8uda8p/7jCFW7rTu6QMa4=";
+     fabricmanagerSha256 = "sha256-Jk6XVn/d6vqfxYGAACiD9UHelnjdC4+zOi4EEv8LuKE=";
+     openSha256 = "sha256-zsNmjZW0cyZWPp3vDT3mNeqAo0hS0M7e9Tbvwvij+F4=";
++    modprobeSha256 = "sha256-f4Kt5KjRfDQPeKlnW5WnYkFHSBZDjGA5q+/07fBZ+Yg=";
      useSettings = false;
      usePersistenced = true;
      useFabricmanager = true;
