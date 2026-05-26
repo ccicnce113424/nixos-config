@@ -1,4 +1,4 @@
-From aa6d58e027a8e80c5baec1accd898d749b2973a5 Mon Sep 17 00:00:00 2001
+From f376b1728340dee85bb3cd7b74d21243c3eb10b7 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:43:42 +0800
 Subject: [PATCH 1/2] kmscon: 9.3.5 -> 10.0.0
@@ -96,19 +96,19 @@ index 9f896b7611437..0000000000000
 - #
 - # Required dependencies
 
-From 7bc27ba9fc3e5427a8dd01f1d9069158625f41b6 Mon Sep 17 00:00:00 2001
+From 80ecc53d36c84f4bbbcf6572066eaacbca117aef Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 25 May 2026 21:15:13 +0800
 Subject: [PATCH 2/2] nixos/kmscon: RFC42 treatment, support version 10.0.0
 
 This commit includes changes from #483195, #523569, and #523955.
 ---
- nixos/modules/services/ttys/kmscon.nix | 208 ++++++++++++++-----------
+ nixos/modules/services/ttys/kmscon.nix | 210 +++++++++++++++----------
  nixos/tests/kmscon.nix                 |  22 +--
- 2 files changed, 134 insertions(+), 96 deletions(-)
+ 2 files changed, 136 insertions(+), 96 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index 85b47e1b62cee..ee32645d20671 100644
+index 85b47e1b62cee..d9dada9d9cf74 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
 @@ -2,6 +2,7 @@
@@ -142,24 +142,26 @@ index 85b47e1b62cee..ee32645d20671 100644
    };
  
    baseLoginOptions = "-p";
-@@ -55,6 +59,16 @@ in
+@@ -55,6 +59,18 @@ in
  
        Check `services.getty.autologinUser` instead.
      '')
++    (lib.mkRemovedOptionModule [ "services" "kmscon" "fonts" ] ''
++      `services.kmscon.fonts` is removed.
++
++      Add your font to `fonts.packages` and configure it with
++      `services.kmscon.config.font-name` instead.
++    '')
 +    (lib.mkRenamedOptionModule [ "services" "kmscon" "extraConfig" ] [ "services" "kmscon" "config" ])
 +    (lib.mkRenamedOptionModule [ "services" "kmscon" "term" ] [ "services" "kmscon" "config" "term" ])
 +    (lib.mkRenamedOptionModule
 +      [ "services" "kmscon" "hwRender" ]
 +      [ "services" "kmscon" "config" "hwaccel" ]
 +    )
-+    (lib.mkRenamedOptionModule
-+      [ "services" "kmscon" "fonts" ]
-+      [ "services" "kmscon" "config" "font-name" ]
-+    )
    ];
  
    options = {
-@@ -68,45 +82,35 @@ in
+@@ -68,45 +84,35 @@ in
  
        package = mkPackageOption pkgs "kmscon" { };
  
@@ -232,7 +234,7 @@ index 85b47e1b62cee..ee32645d20671 100644
        };
  
        extraOptions = mkOption {
-@@ -124,30 +128,45 @@ in
+@@ -124,30 +130,45 @@ in
          assertion = gettyCfg.loginOptions == null;
          message = "services.getty.loginOptions is not supported when services.kmscon is enabled.";
        }
@@ -296,7 +298,7 @@ index 85b47e1b62cee..ee32645d20671 100644
  
        restartIfChanged = false;
        # logind spawns autovt@ttyN.service on VT switch; point it at kmscon
-@@ -156,40 +175,55 @@ in
+@@ -156,40 +177,55 @@ in
  
      # tty1 is special: logind does not spawn autovt@tty1, it expects a static
      # pull-in via getty.target. With getty@ suppressed, we must replace it.
