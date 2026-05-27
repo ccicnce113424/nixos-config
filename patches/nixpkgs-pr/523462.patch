@@ -1,4 +1,4 @@
-From 41d6f7b7680d251e49fdd90e49b276ef6e8e21cb Mon Sep 17 00:00:00 2001
+From 2679fce769242ea716fc209fe643150574e0276d Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 1/3] scx-loader: init at 1.1.1
@@ -68,7 +68,7 @@ index 0000000000000..10d76a2765df6
 +  };
 +})
 
-From d829886a4853a9bb541c2906c2509f8a4c6bf1db Mon Sep 17 00:00:00 2001
+From 046664042dbeabd2a419a0b9838c8c49c5c272ec Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 2/3] nixos/scx-loader: init
@@ -209,7 +209,7 @@ index 0000000000000..3803e59bb3a7b
 +  meta.maintainers = with lib.maintainers; [ ccicnce113424 ];
 +}
 
-From fab5e7a3c5b1b1a54ba71e40edf928e81e04ec11 Mon Sep 17 00:00:00 2001
+From 3aa7e59bc84d2ab6cf26f5af1865b5efae98a2ac Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 3/3] nixosTests.scx-loader: init
