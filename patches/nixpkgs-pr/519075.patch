@@ -1,4 +1,4 @@
-From e689d3190522ec38ca85b62f5b8fe75870df9776 Mon Sep 17 00:00:00 2001
+From 82435082bb22867853eac7d5d5b687782d6c8209 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 1/3] nixos/ntfs: install userspace utils for the new
@@ -70,7 +70,7 @@ index 8ec839fed7eb8..b056e8b654e69 100644
 +  ];
  }
 
-From 574295f3047479ffcfb7c37c5fb9c1ff8a482ba4 Mon Sep 17 00:00:00 2001
+From a02dcd5067de27c2cf04bf025e9e8a7b5be3b18e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-20
@@ -150,7 +150,7 @@ index 0000000000000..9717f7acfc03a
 +  };
 +}
 diff --git a/pkgs/top-level/linux-kernels.nix b/pkgs/top-level/linux-kernels.nix
-index fe8ebd43504fb..a0fe011e83f9f 100644
+index 1c674c91fda07..520cea49d2e88 100644
 --- a/pkgs/top-level/linux-kernels.nix
 +++ b/pkgs/top-level/linux-kernels.nix
 @@ -390,6 +390,9 @@ in
@@ -164,7 +164,7 @@ index fe8ebd43504fb..a0fe011e83f9f 100644
  
          tbs = callPackage ../os-specific/linux/tbs { };
 
-From a3177c0cf65ac35a06f67e7b92b5dcf610d77aea Mon Sep 17 00:00:00 2001
+From 6a4422a486b0f2be77a303d09695132a878a0e42 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 3/3] nixos/ntfs: add option to force use new NTFS(NTFSPLUS)
