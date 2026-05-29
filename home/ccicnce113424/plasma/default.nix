@@ -60,7 +60,7 @@
     ];
     workspace = {
       lookAndFeel = "org.kde.breezedark.desktop";
-      wallpaperCustomPlugin.plugin = "org.waywallen.kde";
+      # wallpaperCustomPlugin.plugin = "org.waywallen.kde";
     };
 
     fonts = rec {
@@ -112,17 +112,17 @@
     krunner-zed
   ];
 
-  systemd.user.services.waywallen = {
-    Unit = {
-      Description = "Waywallen daemon";
-      After = [ "graphical-session.target" ];
-      PartOf = [ "graphical-session.target" ];
-    };
+  # systemd.user.services.waywallen = {
+  #   Unit = {
+  #     Description = "Waywallen daemon";
+  #     After = [ "graphical-session.target" ];
+  #     PartOf = [ "graphical-session.target" ];
+  #   };
 
-    Install.WantedBy = [ "graphical-session.target" ];
+  #   Install.WantedBy = [ "graphical-session.target" ];
 
-    Service.ExecStart = "${lib.getExe pkgs.waywallen-bin} --no-ui";
-  };
+  #   Service.ExecStart = "${lib.getExe pkgs.waywallen-bin} --no-ui";
+  # };
 
   imports = [ ./power.nix ];
 }
