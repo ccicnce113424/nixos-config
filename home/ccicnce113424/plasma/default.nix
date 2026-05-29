@@ -58,7 +58,10 @@
         ];
       }
     ];
-    workspace.lookAndFeel = "org.kde.breezedark.desktop";
+    workspace = {
+      lookAndFeel = "org.kde.breezedark.desktop";
+      wallpaperCustomPlugin.plugin = "org.waywallen.kde";
+    };
 
     fonts = rec {
       fixedWidth = {
@@ -99,6 +102,8 @@
       plasmusic-toolbar
       kdePackages.wallpaper-engine-plugin
       krunner-fd-plugin
+      waywallen-display-bin
+      waywallen-bin
     ]
     ++ lib.optional (osConfig.networking.hostName == "ccic-laptop") pkgs.plasmavantage;
 
@@ -106,6 +111,18 @@
     krunner-fd-plugin
     krunner-zed
   ];
+
+  systemd.user.services.waywallen = {
+    Unit = {
+      Description = "Waywallen daemon";
+      After = [ "graphical-session.target" ];
+      PartOf = [ "graphical-session.target" ];
+    };
+
+    Install.WantedBy = [ "graphical-session.target" ];
+
+    Service.ExecStart = "${lib.getExe pkgs.waywallen-bin} --no-ui";
+  };
 
   imports = [ ./power.nix ];
 }
