@@ -1,4 +1,4 @@
-From b1deb6f2dae02e1f2f592802ff130d3b4f334333 Mon Sep 17 00:00:00 2001
+From e1632511d080aa84b8fc2c8fbd1f2cc271e297a9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 16 May 2026 09:43:42 +0800
 Subject: [PATCH 1/2] kmscon: 9.3.5 -> 10.0.0
@@ -96,7 +96,7 @@ index 9f896b7611437..0000000000000
 - #
 - # Required dependencies
 
-From 0ab6d274f46f942d232d855d004dea22f36dfd74 Mon Sep 17 00:00:00 2001
+From 8336d7441b33bfc954c48e00621a119ff92511bf Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 25 May 2026 21:15:13 +0800
 Subject: [PATCH 2/2] nixos/kmscon: RFC42 treatment, support version 10.0.0
