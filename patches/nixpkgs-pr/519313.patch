@@ -1028,18 +1028,20 @@ index 0000000000000..be8d3a0d37177
 +  };
 +})
 
-From 44dda967bc4c53d680bfffeaf0441c68a53ec95a Mon Sep 17 00:00:00 2001
+From eb0da5fb39fc75125838cf02da90f858f43bc402 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 4/4] nvidia-modprobe: move to linuxPackages.nvidiaPackages
 
 ---
- .../li/libnvidia-container/package.nix        | 11 ++++---
- pkgs/os-specific/linux/nvidia-x11/default.nix | 31 +++++++++++++------
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 13 ++++++++
- .../linux/nvidia-x11/kernel-modules.nix       |  2 ++
- .../linux/nvidia-x11/modprobe.nix}            | 16 ++++++----
- 5 files changed, 53 insertions(+), 20 deletions(-)
+ .../li/libnvidia-container/package.nix        | 11 ++---
+ .../nvidia-x11/{utils.nix => binaries.nix}    |  0
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 31 +++++++++-----
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 40 ++++++++++++-------
+ .../linux/nvidia-x11/kernel-modules.nix       |  2 +
+ .../linux/nvidia-x11/modprobe.nix}            | 16 +++++---
+ 6 files changed, 65 insertions(+), 35 deletions(-)
+ rename pkgs/os-specific/linux/nvidia-x11/{utils.nix => binaries.nix} (100%)
  rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (66%)
 
 diff --git a/pkgs/by-name/li/libnvidia-container/package.nix b/pkgs/by-name/li/libnvidia-container/package.nix
@@ -1069,6 +1071,10 @@ index aef01c5c46967..3de64c712fc3b 100644
      patches = [
        (replaceVars ./modprobe.patch {
          inherit modprobeVersion;
+diff --git a/pkgs/os-specific/linux/nvidia-x11/utils.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
+similarity index 100%
+rename from pkgs/os-specific/linux/nvidia-x11/utils.nix
+rename to pkgs/os-specific/linux/nvidia-x11/binaries.nix
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
 index 43189b8f23153..d36d7d488f22a 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
@@ -1200,9 +1206,21 @@ index 43189b8f23153..d36d7d488f22a 100644
  
        broken = kernel.kernelAtLeast "6.7";
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index 8a98fc2d1d484..73fdf675c9ea3 100644
+index 8a98fc2d1d484..723239713c71f 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+@@ -1,9 +1,9 @@
+ # Single-function interface: takes both package dependencies (auto-resolved
+ # by callPackage in default.nix) and driver-specific arguments.
+ #
+-# The attrset passed to utils.nix is constructed explicitly via driverArgs
++# The attrset passed to binaries.nix is constructed explicitly via driverArgs
+ # so that every parameter (including defaults) is resolved before reaching
+-# utils.nix — utils.nix only keeps defaults for disable32Bit, firmware,
++# binaries.nix — binaries.nix only keeps defaults for disable32Bit, firmware,
+ # and acceptLicense.
+ {
+   # Package dependencies (auto-resolved by callPackage)
 @@ -28,6 +28,8 @@
    persistencedVersion ? version,
    fabricmanagerSha256 ? null,
@@ -1221,7 +1239,48 @@ index 8a98fc2d1d484..73fdf675c9ea3 100644
        }
      );
  
-@@ -225,10 +229,19 @@ nvidiaDriver.overrideAttrs (
+@@ -116,7 +120,7 @@ let
+     let
+       # Driver arguments shared between the main build and the i686 lib32 build.
+       # Constructed explicitly so that every parameter (including defaults) is
+-      # resolved before reaching utils.nix.
++      # resolved before reaching binaries.nix.
+       driverArgs = {
+         inherit
+           version
+@@ -140,22 +144,19 @@ let
+           ;
+       };
+     in
+-    callPackage ./utils.nix (
++    callPackage ./binaries.nix (
+       driverArgs
+       // {
+         inherit libsOnly;
+         lib32 =
+-          if libsOnly then
+-            null
+-          else
+-            (pkgsi686Linux.callPackage ./utils.nix (
+-              driverArgs
+-              // {
+-                libsOnly = true;
+-                lib32 = null;
+-                firmware = false;
+-              }
+-            )).out;
++          (pkgsi686Linux.callPackage ./binaries.nix (
++            driverArgs
++            // {
++              libsOnly = true;
++              lib32 = null;
++              firmware = false;
++            }
++          )).out;
+       }
+     );
+ in
+@@ -225,10 +226,19 @@ nvidiaDriver.overrideAttrs (
            ) fabricmanagerSha256
          else
            { };
