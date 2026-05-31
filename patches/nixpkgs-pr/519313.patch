@@ -1,7 +1,7 @@
-From b72368a4918835bc8783d068a9a5edcdfe1190e8 Mon Sep 17 00:00:00 2001
+From 6e5114e90a5874f04eafd6eb1e2e8a75521bd914 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Thu, 28 May 2026 02:04:21 +0800
-Subject: [PATCH 1/4] linuxPackages.nvidiaPackages.production: 595.71.05 ->
+Subject: [PATCH 1/3] linuxPackages.nvidiaPackages.production: 595.71.05 ->
  595.80
 
 ---
@@ -9,7 +9,7 @@ Subject: [PATCH 1/4] linuxPackages.nvidiaPackages.production: 595.71.05 ->
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index b01fb26204cea..156e472d88f50 100644
+index 040b194c56d8d..a0c73a0191052 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -71,12 +71,12 @@ rec {
@@ -32,768 +32,29 @@ index b01fb26204cea..156e472d88f50 100644
  
    new_feature = generic {
 
-From bdda5c92a625ebe82a548717ad859f48fdade842 Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Wed, 27 May 2026 00:29:16 +0800
-Subject: [PATCH 2/4] linuxPackages.nvidiaPackages.new_feature: 590.48.01 ->
- 610.43.02
-
----
- pkgs/os-specific/linux/nvidia-x11/builder.sh  |  2 +-
- pkgs/os-specific/linux/nvidia-x11/default.nix | 13 ++++++-------
- 2 files changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/pkgs/os-specific/linux/nvidia-x11/builder.sh b/pkgs/os-specific/linux/nvidia-x11/builder.sh
-index 8fa9b8b8fe8b4..cf0a4fefd3996 100755
---- a/pkgs/os-specific/linux/nvidia-x11/builder.sh
-+++ b/pkgs/os-specific/linux/nvidia-x11/builder.sh
-@@ -142,7 +142,7 @@ installPhase() {
- 
-     if [ -n "$firmware" ]; then
-         # Install the GSP firmware
--        install -Dm644 -t $firmware/lib/firmware/nvidia/$version firmware/gsp*.bin
-+        install -Dm644 -t $firmware/lib/firmware/nvidia/$version firmware/*.bin
-     fi
- 
-     # All libs except GUI-only are installed now, so fixup them.
-diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index b01fb26204cea..040b194c56d8d 100644
---- a/pkgs/os-specific/linux/nvidia-x11/default.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
-@@ -80,13 +80,12 @@ rec {
-   };
- 
-   new_feature = generic {
--    version = "590.48.01";
--    sha256_64bit = "sha256-ueL4BpN4FDHMh/TNKRCeEz3Oy1ClDWto1LO/LWlr1ok=";
--    sha256_aarch64 = "sha256-FOz7f6pW1NGM2f74kbP6LbNijxKj5ZtZ08bm0aC+/YA=";
--    openSha256 = "sha256-hECHfguzwduEfPo5pCDjWE/MjtRDhINVr4b1awFdP44=";
--    settingsSha256 = "sha256-NWsqUciPa4f1ZX6f0By3yScz3pqKJV1ei9GvOF8qIEE=";
--    persistencedSha256 = "sha256-wsNeuw7IaY6Qc/i/AzT/4N82lPjkwfrhxidKWUtcwW8=";
--    patchesOpen = [ kernel_6_19_patch ];
-+    version = "610.43.02";
-+    sha256_64bit = "sha256-MDSgVLtM33dS/43CclZMsQVROAS/9TU4lFkBsWyndGM=";
-+    sha256_aarch64 = "sha256-isWTnokUA/dzWocFBLalnk4+O5gSExVjs3dVpdYTU88=";
-+    openSha256 = "sha256-hP5NVZZ4vGsACHLmUDKq4uckpd/kn1GxCSYnnJfAuBs=";
-+    settingsSha256 = "sha256-0YAhufRgjDW+uR+kjaTb154fibpcDw8QowfrucoZsKE=";
-+    persistencedSha256 = "sha256-Whgv9X+v2fRhzliOl2LzltY9v1SxDafFfv3IUPqj/hk=";
-   };
- 
-   beta = generic {
-
-From ff1ae7a7cf6d45e4e10de7b0d0b8d5c4bb1c3676 Mon Sep 17 00:00:00 2001
+From a6c8f13eff5dfab508f42803a362b1a991c41342 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
-Subject: [PATCH 3/4] linuxPackages.nvidiaPackages: move userspace utilities to
+Subject: [PATCH 2/3] linuxPackages.nvidiaPackages: move userspace utilities to
  a separate file
 
 Assisted-by: Zed Agent:DeepSeek V4 Pro
 ---
- pkgs/os-specific/linux/nvidia-x11/default.nix |  12 +-
+ .../os-specific/linux/nvidia-x11/binaries.nix | 232 +++++++++++
+ pkgs/os-specific/linux/nvidia-x11/default.nix |  30 +-
  .../linux/nvidia-x11/fabricmanager.nix        |  17 +-
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 368 +++++++-----------
- .../linux/nvidia-x11/kernel-modules.nix       |   6 +-
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 379 +++++++-----------
+ .../linux/nvidia-x11/kernel-modules.nix       |   8 +-
  .../linux/nvidia-x11/persistenced.nix         |  21 +-
  .../os-specific/linux/nvidia-x11/settings.nix |  32 +-
- pkgs/os-specific/linux/nvidia-x11/utils.nix   | 232 +++++++++++
- 7 files changed, 403 insertions(+), 285 deletions(-)
- create mode 100644 pkgs/os-specific/linux/nvidia-x11/utils.nix
+ 7 files changed, 426 insertions(+), 293 deletions(-)
+ create mode 100644 pkgs/os-specific/linux/nvidia-x11/binaries.nix
 
-diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index a0c73a0191052..43189b8f23153 100644
---- a/pkgs/os-specific/linux/nvidia-x11/default.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
-@@ -10,17 +10,7 @@
- }:
- 
- let
--  generic =
--    args:
--    let
--      imported = import ./generic.nix args;
--    in
--    callPackage imported {
--      lib32 =
--        (pkgsi686Linux.callPackage imported {
--          libsOnly = true;
--        }).out;
--    };
-+  generic = callPackage ./generic.nix;
- 
-   selectHighestVersion = a: b: if lib.versionOlder a.version b.version then b else a;
- 
-diff --git a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
-index f81a304ba152b..09c173169f7d8 100644
---- a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
-@@ -1,5 +1,3 @@
--nvidia_x11: sha256:
--
- {
-   stdenv,
-   lib,
-@@ -8,23 +6,26 @@ nvidia_x11: sha256:
-   zlib,
-   glibc,
-   versionCheckHook,
-+  nvidia_x11,
-+  version,
-+  hash,
- }:
- 
- let
-   sys = lib.concatStringsSep "-" (lib.reverseList (lib.splitString "-" stdenv.system));
-   bsys = builtins.replaceStrings [ "_" ] [ "-" ] sys;
--  fmver = nvidia_x11.fabricmanagerVersion;
-   ldd = (lib.getBin glibc) + "/bin/ldd";
- in
- 
--stdenv.mkDerivation rec {
-+stdenv.mkDerivation (finalAttrs: {
-   pname = "fabricmanager";
--  version = fmver;
-+  inherit version;
-+
-   src = fetchurl {
-     url =
-       "https://developer.download.nvidia.com/compute/nvidia-driver/redist/fabricmanager/"
--      + "${sys}/${pname}-${sys}-${fmver}-archive.tar.xz";
--    inherit sha256;
-+      + "${sys}/${finalAttrs.pname}-${sys}-${finalAttrs.version}-archive.tar.xz";
-+    inherit hash;
-   };
- 
-   installPhase = ''
-@@ -82,4 +83,4 @@ stdenv.mkDerivation rec {
-     mainProgram = "nv-fabricmanager";
-     maintainers = with lib.maintainers; [ edwtjo ];
-   };
--}
-+})
-diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index e6c1595ae572d..8a98fc2d1d484 100644
---- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-@@ -1,16 +1,34 @@
-+# Single-function interface: takes both package dependencies (auto-resolved
-+# by callPackage in default.nix) and driver-specific arguments.
-+#
-+# The attrset passed to utils.nix is constructed explicitly via driverArgs
-+# so that every parameter (including defaults) is resolved before reaching
-+# utils.nix — utils.nix only keeps defaults for disable32Bit, firmware,
-+# and acceptLicense.
- {
-+  # Package dependencies (auto-resolved by callPackage)
-+  lib,
-+  runCommandLocal,
-+  patchutils,
-+  callPackage,
-+  pkgsi686Linux,
-+  fetchzip,
-+  libsOnly ? false,
-+  # Driver version and sources
-   version,
-   url ? null,
-   sha256_32bit ? null,
-   sha256_64bit,
-   sha256_aarch64 ? null,
-   openSha256 ? null,
-+  # Passthru package hashes and versions
-   settingsSha256 ? null,
--  settingsVersion ? null,
-+  settingsVersion ? version,
-   persistencedSha256 ? null,
--  persistencedVersion ? null,
-+  persistencedVersion ? version,
-   fabricmanagerSha256 ? null,
--  fabricmanagerVersion ? null,
-+  fabricmanagerVersion ? version,
-+  # Feature flags
-   useGLVND ? true,
-   useProfiles ? true,
-   preferGtk2 ? false,
-@@ -19,7 +37,7 @@
-   usePersistenced ? true,
-   useFabricmanager ? false,
-   ibtSupport ? false,
--
-+  # Build customization
-   prePatch ? null,
-   postPatch ? null,
-   patchFlags ? null,
-@@ -29,45 +47,46 @@
-   postInstall ? null,
-   broken ? false,
-   brokenOpen ? broken,
--}@args:
--
--{
--  lib,
--  stdenv,
--  runCommandLocal,
--  patchutils,
--  callPackage,
--  pkgs,
--  pkgsi686Linux,
--  fetchurl,
--  fetchzip,
--  which,
--  libarchive,
--  jq,
--  zstd,
--  # Whether to build only userspace libraries (without bin/modsrc/firmware
--  # outputs). Used to support 32-bit binaries on 64-bit Linux.
--  libsOnly ? false,
--  # don't include the bundled 32-bit libraries on 64-bit platforms,
--  # even if it’s in downloaded binary
--  disable32Bit ? stdenv.hostPlatform.system == "aarch64-linux",
--  # 32 bit libs only version of this package
--  lib32 ? null,
--  # Whether to extract the GSP firmware, datacenter drivers needs to extract the
--  # firmware
--  firmware ? openSha256 != null || useFabricmanager,
--  # Whether the user accepts the NVIDIA Software License
--  config,
--  acceptLicense ? config.nvidia.acceptLicense or false,
- }:
- 
--assert lib.versionOlder version "391" -> sha256_32bit != null;
- assert useSettings -> settingsSha256 != null;
- assert usePersistenced -> persistencedSha256 != null;
- assert useFabricmanager -> fabricmanagerSha256 != null;
- assert useFabricmanager -> !useSettings;
- 
- let
-+  fetchFromGithubOrNvidia =
-+    {
-+      owner,
-+      repo,
-+      tag,
-+      nvrepo ? repo,
-+      nvext ? "bz2",
-+      ...
-+    }@fetchArgs:
-+    let
-+      fetchArgs' = removeAttrs fetchArgs [
-+        "owner"
-+        "repo"
-+        "tag"
-+        "nvrepo"
-+        "nvext"
-+      ];
-+      baseUrl = "https://github.com/${owner}/${repo}";
-+    in
-+    fetchzip (
-+      fetchArgs'
-+      // {
-+        urls = [
-+          "${baseUrl}/archive/${tag}.tar.gz"
-+          "https://download.nvidia.com/XFree86/${nvrepo}/${nvrepo}-${tag}.tar.${nvext}"
-+        ];
-+        # github and nvidia use different compression algorithms,
-+        # use an invalid file extension to force detection.
-+        extension = "tar.??";
-+      }
-+    );
-+
-   # Rewrites patches meant for the kernel/* folder structure to kernel-open/*
-   rewritePatch =
-     { from, to }:
-@@ -91,169 +110,67 @@ let
-           --clean "$patch" > "$out"
-       '';
- 
--  pkgSuffix = lib.optionalString (lib.versionOlder version "304") "-pkg0";
--  i686bundled = lib.versionAtLeast version "391" && !disable32Bit;
--
--  libPathFor =
--    pkgs:
--    lib.makeLibraryPath (
--      with pkgs;
--      [
--        libdrm
--        libxext
--        libx11
--        libxv
--        libxrandr
--        libxcb
--        zlib
--        stdenv.cc.cc
--        wayland
--        libgbm
--        libGL
--        openssl
--        dbus # for nvidia-powerd
--      ]
--    );
--
--  # maybe silly since we've ignored this previously and just unfree..
--  throwLicense = throw ''
--    Use of NVIDIA Software requires license acceptance of the license:
--
--      - License For Customer Use of NVIDIA Software [1]
--
--    You can express acceptance by setting acceptLicense to true your nixpkgs.config.
--    Example:
--
--      configuration.nix:
--        nixpkgs.config.allowUnfree = true;
--        nixpkgs.config.nvidia.acceptLicense = true;
--
--      config.nix:
--        allowUnfree = true;
--        nvidia.acceptLicense = true;
--
--    [1]: https://www.nvidia.com/content/DriverDownloads/licence.php?lang=us
--  '';
--in
--
--stdenv.mkDerivation (finalAttrs: {
--  pname = "nvidia-${if useFabricmanager then "dc" else "x11"}";
--
--  builder = ./builder.sh;
--
--  src =
--    if !acceptLicense && (openSha256 == null) then
--      throwLicense
--    else if stdenv.hostPlatform.system == "x86_64-linux" then
--      fetchurl {
--        urls =
--          if args ? url then
--            [ args.url ]
--          else
--            [
--              "https://us.download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}${pkgSuffix}.run"
--              "https://download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}${pkgSuffix}.run"
--            ];
--        sha256 = sha256_64bit;
--      }
--    else if stdenv.hostPlatform.system == "i686-linux" then
--      fetchurl {
--        urls =
--          if args ? url then
--            [ args.url ]
--          else
--            [
--              "https://us.download.nvidia.com/XFree86/Linux-x86/${version}/NVIDIA-Linux-x86-${version}${pkgSuffix}.run"
--              "https://download.nvidia.com/XFree86/Linux-x86/${version}/NVIDIA-Linux-x86-${version}${pkgSuffix}.run"
--            ];
--        sha256 = sha256_32bit;
--      }
--    else if stdenv.hostPlatform.system == "aarch64-linux" && sha256_aarch64 != null then
--      fetchurl {
--        urls =
--          if args ? url then
--            [ args.url ]
--          else
--            [
--              "https://us.download.nvidia.com/XFree86/aarch64/${version}/NVIDIA-Linux-aarch64-${version}${pkgSuffix}.run"
--              "https://download.nvidia.com/XFree86/Linux-aarch64/${version}/NVIDIA-Linux-aarch64-${version}${pkgSuffix}.run"
--            ];
--        sha256 = sha256_aarch64;
--      }
--    else
--      throw "nvidia-x11 does not support platform ${stdenv.hostPlatform.system}";
--
--  patches = if libsOnly then null else patches;
--  inherit prePatch postPatch patchFlags;
--  inherit preInstall postInstall;
--  inherit version useGLVND useProfiles;
--  inherit (stdenv.hostPlatform) system;
--  inherit i686bundled;
--
--  outputs = [
--    "out"
--  ]
--  ++ lib.optional i686bundled "lib32"
--  ++ lib.optionals (!libsOnly) [
--    "bin"
--    "modsrc"
--  ]
--  ++ lib.optional (!libsOnly && firmware) "firmware";
--  outputDev = if libsOnly then null else "bin";
--
--  dontStrip = true;
--  dontPatchELF = true;
--
--  libPath = libPathFor pkgs;
--  libPath32 = lib.optionalString i686bundled (libPathFor pkgsi686Linux);
--
--  nativeBuildInputs = [
--    libarchive
--    jq
--  ]
--  # NVIDIA has changed the compression format of their driver to zstd since version 530.30.02
--  # https://forums.developer.nvidia.com/t/linux-solaris-and-freebsd-driver-530-30-02-beta/244406
--  ++ (if (lib.versionAtLeast version "530") then [ zstd ] else [ which ]);
--
--  passthru =
-+  # The main build: extracts libraries, binaries, kernel module sources
-+  # and firmware from the NVIDIA driver installer.
-+  nvidiaDriver =
-     let
--      fetchFromGithubOrNvidia =
--        {
--          owner,
--          repo,
--          rev,
--          ...
--        }@args:
--        let
--          args' = removeAttrs args [
--            "owner"
--            "repo"
--            "rev"
--          ];
--          baseUrl = "https://github.com/${owner}/${repo}";
--        in
--        fetchzip (
--          args'
--          // {
--            urls = [
--              "${baseUrl}/archive/${rev}.tar.gz"
--              "https://download.nvidia.com/XFree86/${repo}/${repo}-${rev}.tar.bz2"
--            ];
--            # github and nvidia use different compression algorithms,
--            #  use an invalid file extension to force detection.
--            extension = "tar.??";
--          }
--        );
-+      # Driver arguments shared between the main build and the i686 lib32 build.
-+      # Constructed explicitly so that every parameter (including defaults) is
-+      # resolved before reaching utils.nix.
-+      driverArgs = {
-+        inherit
-+          version
-+          url
-+          sha256_32bit
-+          sha256_64bit
-+          sha256_aarch64
-+          openSha256
-+          useGLVND
-+          useProfiles
-+          useFabricmanager
-+          ibtSupport
-+          prePatch
-+          postPatch
-+          patchFlags
-+          patches
-+          preInstall
-+          postInstall
-+          broken
-+          brokenOpen
-+          ;
-+      };
-     in
--    {
-+    callPackage ./utils.nix (
-+      driverArgs
-+      // {
-+        inherit libsOnly;
-+        lib32 =
-+          if libsOnly then
-+            null
-+          else
-+            (pkgsi686Linux.callPackage ./utils.nix (
-+              driverArgs
-+              // {
-+                libsOnly = true;
-+                lib32 = null;
-+                firmware = false;
-+              }
-+            )).out;
-+      }
-+    );
-+in
-+nvidiaDriver.overrideAttrs (
-+  finalAttrs: prevAttrs: {
-+    passthru = lib.recursiveUpdate prevAttrs.passthru {
-       mod =
-         if !libsOnly then
-           callPackage ./kernel-modules.nix {
-             open = false;
-             nvidia_x11 = finalAttrs.finalPackage;
--            # build files already patched when building the main package, so no need to patch them again
-+            # build files already patched when building the main package,
-+            # so no need to patch them again
-             patches = [ ];
--            inherit broken;
-+            inherit broken fetchFromGithubOrNvidia;
-           }
-         else
-           { };
-@@ -261,7 +178,7 @@ stdenv.mkDerivation (finalAttrs: {
-         hash:
-         callPackage ./kernel-modules.nix {
-           open = true;
--          inherit hash;
-+          inherit hash fetchFromGithubOrNvidia;
-           nvidia_x11 = finalAttrs.finalPackage;
-           patches =
-             (map (rewritePatch {
-@@ -274,21 +191,24 @@ stdenv.mkDerivation (finalAttrs: {
-       ) openSha256;
-       settings =
-         if useSettings then
--          (if settings32Bit then pkgsi686Linux.callPackage else callPackage)
--            (import ./settings.nix finalAttrs.finalPackage settingsSha256)
--            {
--              withGtk2 = preferGtk2;
--              withGtk3 = !preferGtk2;
--              fetchFromGitHub = fetchFromGithubOrNvidia;
--            }
-+          (if settings32Bit then pkgsi686Linux.callPackage else callPackage) ./settings.nix {
-+            nvidia_x11 = finalAttrs.finalPackage;
-+            version = settingsVersion;
-+            hash = settingsSha256;
-+            withGtk2 = preferGtk2;
-+            withGtk3 = !preferGtk2;
-+            inherit fetchFromGithubOrNvidia;
-+          }
-         else
-           { };
-       persistenced =
-         if usePersistenced then
-           lib.mapNullable (
-             hash:
--            callPackage (import ./persistenced.nix finalAttrs.finalPackage hash) {
--              fetchFromGitHub = fetchFromGithubOrNvidia;
-+            callPackage ./persistenced.nix {
-+              nvidia_x11 = finalAttrs.finalPackage;
-+              version = persistencedVersion;
-+              inherit fetchFromGithubOrNvidia hash;
-             }
-           ) persistencedSha256
-         else
-@@ -296,42 +216,20 @@ stdenv.mkDerivation (finalAttrs: {
-       fabricmanager =
-         if useFabricmanager then
-           lib.mapNullable (
--            hash: callPackage (import ./fabricmanager.nix finalAttrs.finalPackage hash) { }
-+            hash:
-+            callPackage ./fabricmanager.nix {
-+              nvidia_x11 = finalAttrs.finalPackage;
-+              version = fabricmanagerVersion;
-+              inherit hash;
-+            }
-           ) fabricmanagerSha256
-         else
-           { };
--      settingsVersion = if settingsVersion != null then settingsVersion else finalAttrs.version;
--      persistencedVersion =
--        if persistencedVersion != null then persistencedVersion else finalAttrs.version;
--      fabricmanagerVersion =
--        if fabricmanagerVersion != null then fabricmanagerVersion else finalAttrs.version;
--      compressFirmware = false;
--      ibtSupport = ibtSupport || (lib.versionAtLeast version "530");
--    }
--    // lib.optionalAttrs (!i686bundled) {
--      inherit lib32;
-+      inherit
-+        settingsVersion
-+        persistencedVersion
-+        fabricmanagerVersion
-+        ;
-     };
--
--  meta = {
--    homepage = "https://www.nvidia.com/object/unix.html";
--    description = "${
--      if useFabricmanager then "Data Center" else "X.org"
--    } driver and kernel module for NVIDIA cards";
--    license = lib.licenses.unfreeRedistributable;
--    platforms = [
--      "x86_64-linux"
--    ]
--    ++ lib.optionals (sha256_32bit != null) [ "i686-linux" ]
--    ++ lib.optionals (sha256_aarch64 != null) [ "aarch64-linux" ];
--    sourceProvenance = with lib.sourceTypes; [
--      binaryNativeCode
--      binaryFirmware
--    ];
--    maintainers = with lib.maintainers; [
--      kiskae
--      edwtjo
--    ];
--    priority = 4; # resolves collision with xorg-server's "lib/xorg/modules/extensions/libglx.so"
--    broken = broken && brokenOpen;
--  };
--})
-+  }
-+)
-diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index 9e6998017f87e..9539103da3fa3 100644
---- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-@@ -1,7 +1,7 @@
- {
-   stdenv,
-   lib,
--  fetchFromGitHub,
-+  fetchFromGithubOrNvidia,
-   kernel,
-   kernelModuleMakeFlags,
-   nvidia_x11,
-@@ -19,10 +19,12 @@ stdenv.mkDerivation {
- 
-   src =
-     if open then
--      fetchFromGitHub {
-+      fetchFromGithubOrNvidia {
-         owner = "NVIDIA";
-         repo = "open-gpu-kernel-modules";
-         tag = nvidia_x11.version;
-+        nvrepo = "NVIDIA-kernel-module-source";
-+        nvext = "xz";
-         inherit hash;
-       }
-     else
-diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index 556e53f937af3..4294c55cd065d 100644
---- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-@@ -1,28 +1,29 @@
--nvidia_x11: sha256:
--
- {
-   stdenv,
-   lib,
--  fetchFromGitHub,
-+  fetchFromGithubOrNvidia,
-   buildPackages,
-   m4,
-   pkg-config,
-   addDriverRunpath,
-   libtirpc,
-+  nvidia_x11,
-+  version,
-+  hash,
- }:
- 
--stdenv.mkDerivation {
-+stdenv.mkDerivation (finalAttrs: {
-   pname = "nvidia-persistenced";
--  version = nvidia_x11.persistencedVersion;
-+  inherit version;
- 
--  src = fetchFromGitHub {
-+  src = fetchFromGithubOrNvidia {
-     owner = "NVIDIA";
-     repo = "nvidia-persistenced";
--    rev = nvidia_x11.persistencedVersion;
--    inherit sha256;
-+    tag = finalAttrs.version;
-+    inherit hash;
-   };
- 
--  env = lib.optionalAttrs (lib.versionOlder nvidia_x11.persistencedVersion "450.51") {
-+  env = lib.optionalAttrs (lib.versionOlder finalAttrs.version "450.51") {
-     NIX_CFLAGS_COMPILE = toString [ "-I${libtirpc.dev}/include/tirpc" ];
-     NIX_LDFLAGS = toString [ "-ltirpc" ];
-   };
-@@ -65,4 +66,4 @@ stdenv.mkDerivation {
-     maintainers = [ ];
-     mainProgram = "nvidia-persistenced";
-   };
--}
-+})
-diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index e47dc3cb4e613..ba8b44f0de4fc 100644
---- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-@@ -1,9 +1,7 @@
--nvidia_x11: sha256:
--
- {
-   stdenv,
-   lib,
--  fetchFromGitHub,
-+  fetchFromGithubOrNvidia,
-   fetchpatch,
-   pkg-config,
-   m4,
-@@ -21,16 +19,19 @@ nvidia_x11: sha256:
-   libglvnd,
-   wrapGAppsHook3,
-   addDriverRunpath,
-+  nvidia_x11,
-+  version,
-+  hash,
-   withGtk2 ? false,
-   withGtk3 ? true,
- }:
- 
- let
--  src = fetchFromGitHub {
-+  src = fetchFromGithubOrNvidia {
-     owner = "NVIDIA";
-     repo = "nvidia-settings";
--    rev = nvidia_x11.settingsVersion;
--    inherit sha256;
-+    tag = version;
-+    inherit hash;
-   };
- 
-   meta = {
-@@ -40,8 +41,7 @@ let
- 
-   libXNVCtrl = stdenv.mkDerivation {
-     pname = "libXNVCtrl";
--    version = nvidia_x11.settingsVersion;
--    inherit src;
-+    inherit version src;
- 
-     buildInputs = [
-       libxrandr
-@@ -61,7 +61,7 @@ let
-     patches = [
-       # Patch the Makefile to also produce a shared library.
-       (
--        if lib.versionOlder nvidia_x11.settingsVersion "400" then
-+        if lib.versionOlder version "400" then
-           ./libxnvctrl-build-shared-3xx.patch
-         else
-           ./libxnvctrl-build-shared.patch
-@@ -97,22 +97,16 @@ in
- 
- stdenv.mkDerivation {
-   pname = "nvidia-settings";
--  version = nvidia_x11.settingsVersion;
--
--  inherit src;
-+  inherit version src;
- 
-   patches =
--    lib.optional (lib.versionOlder nvidia_x11.settingsVersion "440") (fetchpatch {
-+    lib.optional (lib.versionOlder version "440") (fetchpatch {
-       # fixes "multiple definition of `VDPAUDeviceFunctions'" linking errors
-       url = "https://github.com/NVIDIA/nvidia-settings/commit/a7c1f5fce6303a643fadff7d85d59934bd0cf6b6.patch";
-       hash = "sha256-ZwF3dRTYt/hO8ELg9weoz1U/XcU93qiJL2d1aq1Jlak=";
-     })
-     ++
--      lib.optional
--        (
--          (lib.versionAtLeast nvidia_x11.settingsVersion "515.43.04")
--          && (lib.versionOlder nvidia_x11.settingsVersion "545.29")
--        )
-+      lib.optional ((lib.versionAtLeast version "515.43.04") && (lib.versionOlder version "545.29"))
-         (fetchpatch {
-           # fix wayland support for compositors that use wl_output version 4
-           url = "https://github.com/NVIDIA/nvidia-settings/pull/99/commits/2e0575197e2b3247deafd2a48f45afc038939a06.patch";
-@@ -152,7 +146,7 @@ stdenv.mkDerivation {
-     dbus
-     vulkan-headers
-   ]
--  ++ lib.optionals (withGtk2 || lib.versionOlder nvidia_x11.settingsVersion "525.53") [ gtk2 ]
-+  ++ lib.optionals (withGtk2 || lib.versionOlder version "525.53") [ gtk2 ]
-   ++ lib.optionals withGtk3 [
-     gtk3
-     librsvg
-diff --git a/pkgs/os-specific/linux/nvidia-x11/utils.nix b/pkgs/os-specific/linux/nvidia-x11/utils.nix
+diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 new file mode 100644
 index 0000000000000..be8d3a0d37177
 --- /dev/null
-+++ b/pkgs/os-specific/linux/nvidia-x11/utils.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 @@ -0,0 +1,232 @@
 +# This file provides the core logic for extracting and installing files from
 +# the proprietary NVIDIA driver installer (.run file).
@@ -1027,21 +288,800 @@ index 0000000000000..be8d3a0d37177
 +    broken = broken && brokenOpen;
 +  };
 +})
+diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
+index a0c73a0191052..8f6fd256f9c6a 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/default.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
+@@ -10,17 +10,7 @@
+ }:
+ 
+ let
+-  generic =
+-    args:
+-    let
+-      imported = import ./generic.nix args;
+-    in
+-    callPackage imported {
+-      lib32 =
+-        (pkgsi686Linux.callPackage imported {
+-          libsOnly = true;
+-        }).out;
+-    };
++  generic = callPackage ./generic.nix;
+ 
+   selectHighestVersion = a: b: if lib.versionOlder a.version b.version then b else a;
+ 
+@@ -74,7 +64,7 @@ rec {
+     version = "595.80";
+     sha256_64bit = "sha256-PVTIP+B/01c/8M66hXTAYTLg9T2Hy9u1gq43K7TF1Hg=";
+     sha256_aarch64 = "sha256-62uqbRsF+dizUqvXhBfmVFeV2gg4BH6f7kOta+uMMuk=";
+-    openSha256 = "sha256-nonwYYPItHeMC/5Ox/TlWhjiddMPu4PLqNhgIg+bfW8=";
++    openSha256 = "sha256-FSiTWCqPIHg399hB8Z787QE4eIT3+rcw1PX+5IhqAKg=";
+     settingsSha256 = "sha256-AtzYTz7kbmj3vxmBQTC0eAjM3b2I259y1tdxq90n9YU=";
+     persistencedSha256 = "sha256-WL57kKFWeRW0oPktp6afkUb5Om9MCGAvKWctk5yiyIA=";
+   };
+@@ -83,7 +73,7 @@ rec {
+     version = "610.43.02";
+     sha256_64bit = "sha256-MDSgVLtM33dS/43CclZMsQVROAS/9TU4lFkBsWyndGM=";
+     sha256_aarch64 = "sha256-isWTnokUA/dzWocFBLalnk4+O5gSExVjs3dVpdYTU88=";
+-    openSha256 = "sha256-hP5NVZZ4vGsACHLmUDKq4uckpd/kn1GxCSYnnJfAuBs=";
++    openSha256 = "sha256-8EzHTg1uGt5Y9zct3kE6W7ECQaUhsS3gjJNakBPyN9Q=";
+     settingsSha256 = "sha256-0YAhufRgjDW+uR+kjaTb154fibpcDw8QowfrucoZsKE=";
+     persistencedSha256 = "sha256-Whgv9X+v2fRhzliOl2LzltY9v1SxDafFfv3IUPqj/hk=";
+   };
+@@ -92,7 +82,7 @@ rec {
+     version = "595.45.04";
+     sha256_64bit = "sha256-zUllSSRsuio7dSkcbBTuxF+dN12d6jEPE0WgGvVOj14=";
+     sha256_aarch64 = "sha256-jl6lQWsgF6ya22sAhYPpERJ9r+wjnWzbGnINDpUMzsk=";
+-    openSha256 = "sha256-uqNfImwTKhK8gncUdP1TPp0D6Gog4MSeIJMZQiJWDoE=";
++    openSha256 = "sha256-zkNIsepBEgDwlw0GvSB0CoZk3Zozsv6peqprs62U3rU=";
+     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
+     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
+   };
+@@ -104,7 +94,7 @@ rec {
+     persistencedVersion = "595.45.04";
+     settingsVersion = "595.45.04";
+     sha256_64bit = "sha256-slPOKXeI3Y2ebiytS20c8bbwWbUdn2dFkwJih9Mbmyc=";
+-    openSha256 = "sha256-PpfrDfBkrzszROLDfgeBUISIZm3BimmXTRhkL/X4+p8=";
++    openSha256 = "sha256-gRFSLgQ6q6zAW+gsp7rtzN62eE29bVvIjAFVFutYsE0=";
+     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
+     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
+     url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
+@@ -119,7 +109,7 @@ rec {
+     sha256_64bit = "sha256-ueL4BpN4FDHMh/TNKRCeEz3Oy1ClDWto1LO/LWlr1ok=";
+     persistencedSha256 = "sha256-wsNeuw7IaY6Qc/i/AzT/4N82lPjkwfrhxidKWUtcwW8=";
+     fabricmanagerSha256 = "sha256-f/AQ8HrgoqBQyXNrXA/UaI4OMQ9QcjjYWIhr1/5uM74=";
+-    openSha256 = "sha256-hECHfguzwduEfPo5pCDjWE/MjtRDhINVr4b1awFdP44=";
++    openSha256 = "sha256-uGQQkQf1oKkGhOXgJ3IzQX1NkB7cGFcnl0HWuqeN8d4=";
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -131,7 +121,7 @@ rec {
+     sha256_64bit = "sha256-weZnYbCI0Xs632y2l53przi+JoTRArABoXbc+vq9yh4=";
+     persistencedSha256 = "sha256-vDawiy52GB8JABUKZDiQUc8uda8p/7jCFW7rTu6QMa4=";
+     fabricmanagerSha256 = "sha256-Jk6XVn/d6vqfxYGAACiD9UHelnjdC4+zOi4EEv8LuKE=";
+-    openSha256 = "sha256-zsNmjZW0cyZWPp3vDT3mNeqAo0hS0M7e9Tbvwvij+F4=";
++    openSha256 = "sha256-8p44gFfIn5/NaYqevX3N21Jc72S1OnSNaa9XktZnPNk=";
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -143,7 +133,7 @@ rec {
+     sha256_64bit = "sha256-AlaGfggsr5PXsl+nyOabMWBiqcbHLG4ij617I4xvoX0=";
+     persistencedSha256 = "sha256-x4K0Gp89LdL5YJhAI0AydMRxl6fyBylEnj+nokoBrK8=";
+     fabricmanagerSha256 = "sha256-jSTKzeRVTUcYma1Cb0ajSdXKCi6KzUXCp2OByPSWSR4=";
+-    openSha256 = "sha256-aTV5J4zmEgRCOavo6wLwh5efOZUG+YtoeIT/tnrC1Hg=";
++    openSha256 = "sha256-bwJQUj7eEM7XMji1bjS8T1Uw3qJtSE+fzZCtBKyHPH0=";
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -158,7 +148,7 @@ rec {
+     version = "580.142";
+     sha256_64bit = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
+     sha256_aarch64 = "sha256-jntr88SpTYR648P1rizQjB/8KleBoa14Ay12vx8XETM=";
+-    openSha256 = "sha256-v968LbRqy8jB9+yHy9ceP2TDdgyqfDQ6P41NsCoM2AY=";
++    openSha256 = "sha256-+GUL5U6LewBjUD0kr8LgE32ZoEsy3lx0JOSVbTaKxMQ=";
+     settingsSha256 = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
+     persistencedSha256 = "sha256-il403KPFAnDbB+dITnBGljhpsUPjZwmLjGt8iPKuBqw=";
+   };
+@@ -169,7 +159,7 @@ rec {
+     version = "535.288.01";
+     sha256_64bit = "sha256-8gwy/W7NH3BcbfJ5fAwIQlPs9/9I8sNH+Co5YZiC7OE=";
+     sha256_aarch64 = "sha256-2d3RYzU+W4uS6mUvpCNCfoVcAJA/aerNwm7Xbg0YJBo=";
+-    openSha256 = "sha256-kDM8jeHjcRCyhOs8AQk+ce3Qzf2cI5RGzzIraJrSmOE=";
++    openSha256 = "sha256-cepwckGQ7L+HV5B+1vROQfGQKzVeGM0/i6exSnuy2do=";
+     settingsSha256 = "sha256-hN4IWAD/M+th7brbzdBtgOQ2P1QUVrrWITgVGiuCxWw=";
+     persistencedSha256 = "sha256-q061VN6om3UzbpWD7+tJJVgU/e2YCJF4IgEv53qx9ZA=";
+   };
+diff --git a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
+index f81a304ba152b..09c173169f7d8 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
+@@ -1,5 +1,3 @@
+-nvidia_x11: sha256:
+-
+ {
+   stdenv,
+   lib,
+@@ -8,23 +6,26 @@ nvidia_x11: sha256:
+   zlib,
+   glibc,
+   versionCheckHook,
++  nvidia_x11,
++  version,
++  hash,
+ }:
+ 
+ let
+   sys = lib.concatStringsSep "-" (lib.reverseList (lib.splitString "-" stdenv.system));
+   bsys = builtins.replaceStrings [ "_" ] [ "-" ] sys;
+-  fmver = nvidia_x11.fabricmanagerVersion;
+   ldd = (lib.getBin glibc) + "/bin/ldd";
+ in
+ 
+-stdenv.mkDerivation rec {
++stdenv.mkDerivation (finalAttrs: {
+   pname = "fabricmanager";
+-  version = fmver;
++  inherit version;
++
+   src = fetchurl {
+     url =
+       "https://developer.download.nvidia.com/compute/nvidia-driver/redist/fabricmanager/"
+-      + "${sys}/${pname}-${sys}-${fmver}-archive.tar.xz";
+-    inherit sha256;
++      + "${sys}/${finalAttrs.pname}-${sys}-${finalAttrs.version}-archive.tar.xz";
++    inherit hash;
+   };
+ 
+   installPhase = ''
+@@ -82,4 +83,4 @@ stdenv.mkDerivation rec {
+     mainProgram = "nv-fabricmanager";
+     maintainers = with lib.maintainers; [ edwtjo ];
+   };
+-}
++})
+diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+index e6c1595ae572d..c6af5f5bb7f92 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+@@ -1,16 +1,35 @@
++# Single-function interface: takes both package dependencies (auto-resolved
++# by callPackage in default.nix) and driver-specific arguments.
++#
++# The attrset passed to binaries.nix is constructed explicitly via driverArgs
++# so that every parameter (including defaults) is resolved before reaching
++# binaries.nix — binaries.nix only keeps defaults for disable32Bit, firmware,
++# and acceptLicense.
+ {
++  # Package dependencies (auto-resolved by callPackage)
++  lib,
++  runCommandLocal,
++  patchutils,
++  callPackage,
++  pkgsi686Linux,
++  fetchzip,
++  fetchFromGitHub,
++  libsOnly ? false,
++  # Driver version and sources
+   version,
+   url ? null,
+   sha256_32bit ? null,
+   sha256_64bit,
+   sha256_aarch64 ? null,
+   openSha256 ? null,
++  # Passthru package hashes and versions
+   settingsSha256 ? null,
+-  settingsVersion ? null,
++  settingsVersion ? version,
+   persistencedSha256 ? null,
+-  persistencedVersion ? null,
++  persistencedVersion ? version,
+   fabricmanagerSha256 ? null,
+-  fabricmanagerVersion ? null,
++  fabricmanagerVersion ? version,
++  # Feature flags
+   useGLVND ? true,
+   useProfiles ? true,
+   preferGtk2 ? false,
+@@ -19,7 +38,7 @@
+   usePersistenced ? true,
+   useFabricmanager ? false,
+   ibtSupport ? false,
+-
++  # Build customization
+   prePatch ? null,
+   postPatch ? null,
+   patchFlags ? null,
+@@ -29,45 +48,48 @@
+   postInstall ? null,
+   broken ? false,
+   brokenOpen ? broken,
+-}@args:
+-
+-{
+-  lib,
+-  stdenv,
+-  runCommandLocal,
+-  patchutils,
+-  callPackage,
+-  pkgs,
+-  pkgsi686Linux,
+-  fetchurl,
+-  fetchzip,
+-  which,
+-  libarchive,
+-  jq,
+-  zstd,
+-  # Whether to build only userspace libraries (without bin/modsrc/firmware
+-  # outputs). Used to support 32-bit binaries on 64-bit Linux.
+-  libsOnly ? false,
+-  # don't include the bundled 32-bit libraries on 64-bit platforms,
+-  # even if it’s in downloaded binary
+-  disable32Bit ? stdenv.hostPlatform.system == "aarch64-linux",
+-  # 32 bit libs only version of this package
+-  lib32 ? null,
+-  # Whether to extract the GSP firmware, datacenter drivers needs to extract the
+-  # firmware
+-  firmware ? openSha256 != null || useFabricmanager,
+-  # Whether the user accepts the NVIDIA Software License
+-  config,
+-  acceptLicense ? config.nvidia.acceptLicense or false,
+ }:
+ 
+-assert lib.versionOlder version "391" -> sha256_32bit != null;
+ assert useSettings -> settingsSha256 != null;
+ assert usePersistenced -> persistencedSha256 != null;
+ assert useFabricmanager -> fabricmanagerSha256 != null;
+ assert useFabricmanager -> !useSettings;
+ 
+ let
++  fetchFromGithubOrNvidia =
++    {
++      owner,
++      repo,
++      tag,
++      nvrepo ? repo,
++      nvext ? "bz2",
++      ...
++    }@fetchArgs:
++    let
++      fetchArgs' = removeAttrs fetchArgs [
++        "owner"
++        "repo"
++        "tag"
++        "nvrepo"
++        "nvext"
++      ];
++      baseUrl = "https://github.com/${owner}/${repo}";
++    in
++    fetchzip (
++      fetchArgs'
++      // {
++        urls = [
++          "${baseUrl}/archive/${tag}.tar.gz"
++          "https://download.nvidia.com/XFree86/${nvrepo}/${nvrepo}-${tag}.tar.${nvext}"
++        ];
++        # github and nvidia use different compression algorithms,
++        # use an invalid file extension to force detection.
++        extension = "tar.??";
++        # do not try to retry 4xx errors
++        curlOptsList = [ "--no-retry-all-errors" ];
++      }
++    );
++
+   # Rewrites patches meant for the kernel/* folder structure to kernel-open/*
+   rewritePatch =
+     { from, to }:
+@@ -91,169 +113,64 @@ let
+           --clean "$patch" > "$out"
+       '';
+ 
+-  pkgSuffix = lib.optionalString (lib.versionOlder version "304") "-pkg0";
+-  i686bundled = lib.versionAtLeast version "391" && !disable32Bit;
+-
+-  libPathFor =
+-    pkgs:
+-    lib.makeLibraryPath (
+-      with pkgs;
+-      [
+-        libdrm
+-        libxext
+-        libx11
+-        libxv
+-        libxrandr
+-        libxcb
+-        zlib
+-        stdenv.cc.cc
+-        wayland
+-        libgbm
+-        libGL
+-        openssl
+-        dbus # for nvidia-powerd
+-      ]
+-    );
+-
+-  # maybe silly since we've ignored this previously and just unfree..
+-  throwLicense = throw ''
+-    Use of NVIDIA Software requires license acceptance of the license:
+-
+-      - License For Customer Use of NVIDIA Software [1]
+-
+-    You can express acceptance by setting acceptLicense to true your nixpkgs.config.
+-    Example:
+-
+-      configuration.nix:
+-        nixpkgs.config.allowUnfree = true;
+-        nixpkgs.config.nvidia.acceptLicense = true;
+-
+-      config.nix:
+-        allowUnfree = true;
+-        nvidia.acceptLicense = true;
+-
+-    [1]: https://www.nvidia.com/content/DriverDownloads/licence.php?lang=us
+-  '';
+-in
+-
+-stdenv.mkDerivation (finalAttrs: {
+-  pname = "nvidia-${if useFabricmanager then "dc" else "x11"}";
+-
+-  builder = ./builder.sh;
+-
+-  src =
+-    if !acceptLicense && (openSha256 == null) then
+-      throwLicense
+-    else if stdenv.hostPlatform.system == "x86_64-linux" then
+-      fetchurl {
+-        urls =
+-          if args ? url then
+-            [ args.url ]
+-          else
+-            [
+-              "https://us.download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}${pkgSuffix}.run"
+-              "https://download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}${pkgSuffix}.run"
+-            ];
+-        sha256 = sha256_64bit;
+-      }
+-    else if stdenv.hostPlatform.system == "i686-linux" then
+-      fetchurl {
+-        urls =
+-          if args ? url then
+-            [ args.url ]
+-          else
+-            [
+-              "https://us.download.nvidia.com/XFree86/Linux-x86/${version}/NVIDIA-Linux-x86-${version}${pkgSuffix}.run"
+-              "https://download.nvidia.com/XFree86/Linux-x86/${version}/NVIDIA-Linux-x86-${version}${pkgSuffix}.run"
+-            ];
+-        sha256 = sha256_32bit;
+-      }
+-    else if stdenv.hostPlatform.system == "aarch64-linux" && sha256_aarch64 != null then
+-      fetchurl {
+-        urls =
+-          if args ? url then
+-            [ args.url ]
+-          else
+-            [
+-              "https://us.download.nvidia.com/XFree86/aarch64/${version}/NVIDIA-Linux-aarch64-${version}${pkgSuffix}.run"
+-              "https://download.nvidia.com/XFree86/Linux-aarch64/${version}/NVIDIA-Linux-aarch64-${version}${pkgSuffix}.run"
+-            ];
+-        sha256 = sha256_aarch64;
+-      }
+-    else
+-      throw "nvidia-x11 does not support platform ${stdenv.hostPlatform.system}";
+-
+-  patches = if libsOnly then null else patches;
+-  inherit prePatch postPatch patchFlags;
+-  inherit preInstall postInstall;
+-  inherit version useGLVND useProfiles;
+-  inherit (stdenv.hostPlatform) system;
+-  inherit i686bundled;
+-
+-  outputs = [
+-    "out"
+-  ]
+-  ++ lib.optional i686bundled "lib32"
+-  ++ lib.optionals (!libsOnly) [
+-    "bin"
+-    "modsrc"
+-  ]
+-  ++ lib.optional (!libsOnly && firmware) "firmware";
+-  outputDev = if libsOnly then null else "bin";
+-
+-  dontStrip = true;
+-  dontPatchELF = true;
+-
+-  libPath = libPathFor pkgs;
+-  libPath32 = lib.optionalString i686bundled (libPathFor pkgsi686Linux);
+-
+-  nativeBuildInputs = [
+-    libarchive
+-    jq
+-  ]
+-  # NVIDIA has changed the compression format of their driver to zstd since version 530.30.02
+-  # https://forums.developer.nvidia.com/t/linux-solaris-and-freebsd-driver-530-30-02-beta/244406
+-  ++ (if (lib.versionAtLeast version "530") then [ zstd ] else [ which ]);
+-
+-  passthru =
++  # The main build: extracts libraries, binaries, kernel module sources
++  # and firmware from the NVIDIA driver installer.
++  nvidiaDriver =
+     let
+-      fetchFromGithubOrNvidia =
+-        {
+-          owner,
+-          repo,
+-          rev,
+-          ...
+-        }@args:
+-        let
+-          args' = removeAttrs args [
+-            "owner"
+-            "repo"
+-            "rev"
+-          ];
+-          baseUrl = "https://github.com/${owner}/${repo}";
+-        in
+-        fetchzip (
+-          args'
+-          // {
+-            urls = [
+-              "${baseUrl}/archive/${rev}.tar.gz"
+-              "https://download.nvidia.com/XFree86/${repo}/${repo}-${rev}.tar.bz2"
+-            ];
+-            # github and nvidia use different compression algorithms,
+-            #  use an invalid file extension to force detection.
+-            extension = "tar.??";
+-          }
+-        );
++      # Driver arguments shared between the main build and the i686 lib32 build.
++      # Constructed explicitly so that every parameter (including defaults) is
++      # resolved before reaching binaries.nix.
++      driverArgs = {
++        inherit
++          version
++          url
++          sha256_32bit
++          sha256_64bit
++          sha256_aarch64
++          openSha256
++          useGLVND
++          useProfiles
++          useFabricmanager
++          ibtSupport
++          prePatch
++          postPatch
++          patchFlags
++          patches
++          preInstall
++          postInstall
++          broken
++          brokenOpen
++          ;
++      };
+     in
+-    {
++    callPackage ./binaries.nix (
++      driverArgs
++      // {
++        inherit libsOnly;
++        lib32 =
++          (pkgsi686Linux.callPackage ./binaries.nix (
++            driverArgs
++            // {
++              libsOnly = true;
++              lib32 = null;
++              firmware = false;
++            }
++          )).out;
++      }
++    );
++in
++nvidiaDriver.overrideAttrs (
++  finalAttrs: prevAttrs: {
++    passthru = lib.recursiveUpdate prevAttrs.passthru {
+       mod =
+         if !libsOnly then
+           callPackage ./kernel-modules.nix {
+             open = false;
+             nvidia_x11 = finalAttrs.finalPackage;
+-            # build files already patched when building the main package, so no need to patch them again
++            # build files already patched when building the main package,
++            # so no need to patch them again
+             patches = [ ];
+-            inherit broken;
++            inherit broken fetchFromGithubOrNvidia;
+           }
+         else
+           { };
+@@ -270,25 +187,41 @@ stdenv.mkDerivation (finalAttrs: {
+             }) patches)
+             ++ patchesOpen;
+           broken = brokenOpen;
++          # we assume that if modprobeSha256 is not set, the user is using the old hash
++          fetchFromGithubOrNvidia =
++            if (modprobeSha256 == null) then
++              args:
++              fetchFromGitHub (
++                removeAttrs args [
++                  "nvrepo"
++                  "nvext"
++                  "postFetch"
++                ]
++              )
++            else
++              fetchFromGithubOrNvidia;
+         }
+       ) openSha256;
+       settings =
+         if useSettings then
+-          (if settings32Bit then pkgsi686Linux.callPackage else callPackage)
+-            (import ./settings.nix finalAttrs.finalPackage settingsSha256)
+-            {
+-              withGtk2 = preferGtk2;
+-              withGtk3 = !preferGtk2;
+-              fetchFromGitHub = fetchFromGithubOrNvidia;
+-            }
++          (if settings32Bit then pkgsi686Linux.callPackage else callPackage) ./settings.nix {
++            nvidia_x11 = finalAttrs.finalPackage;
++            version = settingsVersion;
++            hash = settingsSha256;
++            withGtk2 = preferGtk2;
++            withGtk3 = !preferGtk2;
++            inherit fetchFromGithubOrNvidia;
++          }
+         else
+           { };
+       persistenced =
+         if usePersistenced then
+           lib.mapNullable (
+             hash:
+-            callPackage (import ./persistenced.nix finalAttrs.finalPackage hash) {
+-              fetchFromGitHub = fetchFromGithubOrNvidia;
++            callPackage ./persistenced.nix {
++              nvidia_x11 = finalAttrs.finalPackage;
++              version = persistencedVersion;
++              inherit fetchFromGithubOrNvidia hash;
+             }
+           ) persistencedSha256
+         else
+@@ -296,42 +229,20 @@ stdenv.mkDerivation (finalAttrs: {
+       fabricmanager =
+         if useFabricmanager then
+           lib.mapNullable (
+-            hash: callPackage (import ./fabricmanager.nix finalAttrs.finalPackage hash) { }
++            hash:
++            callPackage ./fabricmanager.nix {
++              nvidia_x11 = finalAttrs.finalPackage;
++              version = fabricmanagerVersion;
++              inherit hash;
++            }
+           ) fabricmanagerSha256
+         else
+           { };
+-      settingsVersion = if settingsVersion != null then settingsVersion else finalAttrs.version;
+-      persistencedVersion =
+-        if persistencedVersion != null then persistencedVersion else finalAttrs.version;
+-      fabricmanagerVersion =
+-        if fabricmanagerVersion != null then fabricmanagerVersion else finalAttrs.version;
+-      compressFirmware = false;
+-      ibtSupport = ibtSupport || (lib.versionAtLeast version "530");
+-    }
+-    // lib.optionalAttrs (!i686bundled) {
+-      inherit lib32;
++      inherit
++        settingsVersion
++        persistencedVersion
++        fabricmanagerVersion
++        ;
+     };
+-
+-  meta = {
+-    homepage = "https://www.nvidia.com/object/unix.html";
+-    description = "${
+-      if useFabricmanager then "Data Center" else "X.org"
+-    } driver and kernel module for NVIDIA cards";
+-    license = lib.licenses.unfreeRedistributable;
+-    platforms = [
+-      "x86_64-linux"
+-    ]
+-    ++ lib.optionals (sha256_32bit != null) [ "i686-linux" ]
+-    ++ lib.optionals (sha256_aarch64 != null) [ "aarch64-linux" ];
+-    sourceProvenance = with lib.sourceTypes; [
+-      binaryNativeCode
+-      binaryFirmware
+-    ];
+-    maintainers = with lib.maintainers; [
+-      kiskae
+-      edwtjo
+-    ];
+-    priority = 4; # resolves collision with xorg-server's "lib/xorg/modules/extensions/libglx.so"
+-    broken = broken && brokenOpen;
+-  };
+-})
++  }
++)
+diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+index 9e6998017f87e..6a7de1c7488d5 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+@@ -1,7 +1,7 @@
+ {
+   stdenv,
+   lib,
+-  fetchFromGitHub,
++  fetchFromGithubOrNvidia,
+   kernel,
+   kernelModuleMakeFlags,
+   nvidia_x11,
+@@ -19,11 +19,15 @@ stdenv.mkDerivation {
+ 
+   src =
+     if open then
+-      fetchFromGitHub {
++      fetchFromGithubOrNvidia {
+         owner = "NVIDIA";
+         repo = "open-gpu-kernel-modules";
+         tag = nvidia_x11.version;
++        nvrepo = "NVIDIA-kernel-module-source";
++        nvext = "xz";
+         inherit hash;
++        # remove files which causes hash mismatches
++        postFetch = "rm -rf $out/.github $out/CHANGELOG.md";
+       }
+     else
+       nvidia_x11.modsrc;
+diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
+index 556e53f937af3..4294c55cd065d 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
+@@ -1,28 +1,29 @@
+-nvidia_x11: sha256:
+-
+ {
+   stdenv,
+   lib,
+-  fetchFromGitHub,
++  fetchFromGithubOrNvidia,
+   buildPackages,
+   m4,
+   pkg-config,
+   addDriverRunpath,
+   libtirpc,
++  nvidia_x11,
++  version,
++  hash,
+ }:
+ 
+-stdenv.mkDerivation {
++stdenv.mkDerivation (finalAttrs: {
+   pname = "nvidia-persistenced";
+-  version = nvidia_x11.persistencedVersion;
++  inherit version;
+ 
+-  src = fetchFromGitHub {
++  src = fetchFromGithubOrNvidia {
+     owner = "NVIDIA";
+     repo = "nvidia-persistenced";
+-    rev = nvidia_x11.persistencedVersion;
+-    inherit sha256;
++    tag = finalAttrs.version;
++    inherit hash;
+   };
+ 
+-  env = lib.optionalAttrs (lib.versionOlder nvidia_x11.persistencedVersion "450.51") {
++  env = lib.optionalAttrs (lib.versionOlder finalAttrs.version "450.51") {
+     NIX_CFLAGS_COMPILE = toString [ "-I${libtirpc.dev}/include/tirpc" ];
+     NIX_LDFLAGS = toString [ "-ltirpc" ];
+   };
+@@ -65,4 +66,4 @@ stdenv.mkDerivation {
+     maintainers = [ ];
+     mainProgram = "nvidia-persistenced";
+   };
+-}
++})
+diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+index e47dc3cb4e613..ba8b44f0de4fc 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+@@ -1,9 +1,7 @@
+-nvidia_x11: sha256:
+-
+ {
+   stdenv,
+   lib,
+-  fetchFromGitHub,
++  fetchFromGithubOrNvidia,
+   fetchpatch,
+   pkg-config,
+   m4,
+@@ -21,16 +19,19 @@ nvidia_x11: sha256:
+   libglvnd,
+   wrapGAppsHook3,
+   addDriverRunpath,
++  nvidia_x11,
++  version,
++  hash,
+   withGtk2 ? false,
+   withGtk3 ? true,
+ }:
+ 
+ let
+-  src = fetchFromGitHub {
++  src = fetchFromGithubOrNvidia {
+     owner = "NVIDIA";
+     repo = "nvidia-settings";
+-    rev = nvidia_x11.settingsVersion;
+-    inherit sha256;
++    tag = version;
++    inherit hash;
+   };
+ 
+   meta = {
+@@ -40,8 +41,7 @@ let
+ 
+   libXNVCtrl = stdenv.mkDerivation {
+     pname = "libXNVCtrl";
+-    version = nvidia_x11.settingsVersion;
+-    inherit src;
++    inherit version src;
+ 
+     buildInputs = [
+       libxrandr
+@@ -61,7 +61,7 @@ let
+     patches = [
+       # Patch the Makefile to also produce a shared library.
+       (
+-        if lib.versionOlder nvidia_x11.settingsVersion "400" then
++        if lib.versionOlder version "400" then
+           ./libxnvctrl-build-shared-3xx.patch
+         else
+           ./libxnvctrl-build-shared.patch
+@@ -97,22 +97,16 @@ in
+ 
+ stdenv.mkDerivation {
+   pname = "nvidia-settings";
+-  version = nvidia_x11.settingsVersion;
+-
+-  inherit src;
++  inherit version src;
+ 
+   patches =
+-    lib.optional (lib.versionOlder nvidia_x11.settingsVersion "440") (fetchpatch {
++    lib.optional (lib.versionOlder version "440") (fetchpatch {
+       # fixes "multiple definition of `VDPAUDeviceFunctions'" linking errors
+       url = "https://github.com/NVIDIA/nvidia-settings/commit/a7c1f5fce6303a643fadff7d85d59934bd0cf6b6.patch";
+       hash = "sha256-ZwF3dRTYt/hO8ELg9weoz1U/XcU93qiJL2d1aq1Jlak=";
+     })
+     ++
+-      lib.optional
+-        (
+-          (lib.versionAtLeast nvidia_x11.settingsVersion "515.43.04")
+-          && (lib.versionOlder nvidia_x11.settingsVersion "545.29")
+-        )
++      lib.optional ((lib.versionAtLeast version "515.43.04") && (lib.versionOlder version "545.29"))
+         (fetchpatch {
+           # fix wayland support for compositors that use wl_output version 4
+           url = "https://github.com/NVIDIA/nvidia-settings/pull/99/commits/2e0575197e2b3247deafd2a48f45afc038939a06.patch";
+@@ -152,7 +146,7 @@ stdenv.mkDerivation {
+     dbus
+     vulkan-headers
+   ]
+-  ++ lib.optionals (withGtk2 || lib.versionOlder nvidia_x11.settingsVersion "525.53") [ gtk2 ]
++  ++ lib.optionals (withGtk2 || lib.versionOlder version "525.53") [ gtk2 ]
+   ++ lib.optionals withGtk3 [
+     gtk3
+     librsvg
 
-From eb0da5fb39fc75125838cf02da90f858f43bc402 Mon Sep 17 00:00:00 2001
+From 4724f481690b5d26bb5e285fdaebf5766c7cf965 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
-Subject: [PATCH 4/4] nvidia-modprobe: move to linuxPackages.nvidiaPackages
+Subject: [PATCH 3/3] nvidia-modprobe: move to linuxPackages.nvidiaPackages
 
 ---
- .../li/libnvidia-container/package.nix        | 11 ++---
- .../nvidia-x11/{utils.nix => binaries.nix}    |  0
- pkgs/os-specific/linux/nvidia-x11/default.nix | 31 +++++++++-----
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 40 ++++++++++++-------
- .../linux/nvidia-x11/kernel-modules.nix       |  2 +
- .../linux/nvidia-x11/modprobe.nix}            | 16 +++++---
- 6 files changed, 65 insertions(+), 35 deletions(-)
- rename pkgs/os-specific/linux/nvidia-x11/{utils.nix => binaries.nix} (100%)
+ pkgs/by-name/li/libnvidia-container/package.nix  | 11 ++++++-----
+ pkgs/os-specific/linux/nvidia-x11/default.nix    | 13 +++++++++++++
+ pkgs/os-specific/linux/nvidia-x11/generic.nix    | 11 +++++++++++
+ .../linux/nvidia-x11/modprobe.nix}               | 16 ++++++++++------
+ 4 files changed, 40 insertions(+), 11 deletions(-)
  rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (66%)
 
 diff --git a/pkgs/by-name/li/libnvidia-container/package.nix b/pkgs/by-name/li/libnvidia-container/package.nix
@@ -1071,42 +1111,28 @@ index aef01c5c46967..3de64c712fc3b 100644
      patches = [
        (replaceVars ./modprobe.patch {
          inherit modprobeVersion;
-diff --git a/pkgs/os-specific/linux/nvidia-x11/utils.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-similarity index 100%
-rename from pkgs/os-specific/linux/nvidia-x11/utils.nix
-rename to pkgs/os-specific/linux/nvidia-x11/binaries.nix
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 43189b8f23153..d36d7d488f22a 100644
+index 8f6fd256f9c6a..d36d7d488f22a 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
-@@ -64,27 +64,30 @@ rec {
-     version = "595.80";
-     sha256_64bit = "sha256-PVTIP+B/01c/8M66hXTAYTLg9T2Hy9u1gq43K7TF1Hg=";
-     sha256_aarch64 = "sha256-62uqbRsF+dizUqvXhBfmVFeV2gg4BH6f7kOta+uMMuk=";
--    openSha256 = "sha256-nonwYYPItHeMC/5Ox/TlWhjiddMPu4PLqNhgIg+bfW8=";
-+    openSha256 = "sha256-FSiTWCqPIHg399hB8Z787QE4eIT3+rcw1PX+5IhqAKg=";
+@@ -67,6 +67,7 @@ rec {
+     openSha256 = "sha256-FSiTWCqPIHg399hB8Z787QE4eIT3+rcw1PX+5IhqAKg=";
      settingsSha256 = "sha256-AtzYTz7kbmj3vxmBQTC0eAjM3b2I259y1tdxq90n9YU=";
      persistencedSha256 = "sha256-WL57kKFWeRW0oPktp6afkUb5Om9MCGAvKWctk5yiyIA=";
 +    modprobeSha256 = "sha256-a9jPWskKxdeY5koP4RctfNFaiYfMRQzGhZC/UlhrCuM=";
    };
  
    new_feature = generic {
-     version = "610.43.02";
-     sha256_64bit = "sha256-MDSgVLtM33dS/43CclZMsQVROAS/9TU4lFkBsWyndGM=";
-     sha256_aarch64 = "sha256-isWTnokUA/dzWocFBLalnk4+O5gSExVjs3dVpdYTU88=";
--    openSha256 = "sha256-hP5NVZZ4vGsACHLmUDKq4uckpd/kn1GxCSYnnJfAuBs=";
-+    openSha256 = "sha256-8EzHTg1uGt5Y9zct3kE6W7ECQaUhsS3gjJNakBPyN9Q=";
+@@ -76,6 +77,7 @@ rec {
+     openSha256 = "sha256-8EzHTg1uGt5Y9zct3kE6W7ECQaUhsS3gjJNakBPyN9Q=";
      settingsSha256 = "sha256-0YAhufRgjDW+uR+kjaTb154fibpcDw8QowfrucoZsKE=";
      persistencedSha256 = "sha256-Whgv9X+v2fRhzliOl2LzltY9v1SxDafFfv3IUPqj/hk=";
 +    modprobeSha256 = "sha256-4FzxZR85mWvqUh3FNNlzsg1b7yeMCXuVHMII4AeP8RA=";
    };
  
    beta = generic {
-     version = "595.45.04";
-     sha256_64bit = "sha256-zUllSSRsuio7dSkcbBTuxF+dN12d6jEPE0WgGvVOj14=";
-     sha256_aarch64 = "sha256-jl6lQWsgF6ya22sAhYPpERJ9r+wjnWzbGnINDpUMzsk=";
--    openSha256 = "sha256-uqNfImwTKhK8gncUdP1TPp0D6Gog4MSeIJMZQiJWDoE=";
-+    openSha256 = "sha256-zkNIsepBEgDwlw0GvSB0CoZk3Zozsv6peqprs62U3rU=";
+@@ -85,6 +87,7 @@ rec {
+     openSha256 = "sha256-zkNIsepBEgDwlw0GvSB0CoZk3Zozsv6peqprs62U3rU=";
      settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
      persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
 +    modprobeSha256 = "sha256-DDeSu6R1JsUux77LfsrAVBTwW6MPu6P1v8W4o2VCN2g=";
@@ -1119,62 +1145,47 @@ index 43189b8f23153..d36d7d488f22a 100644
      settingsVersion = "595.45.04";
 +    modprobeVersion = "595.45.04";
      sha256_64bit = "sha256-slPOKXeI3Y2ebiytS20c8bbwWbUdn2dFkwJih9Mbmyc=";
--    openSha256 = "sha256-PpfrDfBkrzszROLDfgeBUISIZm3BimmXTRhkL/X4+p8=";
-+    openSha256 = "sha256-gRFSLgQ6q6zAW+gsp7rtzN62eE29bVvIjAFVFutYsE0=";
+     openSha256 = "sha256-gRFSLgQ6q6zAW+gsp7rtzN62eE29bVvIjAFVFutYsE0=";
      settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
      persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
 +    modprobeSha256 = "sha256-DDeSu6R1JsUux77LfsrAVBTwW6MPu6P1v8W4o2VCN2g=";
      url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
    };
  
-@@ -109,7 +114,8 @@ rec {
-     sha256_64bit = "sha256-ueL4BpN4FDHMh/TNKRCeEz3Oy1ClDWto1LO/LWlr1ok=";
+@@ -110,6 +115,7 @@ rec {
      persistencedSha256 = "sha256-wsNeuw7IaY6Qc/i/AzT/4N82lPjkwfrhxidKWUtcwW8=";
      fabricmanagerSha256 = "sha256-f/AQ8HrgoqBQyXNrXA/UaI4OMQ9QcjjYWIhr1/5uM74=";
--    openSha256 = "sha256-hECHfguzwduEfPo5pCDjWE/MjtRDhINVr4b1awFdP44=";
-+    openSha256 = "sha256-uGQQkQf1oKkGhOXgJ3IzQX1NkB7cGFcnl0HWuqeN8d4=";
+     openSha256 = "sha256-uGQQkQf1oKkGhOXgJ3IzQX1NkB7cGFcnl0HWuqeN8d4=";
 +    modprobeSha256 = "sha256-Vtp5FDDmzbwtDe11O0w/S8Mptpp8Li21/gBfJzfE0/g=";
      useSettings = false;
      usePersistenced = true;
      useFabricmanager = true;
-@@ -121,7 +127,8 @@ rec {
-     sha256_64bit = "sha256-weZnYbCI0Xs632y2l53przi+JoTRArABoXbc+vq9yh4=";
+@@ -122,6 +128,7 @@ rec {
      persistencedSha256 = "sha256-vDawiy52GB8JABUKZDiQUc8uda8p/7jCFW7rTu6QMa4=";
      fabricmanagerSha256 = "sha256-Jk6XVn/d6vqfxYGAACiD9UHelnjdC4+zOi4EEv8LuKE=";
--    openSha256 = "sha256-zsNmjZW0cyZWPp3vDT3mNeqAo0hS0M7e9Tbvwvij+F4=";
-+    openSha256 = "sha256-8p44gFfIn5/NaYqevX3N21Jc72S1OnSNaa9XktZnPNk=";
+     openSha256 = "sha256-8p44gFfIn5/NaYqevX3N21Jc72S1OnSNaa9XktZnPNk=";
 +    modprobeSha256 = "sha256-f4Kt5KjRfDQPeKlnW5WnYkFHSBZDjGA5q+/07fBZ+Yg=";
      useSettings = false;
      usePersistenced = true;
      useFabricmanager = true;
-@@ -133,7 +140,8 @@ rec {
-     sha256_64bit = "sha256-AlaGfggsr5PXsl+nyOabMWBiqcbHLG4ij617I4xvoX0=";
+@@ -134,6 +141,7 @@ rec {
      persistencedSha256 = "sha256-x4K0Gp89LdL5YJhAI0AydMRxl6fyBylEnj+nokoBrK8=";
      fabricmanagerSha256 = "sha256-jSTKzeRVTUcYma1Cb0ajSdXKCi6KzUXCp2OByPSWSR4=";
--    openSha256 = "sha256-aTV5J4zmEgRCOavo6wLwh5efOZUG+YtoeIT/tnrC1Hg=";
-+    openSha256 = "sha256-bwJQUj7eEM7XMji1bjS8T1Uw3qJtSE+fzZCtBKyHPH0=";
+     openSha256 = "sha256-bwJQUj7eEM7XMji1bjS8T1Uw3qJtSE+fzZCtBKyHPH0=";
 +    modprobeSha256 = "sha256-Sk5ogsasf6DBz0j54dhlqZp7p8swnNnvITkdIudc69k=";
      useSettings = false;
      usePersistenced = true;
      useFabricmanager = true;
-@@ -148,9 +156,10 @@ rec {
-     version = "580.142";
-     sha256_64bit = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
-     sha256_aarch64 = "sha256-jntr88SpTYR648P1rizQjB/8KleBoa14Ay12vx8XETM=";
--    openSha256 = "sha256-v968LbRqy8jB9+yHy9ceP2TDdgyqfDQ6P41NsCoM2AY=";
-+    openSha256 = "sha256-+GUL5U6LewBjUD0kr8LgE32ZoEsy3lx0JOSVbTaKxMQ=";
+@@ -151,6 +159,7 @@ rec {
+     openSha256 = "sha256-+GUL5U6LewBjUD0kr8LgE32ZoEsy3lx0JOSVbTaKxMQ=";
      settingsSha256 = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
      persistencedSha256 = "sha256-il403KPFAnDbB+dITnBGljhpsUPjZwmLjGt8iPKuBqw=";
 +    modprobeSha256 = "sha256-ikb5BnXIsPxd50EEiF15zcY8ZqkUF7la8gZhQJoodOU=";
    };
  
    # Last one without the bug reported here:
-@@ -159,9 +168,10 @@ rec {
-     version = "535.288.01";
-     sha256_64bit = "sha256-8gwy/W7NH3BcbfJ5fAwIQlPs9/9I8sNH+Co5YZiC7OE=";
-     sha256_aarch64 = "sha256-2d3RYzU+W4uS6mUvpCNCfoVcAJA/aerNwm7Xbg0YJBo=";
--    openSha256 = "sha256-kDM8jeHjcRCyhOs8AQk+ce3Qzf2cI5RGzzIraJrSmOE=";
-+    openSha256 = "sha256-cepwckGQ7L+HV5B+1vROQfGQKzVeGM0/i6exSnuy2do=";
+@@ -162,6 +171,7 @@ rec {
+     openSha256 = "sha256-cepwckGQ7L+HV5B+1vROQfGQKzVeGM0/i6exSnuy2do=";
      settingsSha256 = "sha256-hN4IWAD/M+th7brbzdBtgOQ2P1QUVrrWITgVGiuCxWw=";
      persistencedSha256 = "sha256-q061VN6om3UzbpWD7+tJJVgU/e2YCJF4IgEv53qx9ZA=";
 +    modprobeSha256 = "sha256-4GYNBKQthFpV3BnFQkUTkElcemssyV0oKGzDzHbSWW0=";
@@ -1206,22 +1217,10 @@ index 43189b8f23153..d36d7d488f22a 100644
  
        broken = kernel.kernelAtLeast "6.7";
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index 8a98fc2d1d484..723239713c71f 100644
+index c6af5f5bb7f92..d2537130c91c5 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-@@ -1,9 +1,9 @@
- # Single-function interface: takes both package dependencies (auto-resolved
- # by callPackage in default.nix) and driver-specific arguments.
- #
--# The attrset passed to utils.nix is constructed explicitly via driverArgs
-+# The attrset passed to binaries.nix is constructed explicitly via driverArgs
- # so that every parameter (including defaults) is resolved before reaching
--# utils.nix — utils.nix only keeps defaults for disable32Bit, firmware,
-+# binaries.nix — binaries.nix only keeps defaults for disable32Bit, firmware,
- # and acceptLicense.
- {
-   # Package dependencies (auto-resolved by callPackage)
-@@ -28,6 +28,8 @@
+@@ -29,6 +29,8 @@
    persistencedVersion ? version,
    fabricmanagerSha256 ? null,
    fabricmanagerVersion ? version,
@@ -1230,57 +1229,7 @@ index 8a98fc2d1d484..723239713c71f 100644
    # Feature flags
    useGLVND ? true,
    useProfiles ? true,
-@@ -84,6 +86,8 @@ let
-         # github and nvidia use different compression algorithms,
-         # use an invalid file extension to force detection.
-         extension = "tar.??";
-+        # do not try to retry 4xx errors
-+        curlOptsList = [ "--no-retry-all-errors" ];
-       }
-     );
- 
-@@ -116,7 +120,7 @@ let
-     let
-       # Driver arguments shared between the main build and the i686 lib32 build.
-       # Constructed explicitly so that every parameter (including defaults) is
--      # resolved before reaching utils.nix.
-+      # resolved before reaching binaries.nix.
-       driverArgs = {
-         inherit
-           version
-@@ -140,22 +144,19 @@ let
-           ;
-       };
-     in
--    callPackage ./utils.nix (
-+    callPackage ./binaries.nix (
-       driverArgs
-       // {
-         inherit libsOnly;
-         lib32 =
--          if libsOnly then
--            null
--          else
--            (pkgsi686Linux.callPackage ./utils.nix (
--              driverArgs
--              // {
--                libsOnly = true;
--                lib32 = null;
--                firmware = false;
--              }
--            )).out;
-+          (pkgsi686Linux.callPackage ./binaries.nix (
-+            driverArgs
-+            // {
-+              libsOnly = true;
-+              lib32 = null;
-+              firmware = false;
-+            }
-+          )).out;
-       }
-     );
- in
-@@ -225,10 +226,19 @@ nvidiaDriver.overrideAttrs (
+@@ -238,10 +240,19 @@ nvidiaDriver.overrideAttrs (
            ) fabricmanagerSha256
          else
            { };
@@ -1300,19 +1249,6 @@ index 8a98fc2d1d484..723239713c71f 100644
          ;
      };
    }
-diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index 9539103da3fa3..25844fd633f20 100644
---- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-@@ -25,6 +25,8 @@ stdenv.mkDerivation {
-         tag = nvidia_x11.version;
-         nvrepo = "NVIDIA-kernel-module-source";
-         nvext = "xz";
-+        # remove files which causes hash mismatches
-+        postFetch = "rm -rf $out/.github $out/CHANGELOG.md";
-         inherit hash;
-       }
-     else
 diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
 similarity index 66%
 rename from pkgs/by-name/nv/nvidia-modprobe/package.nix

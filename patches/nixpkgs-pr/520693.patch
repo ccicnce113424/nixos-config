@@ -96,19 +96,19 @@ index 9f896b7611437..0000000000000
 - #
 - # Required dependencies
 
-From 8336d7441b33bfc954c48e00621a119ff92511bf Mon Sep 17 00:00:00 2001
+From 9b9e0a021a032012a9f4fa072fcc44a1a54f8ef1 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 25 May 2026 21:15:13 +0800
 Subject: [PATCH 2/2] nixos/kmscon: RFC42 treatment, support version 10.0.0
 
 This commit includes changes from #483195, #523569, and #523955.
 ---
- nixos/modules/services/ttys/kmscon.nix | 210 +++++++++++++++----------
- nixos/tests/kmscon.nix                 |  22 +--
- 2 files changed, 136 insertions(+), 96 deletions(-)
+ nixos/modules/services/ttys/kmscon.nix | 231 +++++++++++++++----------
+ nixos/tests/kmscon.nix                 |  22 ++-
+ 2 files changed, 155 insertions(+), 98 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index 85b47e1b62cee..c59c112dfef3e 100644
+index 85b47e1b62cee..931fac1123c6f 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
 @@ -2,6 +2,7 @@
@@ -138,11 +138,11 @@ index 85b47e1b62cee..c59c112dfef3e 100644
 +        mkKeyValue =
 +          k: v: if lib.isBool v then (lib.optionalString (!v) "no-") + k else "${k}=${toString v}";
 +      in
-+      lib.generators.toKeyValue { inherit mkKeyValue; } cfg.config;
++      lib.generators.toKeyValue { inherit mkKeyValue; } (lib.filterAttrs (_: v: v != null) cfg.config);
    };
  
    baseLoginOptions = "-p";
-@@ -55,6 +59,18 @@ in
+@@ -55,58 +59,68 @@ in
  
        Check `services.getty.autologinUser` instead.
      '')
@@ -152,7 +152,11 @@ index 85b47e1b62cee..c59c112dfef3e 100644
 +      Add your font to `fonts.packages` and configure it with
 +      `services.kmscon.config.font-name` instead.
 +    '')
-+    (lib.mkRenamedOptionModule [ "services" "kmscon" "extraConfig" ] [ "services" "kmscon" "config" ])
++    (lib.mkRemovedOptionModule [ "services" "kmscon" "extraConfig" ] ''
++      `services.kmscon.extraConfig` is removed.
++
++      Add your configurations to the new `services.kmscon.config` instead.
++    '')
 +    (lib.mkRenamedOptionModule [ "services" "kmscon" "term" ] [ "services" "kmscon" "config" "term" ])
 +    (lib.mkRenamedOptionModule
 +      [ "services" "kmscon" "hwRender" ]
@@ -161,7 +165,15 @@ index 85b47e1b62cee..c59c112dfef3e 100644
    ];
  
    options = {
-@@ -68,45 +84,35 @@ in
+     services.kmscon = {
+       enable = mkEnableOption ''
+-        Use kmscon instead of autovt.
++        use kmscon instead of autovt.
+ 
+         Kmscon is a simple terminal emulator based on linux kernel mode setting (KMS).
+-        It is an attempt to replace the in-kernel VT implementation with a userspace console.
++        It is an attempt to replace the in-kernel VT implementation with a userspace console
+       '';
  
        package = mkPackageOption pkgs "kmscon" { };
  
@@ -189,16 +201,20 @@ index 85b47e1b62cee..c59c112dfef3e 100644
 -          in
 -          nullOr (nonEmptyListOf fontType);
 -      };
--
-       useXkbConfig = mkEnableOption "configure keymap from xserver keyboard settings.";
++      useXkbConfig = mkEnableOption ''
++        configure keymap from xserver keyboard settings.
  
+-      useXkbConfig = mkEnableOption "configure keymap from xserver keyboard settings.";
+-
 -      term = mkOption {
 -        description = "Value for the TERM environment variable.";
 -        type = types.nullOr types.str;
 -        default = null;
 -        example = "xterm-256color";
 -      };
--
++        If enabled, configurations under `services.xserver.xkb` will be injected into kmscon's configuration
++      '';
+ 
 -      extraConfig = mkOption {
 -        description = "Extra contents of the kmscon.conf file.";
 -        type = types.lines;
@@ -219,7 +235,7 @@ index 85b47e1b62cee..c59c112dfef3e 100644
 +              str
 +            ]);
 +          options = {
-+            hwaccel = mkEnableOption "use hardware acceleration for rendering.";
++            hwaccel = mkEnableOption "use hardware acceleration for rendering";
 +            libseat = mkOption {
 +              type = types.bool;
 +              default = true;
@@ -234,12 +250,12 @@ index 85b47e1b62cee..c59c112dfef3e 100644
        };
  
        extraOptions = mkOption {
-@@ -124,30 +130,45 @@ in
+@@ -124,30 +138,54 @@ in
          assertion = gettyCfg.loginOptions == null;
          message = "services.getty.loginOptions is not supported when services.kmscon is enabled.";
        }
 +      {
-+        assertion = cfg.config.font-name or false -> config.fonts.fontconfig.enable;
++        assertion = (cfg.config ? font-name) -> config.fonts.fontconfig.enable;
 +        message = "Font configuration for kmscon requires fontconfig to be enabled.";
 +      }
 +      {
@@ -248,6 +264,17 @@ index 85b47e1b62cee..c59c112dfef3e 100644
 +      }
      ];
  
++    services.kmscon.config = lib.mkIf cfg.useXkbConfig (
++      lib.mapAttrs (_: lib.mkDefault) (
++        lib.filterAttrs (_: v: v != "") {
++          xkb-layout = config.services.xserver.xkb.layout;
++          xkb-model = config.services.xserver.xkb.model;
++          xkb-options = config.services.xserver.xkb.options;
++          xkb-variant = config.services.xserver.xkb.variant;
++        }
++      )
++    );
++
      environment.systemPackages = [ cfg.package ];
      systemd.packages = [ cfg.package ];
  
@@ -273,9 +300,7 @@ index 85b47e1b62cee..c59c112dfef3e 100644
 +      serviceConfig = {
 +        User = lib.mkIf (!cfg.config.libseat) "";
 +        PAMName = lib.mkIf (!cfg.config.libseat) "";
-+        Environment = lib.mkIf cfg.useXkbConfig [
-+          "XKB_CONFIG_ROOT=${config.services.xserver.xkb.dir}"
-+        ];
++        Environment = [ "XKB_CONFIG_ROOT=${config.services.xserver.xkb.dir}" ];
 +        ExecStart = [
 +          "" # override upstream default with an empty ExecStart
 +          (builtins.concatStringsSep " " (
@@ -298,7 +323,7 @@ index 85b47e1b62cee..c59c112dfef3e 100644
  
        restartIfChanged = false;
        # logind spawns autovt@ttyN.service on VT switch; point it at kmscon
-@@ -156,40 +177,55 @@ in
+@@ -156,40 +194,55 @@ in
  
      # tty1 is special: logind does not spawn autovt@tty1, it expects a static
      # pull-in via getty.target. With getty@ suppressed, we must replace it.
