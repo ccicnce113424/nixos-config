@@ -1,4 +1,4 @@
-From e0583de99e954a459d9ff14dff074be74492f868 Mon Sep 17 00:00:00 2001
+From 7c633e1f8aa779d31cb587034c1aa57addebcc10 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 1/3] scx-loader: init at 1.1.1
@@ -68,7 +68,7 @@ index 0000000000000..c496eeac6bb42
 +  };
 +})
 
-From 728bd0bcf7db5f0004f62ce128107ddaa5b81bba Mon Sep 17 00:00:00 2001
+From 6b2b79b1d27edd1543e39c75bc36d152de99805c Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 2/3] nixos/scx-loader: init
@@ -81,7 +81,7 @@ Subject: [PATCH 2/3] nixos/scx-loader: init
  create mode 100644 nixos/modules/services/scheduling/scx-loader.nix
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index bb2058d6b4ac6..b13b3dcbc7f51 100644
+index f993a9c3cbd6e..cacb4a132c375 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
 @@ -12,6 +12,8 @@
@@ -90,14 +90,14 @@ index bb2058d6b4ac6..b13b3dcbc7f51 100644
  
 +- [scx_loader](https://github.com/sched-ext/scx-loader), a system daemon and DBus-based loader for sched_ext schedulers. `scxctl` is the command-line client for interacting with the loader, allowing users to switch schedulers, modes, and arguments dynamically. Available as [services.scx-loader](#opt-services.scx-loader.enable)
 +
- ## Backward Incompatibilities {#sec-release-26.11-incompatibilities}
+ - [FlapAlerted](https://github.com/Kioubit/FlapAlerted), detects BGP flapping events and provides statistics based on BGP update messages. Available as [services.flap-alerted](#opt-services.flap-alerted.enable).
  
- <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
+ ## Backward Incompatibilities {#sec-release-26.11-incompatibilities}
 diff --git a/nixos/modules/module-list.nix b/nixos/modules/module-list.nix
-index eb21ab718578c..f6b8aa9fb02e2 100644
+index 3ba8703f85558..6c5b1c80397f2 100644
 --- a/nixos/modules/module-list.nix
 +++ b/nixos/modules/module-list.nix
-@@ -1482,6 +1482,7 @@
+@@ -1483,6 +1483,7 @@
    ./services/scheduling/cron.nix
    ./services/scheduling/fcron.nix
    ./services/scheduling/prefect.nix
@@ -207,7 +207,7 @@ index 0000000000000..70c4df00c3bba
 +  meta.maintainers = with lib.maintainers; [ ccicnce113424 ];
 +}
 
-From 286e4648aad608f9b5a92315e55cad8578d5ef2c Mon Sep 17 00:00:00 2001
+From 1ab33aa14b29369651aace4897ea1bb57356da0d Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 24 May 2026 00:52:10 +0800
 Subject: [PATCH 3/3] nixosTests.scx-loader: init
@@ -220,10 +220,10 @@ Subject: [PATCH 3/3] nixosTests.scx-loader: init
  create mode 100644 nixos/tests/scx/loader.nix
 
 diff --git a/nixos/tests/all-tests.nix b/nixos/tests/all-tests.nix
-index a4c63fcbc368a..05c672983837a 100644
+index 1dea04b0c19af..a4b7f106f3d31 100644
 --- a/nixos/tests/all-tests.nix
 +++ b/nixos/tests/all-tests.nix
-@@ -1493,6 +1493,7 @@ in
+@@ -1494,6 +1494,7 @@ in
    scion-freestanding-deployment = runTest ./scion/freestanding-deployment;
    scrutiny = runTest ./scrutiny.nix;
    scx = runTest ./scx/default.nix;

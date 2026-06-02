@@ -1,4 +1,4 @@
-From 8a699e3e3118a1ea83e2cb3233b0beec5f2d9c8c Mon Sep 17 00:00:00 2001
+From 3c6a7961f321ea1eebdd686110efac443b5d86b3 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 1/3] nixos/ntfs: install userspace utils for the new
@@ -10,11 +10,11 @@ Subject: [PATCH 1/3] nixos/ntfs: install userspace utils for the new
  2 files changed, 32 insertions(+), 8 deletions(-)
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index bb2058d6b4ac6..e8df071829b93 100644
+index f993a9c3cbd6e..1c4b0980a1483 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
-@@ -27,3 +27,5 @@
- <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
+@@ -31,3 +31,5 @@
+ - `boot.loader.systemd-boot` gained support for [Automatic Boot Assessment](https://systemd.io/AUTOMATIC_BOOT_ASSESSMENT/) via the new [`boot.loader.systemd-boot.bootCounting`](#opt-boot.loader.systemd-boot.bootCounting.enable) options, allowing automatic detection of and recovery from bad NixOS generations. As part of this change, boot loader entries on the ESP/XBOOTLDR partition are now named `nixos-<content-hash>.conf` instead of `nixos-generation-<n>.conf`; existing entries are migrated automatically on the next `nixos-rebuild boot`/`switch`.
  
  - The `newuidmap` and `newgidmap` security wrappers are now installed with `cap_setuid`/`cap_setgid` file capabilities instead of the setuid-root bit, matching shadow's `--with-fcaps` install mode and other major distributions. Rootless containers (podman, docker-rootless, unprivileged user namespaces) are unaffected. The only behavioural change is that mapping host uid 0 via `/etc/subuid` (which NixOS never configures by default) additionally requires `cap_setfcap`; users who explicitly grant uid 0 in a subuid range can restore the previous behaviour with `security.wrappers.newuidmap.capabilities = lib.mkForce "cap_setuid,cap_setfcap+ep";`.
 +
@@ -70,7 +70,7 @@ index 8ec839fed7eb8..b056e8b654e69 100644
 +  ];
  }
 
-From e1cb25211f4696c86ce2fc9d87cc130cc327cc48 Mon Sep 17 00:00:00 2001
+From 1bb10f5a0ea8434942e7bcd2e28df7b657eb0e72 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-20
@@ -164,7 +164,7 @@ index 1c674c91fda07..520cea49d2e88 100644
  
          tbs = callPackage ../os-specific/linux/tbs { };
 
-From c4e471db5511702c974053beae1b7bcc18ce8ae3 Mon Sep 17 00:00:00 2001
+From 131535ea9494820c6a532a657d808d5d2f251b36 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 3/3] nixos/ntfs: add option to force use new NTFS(NTFSPLUS)
