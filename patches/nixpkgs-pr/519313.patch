@@ -1,4 +1,4 @@
-From 6e5114e90a5874f04eafd6eb1e2e8a75521bd914 Mon Sep 17 00:00:00 2001
+From f8c2dd9fc760ffcdbb5ee468c0d7911885046dc3 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Thu, 28 May 2026 02:04:21 +0800
 Subject: [PATCH 1/3] linuxPackages.nvidiaPackages.production: 595.71.05 ->
@@ -9,7 +9,7 @@ Subject: [PATCH 1/3] linuxPackages.nvidiaPackages.production: 595.71.05 ->
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 040b194c56d8d..a0c73a0191052 100644
+index de3605e7cee4f..0f6ae68c16d78 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -71,12 +71,12 @@ rec {
@@ -32,7 +32,7 @@ index 040b194c56d8d..a0c73a0191052 100644
  
    new_feature = generic {
 
-From a6c8f13eff5dfab508f42803a362b1a991c41342 Mon Sep 17 00:00:00 2001
+From 11e790959c1e1d472b57ac884d2c5663f95a1159 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
 Subject: [PATCH 2/3] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -43,11 +43,11 @@ Assisted-by: Zed Agent:DeepSeek V4 Pro
  .../os-specific/linux/nvidia-x11/binaries.nix | 232 +++++++++++
  pkgs/os-specific/linux/nvidia-x11/default.nix |  30 +-
  .../linux/nvidia-x11/fabricmanager.nix        |  17 +-
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 379 +++++++-----------
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 368 +++++++-----------
  .../linux/nvidia-x11/kernel-modules.nix       |   8 +-
  .../linux/nvidia-x11/persistenced.nix         |  21 +-
  .../os-specific/linux/nvidia-x11/settings.nix |  32 +-
- 7 files changed, 426 insertions(+), 293 deletions(-)
+ 7 files changed, 414 insertions(+), 294 deletions(-)
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/binaries.nix
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
@@ -289,7 +289,7 @@ index 0000000000000..be8d3a0d37177
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index a0c73a0191052..8f6fd256f9c6a 100644
+index 0f6ae68c16d78..19f35dc2d7985 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -10,17 +10,7 @@
@@ -341,9 +341,9 @@ index a0c73a0191052..8f6fd256f9c6a 100644
 @@ -104,7 +94,7 @@ rec {
      persistencedVersion = "595.45.04";
      settingsVersion = "595.45.04";
-     sha256_64bit = "sha256-slPOKXeI3Y2ebiytS20c8bbwWbUdn2dFkwJih9Mbmyc=";
--    openSha256 = "sha256-PpfrDfBkrzszROLDfgeBUISIZm3BimmXTRhkL/X4+p8=";
-+    openSha256 = "sha256-gRFSLgQ6q6zAW+gsp7rtzN62eE29bVvIjAFVFutYsE0=";
+     sha256_64bit = "sha256-LOcwE47hUG1aZX7JvLmTb/yC5qQgXYZ0TAavSn38Xug=";
+-    openSha256 = "sha256-QboSiRWRZWseFg7GN/a4vZVQGGBF1UJlC9MyAxUxyF4=";
++    openSha256 = "sha256-+ZLnlNhMkLG7UNMRmc4yHojs4lsBSiFC/bGf2qk0W+o=";
      settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
      persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
      url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
@@ -375,13 +375,13 @@ index a0c73a0191052..8f6fd256f9c6a 100644
      usePersistenced = true;
      useFabricmanager = true;
 @@ -158,7 +148,7 @@ rec {
-     version = "580.142";
-     sha256_64bit = "sha256-IJFfzz/+icNVDPk7YKBKKFRTFQ2S4kaOGRGkNiBEdWM=";
-     sha256_aarch64 = "sha256-jntr88SpTYR648P1rizQjB/8KleBoa14Ay12vx8XETM=";
--    openSha256 = "sha256-v968LbRqy8jB9+yHy9ceP2TDdgyqfDQ6P41NsCoM2AY=";
-+    openSha256 = "sha256-+GUL5U6LewBjUD0kr8LgE32ZoEsy3lx0JOSVbTaKxMQ=";
-     settingsSha256 = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
-     persistencedSha256 = "sha256-il403KPFAnDbB+dITnBGljhpsUPjZwmLjGt8iPKuBqw=";
+     version = "580.159.04";
+     sha256_64bit = "sha256-weZnYbCI0Xs632y2l53przi+JoTRArABoXbc+vq9yh4=";
+     sha256_aarch64 = "sha256-iRLyYjvHyDl2Xzb87j20o1MYNKLK/zql1JwSWbI3Kus=";
+-    openSha256 = "sha256-zsNmjZW0cyZWPp3vDT3mNeqAo0hS0M7e9Tbvwvij+F4=";
++    openSha256 = "sha256-8p44gFfIn5/NaYqevX3N21Jc72S1OnSNaa9XktZnPNk=";
+     settingsSha256 = "sha256-U0hics4gQeZWsD+ch9PBz42zfTOEVcKRVIqYZb3VOY8=";
+     persistencedSha256 = "sha256-vDawiy52GB8JABUKZDiQUc8uda8p/7jCFW7rTu6QMa4=";
    };
 @@ -169,7 +159,7 @@ rec {
      version = "535.288.01";
@@ -441,7 +441,7 @@ index f81a304ba152b..09c173169f7d8 100644
 -}
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index e6c1595ae572d..c6af5f5bb7f92 100644
+index e6c1595ae572d..469af88f432f1 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -1,16 +1,35 @@
@@ -792,24 +792,16 @@ index e6c1595ae572d..c6af5f5bb7f92 100644
            }
          else
            { };
-@@ -270,25 +187,41 @@ stdenv.mkDerivation (finalAttrs: {
-             }) patches)
-             ++ patchesOpen;
-           broken = brokenOpen;
-+          # we assume that if modprobeSha256 is not set, the user is using the old hash
-+          fetchFromGithubOrNvidia =
-+            if (modprobeSha256 == null) then
-+              args:
-+              fetchFromGitHub (
-+                removeAttrs args [
-+                  "nvrepo"
-+                  "nvext"
-+                  "postFetch"
-+                ]
-+              )
-+            else
-+              fetchFromGithubOrNvidia;
-         }
+@@ -261,7 +178,7 @@ stdenv.mkDerivation (finalAttrs: {
+         hash:
+         callPackage ./kernel-modules.nix {
+           open = true;
+-          inherit hash;
++          inherit hash fetchFromGithubOrNvidia;
+           nvidia_x11 = finalAttrs.finalPackage;
+           patches =
+             (map (rewritePatch {
+@@ -274,21 +191,24 @@ stdenv.mkDerivation (finalAttrs: {
        ) openSha256;
        settings =
          if useSettings then
@@ -843,7 +835,7 @@ index e6c1595ae572d..c6af5f5bb7f92 100644
              }
            ) persistencedSha256
          else
-@@ -296,42 +229,20 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -296,42 +216,20 @@ stdenv.mkDerivation (finalAttrs: {
        fabricmanager =
          if useFabricmanager then
            lib.mapNullable (
@@ -1071,17 +1063,17 @@ index e47dc3cb4e613..ba8b44f0de4fc 100644
      gtk3
      librsvg
 
-From 4724f481690b5d26bb5e285fdaebf5766c7cf965 Mon Sep 17 00:00:00 2001
+From 2985f8657063d0e7236c00b19ba41000f2ade364 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 3/3] nvidia-modprobe: move to linuxPackages.nvidiaPackages
 
 ---
- pkgs/by-name/li/libnvidia-container/package.nix  | 11 ++++++-----
- pkgs/os-specific/linux/nvidia-x11/default.nix    | 13 +++++++++++++
- pkgs/os-specific/linux/nvidia-x11/generic.nix    | 11 +++++++++++
- .../linux/nvidia-x11/modprobe.nix}               | 16 ++++++++++------
- 4 files changed, 40 insertions(+), 11 deletions(-)
+ .../li/libnvidia-container/package.nix        | 11 ++++----
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 13 ++++++++++
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 26 ++++++++++++++++++-
+ .../linux/nvidia-x11/modprobe.nix}            | 16 +++++++-----
+ 4 files changed, 54 insertions(+), 12 deletions(-)
  rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (66%)
 
 diff --git a/pkgs/by-name/li/libnvidia-container/package.nix b/pkgs/by-name/li/libnvidia-container/package.nix
@@ -1112,7 +1104,7 @@ index aef01c5c46967..3de64c712fc3b 100644
        (replaceVars ./modprobe.patch {
          inherit modprobeVersion;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 8f6fd256f9c6a..d36d7d488f22a 100644
+index 19f35dc2d7985..4b71378f9da17 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -67,6 +67,7 @@ rec {
@@ -1140,12 +1132,12 @@ index 8f6fd256f9c6a..d36d7d488f22a 100644
  
    # Vulkan developer beta driver
 @@ -93,10 +96,12 @@ rec {
-     version = "595.44.08";
+     version = "595.44.09";
      persistencedVersion = "595.45.04";
      settingsVersion = "595.45.04";
 +    modprobeVersion = "595.45.04";
-     sha256_64bit = "sha256-slPOKXeI3Y2ebiytS20c8bbwWbUdn2dFkwJih9Mbmyc=";
-     openSha256 = "sha256-gRFSLgQ6q6zAW+gsp7rtzN62eE29bVvIjAFVFutYsE0=";
+     sha256_64bit = "sha256-LOcwE47hUG1aZX7JvLmTb/yC5qQgXYZ0TAavSn38Xug=";
+     openSha256 = "sha256-+ZLnlNhMkLG7UNMRmc4yHojs4lsBSiFC/bGf2qk0W+o=";
      settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
      persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
 +    modprobeSha256 = "sha256-DDeSu6R1JsUux77LfsrAVBTwW6MPu6P1v8W4o2VCN2g=";
@@ -1177,10 +1169,10 @@ index 8f6fd256f9c6a..d36d7d488f22a 100644
      usePersistenced = true;
      useFabricmanager = true;
 @@ -151,6 +159,7 @@ rec {
-     openSha256 = "sha256-+GUL5U6LewBjUD0kr8LgE32ZoEsy3lx0JOSVbTaKxMQ=";
-     settingsSha256 = "sha256-BnrIlj5AvXTfqg/qcBt2OS9bTDDZd3uhf5jqOtTMTQM=";
-     persistencedSha256 = "sha256-il403KPFAnDbB+dITnBGljhpsUPjZwmLjGt8iPKuBqw=";
-+    modprobeSha256 = "sha256-ikb5BnXIsPxd50EEiF15zcY8ZqkUF7la8gZhQJoodOU=";
+     openSha256 = "sha256-8p44gFfIn5/NaYqevX3N21Jc72S1OnSNaa9XktZnPNk=";
+     settingsSha256 = "sha256-U0hics4gQeZWsD+ch9PBz42zfTOEVcKRVIqYZb3VOY8=";
+     persistencedSha256 = "sha256-vDawiy52GB8JABUKZDiQUc8uda8p/7jCFW7rTu6QMa4=";
++    modprobeSha256 = "sha256-f4Kt5KjRfDQPeKlnW5WnYkFHSBZDjGA5q+/07fBZ+Yg=";
    };
  
    # Last one without the bug reported here:
@@ -1217,7 +1209,7 @@ index 8f6fd256f9c6a..d36d7d488f22a 100644
  
        broken = kernel.kernelAtLeast "6.7";
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index c6af5f5bb7f92..d2537130c91c5 100644
+index 469af88f432f1..d2537130c91c5 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -29,6 +29,8 @@
@@ -1229,7 +1221,36 @@ index c6af5f5bb7f92..d2537130c91c5 100644
    # Feature flags
    useGLVND ? true,
    useProfiles ? true,
-@@ -238,10 +240,19 @@ nvidiaDriver.overrideAttrs (
+@@ -178,7 +180,7 @@ nvidiaDriver.overrideAttrs (
+         hash:
+         callPackage ./kernel-modules.nix {
+           open = true;
+-          inherit hash fetchFromGithubOrNvidia;
++          inherit hash;
+           nvidia_x11 = finalAttrs.finalPackage;
+           patches =
+             (map (rewritePatch {
+@@ -187,6 +189,19 @@ nvidiaDriver.overrideAttrs (
+             }) patches)
+             ++ patchesOpen;
+           broken = brokenOpen;
++          # we assume that if modprobeSha256 is not set, the user is using the old hash
++          fetchFromGithubOrNvidia =
++            if (modprobeSha256 == null) then
++              args:
++              fetchFromGitHub (
++                removeAttrs args [
++                  "nvrepo"
++                  "nvext"
++                  "postFetch"
++                ]
++              )
++            else
++              fetchFromGithubOrNvidia;
+         }
+       ) openSha256;
+       settings =
+@@ -225,10 +240,19 @@ nvidiaDriver.overrideAttrs (
            ) fabricmanagerSha256
          else
            { };

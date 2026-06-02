@@ -1,23 +1,23 @@
-From 170ccd8f6523f1ee1b975dc4a057cea061536af7 Mon Sep 17 00:00:00 2001
+From 8a699e3e3118a1ea83e2cb3233b0beec5f2d9c8c Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 1/3] nixos/ntfs: install userspace utils for the new
  NTFS(NTFSPLUS) driver
 
 ---
- .../manual/release-notes/rl-2611.section.md   |  2 +-
+ .../manual/release-notes/rl-2611.section.md   |  2 +
  nixos/modules/tasks/filesystems/ntfs.nix      | 38 +++++++++++++++----
- 2 files changed, 31 insertions(+), 9 deletions(-)
+ 2 files changed, 32 insertions(+), 8 deletions(-)
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index 798e204a578da..afcdcc2bedc79 100644
+index bb2058d6b4ac6..e8df071829b93 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
-@@ -24,4 +24,4 @@
- 
+@@ -27,3 +27,5 @@
  <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
  
--- Create the first release note entry in this section!
+ - The `newuidmap` and `newgidmap` security wrappers are now installed with `cap_setuid`/`cap_setgid` file capabilities instead of the setuid-root bit, matching shadow's `--with-fcaps` install mode and other major distributions. Rootless containers (podman, docker-rootless, unprivileged user namespaces) are unaffected. The only behavioural change is that mapping host uid 0 via `/etc/subuid` (which NixOS never configures by default) additionally requires `cap_setfcap`; users who explicitly grant uid 0 in a subuid range can restore the previous behaviour with `security.wrappers.newuidmap.capabilities = lib.mkForce "cap_setuid,cap_setfcap+ep";`.
++
 +- `boot.supportedFilesystems.ntfs` installs `ntfsprogs-plus` instead of `ntfs3g` on kernel version 7.1 and later.
 diff --git a/nixos/modules/tasks/filesystems/ntfs.nix b/nixos/modules/tasks/filesystems/ntfs.nix
 index 8ec839fed7eb8..b056e8b654e69 100644
@@ -70,7 +70,7 @@ index 8ec839fed7eb8..b056e8b654e69 100644
 +  ];
  }
 
-From 6c2cf95fc3edbcb2768ab41124f020b7ca903f88 Mon Sep 17 00:00:00 2001
+From e1cb25211f4696c86ce2fc9d87cc130cc327cc48 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 2/3] linuxPackages.ntfs: init at 0-unstable-2026-05-20
@@ -164,7 +164,7 @@ index 1c674c91fda07..520cea49d2e88 100644
  
          tbs = callPackage ../os-specific/linux/tbs { };
 
-From 8273b6f579719936c1762e425f3b860a50fd61ec Mon Sep 17 00:00:00 2001
+From c4e471db5511702c974053beae1b7bcc18ce8ae3 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 00:00:52 +0800
 Subject: [PATCH 3/3] nixos/ntfs: add option to force use new NTFS(NTFSPLUS)
