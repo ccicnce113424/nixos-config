@@ -7,6 +7,6 @@
     pdf4qt
     kdePackages.kcharselect
 
-    nur.repos.fym998.wpsoffice-cn-fcitx
+    wpsoffice-cn
   ];
 }
