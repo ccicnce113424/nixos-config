@@ -14,9 +14,6 @@ in
       519075
       # linuxPackages.nvidiaPackages: separate and refactor
       519313
-      # kmscon: 9.3.5 -> 9.3.5-2026-05-15
-      # test upcoming kmscon update
-      520693
       # scx-loader: init at 1.1.1, nixos/scx-loader: init
       523462
     ];
