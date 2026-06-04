@@ -1,0 +1,68 @@
+From ad90f3b8e7369b6ace4e475875253403288bf8ef Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Fri, 5 Jun 2026 04:29:49 +0800
+Subject: [PATCH] kmscon: 10.0.0 -> 10.0.0-2026-06-03
+
+---
+ pkgs/by-name/km/kmscon/package.nix | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
+index 1d174f44f0786..703b39d7ac141 100644
+--- a/pkgs/by-name/km/kmscon/package.nix
++++ b/pkgs/by-name/km/kmscon/package.nix
+@@ -21,10 +21,10 @@
+   libxslt,
+   libgbm,
+   seatd,
++  dbus,
+   ninja,
+   check,
+   bash,
+-  gawk,
+   inotify-tools,
+   buildPackages,
+   nix-update-script,
+@@ -32,13 +32,14 @@
+ }:
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "kmscon";
+-  version = "10.0.0";
++  version = "10.0.0-2026-06-03";
+ 
+   src = fetchFromGitHub {
+     owner = "kmscon";
+     repo = "kmscon";
+-    tag = "v${finalAttrs.version}";
+-    hash = "sha256-M3830e1GzzLT2fhheWwNRkURzYkHv4k8uEMoCqKkjJY=";
++    # tag = "v${finalAttrs.version}";
++    rev = "a6e78153a5690659d99e587fe770eca4b56d09ad";
++    hash = "sha256-Lvo2xA2/vJo3WceLzL/4iStwo43DLWWi3PuDdX613Ig=";
+   };
+ 
+   strictDeps = true;
+@@ -61,6 +62,7 @@ stdenv.mkDerivation (finalAttrs: {
+     systemdLibs
+     libgbm
+     seatd
++    dbus
+     check
+     # Needed for autoPatchShebangs when strictDeps = true
+     bash
+@@ -75,6 +77,7 @@ stdenv.mkDerivation (finalAttrs: {
+     docbook_xml_dtd_42
+     python3
+     ncurses
++    zlib
+   ];
+ 
+   outputs = [
+@@ -92,8 +95,6 @@ stdenv.mkDerivation (finalAttrs: {
+   '';
+ 
+   postFixup = ''
+-    substituteInPlace $out/bin/kmscon \
+-      --replace-fail "awk" "${lib.getExe gawk}"
+     substituteInPlace $out/bin/kmscon-launch-gui \
+       --replace-fail "inotifywait" "${lib.getExe' inotify-tools "inotifywait"}"
+   '';

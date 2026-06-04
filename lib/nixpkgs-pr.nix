@@ -16,6 +16,8 @@ in
       519313
       # scx-loader: init at 1.1.1, nixos/scx-loader: init
       523462
+      # kmscon: 10.0.0 -> 10.0.0-2026-06-03
+      528118
     ];
   };
 
