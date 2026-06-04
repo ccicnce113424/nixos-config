@@ -1,9 +1,10 @@
-{ ... }:
+{ pkgs, ... }:
 {
   services.dbus.implementation = "broker";
   services.scx-loader = {
     enable = true;
     config.default_sched = "scx_flow";
+    schedsPackages = [ pkgs.scx_flow ];
   };
 
   # environment.systemPackages = with pkgs; [
