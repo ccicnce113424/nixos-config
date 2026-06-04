@@ -1,41 +1,7 @@
-From 9b366138f21d05b58e4ade0567640a2b51eafd0c Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Thu, 28 May 2026 02:04:21 +0800
-Subject: [PATCH 1/3] linuxPackages.nvidiaPackages.production: 595.71.05 ->
- 595.80
-
----
- pkgs/os-specific/linux/nvidia-x11/default.nix | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index de3605e7cee4f..0f6ae68c16d78 100644
---- a/pkgs/os-specific/linux/nvidia-x11/default.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
-@@ -71,12 +71,12 @@ rec {
-   bleeding_edge = selectHighestVersion latest beta;
- 
-   production = generic {
--    version = "595.71.05";
--    sha256_64bit = "sha256-NiA7iWC35JyKQva6H1hjzeNKBek9KyS3mK8G3YRva4I=";
--    sha256_aarch64 = "sha256-XzKloS00dFKTd4ATWkTIhm9eG/OzR/Sim6MboNZWPu8=";
--    openSha256 = "sha256-Lfz71QWKM6x/jD2B22SWpUi7/og30HRlXg1kL3EWzEw=";
--    settingsSha256 = "sha256-mXnf3jyvznfB3OfKd657rxv0rYHQb/dX/Riw/+N9EKU=";
--    persistencedSha256 = "sha256-Z/6IvEEa/XfZ5F5qoSIPvXJLGtscYVqjFxHZaN/M2Ts=";
-+    version = "595.80";
-+    sha256_64bit = "sha256-PVTIP+B/01c/8M66hXTAYTLg9T2Hy9u1gq43K7TF1Hg=";
-+    sha256_aarch64 = "sha256-62uqbRsF+dizUqvXhBfmVFeV2gg4BH6f7kOta+uMMuk=";
-+    openSha256 = "sha256-nonwYYPItHeMC/5Ox/TlWhjiddMPu4PLqNhgIg+bfW8=";
-+    settingsSha256 = "sha256-AtzYTz7kbmj3vxmBQTC0eAjM3b2I259y1tdxq90n9YU=";
-+    persistencedSha256 = "sha256-WL57kKFWeRW0oPktp6afkUb5Om9MCGAvKWctk5yiyIA=";
-   };
- 
-   new_feature = generic {
-
-From 5d3c7bc33f58f43a4fd12c42291ae85018020b08 Mon Sep 17 00:00:00 2001
+From 037de90815502f47bd8d3e3455a6420dea1a5d6e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
-Subject: [PATCH 2/3] linuxPackages.nvidiaPackages: move userspace utilities to
+Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
  a separate file
 
 Assisted-by: Zed Agent:DeepSeek V4 Pro
@@ -1085,10 +1051,10 @@ index e47dc3cb4e613..ba8b44f0de4fc 100644
      gtk3
      librsvg
 
-From 67d3e62f58bfaa520a9a7196b733c929f8513f58 Mon Sep 17 00:00:00 2001
+From 4ede81eec41eb3d674f07bddfb0314e88a7cb225 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
-Subject: [PATCH 3/3] nvidia-modprobe: move to linuxPackages.nvidiaPackages
+Subject: [PATCH 2/2] nvidia-modprobe: move to linuxPackages.nvidiaPackages
 
 ---
  pkgs/by-name/li/libnvidia-container/package.nix  | 11 ++++++-----
