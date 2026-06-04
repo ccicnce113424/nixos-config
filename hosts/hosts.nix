@@ -8,6 +8,7 @@ let
         enable = true;
       };
       features = [
+        "direnv"
         "plasma"
         "browsers"
         "image"

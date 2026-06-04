@@ -1,15 +1,4 @@
-{ pkgs, osConfig, ... }:
+{ pkgs, ... }:
 {
-  programs.direnv = {
-    enable = true;
-    nix-direnv = {
-      enable = true;
-      package = osConfig.nixPackages.nix-direnv;
-    };
-    config = {
-      global.hide_env_diff = true;
-      whitelist.prefix = [ "~/code" ];
-    };
-  };
   programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [ mkhl.direnv ];
 }

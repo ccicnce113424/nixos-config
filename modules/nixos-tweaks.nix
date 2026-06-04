@@ -28,6 +28,34 @@ let
 
     programs.git.enable = true;
 
+    programs.direnv.angrr = {
+      enable = true;
+      autoUse = true;
+    };
+    services.angrr = {
+      enable = true;
+      settings = {
+        temporary-root-policies = {
+          direnv = {
+            path-regex = "/\\.direnv/";
+            period = "3d";
+          };
+          result = {
+            path-regex = "/result[^/]*$";
+            period = "0d";
+          };
+        };
+        profile-policies.system = {
+          keep-booted-system = true;
+          keep-current-system = true;
+          keep-latest-n = 1;
+          profile-paths = [
+            "/nix/var/nix/profiles/system"
+          ];
+        };
+      };
+    };
+
     system.stateVersion = lib.trivial.release;
   };
 in
@@ -97,7 +125,9 @@ in
       pclean = ''
         set -euo pipefail
         echo -e "\033[1;36m:: Cleaning up old generations...\033[0m"
-        systemd-inhibit sudo fast-nix-gc -d
+        systemd-inhibit sudo angrr run
+        echo -e "\033[1;36m:: Running garbage collection...\033[0m"
+        systemd-inhibit sudo fast-nix-gc
         echo -e "\033[1;36m:: Optimising the Nix store...\033[0m"
         systemd-inhibit sudo fast-nix-optimise
       '';
