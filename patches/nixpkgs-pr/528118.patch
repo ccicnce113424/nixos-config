@@ -1,14 +1,14 @@
-From ad90f3b8e7369b6ace4e475875253403288bf8ef Mon Sep 17 00:00:00 2001
+From d1f063acf9e5947bae80c30576651b7be6a6aa7b Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 5 Jun 2026 04:29:49 +0800
-Subject: [PATCH] kmscon: 10.0.0 -> 10.0.0-2026-06-03
+Subject: [PATCH] kmscon: 10.0.0 -> 10.0.0-2026-06-05
 
 ---
  pkgs/by-name/km/kmscon/package.nix | 13 +++++++------
  1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
-index 1d174f44f0786..703b39d7ac141 100644
+index 1d174f44f0786..99802defe1b0d 100644
 --- a/pkgs/by-name/km/kmscon/package.nix
 +++ b/pkgs/by-name/km/kmscon/package.nix
 @@ -21,10 +21,10 @@
@@ -28,7 +28,7 @@ index 1d174f44f0786..703b39d7ac141 100644
  stdenv.mkDerivation (finalAttrs: {
    pname = "kmscon";
 -  version = "10.0.0";
-+  version = "10.0.0-2026-06-03";
++  version = "10.0.0-2026-06-05";
  
    src = fetchFromGitHub {
      owner = "kmscon";
@@ -36,8 +36,8 @@ index 1d174f44f0786..703b39d7ac141 100644
 -    tag = "v${finalAttrs.version}";
 -    hash = "sha256-M3830e1GzzLT2fhheWwNRkURzYkHv4k8uEMoCqKkjJY=";
 +    # tag = "v${finalAttrs.version}";
-+    rev = "a6e78153a5690659d99e587fe770eca4b56d09ad";
-+    hash = "sha256-Lvo2xA2/vJo3WceLzL/4iStwo43DLWWi3PuDdX613Ig=";
++    rev = "0dffbd7a27db7f23806cfab0ecd5369e5f7b15ca";
++    hash = "sha256-vkKZZClXZ0sYYtX4wHC2lmBnm2SKWRkEbeCmaAXEEjQ=";
    };
  
    strictDeps = true;
