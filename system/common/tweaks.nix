@@ -3,8 +3,8 @@
   services.dbus.implementation = "broker";
   services.scx-loader = {
     enable = true;
-    config.default_sched = "scx_flow";
-    schedsPackages = [ pkgs.scx_flow ];
+    config.default_sched = "scx_pandemonium";
+    schedsPackages = [ pkgs.scx_pandemonium ];
   };
 
   # environment.systemPackages = with pkgs; [
