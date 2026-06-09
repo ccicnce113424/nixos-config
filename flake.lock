@@ -69,11 +69,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780866125,
-        "narHash": "sha256-gQE+DG6JFOUlHu6hJxenxLH6PfG6ECi1LUJFxnBmjAc=",
+        "lastModified": 1781026002,
+        "narHash": "sha256-alFh+W4/YRlj94+UA7vLDg1/maK2gz8WxDsSFFIExCs=",
         "owner": "Mic92",
         "repo": "fast-nix-gc",
-        "rev": "e39c966c117bc9553062d34de073c2e4d5fe0fa5",
+        "rev": "512c7868656fcd988de632ad0ac989348bb3bd88",
         "type": "github"
       },
       "original": {
