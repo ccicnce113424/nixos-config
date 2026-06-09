@@ -31,6 +31,7 @@
         kdialog
         plasma-firewall
         qrca
+        kcolorchooser
 
         kdepim-addons
         akonadi-calendar
