@@ -3,7 +3,7 @@
   services.dbus.implementation = "broker";
   services.scx-loader = {
     enable = true;
-    config.default_sched = "scx_flow";
+    config.default_sched = "scx_pandemonium";
     schedsPackages = [
       (pkgs.runCommand "scx_rustscheds" { inherit (pkgs.scx.rustscheds) passthru; } ''
         mkdir -p $out/bin
