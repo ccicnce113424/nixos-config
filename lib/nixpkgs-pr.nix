@@ -14,12 +14,8 @@ in
       519075
       # linuxPackages.nvidiaPackages: separate and refactor
       519313
-      # scx-loader: init at 1.1.1, nixos/scx-loader: init
-      523462
-      # kmscon: 10.0.0 -> 10.0.0-2026-06-03
+      # kmscon: 10.0.0 -> 10.0.0-2026-06-11
       528118
-      # opencode: 1.15.13 -> 1.16.2
-      528519
     ];
   };
 
