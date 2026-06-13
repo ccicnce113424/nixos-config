@@ -1,64 +1,5 @@
 {
   "nodes": {
-    "crate2nix": {
-      "inputs": {
-        "cachix": [
-          "nix-packages"
-        ],
-        "devshell": "devshell",
-        "flake-compat": [
-          "nix-packages",
-          "flake-compat"
-        ],
-        "flake-parts": [
-          "nix-packages",
-          "flake-parts"
-        ],
-        "nix-test-runner": [
-          "nix-packages"
-        ],
-        "nixpkgs": [
-          "nix-packages",
-          "nixpkgs"
-        ],
-        "pre-commit-hooks": "pre-commit-hooks"
-      },
-      "locked": {
-        "lastModified": 1779717186,
-        "narHash": "sha256-WAmzV4ohaVEqZ4Zs2G0Gb/t9iY3KuQ7bg3rLNcjIhM4=",
-        "owner": "nix-community",
-        "repo": "crate2nix",
-        "rev": "c994c83963b42b26f127e9cc50a8c86852db67d0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "crate2nix",
-        "type": "github"
-      }
-    },
-    "devshell": {
-      "inputs": {
-        "nixpkgs": [
-          "nix-packages",
-          "crate2nix",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1768818222,
-        "narHash": "sha256-460jc0+CZfyaO8+w8JNtlClB2n4ui1RbHfPTLkpwhU8=",
-        "owner": "numtide",
-        "repo": "devshell",
-        "rev": "255a2b1725a20d060f566e4755dbf571bbbb5f76",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "devshell",
-        "type": "github"
-      }
-    },
     "fast-nix-gc": {
       "inputs": {
         "nixpkgs": [
@@ -161,29 +102,6 @@
       "inputs": {
         "nixpkgs": [
           "git-hooks",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1709087332,
-        "narHash": "sha256-HG2cCnktfHsKV0s4XW83gU3F57gaTljL9KNSuG6bnQs=",
-        "owner": "hercules-ci",
-        "repo": "gitignore.nix",
-        "rev": "637db329424fd7e46cf4185293b9cc8c88c95394",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "gitignore.nix",
-        "type": "github"
-      }
-    },
-    "gitignore_2": {
-      "inputs": {
-        "nixpkgs": [
-          "nix-packages",
-          "crate2nix",
-          "pre-commit-hooks",
           "nixpkgs"
         ]
       },
@@ -312,7 +230,6 @@
     },
     "nix-packages": {
       "inputs": {
-        "crate2nix": "crate2nix",
         "flake-compat": [
           "flake-compat"
         ],
@@ -331,11 +248,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781275155,
-        "narHash": "sha256-D40sZRYYuTQiz5hPEJecUh9UYY/CRZvgjeY2d3KTvE8=",
+        "lastModified": 1781388955,
+        "narHash": "sha256-fHCip/PbJUZttawZZur18geZmzsgxft0wD3Vwbe3LHo=",
         "owner": "ccicnce113424",
         "repo": "nix-packages",
-        "rev": "5f2f26df7af088540476f460acde096c73e43646",
+        "rev": "79f9af6190882899cc8df42d9e3df4a3ac71a1bc",
         "type": "github"
       },
       "original": {
@@ -445,34 +362,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "plasma-manager",
-        "type": "github"
-      }
-    },
-    "pre-commit-hooks": {
-      "inputs": {
-        "flake-compat": [
-          "nix-packages",
-          "crate2nix",
-          "flake-compat"
-        ],
-        "gitignore": "gitignore_2",
-        "nixpkgs": [
-          "nix-packages",
-          "crate2nix",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1769069492,
-        "narHash": "sha256-Efs3VUPelRduf3PpfPP2ovEB4CXT7vHf8W+xc49RL/U=",
-        "owner": "cachix",
-        "repo": "pre-commit-hooks.nix",
-        "rev": "a1ef738813b15cf8ec759bdff5761b027e3e1d23",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cachix",
-        "repo": "pre-commit-hooks.nix",
         "type": "github"
       }
     },
