@@ -72,8 +72,12 @@
     fd.enable = true;
     ripgrep.enable = true;
     htop.enable = true;
-    fastfetch.enable = true;
     bottom.enable = true;
     btop.enable = true;
+  };
+
+  programs.fastfetch = {
+    enable = true;
+    package = pkgs.fastfetch.minimal;
   };
 }
