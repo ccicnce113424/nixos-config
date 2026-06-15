@@ -231,11 +231,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781269631,
-        "narHash": "sha256-6EqA9WfiukOymUT4FkNdMvzmFKByW0LLoI/9sv4TzBU=",
+        "lastModified": 1781517640,
+        "narHash": "sha256-zCFYzIGWm5ShL/dO/SxwyHCCDerWveLiWpoeGDWKLi4=",
         "owner": "feschber",
         "repo": "lan-mouse",
-        "rev": "0d2190e787db9e482e17d4c16fb7c00ef4841bcb",
+        "rev": "d1f41180e3f18cbc66d69dae39917b2d705c9abc",
         "type": "github"
       },
       "original": {
