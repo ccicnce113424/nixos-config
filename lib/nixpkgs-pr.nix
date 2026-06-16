@@ -10,8 +10,6 @@ in
   options.nixpkgsPrs = lib.mkOption {
     type = lib.types.listOf lib.types.ints.positive;
     default = [
-      # linuxPackages.ntfs
-      519075
       # linuxPackages.nvidiaPackages: separate and refactor
       519313
       # kmscon: 10.0.0 -> 10.0.0-2026-06-11

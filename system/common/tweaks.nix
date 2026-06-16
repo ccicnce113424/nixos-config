@@ -33,7 +33,6 @@
       "f2fs"
       "xfs"
       "vfat"
-      "ntfsplus"
       "bcachefs"
     ];
     initrd.systemd.enable = true;
@@ -43,6 +42,7 @@
       tmpfsHugeMemoryPages = "within_size";
     };
   };
+  environment.systemPackages = [ pkgs.ntfsprogs-plus ];
 
   services.userborn.enable = true;
   services.envfs.enable = true;
