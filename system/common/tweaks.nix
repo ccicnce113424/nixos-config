@@ -41,6 +41,8 @@
       useTmpfs = true;
       tmpfsHugeMemoryPages = "within_size";
     };
+
+    blacklistedKernelModules = [ "ntfs3" ];
   };
   environment.systemPackages = [ pkgs.ntfsprogs-plus ];
 
