@@ -57,9 +57,7 @@
           ];
         };
       };
-    }
-    // lib.optionalAttrs config.enable32Bit {
-      alsa.support32Bit = true;
+      alsa.support32Bit = lib.mkIf config.enable32Bit true;
     };
 
     environment.systemPackages = with pkgs; [ alsa-utils ];

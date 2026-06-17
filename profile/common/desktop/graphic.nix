@@ -8,8 +8,8 @@
   config = lib.mkIf (config.runtime.profile == "desktop") {
     hardware.graphics = {
       enable = true;
-    }
-    // lib.optionalAttrs config.enable32Bit { enable32Bit = true; };
+      enable32Bit = lib.mkIf config.enable32Bit true;
+    };
 
     programs.xwayland.enable = true;
 
