@@ -51,9 +51,10 @@ in
             // lib.optionalAttrs (hostCfg.gpu.nvidia or false) {
               cudaSupport = true;
             }
-            // lib.optionalAttrs (hostCfg.gpu.amdgpu or false) {
-              rocmSupport = true;
-            };
+            # // lib.optionalAttrs (hostCfg.gpu.amdgpu or false) {
+            #   rocmSupport = true;
+            # }
+            ;
             overlays = [
               self.overlays.default
               inputs.nur.overlays.default
