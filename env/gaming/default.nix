@@ -33,33 +33,36 @@
 
     services.joycond.enable = true;
 
-    environment.systemPackages = with pkgs; [
-      mangohud
-      libstrangle
-      gamescope-wsi
+    environment.systemPackages = lib.mkMerge [
+      (with pkgs; [
+        mangohud
+        libstrangle
+        gamescope-wsi
 
-      # moved to user config
-      # lutris
+        # moved to user config
+        # lutris
 
-      heroic
-      lsfg-vk
-      lsfg-vk-ui
+        heroic
+        lsfg-vk
+        lsfg-vk-ui
 
-      # moved to user config
-      # (discord-krisp.override {
-      #   withOpenASAR = true;
-      # })
+        # moved to user config
+        # (discord-krisp.override {
+        #   withOpenASAR = true;
+        # })
 
-      # protonup-qt
+        # protonup-qt
 
-      prismlauncher
+        prismlauncher
 
-      # following packages are from nix0gaming
-      dxvk-nvapi-vkreflex-layer
-      umu-launcher
-      (osu-lazer-tachyon-bin.override {
-        pipewire_latency = "128/48000";
-      })
+        # following packages are from nix-gaming
+        umu-launcher
+        (osu-lazer-tachyon-bin.override {
+          pipewire_latency = "128/48000";
+        })
+      ])
+      (lib.mkIf config.hostCfg.gpu.nvidia [ pkgs.dxvk-nvapi-vkreflex-layer ])
+      (lib.mkIf config.hostCfg.gpu.amdgpu [ pkgs.low-latency-layer ])
     ];
   };
 }
