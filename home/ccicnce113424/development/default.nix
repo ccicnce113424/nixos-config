@@ -15,7 +15,6 @@
     just
     gh
     shellcheck
-    opencode
-    opencode-desktop
+    llm-agents.opencode
   ];
 }
