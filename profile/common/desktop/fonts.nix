@@ -31,7 +31,6 @@
 
       fontconfig = {
         subpixel.rgba = "rgb";
-        hinting.style = "full";
         defaultFonts = {
           sansSerif = [
             "Noto Sans"
