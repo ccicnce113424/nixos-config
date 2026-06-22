@@ -11,11 +11,12 @@
       fontDir.enable = true;
       packages = with pkgs; [
         noto-fonts
-        noto-fonts-cjk-sans-static
-        noto-fonts-cjk-serif-static
+        noto-fonts-cjk-sans
+        noto-fonts-cjk-serif
         noto-fonts-color-emoji
         noto-fonts-monochrome-emoji
         noto-fonts-lgc-plus
+        noto-fonts-emoji-blob-bin
         dejavu_fonts
         maple-mono.NF-CN
         arphic-ukai
@@ -29,6 +30,8 @@
       ];
 
       fontconfig = {
+        subpixel.rgba = "rgb";
+        hinting.style = "full";
         defaultFonts = {
           sansSerif = [
             "Noto Sans"
