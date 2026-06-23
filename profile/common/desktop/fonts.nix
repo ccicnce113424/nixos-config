@@ -30,8 +30,9 @@
       ];
 
       fontconfig = rec {
+        includeUserConf = false;
         subpixel.rgba = "rgb";
-        # hinting.style = "full";
+        hinting.style = "slight";
         defaultFonts = {
           sansSerif = [
             "Noto Sans"
