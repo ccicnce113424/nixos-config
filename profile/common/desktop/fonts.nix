@@ -72,7 +72,7 @@
           "ui-serif".prefer = defaultFonts.serif;
           "ui-monospace".prefer = defaultFonts.monospace;
           "system-ui".prefer = defaultFonts.sansSerif;
-          "-apple-system".prefer = defaultFonts.sansSerif;
+          # "-apple-system".prefer = defaultFonts.sansSerif;
         };
         cache32Bit = lib.mkIf config.enable32Bit true;
       };
