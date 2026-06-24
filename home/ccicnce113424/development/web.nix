@@ -14,6 +14,11 @@
         "TypeScript".language_servers = tslsps;
         "JavaScript".language_servers = tslsps;
         "TSX".language_servers = tslsps;
+        "CSS".language_servers = [
+          "tailwindcss-intellisense-css"
+          "!vscode-css-language-server"
+          "..."
+        ];
       };
   };
   # These should go to project-specific environment
