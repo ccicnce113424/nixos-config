@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   programs.zed-editor = {
     extensions = [ "vue" ];
@@ -16,9 +16,11 @@
         "TSX".language_servers = tslsps;
       };
   };
-  home.packages = with pkgs; [
-    typescript-language-server
-    tailwindcss-language-server
-    vue-language-server
-  ];
+  # These should go to project-specific environment
+
+  # home.packages = with pkgs; [
+  #   typescript-language-server
+  #   tailwindcss-language-server
+  #   vue-language-server
+  # ];
 }

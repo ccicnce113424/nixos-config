@@ -36,6 +36,7 @@
     extensions = [ "nix" ];
     userSettings.languages.Nix.language_servers = [
       "nixd"
+      "jj_lsp"
       "!nil"
       "..."
     ];
