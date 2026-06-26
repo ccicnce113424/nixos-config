@@ -33,6 +33,7 @@ in
             "wine-tkg-full"
             "xwayland"
             "gimp-with-plugins"
+            "hplip"
 
             "fast-nix-gc"
           ]
