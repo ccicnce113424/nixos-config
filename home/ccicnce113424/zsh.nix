@@ -78,6 +78,6 @@
 
   programs.fastfetch = {
     enable = true;
-    package = pkgs.fastfetch.minimal;
+    # package = pkgs.fastfetch.minimal;
   };
 }
