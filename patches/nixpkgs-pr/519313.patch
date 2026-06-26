@@ -1,4 +1,4 @@
-From 2f1876067f551b2138a16f7efd809da5a33629b1 Mon Sep 17 00:00:00 2001
+From 9a3efdd1c112618a4f0e12314beceeb151caaa7a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
 Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -255,7 +255,7 @@ index 0000000000000..be8d3a0d37177
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 0f6ae68c16d78..4246debe14bbf 100644
+index 6ad7a1b248f9d..11193c0b9d4d6 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -10,17 +10,7 @@
@@ -278,14 +278,14 @@ index 0f6ae68c16d78..4246debe14bbf 100644
    selectHighestVersion = a: b: if lib.versionOlder a.version b.version then b else a;
  
 @@ -74,7 +64,8 @@ rec {
-     version = "595.80";
-     sha256_64bit = "sha256-PVTIP+B/01c/8M66hXTAYTLg9T2Hy9u1gq43K7TF1Hg=";
-     sha256_aarch64 = "sha256-62uqbRsF+dizUqvXhBfmVFeV2gg4BH6f7kOta+uMMuk=";
--    openSha256 = "sha256-nonwYYPItHeMC/5Ox/TlWhjiddMPu4PLqNhgIg+bfW8=";
-+    openSha256 = "sha256-FSiTWCqPIHg399hB8Z787QE4eIT3+rcw1PX+5IhqAKg=";
+     version = "595.84";
+     sha256_64bit = "sha256-mcQE5SExvye8ptoCaNzOPr7cenOrF0BxqZXPGmxeugY=";
+     sha256_aarch64 = "sha256-GloNdDFfmXFVu4FAlNNk2qzqLOuw2N5CKatKkcSrQxk=";
+-    openSha256 = "sha256-pEmA2tUcOKwUPKy6N0QvS49Pdut4/7Phs/JhjdyBcNY=";
++    openSha256 = "sha256-S69Lm6+m3s+SztMm5HsnwuoSR9zbc6L/1BEseWhMtJA=";
 +    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-AtzYTz7kbmj3vxmBQTC0eAjM3b2I259y1tdxq90n9YU=";
-     persistencedSha256 = "sha256-WL57kKFWeRW0oPktp6afkUb5Om9MCGAvKWctk5yiyIA=";
+     settingsSha256 = "sha256-QrnBM+sdWO4GanO62rxpHmRrjYkYpl5RD6fIiHq4C4A=";
+     persistencedSha256 = "sha256-50xYdgx7EEThbaMp4QS8GADbxj0mhBXh8QQN0tWMwRg=";
    };
 @@ -83,7 +74,8 @@ rec {
      version = "610.43.02";
@@ -1051,7 +1051,7 @@ index e47dc3cb4e613..ba8b44f0de4fc 100644
      gtk3
      librsvg
 
-From 66dff4fa5bf6cc9a57d352b8f3b108c8e7da9bd1 Mon Sep 17 00:00:00 2001
+From b4e21211f3beb0ae86ba3717d5b470c13539f8db Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 2/2] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -1092,14 +1092,14 @@ index aef01c5c46967..3de64c712fc3b 100644
        (replaceVars ./modprobe.patch {
          inherit modprobeVersion;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 4246debe14bbf..7a1da0b3d61d2 100644
+index 11193c0b9d4d6..cda51223907a1 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -68,6 +68,7 @@ rec {
      fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-AtzYTz7kbmj3vxmBQTC0eAjM3b2I259y1tdxq90n9YU=";
-     persistencedSha256 = "sha256-WL57kKFWeRW0oPktp6afkUb5Om9MCGAvKWctk5yiyIA=";
-+    modprobeSha256 = "sha256-a9jPWskKxdeY5koP4RctfNFaiYfMRQzGhZC/UlhrCuM=";
+     settingsSha256 = "sha256-QrnBM+sdWO4GanO62rxpHmRrjYkYpl5RD6fIiHq4C4A=";
+     persistencedSha256 = "sha256-50xYdgx7EEThbaMp4QS8GADbxj0mhBXh8QQN0tWMwRg=";
++    modprobeSha256 = "sha256-aSpDzBhMWFX+S12tvowZnRqpbSwoLPpSubRMx18m+O8=";
    };
  
    new_feature = generic {
@@ -1181,7 +1181,7 @@ index 4246debe14bbf..7a1da0b3d61d2 100644
  
        patches = map (patch: "${aurPatches}/${patch}") [
          "0001-Fix-conftest-to-ignore-implicit-function-declaration.patch"
-@@ -215,6 +226,7 @@ rec {
+@@ -218,6 +229,7 @@ rec {
      sha256_64bit = "sha256-W+u8puj+1da52BBw+541HxjtxTSVJVPL3HHo/QubMoo=";
      settingsSha256 = "sha256-uJZO4ak/w/yeTQ9QdXJSiaURDLkevlI81de0q4PpFpw=";
      persistencedSha256 = "sha256-NuqUQbVt80gYTXgIcu0crAORfsj9BCRooyH3Gp1y1ns=";
@@ -1189,7 +1189,7 @@ index 4246debe14bbf..7a1da0b3d61d2 100644
  
      patches = map (patch: "${aurPatches}/${patch}") [
        "kernel-4.16+-memory-encryption.patch"
-@@ -277,6 +289,7 @@ rec {
+@@ -280,6 +292,7 @@ rec {
        sha256_64bit = "06xp6c0sa7v1b82gf0pq0i5p0vdhmm3v964v0ypw36y0nzqx8wf6";
        settingsSha256 = "0zm29jcf0mp1nykcravnzb5isypm8l8mg2gpsvwxipb7nk1ivy34";
        persistencedSha256 = "1ax4xn3nmxg1y6immq933cqzw6cj04x93saiasdc0kjlv0pvvnkn";
