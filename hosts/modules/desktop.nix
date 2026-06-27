@@ -25,5 +25,8 @@
 
   services.ipp-usb.enable = true;
 
-  hardware.i2c.enable = true;
+  services.ddccontrol = {
+    enable = true;
+    package = pkgs.ddcutil-service;
+  };
 }

@@ -37,9 +37,6 @@ let
             NVreg_EnableStreamMemOPs = 1;
             NVreg_UsePageAttributeTable = 1;
           };
-          nvidia-drm = {
-            color_pipeline = 0;
-          };
         };
       };
 

@@ -28,6 +28,7 @@
       weston
       mesa-demos
       vulkan-tools
+      vdu_controls
     ];
 
     programs.nix-ld.libraries = with pkgs; [
