@@ -60,6 +60,7 @@
     },
     "fast-nix-gc": {
       "inputs": {
+        "nix-darwin": "nix-darwin",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -68,11 +69,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781935141,
-        "narHash": "sha256-EfEmkgHewNiEXcgS3Rsse6aYpeDWaTNaJy3UDWtH9Qk=",
+        "lastModified": 1782555524,
+        "narHash": "sha256-bc7MIBFxpUwEbA4LAolqtGwE9tQLR3770npYeSnqsfA=",
         "owner": "Mic92",
         "repo": "fast-nix-gc",
-        "rev": "024f8bbb6740783b594a61d7f683beca916964a3",
+        "rev": "f1b896ed2e910197cf804718c608e48df04933e6",
         "type": "github"
       },
       "original": {
@@ -264,6 +265,27 @@
       "original": {
         "owner": "numtide",
         "repo": "llm-agents.nix",
+        "type": "github"
+      }
+    },
+    "nix-darwin": {
+      "inputs": {
+        "nixpkgs": [
+          "fast-nix-gc",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781761792,
+        "narHash": "sha256-rCPytmKNjctLloB6UgK5CRrHSwV4b0ygxtJLPPp8R14=",
+        "owner": "nix-darwin",
+        "repo": "nix-darwin",
+        "rev": "a1fa429e945becaf60468600daf649be4ba0350c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-darwin",
+        "repo": "nix-darwin",
         "type": "github"
       }
     },
