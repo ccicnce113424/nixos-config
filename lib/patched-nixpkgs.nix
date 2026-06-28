@@ -53,8 +53,7 @@ in
             }
             // lib.optionalAttrs (hostCfg.gpu.amdgpu or false) {
               rocmSupport = true;
-            }
-            ;
+            };
             overlays = [
               self.overlays.default
               inputs.nur.overlays.default
