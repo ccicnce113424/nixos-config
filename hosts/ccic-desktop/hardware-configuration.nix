@@ -24,6 +24,7 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+  boot.blacklistedKernelModules = [ "acpi_tad" ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/6c9d02f5-f6b1-414a-8e47-8a73216b8f72";
@@ -103,7 +104,7 @@
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
-      ExecStart = "${lib.getExe pkgs.bash} -c 'if [ -e /sys/bus/usb/devices/usb2/2-0:1.0/usb2-port1/disable ]; then echo 1 > /sys/bus/usb/devices/usb2/2-0:1.0/usb2-port1/disable; fi'";
+      ExecStart = "${lib.getExe pkgs.dash} -c 'if [ -e /sys/bus/usb/devices/usb2/2-0:1.0/usb2-port1/disable ]; then echo 1 > /sys/bus/usb/devices/usb2/2-0:1.0/usb2-port1/disable; fi'";
     };
   };
 }
