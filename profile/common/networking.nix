@@ -29,13 +29,4 @@
     sshfs
     nixos-firewall-tool
   ];
-
-  services.chrony = {
-    enable = true;
-    extraFlags = [ "-s" ];
-    enableRTCTrimming = true;
-    autotrimThreshold = 1;
-    makestep.enable = true;
-    dispatcherScript = true;
-  };
 }

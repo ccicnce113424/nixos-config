@@ -28,4 +28,12 @@
   services.ddccontrol = {
     enable = true;
   };
+
+  services.chrony = {
+    enable = true;
+    enableRTCTrimming = true;
+    autotrimThreshold = 1;
+    makestep.enable = true;
+    dispatcherScript = true;
+  };
 }
