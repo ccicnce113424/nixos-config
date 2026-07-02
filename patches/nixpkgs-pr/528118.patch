@@ -1,20 +1,21 @@
-From 6b19cd91503ba6d71c787a06e96c6f8473e7ef7c Mon Sep 17 00:00:00 2001
+From 0b7febe4b984feee5744031d1a697570bdb06ad3 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 8 Jun 2026 10:46:33 +0800
-Subject: [PATCH] kmscon: 10.0.0 -> 10.0.0-2026-06-25
+Subject: [PATCH 1/2] kmscon: 10.0.0 -> 10.0.1
 
 ---
- pkgs/by-name/km/kmscon/package.nix | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ pkgs/by-name/km/kmscon/package.nix | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
 diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
-index 1d174f44f0786..298e706501022 100644
+index 1d174f44f0786..27f50056a820c 100644
 --- a/pkgs/by-name/km/kmscon/package.nix
 +++ b/pkgs/by-name/km/kmscon/package.nix
-@@ -21,10 +21,10 @@
+@@ -20,25 +20,26 @@
+   ncurses,
    libxslt,
    libgbm,
-   seatd,
+-  seatd,
 +  dbus,
    ninja,
    check,
@@ -23,32 +24,39 @@ index 1d174f44f0786..298e706501022 100644
    inotify-tools,
    buildPackages,
    nix-update-script,
-@@ -32,13 +32,14 @@
+   nixosTests,
++  enableLibseat ? false,
++  seatd,
  }:
  stdenv.mkDerivation (finalAttrs: {
    pname = "kmscon";
 -  version = "10.0.0";
-+  version = "10.0.0-2026-06-25";
++  version = "10.0.1";
  
    src = fetchFromGitHub {
      owner = "kmscon";
      repo = "kmscon";
--    tag = "v${finalAttrs.version}";
+     tag = "v${finalAttrs.version}";
 -    hash = "sha256-M3830e1GzzLT2fhheWwNRkURzYkHv4k8uEMoCqKkjJY=";
-+    # tag = "v${finalAttrs.version}";
-+    rev = "d8a284653680147a9f924f470fc7661c1a5f04a4";
-+    hash = "sha256-+0l/I4dalx/twLsYwhY55VphvDym06mphvsdB7KLAQM=";
++    hash = "sha256-vlSmiqTfEl9rQ9NBZt02bDBFih6t4euvcU1vTTPuVpg=";
    };
  
    strictDeps = true;
-@@ -61,6 +62,7 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -60,11 +61,12 @@ stdenv.mkDerivation (finalAttrs: {
+     pango
      systemdLibs
      libgbm
-     seatd
+-    seatd
 +    dbus
      check
      # Needed for autoPatchShebangs when strictDeps = true
      bash
+-  ];
++  ]
++  ++ lib.optional enableLibseat seatd;
+ 
+   nativeBuildInputs = [
+     meson
 @@ -75,6 +77,7 @@ stdenv.mkDerivation (finalAttrs: {
      docbook_xml_dtd_42
      python3
@@ -57,7 +65,16 @@ index 1d174f44f0786..298e706501022 100644
    ];
  
    outputs = [
-@@ -92,8 +95,6 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -82,6 +85,8 @@ stdenv.mkDerivation (finalAttrs: {
+     "man"
+   ];
+ 
++  mesonFlags = [ (lib.mesonEnable "libseat" enableLibseat) ];
++
+   env = {
+     PKG_CONFIG_SYSTEMD_SYSTEMDSYSTEMUNITDIR = "${placeholder "out"}/lib/systemd/system";
+     DESTDIR = "/";
+@@ -92,8 +97,6 @@ stdenv.mkDerivation (finalAttrs: {
    '';
  
    postFixup = ''
@@ -66,3 +83,119 @@ index 1d174f44f0786..298e706501022 100644
      substituteInPlace $out/bin/kmscon-launch-gui \
        --replace-fail "inotifywait" "${lib.getExe' inotify-tools "inotifywait"}"
    '';
+
+From 13537aefd74fd73cc92d8f132a6cfb9fc13eae22 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Fri, 3 Jul 2026 03:16:53 +0800
+Subject: [PATCH 2/2] nixos/kmscon: disable libseat and use agetty by default
+
+These changes follow the defaults in kmscon 10.0.1.
+libseat still has some issues. It breaks kmscon-launch-gui and causes #528069.
+The built-in issue support is still lacking network escape code,so the default
+is to use agetty.
+---
+ nixos/modules/services/ttys/kmscon.nix | 53 ++++++++++++++++++++++----
+ 1 file changed, 45 insertions(+), 8 deletions(-)
+
+diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
+index 931fac1123c6f..9ba8f9e038a33 100644
+--- a/nixos/modules/services/ttys/kmscon.nix
++++ b/nixos/modules/services/ttys/kmscon.nix
+@@ -16,6 +16,8 @@ let
+ 
+   cfg = config.services.kmscon;
+ 
++  kmscon = cfg.package.override { enableLibseat = cfg.config.libseat; };
++
+   gettyCfg = config.services.getty;
+ 
+   configDir = pkgs.writeTextFile {
+@@ -31,9 +33,37 @@ let
+ 
+   baseLoginOptions = "-p";
+ 
+-  loginCmd =
++  agettyCmd =
+     enableAutologin:
+-    "${gettyCfg.loginProgram} ${baseLoginOptions}${lib.optionalString enableAutologin " -f -- ${gettyCfg.autologinUser}"}";
++    "${lib.getExe' pkgs.util-linux "agetty"} ${
++      lib.escapeShellArgs (
++        [
++          "--login-program"
++          (toString gettyCfg.loginProgram)
++          "--login-options"
++          # these options are passed as a single parameter
++          "${lib.optionalString enableAutologin "-f "}${baseLoginOptions} -- \\u"
++        ]
++        ++ lib.optionals enableAutologin [
++          "--autologin"
++          gettyCfg.autologinUser
++        ]
++        ++ gettyCfg.extraArgs
++        ++ [
++          "--8bits"
++          "--noclear"
++          "--"
++          "-"
++        ]
++      )
++    } $TERM";
++
++  loginCmd =
++    if cfg.useAgetty then
++      agettyCmd
++    else
++      enableAutologin:
++      "${gettyCfg.loginProgram} ${baseLoginOptions}${lib.optionalString enableAutologin " -f -- ${gettyCfg.autologinUser}"}";
+ 
+   loginScript = pkgs.writers.writeDash "kmscon-login" (
+     lib.optionalString (gettyCfg.autologinUser != null && gettyCfg.autologinOnce) ''
+@@ -94,6 +124,14 @@ in
+         If enabled, configurations under `services.xserver.xkb` will be injected into kmscon's configuration
+       '';
+ 
++      useAgetty = mkOption {
++        type = types.bool;
++        default = true;
++        description = ''
++          Whether to use agetty as the login program for kmscon.
++        '';
++      };
++
+       config = mkOption {
+         description = ''
+           Configuration for kmscon. See {manpage}`kmscon.conf(5)`
+@@ -112,11 +150,10 @@ in
+             hwaccel = mkEnableOption "use hardware acceleration for rendering";
+             libseat = mkOption {
+               type = types.bool;
+-              default = true;
++              default = false;
+               description = ''
+                 Whether to use libseat for session management.
+-                This is the default for kmscon newer than 10.0.0 and prevents
+-                launching another GUI from kmscon by `kmscon-launch-gui`.
++                libseat has still some issues, so libseat support is not enabled by default.
+               '';
+             };
+           };
+@@ -159,8 +196,8 @@ in
+       )
+     );
+ 
+-    environment.systemPackages = [ cfg.package ];
+-    systemd.packages = [ cfg.package ];
++    environment.systemPackages = [ kmscon ];
++    systemd.packages = [ kmscon ];
+ 
+     systemd.services."kmsconvt@" = {
+       serviceConfig = {
+@@ -171,7 +208,7 @@ in
+           "" # override upstream default with an empty ExecStart
+           (builtins.concatStringsSep " " (
+             [
+-              "${cfg.package}/bin/kmscon"
++              "${kmscon}/bin/kmscon"
+               "--configdir"
+               configDir
+               "--vt=%I"
