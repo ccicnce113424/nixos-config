@@ -84,7 +84,7 @@ index 1d174f44f0786..27f50056a820c 100644
        --replace-fail "inotifywait" "${lib.getExe' inotify-tools "inotifywait"}"
    '';
 
-From c78bcc334c806843bcb9725b1c8e41bd3494e369 Mon Sep 17 00:00:00 2001
+From 40778659498adab5f8a83144f5e68196e233c658 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 3 Jul 2026 03:16:53 +0800
 Subject: [PATCH 2/2] nixos/kmscon: disable libseat and use agetty by default
@@ -94,7 +94,7 @@ These changes follow the defaults in kmscon 10.0.1.
 libseat still has some issues. It breaks kmscon-launch-gui and causes #528069.
 
 The built-in issue still lacks network escape code support, so the default has
-been reverted to use agetty.
+been reverted to using agetty.
 ---
  nixos/modules/services/ttys/kmscon.nix | 52 ++++++++++++++++++++++----
  1 file changed, 44 insertions(+), 8 deletions(-)
