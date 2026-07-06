@@ -20,8 +20,8 @@
       rpc-bridge
       (wineprefix-preparer.override {
         withD7vk = true;
-        # dxvk-w64 = pkgs.dxvk-gplasync-lowlatency-w64;
-        # dxvk-w32 = pkgs.dxvk-gplasync-lowlatency-w32;
+        dxvk-w64 = pkgs.dxvk-w64.override { withAsync = false; };
+        dxvk-w32 = pkgs.dxvk-w32.override { withAsync = false; };
       })
       winetricks-git
     ];
