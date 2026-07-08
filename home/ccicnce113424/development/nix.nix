@@ -8,6 +8,7 @@
       nix-output-monitor
       hydra-check
       cachix
+      flake-linter
     ])
     ++ (with osConfig.nixPackages; [
       nixpkgs-reviewFull

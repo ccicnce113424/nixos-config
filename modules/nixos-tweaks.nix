@@ -3,7 +3,6 @@
   lib,
   config,
   nixConfig,
-  inputs,
   ...
 }:
 let
@@ -12,7 +11,8 @@ let
       with pkgs;
       [
         ccic-hello
-        (callPackage (inputs.fast-nix-gc.outPath + "/nix/package.nix") { })
+        fast-nix-gc
+        nix-auth
       ]
       ++ lib.mapAttrsToList writeShellScriptBin config.cmdAlias;
 

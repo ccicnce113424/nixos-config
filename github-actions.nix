@@ -34,8 +34,6 @@ in
             "xwayland"
             "gimp-with-plugins"
             "hplip"
-
-            "fast-nix-gc"
           ]
           (
             with (builtins.head machines).value.config;
