@@ -1,4 +1,4 @@
-From e4cd745dd21c98a141ba128ed9ff2ea0c6eb3c6d Mon Sep 17 00:00:00 2001
+From d5eda3bfb6b148bc52f81763b8ffb21b6b73b871 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
 Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -255,7 +255,7 @@ index 0000000000000..be8d3a0d37177
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index ec43156f8b2bf..2dc92583392b5 100644
+index f0f8c027058ea..463b7030c062e 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -10,17 +10,7 @@
@@ -288,14 +288,14 @@ index ec43156f8b2bf..2dc92583392b5 100644
      persistencedSha256 = "sha256-50xYdgx7EEThbaMp4QS8GADbxj0mhBXh8QQN0tWMwRg=";
    };
 @@ -83,7 +74,8 @@ rec {
-     version = "610.43.02";
-     sha256_64bit = "sha256-MDSgVLtM33dS/43CclZMsQVROAS/9TU4lFkBsWyndGM=";
-     sha256_aarch64 = "sha256-isWTnokUA/dzWocFBLalnk4+O5gSExVjs3dVpdYTU88=";
--    openSha256 = "sha256-hP5NVZZ4vGsACHLmUDKq4uckpd/kn1GxCSYnnJfAuBs=";
-+    openSha256 = "sha256-8EzHTg1uGt5Y9zct3kE6W7ECQaUhsS3gjJNakBPyN9Q=";
+     version = "610.43.03";
+     sha256_64bit = "sha256-ReLUwTSiPDXlDyU6SqY+fl6NF+PRhdSgfIpY6WEu05I=";
+     sha256_aarch64 = "sha256-jSdlXo60ilXLKWKvZfgbBnVqVYuw6zhnGuiDgwxYz94=";
+-    openSha256 = "sha256-QCXmqo2xNyIwjGv0da2MUC8ex641Mmc5DUI+uRFVwgE=";
++    openSha256 = "sha256-Y4hBWbuSpwMGYKlc3+xBHt+8kFZL2t7gNzuNqUwafxQ=";
 +    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-0YAhufRgjDW+uR+kjaTb154fibpcDw8QowfrucoZsKE=";
-     persistencedSha256 = "sha256-Whgv9X+v2fRhzliOl2LzltY9v1SxDafFfv3IUPqj/hk=";
+     settingsSha256 = "sha256-z/t+SdEQdVJPwjKIRHO02d264Kt47eWiOwwsaxmh4xQ=";
+     persistencedSha256 = "sha256-sOKUsAFHh0/COH+nNgbH9+7hWgivOzq4YmTuk9MOFfI=";
    };
 @@ -92,7 +84,8 @@ rec {
      version = "595.45.04";
@@ -1051,7 +1051,7 @@ index e47dc3cb4e613..ba8b44f0de4fc 100644
      gtk3
      librsvg
 
-From 405df5b8b7efca51c51f0cdfe2e062136ea84cbd Mon Sep 17 00:00:00 2001
+From 14f74a32c4cbb5861bb8a6c7e32ba286cb83b300 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 2/2] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -1092,7 +1092,7 @@ index aef01c5c46967..3de64c712fc3b 100644
        (replaceVars ./modprobe.patch {
          inherit modprobeVersion;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 2dc92583392b5..078aaed977911 100644
+index 463b7030c062e..7912434c018aa 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -68,6 +68,7 @@ rec {
@@ -1105,9 +1105,9 @@ index 2dc92583392b5..078aaed977911 100644
    new_feature = generic {
 @@ -78,6 +79,7 @@ rec {
      fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-0YAhufRgjDW+uR+kjaTb154fibpcDw8QowfrucoZsKE=";
-     persistencedSha256 = "sha256-Whgv9X+v2fRhzliOl2LzltY9v1SxDafFfv3IUPqj/hk=";
-+    modprobeSha256 = "sha256-4FzxZR85mWvqUh3FNNlzsg1b7yeMCXuVHMII4AeP8RA=";
+     settingsSha256 = "sha256-z/t+SdEQdVJPwjKIRHO02d264Kt47eWiOwwsaxmh4xQ=";
+     persistencedSha256 = "sha256-sOKUsAFHh0/COH+nNgbH9+7hWgivOzq4YmTuk9MOFfI=";
++    modprobeSha256 = "sha256-YKRKPrmkVyTeXKGbrd8UVNsvSioJS1H9qkw8+aUgxYM=";
    };
  
    beta = generic {

@@ -1,21 +1,20 @@
-From 0b7febe4b984feee5744031d1a697570bdb06ad3 Mon Sep 17 00:00:00 2001
+From 7102e1ecde0ded5798695b3a3b76b5fe57c0f044 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 8 Jun 2026 10:46:33 +0800
 Subject: [PATCH 1/2] kmscon: 10.0.0 -> 10.0.1
 
 ---
- pkgs/by-name/km/kmscon/package.nix | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ pkgs/by-name/km/kmscon/package.nix | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
-index 1d174f44f0786..27f50056a820c 100644
+index 1d174f44f0786..8ff8caa0380e6 100644
 --- a/pkgs/by-name/km/kmscon/package.nix
 +++ b/pkgs/by-name/km/kmscon/package.nix
-@@ -20,25 +20,26 @@
-   ncurses,
+@@ -21,10 +21,10 @@
    libxslt,
    libgbm,
--  seatd,
+   seatd,
 +  dbus,
    ninja,
    check,
@@ -24,9 +23,7 @@ index 1d174f44f0786..27f50056a820c 100644
    inotify-tools,
    buildPackages,
    nix-update-script,
-   nixosTests,
-+  enableLibseat ? false,
-+  seatd,
+@@ -32,13 +32,13 @@
  }:
  stdenv.mkDerivation (finalAttrs: {
    pname = "kmscon";
@@ -42,22 +39,15 @@ index 1d174f44f0786..27f50056a820c 100644
    };
  
    strictDeps = true;
-@@ -60,11 +61,12 @@ stdenv.mkDerivation (finalAttrs: {
-     pango
+@@ -61,6 +61,7 @@ stdenv.mkDerivation (finalAttrs: {
      systemdLibs
      libgbm
--    seatd
+     seatd
 +    dbus
      check
      # Needed for autoPatchShebangs when strictDeps = true
      bash
--  ];
-+  ]
-+  ++ lib.optional enableLibseat seatd;
- 
-   nativeBuildInputs = [
-     meson
-@@ -75,6 +77,7 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -75,6 +76,7 @@ stdenv.mkDerivation (finalAttrs: {
      docbook_xml_dtd_42
      python3
      ncurses
@@ -65,16 +55,16 @@ index 1d174f44f0786..27f50056a820c 100644
    ];
  
    outputs = [
-@@ -82,6 +85,8 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -82,6 +84,8 @@ stdenv.mkDerivation (finalAttrs: {
      "man"
    ];
  
-+  mesonFlags = [ (lib.mesonEnable "libseat" enableLibseat) ];
++  mesonFlags = [ (lib.mesonEnable "libseat" true) ];
 +
    env = {
      PKG_CONFIG_SYSTEMD_SYSTEMDSYSTEMUNITDIR = "${placeholder "out"}/lib/systemd/system";
      DESTDIR = "/";
-@@ -92,8 +97,6 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -92,8 +96,6 @@ stdenv.mkDerivation (finalAttrs: {
    '';
  
    postFixup = ''
@@ -84,7 +74,7 @@ index 1d174f44f0786..27f50056a820c 100644
        --replace-fail "inotifywait" "${lib.getExe' inotify-tools "inotifywait"}"
    '';
 
-From 40778659498adab5f8a83144f5e68196e233c658 Mon Sep 17 00:00:00 2001
+From 7b0b8e9209adfdf76c29f65561765408c7f66248 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 3 Jul 2026 03:16:53 +0800
 Subject: [PATCH 2/2] nixos/kmscon: disable libseat and use agetty by default
@@ -100,14 +90,14 @@ been reverted to using agetty.
  1 file changed, 44 insertions(+), 8 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index 931fac1123c6f..cfd1ce4a022e3 100644
+index 931fac1123c6f..7b7d242c28b22 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
 @@ -16,6 +16,8 @@ let
  
    cfg = config.services.kmscon;
  
-+  kmscon = cfg.package.override { enableLibseat = cfg.config.libseat; };
++  kmscon = cfg.package;
 +
    gettyCfg = config.services.getty;
  
