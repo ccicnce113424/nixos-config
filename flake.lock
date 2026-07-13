@@ -1,30 +1,5 @@
 {
   "nodes": {
-    "blueprint": {
-      "inputs": {
-        "nixpkgs": [
-          "llm-agents",
-          "nixpkgs"
-        ],
-        "systems": [
-          "llm-agents",
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1776249299,
-        "narHash": "sha256-Dt9t1TGRmJFc0xVYhttNBD6QsAgHOHCArqGa0AyjrJY=",
-        "owner": "numtide",
-        "repo": "blueprint",
-        "rev": "56131e8628f173d24a27f6d27c0215eff57e40dd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "blueprint",
-        "type": "github"
-      }
-    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -195,7 +170,6 @@
     },
     "llm-agents": {
       "inputs": {
-        "blueprint": "blueprint",
         "bun2nix": "bun2nix",
         "flake-parts": [
           "flake-parts"
@@ -209,11 +183,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783824752,
-        "narHash": "sha256-0R4pdMfxkQMNo3DNQsR5jHqbPmMB/felRqPrKDPA8KM=",
+        "lastModified": 1783981745,
+        "narHash": "sha256-B7BDj18ruD1jGlQtJyy4P0BBG2/2bfAwMk1MaTWV9y4=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "7a5c1de3d005ba7e5dac042200bf78268084d1f4",
+        "rev": "b9a0481fd1ff5f4f8218d54f8cb0bab3a7956367",
         "type": "github"
       },
       "original": {
