@@ -20,7 +20,9 @@
   # };
 
   home.packages = [
-    pkgs.discord
+    (pkgs.discord.override {
+      withOpenASAR = true;
+    })
     (pkgs.olympus.override { celesteWrapper = "steam-run"; })
   ];
 }
