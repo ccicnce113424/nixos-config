@@ -24,7 +24,7 @@ let
       auto-allocate-uids = true;
       system-features = [ "uid-range" ];
     };
-    nix.package = config.nixPackages.nix or config.nixPackages.lix;
+    nix.package = config.nixPackages.nixVersions.latest or config.nixPackages.lix;
 
     programs.git.enable = true;
 
