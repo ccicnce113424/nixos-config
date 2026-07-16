@@ -47,6 +47,7 @@ in
               permittedInsecurePackages = [
                 "olm-3.2.16"
                 "pnpm-10.29.2"
+                "electron-40.10.5"
               ];
             }
             // lib.optionalAttrs (hostCfg.gpu.nvidia or false) {
