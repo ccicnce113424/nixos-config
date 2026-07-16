@@ -74,23 +74,20 @@ index 1d174f44f0786..8ff8caa0380e6 100644
        --replace-fail "inotifywait" "${lib.getExe' inotify-tools "inotifywait"}"
    '';
 
-From 7b0b8e9209adfdf76c29f65561765408c7f66248 Mon Sep 17 00:00:00 2001
+From 1585fdc2681c87a5ba74a139f18eb28566a8fb61 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 3 Jul 2026 03:16:53 +0800
-Subject: [PATCH 2/2] nixos/kmscon: disable libseat and use agetty by default
+Subject: [PATCH 2/2] nixos/kmscon: disable libseat by default
 
 These changes follow the defaults in kmscon 10.0.1.
 
 libseat still has some issues. It breaks kmscon-launch-gui and causes #528069.
-
-The built-in issue still lacks network escape code support, so the default has
-been reverted to using agetty.
 ---
- nixos/modules/services/ttys/kmscon.nix | 52 ++++++++++++++++++++++----
- 1 file changed, 44 insertions(+), 8 deletions(-)
+ nixos/modules/services/ttys/kmscon.nix | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index 931fac1123c6f..7b7d242c28b22 100644
+index 931fac1123c6f..d3c564f91a08f 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
 @@ -16,6 +16,8 @@ let
@@ -102,47 +99,7 @@ index 931fac1123c6f..7b7d242c28b22 100644
    gettyCfg = config.services.getty;
  
    configDir = pkgs.writeTextFile {
-@@ -31,9 +33,37 @@ let
- 
-   baseLoginOptions = "-p";
- 
--  loginCmd =
-+  agettyCmd =
-     enableAutologin:
--    "${gettyCfg.loginProgram} ${baseLoginOptions}${lib.optionalString enableAutologin " -f -- ${gettyCfg.autologinUser}"}";
-+    "${lib.getExe' pkgs.util-linux "agetty"} ${
-+      lib.escapeShellArgs (
-+        [
-+          "--login-program"
-+          (toString gettyCfg.loginProgram)
-+          "--login-options"
-+          # these options are passed as a single parameter
-+          "${lib.optionalString enableAutologin "-f "}${baseLoginOptions} -- \\u"
-+        ]
-+        ++ lib.optionals enableAutologin [
-+          "--autologin"
-+          gettyCfg.autologinUser
-+        ]
-+        ++ gettyCfg.extraArgs
-+        ++ [
-+          "--8bits"
-+          "--noclear"
-+          "--"
-+          "-"
-+        ]
-+      )
-+    } $TERM";
-+
-+  loginCmd =
-+    if cfg.config.issue then
-+      enableAutologin:
-+      "${gettyCfg.loginProgram} ${baseLoginOptions}${lib.optionalString enableAutologin " -f -- ${gettyCfg.autologinUser}"}"
-+    else
-+      agettyCmd;
- 
-   loginScript = pkgs.writers.writeDash "kmscon-login" (
-     lib.optionalString (gettyCfg.autologinUser != null && gettyCfg.autologinOnce) ''
-@@ -112,11 +142,17 @@ in
+@@ -112,11 +114,10 @@ in
              hwaccel = mkEnableOption "use hardware acceleration for rendering";
              libseat = mkOption {
                type = types.bool;
@@ -153,17 +110,10 @@ index 931fac1123c6f..7b7d242c28b22 100644
 -                This is the default for kmscon newer than 10.0.0 and prevents
 -                launching another GUI from kmscon by `kmscon-launch-gui`.
 +                libseat has still some issues, so libseat support is not enabled by default.
-+              '';
-+            };
-+            issue = mkOption {
-+              type = types.bool;
-+              default = false;
-+              description = ''
-+                Whether to enable built-in issue support instead of using agetty.
                '';
              };
            };
-@@ -159,8 +195,8 @@ in
+@@ -159,8 +160,8 @@ in
        )
      );
  
@@ -174,7 +124,7 @@ index 931fac1123c6f..7b7d242c28b22 100644
  
      systemd.services."kmsconvt@" = {
        serviceConfig = {
-@@ -171,7 +207,7 @@ in
+@@ -171,7 +172,7 @@ in
            "" # override upstream default with an empty ExecStart
            (builtins.concatStringsSep " " (
              [
