@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   imports = [
-    ./vscode.nix
+    # ./vscode.nix
     ./nix.nix
     ./direnv.nix
     ./c.nix
