@@ -77,6 +77,7 @@
         inputs.nix-index-database.homeModules.nix-index
         ../home/common
         inputs.plasma-manager.homeModules.plasma-manager
+        inputs.nixcord.homeModules.nixcord
       ];
       users = lib.genAttrs config.runtime.users (username: import ../home/${username});
     };

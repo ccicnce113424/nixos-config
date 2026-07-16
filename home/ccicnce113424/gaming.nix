@@ -20,9 +20,15 @@
   # };
 
   home.packages = [
-    (pkgs.discord.override {
-      withOpenASAR = true;
-    })
     (pkgs.olympus.override { celesteWrapper = "steam-run"; })
   ];
+
+  programs.nixcord = {
+    enable = true;
+    discord = {
+      vencord.enable = true;
+      openASAR.enable = true;
+      krisp.enable = true;
+    };
+  };
 }

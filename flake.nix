@@ -78,6 +78,15 @@ rec {
         flake-parts.follows = "flake-parts";
       };
     };
+    nixcord = {
+      url = "github:4evy/nixcord";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-nixcord.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        flake-compat.follows = "";
+      };
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-compat.url = "github:lix-project/flake-compat";
 
