@@ -74,7 +74,7 @@ index 1d174f44f0786..8ff8caa0380e6 100644
        --replace-fail "inotifywait" "${lib.getExe' inotify-tools "inotifywait"}"
    '';
 
-From 1585fdc2681c87a5ba74a139f18eb28566a8fb61 Mon Sep 17 00:00:00 2001
+From 93a01ca1b14aa3640101ff44b5a41d83e1c80178 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 3 Jul 2026 03:16:53 +0800
 Subject: [PATCH 2/2] nixos/kmscon: disable libseat by default
@@ -83,11 +83,11 @@ These changes follow the defaults in kmscon 10.0.1.
 
 libseat still has some issues. It breaks kmscon-launch-gui and causes #528069.
 ---
- nixos/modules/services/ttys/kmscon.nix | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ nixos/modules/services/ttys/kmscon.nix | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index 931fac1123c6f..d3c564f91a08f 100644
+index 931fac1123c6f..99ca6df023215 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
 @@ -16,6 +16,8 @@ let
@@ -99,7 +99,7 @@ index 931fac1123c6f..d3c564f91a08f 100644
    gettyCfg = config.services.getty;
  
    configDir = pkgs.writeTextFile {
-@@ -112,11 +114,10 @@ in
+@@ -112,11 +114,17 @@ in
              hwaccel = mkEnableOption "use hardware acceleration for rendering";
              libseat = mkOption {
                type = types.bool;
@@ -110,10 +110,17 @@ index 931fac1123c6f..d3c564f91a08f 100644
 -                This is the default for kmscon newer than 10.0.0 and prevents
 -                launching another GUI from kmscon by `kmscon-launch-gui`.
 +                libseat has still some issues, so libseat support is not enabled by default.
++              '';
++            };
++            issue = mkOption {
++              type = types.bool;
++              default = true;
++              description = ''
++                Whether to enable built-in issue support.
                '';
              };
            };
-@@ -159,8 +160,8 @@ in
+@@ -159,8 +167,8 @@ in
        )
      );
  
@@ -124,7 +131,7 @@ index 931fac1123c6f..d3c564f91a08f 100644
  
      systemd.services."kmsconvt@" = {
        serviceConfig = {
-@@ -171,7 +172,7 @@ in
+@@ -171,7 +179,7 @@ in
            "" # override upstream default with an empty ExecStart
            (builtins.concatStringsSep " " (
              [
