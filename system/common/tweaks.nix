@@ -41,6 +41,7 @@
       "xfs"
       "vfat"
       "bcachefs"
+      "ntfs"
     ];
     initrd.systemd.enable = true;
 
@@ -48,10 +49,7 @@
       useTmpfs = true;
       tmpfsHugeMemoryPages = "within_size";
     };
-
-    blacklistedKernelModules = [ "ntfs3" ];
   };
-  environment.systemPackages = [ pkgs.ntfsprogs-plus ];
 
   services.userborn.enable = true;
   services.envfs.enable = true;
