@@ -57,6 +57,20 @@ let
     };
 
     system.stateVersion = lib.trivial.release;
+
+    system.replaceDependencies.replacements = [
+      {
+        oldDependency = pkgs.pipewire;
+        newDependency = pkgs.pipewire.overrideAttrs (old: {
+          patches = old.patches ++ [
+            (pkgs.fetchpatch {
+              url = "https://gitlab.freedesktop.org/pipewire/pipewire/-/merge_requests/2900.patch";
+              hash = "sha256-0a0/6UeHrRJtfbncLbIMCWCEfejIMqiOZeQbPyXKr8s=";
+            })
+          ];
+        });
+      }
+    ];
   };
 in
 {
