@@ -34,7 +34,6 @@ in
             "xwayland"
             "gimp-with-plugins"
             "hplip"
-            "pipewire"
           ]
           (
             with (builtins.head machines).value.config;

@@ -30,5 +30,14 @@
       openASAR.enable = true;
       krisp.enable = true;
     };
+    dorion = {
+      enable = true;
+      autoClearCache = true;
+      clientMods = [ "Shelter" ];
+      desktopNotifications = true;
+      rpcServer = true;
+      streamerModeDetection = true;
+      sysTray = true;
+    };
   };
 }
