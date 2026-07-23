@@ -33,11 +33,15 @@
     dorion = {
       enable = true;
       autoClearCache = true;
+      cacheCss = true;
       clientMods = [ "Shelter" ];
       desktopNotifications = true;
       rpcServer = true;
       streamerModeDetection = true;
       sysTray = true;
+      extraSettings = {
+        update_notify = false;
+      };
     };
   };
 }
