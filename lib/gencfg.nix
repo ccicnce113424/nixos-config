@@ -39,6 +39,10 @@
                       type = "path";
                       path = inputs.nix-packages.outPath;
                     };
+                    nixos-config.to = {
+                      type = "path";
+                      path = ./..;
+                    };
                   };
                 };
               in
