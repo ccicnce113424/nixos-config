@@ -34,6 +34,7 @@
       enable = true;
       autoClearCache = true;
       clientMods = [ "Shelter" ];
+      cacheCss = true;
       desktopNotifications = true;
       rpcServer = true;
       streamerModeDetection = true;
