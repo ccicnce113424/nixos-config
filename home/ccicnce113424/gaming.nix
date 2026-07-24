@@ -33,7 +33,6 @@
     dorion = {
       enable = true;
       autoClearCache = true;
-      cacheCss = true;
       clientMods = [ "Shelter" ];
       desktopNotifications = true;
       rpcServer = true;
