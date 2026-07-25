@@ -1,0 +1,37 @@
+From c40e052b8e3989dd4c6d3883c315ad886d74ca77 Mon Sep 17 00:00:00 2001
+From: Sizhe Zhao <prc.zhao@outlook.com>
+Date: Sat, 25 Jul 2026 10:38:17 +0800
+Subject: [PATCH] python3Packages.nftables: fix version & modernize
+
+---
+ pkgs/os-specific/linux/nftables/python.nix | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/os-specific/linux/nftables/python.nix b/pkgs/os-specific/linux/nftables/python.nix
+index f010993a90834..0a7856ea65354 100644
+--- a/pkgs/os-specific/linux/nftables/python.nix
++++ b/pkgs/os-specific/linux/nftables/python.nix
+@@ -4,13 +4,16 @@
+   nftables,
+ }:
+ 
+-buildPythonPackage {
++buildPythonPackage (finalAttrs: {
+   pname = "nftables";
+   inherit (nftables) version src;
+   pyproject = true;
+ 
++  __structuredAttrs = true;
++
+   postPatch = ''
+     substituteInPlace "src/nftables.py" \
++      --replace-fail 'NFTABLES_VERSION = "0.1"' 'NFTABLES_VERSION = "${finalAttrs.version}"' \
+       --replace-fail "libnftables.so.1" "${nftables}/lib/libnftables.so.1"
+   '';
+ 
+@@ -29,4 +32,4 @@ buildPythonPackage {
+       maintainers
+       ;
+   };
+-}
++})
