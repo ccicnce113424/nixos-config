@@ -22,7 +22,7 @@
         };
         extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
-          violentmonkey
+          scriptcat
           foxyproxy-standard
           user-agent-string-switcher
           plasma-integration
@@ -45,6 +45,7 @@
           nixpkgs-pr-tracker
           chrome-mask
           ff2mpv
+          bypass-paywalls-clean
         ];
       };
     };
