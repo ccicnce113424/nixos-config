@@ -27,18 +27,21 @@ in
     checks = lib.recursiveUpdate self.checks (
       builtins.mapAttrs (
         _: machines:
-        config.lib'.findPkgs
-          [
+        let
+          cfg = (builtins.head machines).value.config;
+        in
+        (
+          config.lib'.findPkgs [
             "virtualbox"
             "wine-tkg-full"
             "xwayland"
             "gimp-with-plugins"
             "hplip"
-          ]
-          (
-            with (builtins.head machines).value.config;
-            environment.systemPackages ++ home-manager.users.ccicnce113424.home.packages
-          )
+          ] (cfg.environment.systemPackages ++ cfg.home-manager.users.ccicnce113424.home.packages)
+          // {
+            kernel = cfg.boot.kernelPackages.kernel;
+          }
+        )
       ) grouped
     );
     attrPrefix = "githubActions.build.checks";
