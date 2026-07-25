@@ -19,13 +19,17 @@
         "widget.use-xdg-desktop-portal.open-uri" = 1;
 
         # Settings for hardware video decoding
-        "media.hardware-video-decoding.force-enabled" = true;
+        "media.hardware-video-decoding-vulkan.enabled" = true;
+        "media.hardware-video-decoding-vulkan.direct-export.enabled" = true;
+        "media.hardware-video-decoding.enabled" = true;
+        "media.hardware-video-encoding.enabled" = true;
         # "widget.dmabuf.force-enabled" = true;
 
         # Behavior settings
         "browser.shell.checkDefaultBrowser" = false;
         "extensions.pocket.enabled" = false;
         "extensions.autoDisableScopes" = 0;
+        "image.jxl.enabled" = true;
 
         "network.trr.mode" = 5;
       };

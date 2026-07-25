@@ -18,6 +18,7 @@
           "sidebar.main.tools" = "history,bookmarks";
           "sidebar.verticalTabs" = true;
           "sidebar.visibility" = "expand-on-hover";
+          "sidebar.revamp" = true;
         };
         extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
