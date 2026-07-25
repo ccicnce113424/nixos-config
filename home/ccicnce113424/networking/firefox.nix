@@ -37,7 +37,6 @@
           clearurls
           video-downloadhelper
           header-editor
-          darkreader
           indie-wiki-buddy
           ruffle_rs
           floccus
