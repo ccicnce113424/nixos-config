@@ -1,0 +1,22 @@
+From 04342eafb81b69ae390270fc358ea66ed096b633 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sat, 25 Jul 2026 08:44:12 +0800
+Subject: [PATCH] python314Packages.nftables: don't check python metadata
+
+---
+ pkgs/os-specific/linux/nftables/python.nix | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/pkgs/os-specific/linux/nftables/python.nix b/pkgs/os-specific/linux/nftables/python.nix
+index f010993a90834..0926a0c2c0da1 100644
+--- a/pkgs/os-specific/linux/nftables/python.nix
++++ b/pkgs/os-specific/linux/nftables/python.nix
+@@ -20,6 +20,8 @@ buildPythonPackage {
+ 
+   pythonImportsCheck = [ "nftables" ];
+ 
++  dontCheckPythonMetadata = true;
++
+   meta = {
+     inherit (nftables.meta)
+       description
