@@ -6,7 +6,7 @@
   home.packages = with pkgs; [
     enimul
     # wemeet
-    ayugram-desktop
+    telegram-desktop
     tor-browser
     qbittorrent-enhanced
     motrix-next-beta

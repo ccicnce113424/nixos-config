@@ -20,7 +20,6 @@
 
         # Settings for hardware video decoding
         "media.hardware-video-decoding-vulkan.enabled" = true;
-        "media.hardware-video-decoding-vulkan.direct-export.enabled" = true;
         "media.hardware-video-decoding.enabled" = true;
         "media.hardware-video-encoding.enabled" = true;
         # "widget.dmabuf.force-enabled" = true;
