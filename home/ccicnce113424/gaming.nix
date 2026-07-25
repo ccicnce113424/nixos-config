@@ -26,7 +26,7 @@
   programs.nixcord = {
     enable = true;
     discord = {
-      vencord.enable = true;
+      silenceNoModClientWarning = true;
       openASAR.enable = true;
       krisp.enable = true;
     };
