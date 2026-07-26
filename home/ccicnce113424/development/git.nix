@@ -6,8 +6,4 @@
   };
 
   programs.zed-editor.extensions = [ "git-firefly" ];
-
-  home.packages = with pkgs; [
-    github-copilot-cli
-  ];
 }
