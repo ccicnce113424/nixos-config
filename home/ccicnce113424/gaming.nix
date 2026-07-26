@@ -25,11 +25,7 @@
 
   programs.nixcord = {
     enable = true;
-    discord = {
-      silenceNoModClientWarning = true;
-      openASAR.enable = true;
-      krisp.enable = true;
-    };
+    discord.enable = false;
     dorion = {
       enable = true;
       package = pkgs.dorion-git;

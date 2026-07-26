@@ -46,11 +46,6 @@
         lsfg-vk
         lsfg-vk-ui
 
-        # moved to user config
-        # (discord-krisp.override {
-        #   withOpenASAR = true;
-        # })
-
         # protonup-qt
 
         prismlauncher
