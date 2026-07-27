@@ -77,15 +77,18 @@ in
     type = lib.types.attrs;
     default = {
       # Commands to add
+      sin = ''
+        exec systemd-inhibit --what=sleep "$@"
+      '';
       switch = ''
         set -euo pipefail
         rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
-        systemd-inhibit nh os switch "$@"
+        sin nh os switch "$@"
       '';
       cswitch = ''
         set -euo pipefail
         rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
-        systemd-inhibit sudo nixos-rebuild switch --flake $HOME/code/nixos-config \
+        sin sudo nixos-rebuild switch --flake $HOME/code/nixos-config \
           --log-format bar-with-logs -L --install-bootloader \
           --option substituters 'https://cache.nixos.org' \
           "$@"
@@ -93,12 +96,12 @@ in
       nb = ''
         set -euo pipefail
         rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
-        systemd-inhibit nh os boot "$@"
+        sin nh os boot "$@"
       '';
       cnb = ''
         set -euo pipefail
         rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
-        systemd-inhibit sudo nixos-rebuild boot --flake $HOME/code/nixos-config \
+        sin sudo nixos-rebuild boot --flake $HOME/code/nixos-config \
           --log-format bar-with-logs -L --install-bootloader \
           --option substituters 'https://cache.nixos.org' \
           "$@"
@@ -138,11 +141,11 @@ in
       pclean = ''
         set -euo pipefail
         echo -e "\033[1;36m:: Cleaning up old generations...\033[0m"
-        systemd-inhibit sudo angrr run
+        sin sudo angrr run
         echo -e "\033[1;36m:: Running garbage collection...\033[0m"
-        systemd-inhibit sudo fast-nix-gc
+        sin sudo fast-nix-gc
         echo -e "\033[1;36m:: Optimising the Nix store...\033[0m"
-        systemd-inhibit sudo fast-nix-optimise
+        sin sudo fast-nix-optimise
       '';
       clr = ''
         set -euo pipefail

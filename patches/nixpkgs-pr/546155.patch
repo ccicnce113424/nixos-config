@@ -1,0 +1,31 @@
+From 3ee083c2df4f58bae40ddff41eb5a1eb604372d0 Mon Sep 17 00:00:00 2001
+From: Summanis <69362976+Summanis@users.noreply.github.com>
+Date: Sun, 26 Jul 2026 19:45:17 -0700
+Subject: [PATCH] lact: pin libdisplay-info_0_3
+
+---
+ pkgs/by-name/la/lact/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/by-name/la/lact/package.nix b/pkgs/by-name/la/lact/package.nix
+index 5cba545612c66..26aaa4854f0fc 100644
+--- a/pkgs/by-name/la/lact/package.nix
++++ b/pkgs/by-name/la/lact/package.nix
+@@ -10,7 +10,7 @@
+   gdk-pixbuf,
+   gtk4,
+   libadwaita,
+-  libdisplay-info,
++  libdisplay-info_0_3,
+   libdrm,
+   ocl-icd,
+   vulkan-loader,
+@@ -48,7 +48,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
+     gdk-pixbuf
+     gtk4
+     libadwaita
+-    libdisplay-info
++    libdisplay-info_0_3
+     libdrm
+     ocl-icd
+     vulkan-loader
