@@ -14,8 +14,6 @@ in
       519313
       # kmscon: 10.0.0 -> 10.0.0-2026-06-11
       528118
-      # python3Packages.nftables: fix version & modernize
-      545471
     ];
   };
 
