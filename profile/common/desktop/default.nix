@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    ./aliases.nix
     ./audio.nix
     ./fonts.nix
     ./graphic.nix
