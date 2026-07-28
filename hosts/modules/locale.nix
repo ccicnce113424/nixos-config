@@ -14,12 +14,18 @@ let
         "C.UTF-8/UTF-8"
       ];
 
-      nix.settings.substituters = [
-        # "https://mirrors.ustc.edu.cn/nix-channels/store"
-        # "https://mirror.sjtu.edu.cn/nix-channels/store"
-        # "https://mirrors.sjtug.sjtu.edu.cn/nix-channels/store"
-        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
-      ];
+      services.selector4nix.settings.substituters =
+        map
+          (url: {
+            inherit url;
+            priority = 35;
+          })
+          [
+            # "https://mirrors.ustc.edu.cn/nix-channels/store"
+            # "https://mirror.sjtu.edu.cn/nix-channels/store"
+            # "https://mirrors.sjtug.sjtu.edu.cn/nix-channels/store"
+            "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+          ];
 
       networking.timeServers = [
         "ntp.aliyun.com"

@@ -62,6 +62,7 @@ in
               inputs.nix-packages.overlays.default
               inputs.nix-gaming.overlays.default
               inputs.llm-agents.overlays.shared-nixpkgs
+              inputs.selector4nix.overlays.selector4nix
             ];
           };
         in

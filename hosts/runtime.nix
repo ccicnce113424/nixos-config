@@ -38,11 +38,14 @@
   };
 
   imports = [
+    inputs.nix-packages.nixosModules.daed
+    inputs.home-manager.nixosModules.home-manager
+    inputs.selector4nix.nixosModules.selector4nix
+    self.nixosModules.nixos-tweaks
     ../system
     ../profile
     ../env
     ../users
-    inputs.home-manager.nixosModules.home-manager
   ];
 
   config = {
@@ -75,9 +78,9 @@
       sharedModules = [
         inputs.lan-mouse.homeManagerModules.default
         inputs.nix-index-database.homeModules.nix-index
-        ../home/common
         inputs.plasma-manager.homeModules.plasma-manager
         inputs.nixcord.homeModules.nixcord
+        ../home/common
       ];
       users = lib.genAttrs config.runtime.users (username: import ../home/${username});
     };

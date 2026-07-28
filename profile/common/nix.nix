@@ -58,5 +58,17 @@
         };
       };
     };
+
+    services.selector4nix = {
+      enable = true;
+      configureSubstituter = "overwrite";
+      settings.substituters = [
+        { url = "https://cache.nixos.org"; }
+      ]
+      ++ (map (url: {
+        inherit url;
+        priority = 45;
+      }) config.nix.settings.extra-substituters);
+    };
   };
 }

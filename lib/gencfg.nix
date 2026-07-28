@@ -12,10 +12,7 @@
     default =
       let
         sharedModules = [
-          self.nixosModules.nixos-tweaks
-          inputs.nix-packages.nixosModules.daed
           ../hosts/runtime.nix
-          # inputs.solaar.nixosModules.default
         ];
 
         genOSConfig =
