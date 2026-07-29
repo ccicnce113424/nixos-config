@@ -67,7 +67,6 @@
       ]
       ++ (map (url: {
         inherit url;
-        priority = 45;
       }) config.nix.settings.extra-substituters);
     };
   };
