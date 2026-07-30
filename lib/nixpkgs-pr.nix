@@ -14,10 +14,6 @@ in
       519313
       # kmscon: 10.0.0 -> 10.0.0-2026-06-11
       528118
-      # libdisplay-info_0_3: init at 0.3.0
-      546004
-      # lact: pin libdisplay-info_0_3
-      546155
     ];
   };
 
