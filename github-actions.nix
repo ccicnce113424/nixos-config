@@ -37,6 +37,7 @@ in
             "xwayland"
             "gimp-with-plugins"
             "hplip"
+            "selector4nix"
           ] (cfg.environment.systemPackages ++ cfg.home-manager.users.ccicnce113424.home.packages)
           // {
             kernel = cfg.boot.kernelPackages.kernel;
