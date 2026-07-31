@@ -28,7 +28,9 @@ in
       builtins.mapAttrs (
         _: machines:
         let
-          cfg = (builtins.head machines).value.config;
+          machine = (builtins.head machines).value;
+          cfg = machine.config;
+          inherit (machine) pkgs;
         in
         (
           config.lib'.findPkgs [
@@ -37,10 +39,10 @@ in
             "xwayland"
             "gimp-with-plugins"
             "hplip"
-            "selector4nix"
           ] (cfg.environment.systemPackages ++ cfg.home-manager.users.ccicnce113424.home.packages)
           // {
             kernel = cfg.boot.kernelPackages.kernel;
+            selector4nix = pkgs.selector4nix;
           }
         )
       ) grouped
