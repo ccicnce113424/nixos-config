@@ -30,7 +30,6 @@ rec {
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-        git-hooks.follows = "git-hooks";
       };
     };
     rust-overlay = {
@@ -41,7 +40,7 @@ rec {
       url = "github:feschber/lan-mouse";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        rust-overlay.follows = "rust-overlay";
+        rust-overlay.follows = "";
       };
     };
     nix-packages = {
@@ -50,8 +49,9 @@ rec {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
         treefmt-nix.follows = "treefmt-nix";
-        flake-compat.follows = "flake-compat";
-        nix-github-actions.follows = "nix-github-actions";
+        nvfetcher.inputs.flake-utils.inputs.systems.follows = "systems";
+        flake-compat.follows = "";
+        nix-github-actions.follows = "";
       };
     };
     nix-index-database = {
@@ -74,8 +74,9 @@ rec {
       url = "github:numtide/llm-agents.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
-        treefmt-nix.follows = "treefmt-nix";
+        treefmt-nix.follows = "";
         flake-parts.follows = "flake-parts";
+        systems.follows = "systems";
       };
     };
     nixcord = {
@@ -84,7 +85,7 @@ rec {
         nixpkgs.follows = "nixpkgs";
         nixpkgs-nixcord.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
-        flake-compat.follows = "";
+        treefmt-nix.follows = "treefmt-nix";
       };
     };
     selector4nix = {
@@ -98,13 +99,7 @@ rec {
     flake-compat.url = "github:lix-project/flake-compat";
 
     # not used directly
-    git-hooks = {
-      url = "github:cachix/git-hooks.nix";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-compat.follows = "flake-compat";
-      };
-    };
+    systems.url = "github:nix-systems/default";
   };
 
   outputs =
