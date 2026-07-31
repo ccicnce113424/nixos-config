@@ -28,8 +28,7 @@
       ];
       auto-allocate-uids = true;
       system-features = [ "uid-range" ];
-      # enable manually when needed
-      accept-flake-config = false;
+      accept-flake-config = true;
     };
     nix.package = config.nixPackages.nixVersions.latest or config.nixPackages.lix;
 
