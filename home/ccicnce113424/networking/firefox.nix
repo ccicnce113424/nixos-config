@@ -45,7 +45,7 @@
           nixpkgs-pr-tracker
           chrome-mask
           ff2mpv
-          bypass-paywalls-clean
+          # bypass-paywalls-clean
         ];
       };
     };
