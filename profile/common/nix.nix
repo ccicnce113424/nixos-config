@@ -21,7 +21,7 @@
 
     system.stateVersion = lib.trivial.release;
 
-    nix.settings = nixConfig // {
+    nix.settings = (removeAttrs nixConfig [ "extra-substituters" ]) // {
       extra-experimental-features = nixConfig.extra-experimental-features ++ [
         "auto-allocate-uids"
         "cgroups"
@@ -68,7 +68,7 @@
       ]
       ++ (map (url: {
         inherit url;
-      }) config.nix.settings.extra-substituters);
+      }) nixConfig.extra-substituters);
     };
   };
 }
