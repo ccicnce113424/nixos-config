@@ -59,7 +59,7 @@
       }
     ];
     workspace = {
-      lookAndFeel = "org.kde.breezedark.desktop";
+      # lookAndFeel = "org.kde.breezedark.desktop";
       # wallpaperCustomPlugin.plugin = "org.waywallen.kde";
     };
 
