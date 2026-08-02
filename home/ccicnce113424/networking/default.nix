@@ -15,18 +15,7 @@
     nur.repos.xddxdd.peerbanhelper
     qq
 
-    (pkgs.symlinkJoin {
-      name = "wechat-fcitx";
-      paths = [ pkgs.wechat ];
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/wechat \
-          --set-default QT_QPA_PLATFORM xcb \
-          --set-default QT_AUTO_SCREEN_SCALE_FACTOR 1 \
-          --set-default QT_IM_MODULE fcitx \
-          --set-default GTK_IM_MODULE fcitx
-      '';
-    })
+    wechat-uos
   ];
   programs.element-desktop.enable = true;
 
