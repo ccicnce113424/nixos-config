@@ -30,6 +30,7 @@ rec {
       inputs = {
         nixpkgs.follows = "nixpkgs";
         flake-parts.follows = "flake-parts";
+        flake-compat.follows = "";
       };
     };
     rust-overlay = {
