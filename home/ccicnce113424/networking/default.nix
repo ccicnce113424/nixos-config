@@ -13,7 +13,7 @@
     cherry-studio
 
     nur.repos.xddxdd.peerbanhelper
-    nur.repos.lonerOrz.qq
+    qq
 
     (pkgs.symlinkJoin {
       name = "wechat-fcitx";
