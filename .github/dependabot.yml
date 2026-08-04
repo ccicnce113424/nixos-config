@@ -9,11 +9,11 @@ updates:
     directory: "/"
     schedule:
       interval: "cron"
-      cron: "0 7 * * *"
+      cronjob: "0 7 * * *"
       timezone: "Asia/Shanghai"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "cron"
-      cron: "30 6 * * *"
+      cronjob: "30 6 * * *"
       timezone: "Asia/Shanghai"
