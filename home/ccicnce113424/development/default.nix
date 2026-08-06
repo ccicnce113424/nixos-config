@@ -17,5 +17,6 @@
     llm-agents.mimo-code
     llm-agents.cc-switch-cli
     llm-agents.codex
+    llm-agents.reasonix
   ];
 }
