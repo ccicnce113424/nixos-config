@@ -18,5 +18,6 @@
     llm-agents.cc-switch-cli
     llm-agents.codex
     llm-agents.reasonix
+    llm-agents.pi
   ];
 }
