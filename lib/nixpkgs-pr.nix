@@ -18,7 +18,7 @@ in
   };
 
   config = {
-    patchedNixpkgs.patches = lib.mkAfter (config.lib'.pathToPatchList ../patches/nixpkgs-pr);
+    patchedNixpkgs.patches = config.lib'.pathToPatchFileset ../patches/nixpkgs-pr;
     perSystem =
       {
         pkgs,

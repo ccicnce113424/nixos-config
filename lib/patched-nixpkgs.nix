@@ -9,15 +9,10 @@ let
   cfg = config.patchedNixpkgs;
 in
 {
+  config.patchedNixpkgs.patches = lib.mkBefore (config.lib'.pathToPatchFileset ../patches/hiprio);
   options = {
-    patchedNixpkgs = {
-      patchesHiPrio = lib.mkOption {
-        type = lib.types.listOf lib.types.path;
-        default = config.lib'.pathToPatchList ../patches/hiprio;
-      };
-      patches = lib.mkOption {
-        type = lib.types.listOf lib.types.path;
-      };
+    patchedNixpkgs.patches = lib.mkOption {
+      type = lib.types.fileset;
     };
     lib'.patchedNixpkgs = lib.mkOption {
       default =
@@ -25,7 +20,7 @@ in
         let
           bootstrapPkgs = import inputs.nixpkgs { inherit (host) system; };
           hostCfg = host.hostCfg or { };
-          patches = cfg.patchesHiPrio ++ cfg.patches;
+          patches = lib.fileset.toList cfg.patches;
 
           patchedNixpkgs =
             (bootstrapPkgs.applyPatches {

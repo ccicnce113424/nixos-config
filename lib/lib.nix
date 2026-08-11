@@ -20,21 +20,15 @@
         assert builtins.attrNames nameSet == builtins.attrNames groups;
         builtins.mapAttrs (_name: pkgs: builtins.head pkgs) groups;
     };
-    pathToPatchList = lib.mkOption {
+    pathToPatchFileset = lib.mkOption {
       default =
         path:
-        if builtins.pathExists path then
-          lib.fileset.toList (
-            lib.fileset.fileFilter (
-              file:
-              lib.any (ext: lib.hasSuffix ext file.name) [
-                ".patch"
-                ".diff"
-              ]
-            ) path
-          )
-        else
-          [ ];
+        lib.fileset.fromSource (
+          lib.sources.sourceFilesBySuffices path [
+            ".patch"
+            ".diff"
+          ]
+        );
     };
   };
 }
