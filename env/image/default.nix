@@ -16,10 +16,14 @@ let
         lib.attrValues pkgs.gimp3Plugins
       )
       ++ [
-        (pkgs.runCommand "gimp-plugin-xsane" { buildInputs = [ xsane ]; } ''
-          mkdir -p $out/${gimp-base.targetPluginDir}/xsane
-          ln -s ${lib.getExe xsane} $out/${gimp-base.targetPluginDir}/xsane
-        '')
+        # (pkgs.runCommand "gimp-plugin-xsane" { buildInputs = [ xsane ]; } ''
+        #   mkdir -p $out/${gimp-base.targetPluginDir}/xsane
+        #   ln -s ${lib.getExe xsane} $out/${gimp-base.targetPluginDir}/xsane
+        # '')
+        (pkgs.linkFarm "gimp-plugin-xsane" {
+          name = "${gimp-base.targetPluginDir}/xsane";
+          path = lib.getExe xsane;
+        })
       ];
   };
 in

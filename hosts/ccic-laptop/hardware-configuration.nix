@@ -99,10 +99,10 @@
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   hardware.display.edid.packages = [
-    (pkgs.runCommand "custom-edid" { } ''
-      mkdir -p $out/lib/firmware/edid
-      cp ${./S22B310.bin} $out/lib/firmware/edid/S22B310.bin
-    '')
+    (pkgs.linkFarm "custom-edid" {
+      name = "lib/firmware/edid/S22B310.bin";
+      path = ./S22B310.bin;
+    })
   ];
   hardware.display.outputs.HDMI-A-1.edid = "S22B310.bin";
 }
