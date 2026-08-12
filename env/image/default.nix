@@ -21,8 +21,7 @@ let
         #   ln -s ${lib.getExe xsane} $out/${gimp-base.targetPluginDir}/xsane
         # '')
         (pkgs.linkFarm "gimp-plugin-xsane" {
-          name = "${gimp-base.targetPluginDir}/xsane";
-          path = lib.getExe xsane;
+          "${gimp-base.targetPluginDir}/xsane" = lib.getExe xsane;
         })
       ];
   };

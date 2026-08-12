@@ -100,8 +100,7 @@
 
   hardware.display.edid.packages = [
     (pkgs.linkFarm "custom-edid" {
-      name = "lib/firmware/edid/S22B310.bin";
-      path = ./S22B310.bin;
+      "lib/firmware/edid/S22B310.bin" = ./S22B310.bin;
     })
   ];
   hardware.display.outputs.HDMI-A-1.edid = "S22B310.bin";
