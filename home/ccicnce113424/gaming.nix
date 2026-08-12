@@ -36,9 +36,8 @@
       rpcServer = true;
       streamerModeDetection = true;
       sysTray = true;
-      extraSettings = {
-        update_notify = false;
-      };
+      updateNotify = false;
+      extraSettings.autoupdate = true;
     };
   };
 }
