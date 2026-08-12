@@ -8,7 +8,7 @@
     mediainfo-gui
     tenacity
     ruffle
-    splayer-git
+    splayer-next-dev
 
     oneanime
     kazumi
