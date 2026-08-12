@@ -13,7 +13,7 @@
     cherry-studio
 
     nur.repos.xddxdd.peerbanhelper
-    qq
+    nur.repos.lonerOrz.qq
 
     wechat-uos
   ];
