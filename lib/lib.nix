@@ -8,24 +8,22 @@
       default =
         names: pkgsList:
         let
-          # nameSet = lib.genAttrs names (_: null);
-          # matching = builtins.filter (p: builtins.hasAttr (lib.getName p) nameSet) pkgsList;
-          matching = builtins.filter (p: builtins.elem (lib.getName p) names) pkgsList;
+          nameSet = lib.genAttrs names (_: null);
+          matching = builtins.filter (p: builtins.hasAttr (lib.getName p) nameSet) pkgsList;
           groups = builtins.groupBy lib.getName matching;
+          notFound = lib.subtractLists (builtins.attrNames groups) names;
         in
-        # assert builtins.attrNames nameSet == builtins.attrNames groups;
-        assert builtins.sort builtins.lessThan names == builtins.attrNames groups;
+        assert lib.assertMsg (notFound == [ ]) "Packages not found: ${lib.concatStringsSep ", " notFound}";
         builtins.mapAttrs (_name: builtins.head) groups;
     };
     pathToPatchFileset = lib.mkOption {
-      default =
-        path:
-        lib.fileset.fromSource (
-          lib.sources.sourceFilesBySuffices path [
-            ".patch"
-            ".diff"
-          ]
-        );
+      default = lib.fileset.fileFilter (
+        { hasExt, ... }:
+        lib.any hasExt [
+          "patch"
+          "diff"
+        ]
+      );
     };
   };
 }
