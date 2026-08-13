@@ -89,6 +89,13 @@ rec {
         treefmt-nix.follows = "treefmt-nix";
       };
     };
+    selector4nix = {
+      url = "github:StarryReverie/selector4nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+      };
+    };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-compat.url = "github:lix-project/flake-compat";
 
@@ -135,6 +142,7 @@ rec {
       "https://ccicnce113424.cachix.org"
       "https://chillcicada.cachix.org"
       "https://rycee.cachix.org"
+      "https://selector4nix.cachix.org"
       "https://xddxdd.cachix.org"
 
       # "https://cache.garnix.io"
@@ -149,6 +157,7 @@ rec {
       "ccicnce113424.cachix.org-1:OWV4fSkx7o7TinVCSD98zPG8udShCIjhyaAdOIRNetw="
       "chillcicada.cachix.org-1:nW+OhwrpD0z5oGcBFt/aLEtzN94XcJBm81/cAHsEwVU="
       "rycee.cachix.org-1:TiiXyeSk0iRlzlys4c7HiXLkP3idRf20oQ/roEUAh/A="
+      "selector4nix.cachix.org-1:wovVlT07In5JCVz2tFgxPQTLpnN8hZT6P/RwfFcz3KE="
       "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
 
       # "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="

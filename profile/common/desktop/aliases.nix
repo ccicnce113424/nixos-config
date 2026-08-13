@@ -15,7 +15,7 @@
       switch = ''
         set -euo pipefail
         rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
-        sin nh os switch "$@"
+        sin nh os switch -- --option accept-flake-config false "$@"
       '';
       cswitch = ''
         set -euo pipefail
@@ -23,12 +23,13 @@
         sin sudo nixos-rebuild switch --flake $HOME/code/nixos-config \
           --log-format bar-with-logs -L --install-bootloader \
           --option substituters 'https://cache.nixos.org' \
+          --option accept-flake-config false \
           "$@"
       '';
       nb = ''
         set -euo pipefail
         rm -f $HOME/.config/fontconfig/conf.d/10-hm-fonts.conf.backup || true
-        sin nh os boot "$@"
+        sin nh os boot -- --option accept-flake-config false "$@"
       '';
       cnb = ''
         set -euo pipefail
@@ -36,6 +37,7 @@
         sin sudo nixos-rebuild boot --flake $HOME/code/nixos-config \
           --log-format bar-with-logs -L --install-bootloader \
           --option substituters 'https://cache.nixos.org' \
+          --option accept-flake-config false \
           "$@"
       '';
       up = ''
