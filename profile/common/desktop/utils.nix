@@ -40,8 +40,6 @@
       podman-compose
       podman-desktop
       xwininfo
-
-      moonlight-qt
     ];
     services.smartd.enable = true;
 
@@ -97,6 +95,11 @@
       autoStart = false;
       capSysAdmin = true;
       openFirewall = true;
+    };
+
+    programs.moonlight-qt = {
+      enable = true;
+      capSysNice = true;
     };
 
     programs.localsend = {

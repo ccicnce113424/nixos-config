@@ -1,0 +1,31 @@
+From b42f6f7412e374f0c38b9c93a982a0aa76f9e207 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Thu, 13 Aug 2026 16:47:09 +0800
+Subject: [PATCH] moonlight-qt: pin ffmpeg to 8
+
+---
+ pkgs/by-name/mo/moonlight-qt/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/by-name/mo/moonlight-qt/package.nix b/pkgs/by-name/mo/moonlight-qt/package.nix
+index 0ff24a2913198..1eef83cedaf79 100644
+--- a/pkgs/by-name/mo/moonlight-qt/package.nix
++++ b/pkgs/by-name/mo/moonlight-qt/package.nix
+@@ -8,7 +8,7 @@
+   vulkan-headers,
+   SDL2,
+   SDL2_ttf,
+-  ffmpeg,
++  ffmpeg_8,
+   libopus,
+   libplacebo,
+   openssl,
+@@ -52,7 +52,7 @@ stdenv.mkDerivation (finalAttrs: {
+   buildInputs = [
+     SDL2
+     SDL2_ttf
+-    ffmpeg
++    ffmpeg_8
+     libopus
+     libplacebo
+     qt6.qtdeclarative
