@@ -30,7 +30,6 @@ in
         let
           machine = (builtins.head machines).value;
           cfg = machine.config;
-          inherit (machine) pkgs;
         in
         (
           config.lib'.findPkgs [
