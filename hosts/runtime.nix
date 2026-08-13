@@ -40,7 +40,6 @@
   imports = [
     inputs.nix-packages.nixosModules.daed
     inputs.home-manager.nixosModules.home-manager
-    inputs.selector4nix.nixosModules.selector4nix
     self.nixosModules.nixos-tweaks
     ../system
     ../profile

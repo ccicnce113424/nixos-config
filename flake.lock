@@ -33,22 +33,6 @@
         "type": "github"
       }
     },
-    "crane": {
-      "locked": {
-        "lastModified": 1784564969,
-        "narHash": "sha256-TkTWNhJV/8Wk3czlbz4bwHZkFCaCHPsOy+oJe4PUiXg=",
-        "owner": "ipetkov",
-        "repo": "crane",
-        "rev": "7930f6c291de6f83c257839d434592aa085f290a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "ipetkov",
-        "ref": "master",
-        "repo": "crane",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "locked": {
         "lastModified": 1777699697,
@@ -426,7 +410,6 @@
         "nur": "nur",
         "plasma-manager": "plasma-manager",
         "rust-overlay": "rust-overlay",
-        "selector4nix": "selector4nix",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix"
       }
@@ -448,30 +431,6 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "type": "github"
-      }
-    },
-    "selector4nix": {
-      "inputs": {
-        "crane": "crane",
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1786577088,
-        "narHash": "sha256-dpcTMkbutQUgM1yijVv1xsqdn350oyjMHGcg3mfWfns=",
-        "owner": "StarryReverie",
-        "repo": "selector4nix",
-        "rev": "8afa92ae4497814d9c4d1c3c93072587a2d5dc38",
-        "type": "github"
-      },
-      "original": {
-        "owner": "StarryReverie",
-        "repo": "selector4nix",
         "type": "github"
       }
     },

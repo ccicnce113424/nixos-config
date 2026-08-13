@@ -44,7 +44,6 @@ in
           ] (cfg.environment.systemPackages ++ cfg.home-manager.users.ccicnce113424.home.packages)
           // {
             kernel = cfg.boot.kernelPackages.kernel;
-            selector4nix = pkgs.selector4nix;
           }
         )
       ) grouped
