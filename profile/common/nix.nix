@@ -63,12 +63,15 @@
     services.selector4nix = {
       enable = true;
       configureSubstituter = "overwrite";
-      settings.substituters = [
-        { url = "https://cache.nixos.org"; }
-      ]
-      ++ (map (url: {
-        inherit url;
-      }) nixConfig.extra-substituters);
+      settings = {
+        proxy.rewrite_to_target = "upstream";
+        substituters = [
+          { url = "https://cache.nixos.org"; }
+        ]
+        ++ (map (url: {
+          inherit url;
+        }) nixConfig.extra-substituters);
+      };
     };
   };
 }
