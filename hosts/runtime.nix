@@ -75,7 +75,6 @@
       };
       backupFileExtension = "backup";
       sharedModules = [
-        inputs.lan-mouse.homeManagerModules.default
         inputs.nix-index-database.homeModules.nix-index
         inputs.plasma-manager.homeModules.plasma-manager
         inputs.nixcord.homeModules.nixcord

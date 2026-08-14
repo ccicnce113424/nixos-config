@@ -133,27 +133,6 @@
         "type": "github"
       }
     },
-    "lan-mouse": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": []
-      },
-      "locked": {
-        "lastModified": 1782656559,
-        "narHash": "sha256-i2xXiqLOnCNfwZnbrm1teVlTTA1HQ0IRVPXEiyiQtpU=",
-        "owner": "feschber",
-        "repo": "lan-mouse",
-        "rev": "392af44cbe06a7a591db86856ad6ed2aa83958d8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "feschber",
-        "repo": "lan-mouse",
-        "type": "github"
-      }
-    },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -399,7 +378,6 @@
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
         "home-manager": "home-manager",
-        "lan-mouse": "lan-mouse",
         "llm-agents": "llm-agents",
         "nix-gaming": "nix-gaming",
         "nix-github-actions": "nix-github-actions",

@@ -78,13 +78,14 @@
     #   };
     # };
 
-    # open port for lan-mouse and qbittorrent
+    # open port for qbittorrent
     # set qbittorrent port to 62180
     networking.firewall = {
-      allowedTCPPorts = [ 62180 ];
+      allowedTCPPorts = [
+        62180
+      ];
       allowedUDPPorts = [
         62180
-        4242
       ];
     };
 

@@ -1,15 +1,9 @@
 {
-  pkgs,
   lib,
   osConfig,
   ...
 }:
 {
-  programs.lan-mouse = {
-    enable = true;
-    package = pkgs.lan-mouse;
-  };
-
   programs.plasma.input = {
     keyboard.numlockOnStartup = "on";
     touchpads = lib.optional (osConfig.networking.hostName == "ccic-laptop") {
