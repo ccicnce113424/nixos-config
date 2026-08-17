@@ -108,7 +108,6 @@
     ++ lib.optional (osConfig.networking.hostName == "ccic-laptop") pkgs.plasmavantage;
 
   dbus.packages = with pkgs; [
-    krunner-fd-plugin
     krunner-zed
   ];
 
