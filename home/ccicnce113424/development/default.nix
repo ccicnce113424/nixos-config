@@ -13,11 +13,9 @@
     just
     gh
     shellcheck
-    llm-agents.opencode
     llm-agents.mimo-code
     llm-agents.cc-switch-cli
     llm-agents.codex
     llm-agents.reasonix
-    llm-agents.pi
   ];
 }
