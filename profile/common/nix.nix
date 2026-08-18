@@ -31,6 +31,7 @@
       accept-flake-config = true;
     };
     nix.package = config.nixPackages.nixVersions.latest or config.nixPackages.lix;
+    nix.channel.enable = false;
 
     programs.direnv.angrr = {
       enable = true;
@@ -47,6 +48,10 @@
           result = {
             path-regex = "/result[^/]*$";
             period = "0d";
+          };
+          pre-commit-config = {
+            path-regex = "/\\.pre-commit-config\\.yaml";
+            period = "3d";
           };
         };
         profile-policies.system = {
