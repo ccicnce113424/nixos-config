@@ -1,0 +1,33 @@
+From 886e3523149f8ff06ee8e9d14b06315a9d6cb893 Mon Sep 17 00:00:00 2001
+From: K900 <me@0upti.me>
+Date: Thu, 20 Aug 2026 12:52:41 +0300
+Subject: [PATCH] mesa: 26.2.0 -> 26.2.1
+
+Diff: https://gitlab.freedesktop.org/mesa/mesa/-/compare/mesa-26.2.0...26.2.1
+
+Changelog: https://docs.mesa3d.org/relnotes/26.2.1.html
+---
+ pkgs/development/libraries/mesa/common.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/development/libraries/mesa/common.nix b/pkgs/development/libraries/mesa/common.nix
+index 7e4a826df42dc..aa03776d53bf3 100644
+--- a/pkgs/development/libraries/mesa/common.nix
++++ b/pkgs/development/libraries/mesa/common.nix
+@@ -5,14 +5,14 @@
+ # nix build .#legacyPackages.aarch64-darwin.mesa
+ rec {
+   pname = "mesa";
+-  version = "26.2.0";
++  version = "26.2.1";
+ 
+   src = fetchFromGitLab {
+     domain = "gitlab.freedesktop.org";
+     owner = "mesa";
+     repo = "mesa";
+     rev = "mesa-${version}";
+-    hash = "sha256-g2U24Dz7GFKd3+jkIHFTsIp7Cahe29puU4u4VDbAD50=";
++    hash = "sha256-9vkgvCqTmcY0RjIZliRvXzlyeSMxhYY5EKIc9JJH6/Y=";
+   };
+ 
+   meta = {
