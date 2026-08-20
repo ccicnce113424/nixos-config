@@ -40,6 +40,7 @@ in
             "hplip"
             "winboat"
             "cherry-studio"
+            "spectacle"
           ] (cfg.environment.systemPackages ++ cfg.home-manager.users.ccicnce113424.home.packages)
           // {
             kernel = cfg.boot.kernelPackages.kernel;
