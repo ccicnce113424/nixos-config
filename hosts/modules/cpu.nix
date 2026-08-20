@@ -13,7 +13,7 @@ let
     amd = {
       hardware.cpu.amd = {
         updateMicrocode = true;
-        ryzen-smu.enable = true;
+        # ryzen-smu.enable = true;
       };
       nix.settings.system-features = [ "gccarch-x86-64-v4" ];
     };
