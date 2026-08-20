@@ -25,9 +25,9 @@
 
   services.ipp-usb.enable = true;
 
-  services.ddccontrol = {
-    enable = true;
-  };
+  # services.ddccontrol = {
+  #   enable = true;
+  # };
 
   services.chrony = {
     enable = true;
