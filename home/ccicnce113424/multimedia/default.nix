@@ -9,6 +9,7 @@
     tenacity
     ruffle
     splayer-next-dev
+    open-orpheus-dev
 
     oneanime
     kazumi
