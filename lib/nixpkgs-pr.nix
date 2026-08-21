@@ -12,7 +12,7 @@ in
     default = [
       # linuxPackages.nvidiaPackages: separate and refactor
       519313
-      # kmscon: 10.0.0 -> 10.0.0-2026-06-11
+      # kmscon: 10.0.0 -> 10.0.2
       528118
       # nixos/userborn: manage /etc/sub{u,g}id
       508608
