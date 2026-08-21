@@ -29,7 +29,6 @@
       auto-allocate-uids = true;
       system-features = [ "uid-range" ];
       accept-flake-config = true;
-      http3 = true;
     };
     nix.package = config.nixPackages.nixVersions.latest or config.nixPackages.lix;
     nix.channel.enable = false;
