@@ -1,3 +1,4 @@
+lib:
 let
   desktop-template = {
     system = "x86_64-linux";
@@ -32,23 +33,24 @@ let
   };
 in
 {
-  ccic-desktop = desktop-template // {
+  ccic-desktop = lib.recursiveUpdate desktop-template {
     hostCfg = {
       cpu.intel = true;
       gpu.nvidia = true;
     };
   };
-  ccic-laptop = desktop-template // {
+  ccic-laptop = lib.recursiveUpdate desktop-template {
     hostCfg = {
       cpu.amd = true;
       gpu.amdgpu = true;
     };
+    runtime.features = desktop-template.runtime.features ++ [ "gaze" ];
   };
-  vbox-test = thin-template // {
+  vbox-test = lib.recursiveUpdate thin-template {
     profile = "vm-test";
     runtime.profile = "vm-test";
   };
-  vmware-test = thin-template // {
+  vmware-test = lib.recursiveUpdate thin-template {
     profile = "vm-test";
     runtime.profile = "vm-test";
   };

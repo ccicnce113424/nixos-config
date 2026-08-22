@@ -1,6 +1,6 @@
 { lib, config, ... }:
 let
-  hosts = import ./hosts.nix;
+  hosts = (import ./hosts.nix) lib;
 in
 {
   flake = {

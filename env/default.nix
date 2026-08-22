@@ -9,5 +9,6 @@
     ./vbox
     ./virt-manager
     ./wine
+    ./gaze
   ];
 }

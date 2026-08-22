@@ -88,6 +88,26 @@
         "type": "github"
       }
     },
+    "gaze": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787430221,
+        "narHash": "sha256-zzWVCRggork7Rvf1SmeWNRRG71iz7MeKmb9qAXcJufw=",
+        "owner": "GunduLabs",
+        "repo": "gaze",
+        "rev": "bbfaeae1525669371a64adedf2cf8b3e16f1035a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "GunduLabs",
+        "repo": "gaze",
+        "type": "github"
+      }
+    },
     "git-hooks": {
       "inputs": {
         "flake-compat": [
@@ -377,6 +397,7 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "flake-parts": "flake-parts",
+        "gaze": "gaze",
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
         "nix-gaming": "nix-gaming",

@@ -98,6 +98,13 @@
   # nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
+  services.gaze.settings = {
+    cameras = {
+      rgb = "usb:5986:215e";
+      ir = "usb:5986:215e";
+    };
+  };
+
   hardware.display.edid.packages = [
     (pkgs.linkFarm "custom-edid" {
       "lib/firmware/edid/S22B310.bin" = ./S22B310.bin;
