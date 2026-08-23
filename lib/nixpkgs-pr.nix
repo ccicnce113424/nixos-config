@@ -14,10 +14,6 @@ in
       519313
       # kmscon: 10.0.0 -> 10.0.2
       528118
-      # nixos/userborn: manage /etc/sub{u,g}id
-      508608
-      # mesa: 26.2.0 -> 26.2.1
-      554644
     ];
   };
 

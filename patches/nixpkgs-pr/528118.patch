@@ -87,7 +87,7 @@ index 1d174f44f0786..f995985a9ba0f 100644
      platforms = lib.platforms.linux;
    };
 
-From e15dd423ddb06e9a7a8cabdd4298130c1cbcaab6 Mon Sep 17 00:00:00 2001
+From cfc631cc9ba95b11b3fef9a9250410149ef280d2 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 3 Jul 2026 03:16:53 +0800
 Subject: [PATCH 2/2] nixos/kmscon: disable libseat by default
@@ -96,23 +96,14 @@ These changes follow the defaults in kmscon 10.0.1.
 
 libseat still has some issues. It breaks kmscon-launch-gui and causes #528069.
 ---
- nixos/modules/services/ttys/kmscon.nix | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ nixos/modules/services/ttys/kmscon.nix | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
-index 48ed7f242813a..f656e40507de8 100644
+index 48ed7f242813a..9ae608eb5f5db 100644
 --- a/nixos/modules/services/ttys/kmscon.nix
 +++ b/nixos/modules/services/ttys/kmscon.nix
-@@ -16,6 +16,8 @@ let
- 
-   cfg = config.services.kmscon;
- 
-+  kmscon = cfg.package;
-+
-   gettyCfg = config.services.getty;
- 
-   configDir = pkgs.writeTextFile {
-@@ -110,15 +112,7 @@ in
+@@ -110,15 +110,7 @@ in
              ]);
            options = {
              hwaccel = mkEnableOption "use hardware acceleration for rendering";
@@ -129,23 +120,12 @@ index 48ed7f242813a..f656e40507de8 100644
            };
          };
        };
-@@ -159,8 +153,8 @@ in
-       )
-     );
- 
--    environment.systemPackages = [ cfg.package ];
--    systemd.packages = [ cfg.package ];
-+    environment.systemPackages = [ kmscon ];
-+    systemd.packages = [ kmscon ];
- 
-     systemd.services."kmsconvt@" = {
-       serviceConfig = {
-@@ -171,7 +165,7 @@ in
+@@ -171,7 +163,7 @@ in
            "" # override upstream default with an empty ExecStart
            (builtins.concatStringsSep " " (
              [
 -              "${cfg.package}/bin/kmscon"
-+              (lib.getExe kmscon)
++              (lib.getExe cfg.package)
                "--configdir"
                configDir
                "--vt=%I"
