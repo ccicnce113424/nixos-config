@@ -13,7 +13,6 @@
 
     oneanime
     kazumi
-    venera
     pixes-git
     piliplus
     loveiwara
