@@ -6,7 +6,7 @@
   ...
 }:
 let
-  list = lib.mapAttrsToList lib.nameValuePair self.nixosConfigurations;
+  list = lib.attrsToList self.nixosConfigurations;
   grouped = builtins.groupBy (x: x.value.pkgs.stdenv.hostPlatform.system) list;
 in
 {
@@ -28,11 +28,14 @@ in
       builtins.mapAttrs (
         _: machines:
         let
-          machine = (builtins.head machines).value;
-          cfg = machine.config;
+          groupedByName = builtins.groupBy (x: x.name) machines;
+          desktop = (builtins.head groupedByName.ccic-desktop).value;
+          desktopCfg = desktop.config;
+          laptop = (builtins.head groupedByName.ccic-laptop).value;
+          laptopCfg = laptop.config;
         in
-        (
-          config.lib'.findPkgs [
+        (config.lib'.findPkgs
+          [
             "virtualbox"
             "wine-tkg-full"
             "xwayland"
@@ -41,12 +44,18 @@ in
             "winboat"
             "cherry-studio"
             "spectacle"
+          ]
+          (desktopCfg.environment.systemPackages ++ desktopCfg.home-manager.users.ccicnce113424.home.packages)
+        )
+        // {
+          kernel = desktopCfg.boot.kernelPackages.kernel;
+        }
+        // (config.lib'.findPkgs
+          [
             "gaze"
             "gaze-gui"
-          ] (cfg.environment.systemPackages ++ cfg.home-manager.users.ccicnce113424.home.packages)
-          // {
-            kernel = cfg.boot.kernelPackages.kernel;
-          }
+          ]
+          (laptopCfg.environment.systemPackages ++ laptopCfg.home-manager.users.ccicnce113424.home.packages)
         )
       ) grouped
     );
