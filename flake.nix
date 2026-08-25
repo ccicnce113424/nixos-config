@@ -133,6 +133,7 @@ rec {
       "https://chillcicada.cachix.org"
       "https://rycee.cachix.org"
       "https://xddxdd.cachix.org"
+      "https://mio.cachix.org/"
 
       # "https://cache.garnix.io"
     ];
@@ -147,6 +148,7 @@ rec {
       "chillcicada.cachix.org-1:nW+OhwrpD0z5oGcBFt/aLEtzN94XcJBm81/cAHsEwVU="
       "rycee.cachix.org-1:TiiXyeSk0iRlzlys4c7HiXLkP3idRf20oQ/roEUAh/A="
       "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
+      "mio.cachix.org-1:FlupyyLPURqwdRqtPT/LBWKsXY7JKsDkzZQo2K6LeMM="
 
       # "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
     ];
