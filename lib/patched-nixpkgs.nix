@@ -62,12 +62,6 @@ in
               rocmSupport = true;
             };
             overlays = [
-              self.overlays.default
-              inputs.nur.overlays.default
-              inputs.nix-packages.overlays.default
-              inputs.nix-gaming.overlays.default
-              inputs.llm-agents.overlays.shared-nixpkgs
-              inputs.gaze.overlays.default
               (inputs.multiverse.lib.pinOverlay {
                 inherit (cfg) pins;
                 config.allowUnfree = true;
@@ -82,6 +76,12 @@ in
                 };
               })
               (final: _: cfg.overridePackagesFromMv final.mv)
+              self.overlays.default
+              inputs.nur.overlays.default
+              inputs.nix-packages.overlays.default
+              inputs.nix-gaming.overlays.default
+              inputs.llm-agents.overlays.shared-nixpkgs
+              inputs.gaze.overlays.default
             ];
           };
         in
