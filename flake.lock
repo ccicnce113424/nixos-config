@@ -181,6 +181,21 @@
         "type": "github"
       }
     },
+    "multiverse": {
+      "locked": {
+        "lastModified": 1787606971,
+        "narHash": "sha256-E6gPCXGOtPMBq1taY8NYaF5YkECcQRo/kQPD/5atfMM=",
+        "owner": "fzakaria",
+        "repo": "nixpkgs-multiverse",
+        "rev": "148e54ded2e7c0df8e47e0ad3e30e53deea30544",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fzakaria",
+        "repo": "nixpkgs-multiverse",
+        "type": "github"
+      }
+    },
     "nix-gaming": {
       "inputs": {
         "flake-compat": [],
@@ -400,6 +415,7 @@
         "gaze": "gaze",
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
+        "multiverse": "multiverse",
         "nix-gaming": "nix-gaming",
         "nix-github-actions": "nix-github-actions",
         "nix-index-database": "nix-index-database",

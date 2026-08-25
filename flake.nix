@@ -87,6 +87,7 @@ rec {
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    multiverse.url = "github:fzakaria/nixpkgs-multiverse";
     flake-compat.url = "github:lix-project/flake-compat";
 
     # not used directly

@@ -1,5 +1,3 @@
 {
-  flake.nixosModules = {
-    nixos-tweaks = import ./nixos-tweaks.nix;
-  };
+  imports = [ ./nixos-tweaks.nix ];
 }
