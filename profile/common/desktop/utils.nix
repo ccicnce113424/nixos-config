@@ -38,7 +38,6 @@
       resources
 
       podman-compose
-      podman-desktop
       xwininfo
     ];
     services.smartd.enable = true;

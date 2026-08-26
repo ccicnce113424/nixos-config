@@ -165,7 +165,9 @@
         "systems": [
           "systems"
         ],
-        "treefmt-nix": []
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
       },
       "locked": {
         "lastModified": 1787694916,
