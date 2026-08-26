@@ -11,6 +11,7 @@
       package = pkgs.gaze;
       pam.defaultServices = [
         "sudo"
+        "su"
         "polkit-1"
         "login"
       ];
