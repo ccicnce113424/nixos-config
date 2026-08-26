@@ -1,0 +1,35 @@
+From b1bfb851f28bda004e8bceeb073d4e6126adfcdd Mon Sep 17 00:00:00 2001
+From: K900 <me@0upti.me>
+Date: Tue, 25 Aug 2026 08:36:00 +0300
+Subject: [PATCH] kdePackages.kwin: backport crash fix
+
+---
+ pkgs/kde/plasma/kwin/default.nix | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/pkgs/kde/plasma/kwin/default.nix b/pkgs/kde/plasma/kwin/default.nix
+index 55538a99fba5e..2d4a2861240a6 100644
+--- a/pkgs/kde/plasma/kwin/default.nix
++++ b/pkgs/kde/plasma/kwin/default.nix
+@@ -17,6 +17,7 @@
+   lcms2,
+   pipewire,
+   python3,
++  fetchpatch,
+ }:
+ mkKdeDerivation {
+   pname = "kwin";
+@@ -24,6 +25,13 @@ mkKdeDerivation {
+   patches = [
+     ./0003-plugins-qpa-allow-using-nixos-wrapper.patch
+     ./0001-NixOS-Unwrap-executable-name-for-.desktop-search.patch
++
++    # backport crash fix with latest Mesa
++    # FIXME: remove in next update
++    (fetchpatch {
++      url = "https://invent.kde.org/plasma/kwin/-/commit/2d0613acd044544e79b034b1cbc248664edf2884.diff";
++      hash = "sha256-dpflStJ01aChNYDO+dfI67LhLWoC3sovaAza1AIck1E=";
++    })
+   ];
+ 
+   postPatch = ''
