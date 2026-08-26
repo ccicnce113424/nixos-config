@@ -2,5 +2,6 @@
 {
   imports = [
     ../common
+    ./scx.nix
   ];
 }
