@@ -1,6 +1,7 @@
 {
   patchedNixpkgs = {
     pins = {
+      electron_43 = "43.2.0";
     };
     overridePackagesFromMv = mv: {
       inherit (mv.at "b7c2ada94fe9") linux-firmware; # linux-firmware 20260622
