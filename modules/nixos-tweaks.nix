@@ -3,8 +3,7 @@
     pins = {
       electron_43 = "43.2.0";
     };
-    overridePackagesFromMv = mv: {
-      inherit (mv.at "b7c2ada94fe9") linux-firmware; # linux-firmware 20260622
+    overridePackagesFromMv = _mv: {
     };
   };
   flake.nixosModules.nixos-tweaks =
@@ -18,14 +17,5 @@
 
       boot.kernelPatches = [
       ];
-
-      hardware.graphics =
-        let
-          mesaPkgs = pkgs.mv.at "b7c2ada94fe9"; # mesa 26.1.6
-        in
-        {
-          package = mesaPkgs.mesa;
-          package32 = mesaPkgs.pkgsi686Linux.mesa;
-        };
     };
 }
