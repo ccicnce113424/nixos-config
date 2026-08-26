@@ -6,7 +6,7 @@
     shijima-qt
     kdePackages.francis
     kdePackages.skanpage
-    winboat
+    # winboat
     llm-agents.hermes-agent
     llm-agents.hermes-desktop
   ];

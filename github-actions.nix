@@ -41,7 +41,7 @@ in
             "xwayland"
             "gimp-with-plugins"
             "hplip"
-            "winboat"
+            # "winboat"
             "cherry-studio"
             "spectacle"
 
