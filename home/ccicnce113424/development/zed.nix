@@ -33,8 +33,17 @@
       terminal.env."EDITOR" = "zeditor --wait";
       # AI
       edit_predictions.provider = "copilot";
-      agent_servers.github-copilot-cli.type = "registry";
-      agent_servers.opencode.type = "registry";
+      agent_servers."codex-acp".type = "registry";
+      agent_servers."Oh My Pi" = {
+        type = "custom";
+        command = "omp";
+        args = [ "acp" ];
+      };
+      agent_servers."Reasonix" = {
+        type = "custom";
+        command = "reasonix";
+        args = [ "acp" ];
+      };
     };
   };
 
