@@ -14,8 +14,6 @@ in
       519313
       # kmscon: 10.0.0 -> 10.0.2
       528118
-      # kdePackages.kwin: backport crash fix
-      556316
     ];
   };
 
