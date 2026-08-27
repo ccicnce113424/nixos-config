@@ -1,4 +1,4 @@
-From 886e0757121f17c747734e98b4cecc79200692ba Mon Sep 17 00:00:00 2001
+From 4dbec9f75f40fb0cfaba001e79614bce7d6ed47e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
 Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -6,39 +6,24 @@ Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
 
 Assisted-by: Zed Agent:DeepSeek V4 Pro
 ---
- .../os-specific/linux/nvidia-x11/binaries.nix | 232 +++++++++++
+ .../os-specific/linux/nvidia-x11/binaries.nix | 217 ++++++++++
  pkgs/os-specific/linux/nvidia-x11/default.nix |  39 +-
  .../linux/nvidia-x11/fabricmanager.nix        |  17 +-
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 378 +++++++-----------
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 369 +++++++-----------
  .../linux/nvidia-x11/kernel-modules.nix       |   8 +-
  .../linux/nvidia-x11/persistenced.nix         |  21 +-
  .../os-specific/linux/nvidia-x11/settings.nix |  32 +-
- 7 files changed, 432 insertions(+), 295 deletions(-)
+ 7 files changed, 408 insertions(+), 295 deletions(-)
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/binaries.nix
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 new file mode 100644
-index 0000000000000..be8d3a0d37177
+index 0000000000000..030d312078640
 --- /dev/null
 +++ b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-@@ -0,0 +1,232 @@
-+# This file provides the core logic for extracting and installing files from
-+# the proprietary NVIDIA driver installer (.run file).
-+#
-+# It is separated from the extra packages (settings, persistenced,
-+# fabricmanager, kernel modules) that are defined in generic.nix and exposed
-+# via passthru.
-+#
-+# This file is designed to be invoked via callPackage so that its package
-+# dependencies are resolved automatically from the package set.  The
-+# driver-specific arguments (version, hashes, feature flags, …) are passed
-+# as the second argument to callPackage.
-+#
-+# Parameters without defaults are always provided by generic.nix via args.
-+# Only disable32Bit, firmware, and acceptLicense keep their defaults here.
-+
+@@ -0,0 +1,217 @@
 +{
-+  # Package dependencies (auto-resolved by callPackage)
++  # Package dependencies
 +  lib,
 +  stdenv,
 +  fetchurl,
@@ -419,19 +404,12 @@ index d0cac9dee6ade..455864c967c46 100644
 -}
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index e6c1595ae572d..e452a24801572 100644
+index e6c1595ae572d..ffbe56f867b18 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-@@ -1,16 +1,37 @@
-+# Single-function interface: takes both package dependencies (auto-resolved
-+# by callPackage in default.nix) and driver-specific arguments.
-+#
-+# The attrset passed to binaries.nix is constructed explicitly via driverArgs
-+# so that every parameter (including defaults) is resolved before reaching
-+# binaries.nix — binaries.nix only keeps defaults for disable32Bit, firmware,
-+# and acceptLicense.
+@@ -1,16 +1,30 @@
  {
-+  # Package dependencies (auto-resolved by callPackage)
++  # Package dependencies
 +  lib,
 +  runCommandLocal,
 +  patchutils,
@@ -463,7 +441,7 @@ index e6c1595ae572d..e452a24801572 100644
    useGLVND ? true,
    useProfiles ? true,
    preferGtk2 ? false,
-@@ -19,7 +40,7 @@
+@@ -19,7 +33,7 @@
    usePersistenced ? true,
    useFabricmanager ? false,
    ibtSupport ? false,
@@ -472,7 +450,7 @@ index e6c1595ae572d..e452a24801572 100644
    prePatch ? null,
    postPatch ? null,
    patchFlags ? null,
-@@ -29,45 +50,48 @@
+@@ -29,45 +43,48 @@
    postInstall ? null,
    broken ? false,
    brokenOpen ? broken,
@@ -552,7 +530,7 @@ index e6c1595ae572d..e452a24801572 100644
    # Rewrites patches meant for the kernel/* folder structure to kernel-open/*
    rewritePatch =
      { from, to }:
-@@ -91,169 +115,64 @@ let
+@@ -91,169 +108,62 @@ let
            --clean "$patch" > "$out"
        '';
  
@@ -713,8 +691,6 @@ index e6c1595ae572d..e452a24801572 100644
 -          }
 -        );
 +      # Driver arguments shared between the main build and the i686 lib32 build.
-+      # Constructed explicitly so that every parameter (including defaults) is
-+      # resolved before reaching binaries.nix.
 +      driverArgs = {
 +        inherit
 +          version
@@ -772,7 +748,7 @@ index e6c1595ae572d..e452a24801572 100644
            }
          else
            { };
-@@ -270,25 +189,39 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -270,25 +180,39 @@ stdenv.mkDerivation (finalAttrs: {
              }) patches)
              ++ patchesOpen;
            broken = brokenOpen;
@@ -821,7 +797,7 @@ index e6c1595ae572d..e452a24801572 100644
              }
            ) persistencedSha256
          else
-@@ -296,42 +229,19 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -296,42 +220,19 @@ stdenv.mkDerivation (finalAttrs: {
        fabricmanager =
          if useFabricmanager then
            lib.mapNullable (
@@ -1051,7 +1027,7 @@ index e47dc3cb4e613..ba8b44f0de4fc 100644
      gtk3
      librsvg
 
-From 8607c42e5b30bde03f8c27af33aec193ef058dc5 Mon Sep 17 00:00:00 2001
+From db5edc5b41c363e32c66b4a062d84914ad1fff5e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 2/2] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -1198,10 +1174,10 @@ index 5cc9cd6eb9d61..e95e40e1c5f99 100644
  
        broken = kernel.kernelAtLeast "6.7";
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index e452a24801572..f5c07b5b3c8d3 100644
+index ffbe56f867b18..05995804125db 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-@@ -29,6 +29,8 @@
+@@ -22,6 +22,8 @@
    persistencedVersion ? version,
    fabricmanagerSha256 ? null,
    fabricmanagerVersion ? version,
@@ -1210,7 +1186,7 @@ index e452a24801572..f5c07b5b3c8d3 100644
    # Whether to fetch the open-source kernel module sources from NVIDIA
    fetchOpenFromNvidia ? false,
    # Feature flags
-@@ -237,10 +239,19 @@ nvidiaDriver.overrideAttrs (
+@@ -228,10 +230,19 @@ nvidiaDriver.overrideAttrs (
            ) fabricmanagerSha256
          else
            { };
