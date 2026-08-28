@@ -9,7 +9,14 @@ let
   cfg = config.patchedNixpkgs;
 in
 {
-  config.patchedNixpkgs.patches = lib.mkBefore (config.lib'.pathToPatchFileset ../patches/hiprio);
+  config = {
+    patchedNixpkgs.patches = lib.mkBefore (config.lib'.pathToPatchFileset ../patches/hiprio);
+    perSystem =
+      { system, ... }:
+      {
+        packages.patchedNixpkgs = (config.lib'.patchedNixpkgs { inherit system; }).finalNixpkgs;
+      };
+  };
   options = {
     patchedNixpkgs = {
       patches = lib.mkOption {
