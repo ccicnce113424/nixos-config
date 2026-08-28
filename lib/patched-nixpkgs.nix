@@ -32,16 +32,13 @@ in
           hostCfg = host.hostCfg or { };
           patches = lib.fileset.toList cfg.patches;
 
-          patchedNixpkgs =
-            (bootstrapPkgs.applyPatches {
-              name = "source";
-              src = inputs.nixpkgs;
-              inherit patches;
-            }).overrideAttrs
-              (old: {
-                nativeBuildInputs = (old.nativeBuildInputs or [ ]) ++ [ bootstrapPkgs.fuc ];
-                installPhase = "cpz ./ $out";
-              });
+          applyPatchesCow = bootstrapPkgs.callPackage ./apply-patches-cow.nix { };
+
+          patchedNixpkgs = applyPatchesCow {
+            name = "source";
+            src = inputs.nixpkgs;
+            inherit patches;
+          };
 
           finalNixpkgs = if [ ] == patches then inputs.nixpkgs else patchedNixpkgs;
 
