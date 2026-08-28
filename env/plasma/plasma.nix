@@ -33,8 +33,8 @@
         qrca
         kcolorchooser
 
-        kdepim-addons
-        akonadi-calendar
+        # kdepim-addons
+        # akonadi-calendar
         (spectacle.override {
           tesseractLanguages = [
             "eng"
@@ -49,12 +49,12 @@
       kwin-x11
     ];
 
-    programs.kde-pim = {
-      enable = true;
-      kmail = true;
-      kontact = true;
-      merkuro = true;
-    };
+    # programs.kde-pim = {
+    #   enable = true;
+    #   kmail = true;
+    #   kontact = true;
+    #   merkuro = true;
+    # };
 
     # https://gist.github.com/Scrumplex/8f528c1f63b5f4bfabe14b0804adaba7
     security.polkit.extraConfig = ''
