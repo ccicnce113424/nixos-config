@@ -75,23 +75,18 @@ runCommandLocal name
     }
 
     # Classify every path any patch touches into two disjoint, deduplicated
-    # sets. lsdiff emits one side per file: a/-entries are pre-existing files
-    # a patch rewrites, b/-entries are files a patch adds (only their
-    # directory then has to be writable). It reports only one side of a git
-    # rename (which side varies with the hunk layout, and a pure rename
-    # reports none), so the rename headers below cover both sides explicitly.
+    # sets. GNU patch aborts a rename unless the source file is real and
+    # writable inside a real directory AND the destination's directory is
+    # real, so rename sources must join the a/ set (whole file) and rename
+    # destinations the b/ set (their directory). lsdiff only reports one side
+    # of a rename (which side varies with the hunk layout, and a pure rename
+    # reports none), so the rename headers are prefixed a//b/ and merged with
+    # the lsdiff stream, then extracted by the same sed pass.
     lsdiff_out=$(for p in "''${patches[@]}"; do lsdiff "$p"; done)
-    a_files=$(printf '%s\n' "$lsdiff_out" | sed -n 's|^a/||p' | sort -u)
-    b_files=$(printf '%s\n' "$lsdiff_out" | sed -n 's|^b/||p' | sort -u)
-
-    # GNU patch aborts a rename unless the source file is real and writable
-    # inside a real directory AND the destination's directory is real, so
-    # materialize the source file (with its parent chain) and the destination
-    # directory: rename sources join the a/ set, destinations the b/ set.
-    ren_from=$(for p in "''${patches[@]}"; do sed -n 's|^rename from ||p' "$p"; done)
-    ren_to=$(for p in "''${patches[@]}"; do sed -n 's|^rename to ||p' "$p"; done)
-    a_files=$(printf '%s\n%s\n' "$a_files" "$ren_from" | sed '/^$/d' | sort -u)
-    b_files=$(printf '%s\n%s\n' "$b_files" "$ren_to" | sed '/^$/d' | sort -u)
+    ren_from=$(for p in "''${patches[@]}"; do sed -n 's|^rename from |a/|p' "$p"; done)
+    ren_to=$(for p in "''${patches[@]}"; do sed -n 's|^rename to |b/|p' "$p"; done)
+    a_files=$(printf '%s\n%s\n' "$lsdiff_out" "$ren_from" | sed -n 's|^a/||p' | sort -u)
+    b_files=$(printf '%s\n%s\n' "$lsdiff_out" "$ren_to" | sed -n 's|^b/||p' | sort -u)
 
     # Materialize once, before any patch runs, so later patches work on
     # earlier patches' results exactly like lndir-based builds did.
