@@ -1,10 +1,10 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    libreoffice-qt
-    hunspell
-    hunspellDicts.en_US
-    pdf4qt
+    # libreoffice-qt
+    # hunspell
+    # hunspellDicts.en_US
+    # pdf4qt
     kdePackages.kcharselect
 
     (pkgs.symlinkJoin {
