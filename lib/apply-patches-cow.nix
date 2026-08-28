@@ -1,6 +1,5 @@
 {
   runCommandLocal,
-  lndir,
   patchutils,
 }:
 {
@@ -16,7 +15,6 @@ runCommandLocal name
     // {
       __structuredAttrs = true;
       nativeBuildInputs = [
-        lndir
         patchutils
       ];
       # stdenv would unpack src into the build dir and apply $patches itself;
@@ -27,21 +25,84 @@ runCommandLocal name
   )
   ''
     mkdir -p "$out"
-    lndir -silent -ignorelinks "$src" "$out"
 
-    # Union of all pre-existing files (the a/ prefix in lsdiff output) touched
-    # by any patch, deduplicated. Materializing them once, before any patch
-    # runs, keeps later patches working on earlier patches' results.
-    for p in "''${patches[@]}"; do
-      lsdiff "$p" | sed -n 's|^a/||p'
-    done | sort -u | while IFS= read -r f; do
-      # Replace lndir's symlink with a verbatim copy (-a preserves symlinks
-      # as-is) and drop the store's read-only mode so patch can write to it.
-      if [ -L "$out/$f" ]; then
-        cp -a --remove-destination "$src/$f" "$out/$f"
-        chmod u+w "$out/$f"
-      fi
+    # Copy-on-write with lazy materialization. Instead of lndir-ing the whole
+    # tree (too heavy for large sources such as nixpkgs), link only $src's
+    # direct members and make real exactly the files and directories a patch
+    # touches. Untouched subtrees stay a single symlink into the store.
+    shopt -s dotglob nullglob
+    for member in "$src"/*; do
+      ln -s "$member" "$out/"
     done
+
+    # materialize_dir <rel>: turn $out/<rel> from a symlink into a real
+    # directory holding symlinks to all of $src/<rel>'s direct children.
+    # Parents are materialized first, bottom-up; the walk stops at the first
+    # ancestor that does not exist in $src, in which case the patch itself
+    # creates the remaining path when it is applied.
+    materialize_dir() {
+      local rel=$1 parent=
+      parent=''${rel%/*}
+      if [ "$parent" != "$rel" ]; then
+        materialize_dir "$parent"
+      fi
+      [ -L "$out/$rel" ] || return 0
+      rm "$out/$rel"
+      mkdir -p "$out/$rel"
+      for member in "$src/$rel"/*; do
+        ln -s "$member" "$out/$rel/"
+      done
+    }
+
+    # materialize_file <rel>: replace $out/<rel> (a symlink into the store)
+    # with a writable copy, materializing parent directories first.
+    materialize_file() {
+      local rel=$1 parent=
+      parent=''${rel%/*}
+      if [ "$parent" != "$rel" ]; then
+        materialize_dir "$parent"
+      fi
+      [ -e "$src/$rel" ] || return 0
+      if [ -d "$src/$rel" ] && [ ! -L "$src/$rel" ]; then
+        materialize_dir "$rel"
+        return 0
+      fi
+      [ -L "$out/$rel" ] || return 0
+      # -a preserves symlinks inside $src as they are; --remove-destination
+      # unlinks our symlink first instead of writing through it into the store.
+      cp -a --remove-destination "$src/$rel" "$out/$rel"
+      chmod u+w "$out/$rel"
+    }
+
+    # Classify every path any patch touches into two disjoint, deduplicated
+    # sets. lsdiff emits one side per file: a/-entries are pre-existing files
+    # a patch rewrites, b/-entries are files a patch adds (only their
+    # directory then has to be writable). It reports only one side of a git
+    # rename (which side varies with the hunk layout, and a pure rename
+    # reports none), so the rename headers below cover both sides explicitly.
+    lsdiff_out=$(for p in "''${patches[@]}"; do lsdiff "$p"; done)
+    a_files=$(printf '%s\n' "$lsdiff_out" | sed -n 's|^a/||p' | sort -u)
+    b_files=$(printf '%s\n' "$lsdiff_out" | sed -n 's|^b/||p' | sort -u)
+
+    # GNU patch aborts a rename unless the source file is real and writable
+    # inside a real directory AND the destination's directory is real, so
+    # materialize the source file (with its parent chain) and the destination
+    # directory: rename sources join the a/ set, destinations the b/ set.
+    ren_from=$(for p in "''${patches[@]}"; do sed -n 's|^rename from ||p' "$p"; done)
+    ren_to=$(for p in "''${patches[@]}"; do sed -n 's|^rename to ||p' "$p"; done)
+    a_files=$(printf '%s\n%s\n' "$a_files" "$ren_from" | sed '/^$/d' | sort -u)
+    b_files=$(printf '%s\n%s\n' "$b_files" "$ren_to" | sed '/^$/d' | sort -u)
+
+    # Materialize once, before any patch runs, so later patches work on
+    # earlier patches' results exactly like lndir-based builds did.
+    while IFS= read -r f; do
+      f=''${f%/}
+      [ -n "$f" ] && materialize_file "$f"
+    done <<< "$a_files"
+    while IFS= read -r f; do
+      f=''${f%/}
+      [ "''${f%/*}" != "$f" ] && materialize_dir "''${f%/*}"
+    done <<< "$b_files"
 
     for p in "''${patches[@]}"; do
       # Everything is in place; apply the patches in order.
