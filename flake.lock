@@ -185,11 +185,11 @@
     },
     "multiverse": {
       "locked": {
-        "lastModified": 1787888536,
-        "narHash": "sha256-9sW61y3c/pL2b0AMBjAygNRi+47K/V5SeEOxjnZk4bc=",
+        "lastModified": 1787925095,
+        "narHash": "sha256-j9VmfkhDuU9PV+iXacsj6vWpitmZipuC0Kqk73bddTY=",
         "owner": "fzakaria",
         "repo": "nixpkgs-multiverse",
-        "rev": "b3fd8da6b152b2abb75f8e99dce813893dfaaf1c",
+        "rev": "9e5495d75374cd16ad3b5470bb6810288086698c",
         "type": "github"
       },
       "original": {
