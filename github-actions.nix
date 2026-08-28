@@ -45,6 +45,8 @@ in
             "cherry-studio"
             "spectacle"
             "mvs"
+            "hermes-desktop"
+            "wineprefix-preparer"
 
             "splayer-next-dev"
             "open-orpheus-dev"
