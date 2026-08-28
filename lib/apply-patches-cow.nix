@@ -32,7 +32,7 @@ runCommandLocal name
     # Union of all pre-existing files (the a/ prefix in lsdiff output) touched
     # by any patch, deduplicated. Materializing them once, before any patch
     # runs, keeps later patches working on earlier patches' results.
-    for p in $patches; do
+    for p in "''${patches[@]}"; do
       lsdiff "$p" | sed -n 's|^a/||p'
     done | sort -u | while IFS= read -r f; do
       # Replace lndir's symlink with a verbatim copy (-a preserves symlinks
@@ -43,7 +43,7 @@ runCommandLocal name
       fi
     done
 
-    for p in $patches; do
+    for p in "''${patches[@]}"; do
       # Everything is in place; apply the patches in order.
       echo "applying patch $p"
       patch -p1 -d "$out" < "$p"
