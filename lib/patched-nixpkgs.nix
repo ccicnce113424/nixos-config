@@ -82,6 +82,7 @@ in
               inputs.nix-gaming.overlays.default
               inputs.llm-agents.overlays.shared-nixpkgs
               inputs.gaze.overlays.default
+              inputs.multiverse.overlays.default
             ];
           };
         in

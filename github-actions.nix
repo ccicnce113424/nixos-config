@@ -44,6 +44,7 @@ in
             # "winboat"
             "cherry-studio"
             "spectacle"
+            "mvs"
 
             "splayer-next-dev"
             "open-orpheus-dev"

@@ -9,6 +9,7 @@
       hydra-check
       cachix
       flake-linter
+      mvs
     ])
     ++ (with osConfig.nixPackages; [
       nixpkgs-reviewFull
