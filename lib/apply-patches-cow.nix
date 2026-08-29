@@ -85,7 +85,12 @@ runCommandLocal name
     lsdiff_out=$(for p in "''${patches[@]}"; do lsdiff "$p"; done)
     ren_from=$(for p in "''${patches[@]}"; do sed -n 's|^rename from |a/|p' "$p"; done)
     ren_to=$(for p in "''${patches[@]}"; do sed -n 's|^rename to |b/|p' "$p"; done)
-    a_files=$(printf '%s\n%s\n' "$lsdiff_out" "$ren_from" | sed -n 's|^a/||p' | sort -u)
+    # Root-level flake entry points must be real files: flake sources are
+    # read through a store-object accessor that re-roots symlink targets
+    # inside the tree, so a symlinked flake.nix is unreachable (spliced
+    # "path ... does not exist") and a symlinked flake.lock degrades to
+    # "no lock file". Entries missing from $src are ignored downstream.
+    a_files=$(printf '%s\n%s\na/flake.nix\na/flake.lock\n' "$lsdiff_out" "$ren_from" | sed -n 's|^a/||p' | sort -u)
     b_files=$(printf '%s\n%s\n' "$lsdiff_out" "$ren_to" | sed -n 's|^b/||p' | sort -u)
 
     # Materialize once, before any patch runs, so later patches work on
