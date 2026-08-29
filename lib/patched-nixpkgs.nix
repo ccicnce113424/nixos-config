@@ -39,9 +39,15 @@ in
           hostCfg = host.hostCfg or { };
           patches = lib.fileset.toList cfg.patches;
 
-          applyPatchesCow = bootstrapPkgs.callPackage ./apply-patches-cow.nix { };
+          # applyPatches = bootstrapPkgs.callPackage ./apply-patches-cow.nix { };
+          applyPatches =
+            p:
+            (bootstrapPkgs.applyPatches p).overrideAttrs (prev: {
+              nativeBuildInputs = prev.nativeBuildInputs or [ ] ++ [ bootstrapPkgs.fuc ];
+              installPhase = "cpz ./ $out";
+            });
 
-          patchedNixpkgs = applyPatchesCow {
+          patchedNixpkgs = applyPatches {
             name = "source";
             src = inputs.nixpkgs;
             inherit patches;
