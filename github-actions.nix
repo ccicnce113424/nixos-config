@@ -46,6 +46,8 @@ in
             "spectacle"
             "mvs"
             "hermes-desktop"
+            "codex"
+            "omp"
             "wineprefix-preparer"
 
             "splayer-next-dev"
