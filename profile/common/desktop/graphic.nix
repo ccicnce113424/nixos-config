@@ -39,5 +39,7 @@
       fontconfig
       icu
     ];
+
+    hardware.i2c.enable = true;
   };
 }
