@@ -12,8 +12,6 @@ in
     default = [
       # linuxPackages.nvidiaPackages: separate and refactor
       519313
-      # kmscon: 10.0.2 -> 10.0.3
-      558765
     ];
   };
 
