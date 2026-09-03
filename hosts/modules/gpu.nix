@@ -51,6 +51,8 @@ let
 
       hardware.nvidia-container-toolkit.enable = true;
 
+      systemd.services.nvidia-container-toolkit-cdi-generator.restartIfChanged = false;
+
       environment.systemPackages = with pkgs; [
         nvtopPackages.nvidia
       ];
