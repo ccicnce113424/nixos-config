@@ -16,6 +16,8 @@ in
       559958
       # egl-{wayland,gbm,x11}: update - #559965
       559965
+      # python3Packages.sip: fix python3Packages.pyqt5 build by backporting upstream fix
+      559495
     ];
   };
 
