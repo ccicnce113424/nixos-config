@@ -171,11 +171,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788513921,
-        "narHash": "sha256-EcfAKzcETRKOhUKjmoLp4gk0bKtkKNaz2y5Kba2cUQk=",
+        "lastModified": 1788562544,
+        "narHash": "sha256-SkgNWMQuc4VU/eBLVlxfrXimnrObE3ARBeTHmgMqq78=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "f9a83fd4942a37f2e2c7a07a4d508dbaaee968f8",
+        "rev": "2d4881085d2d8b564460b7185d511d1bcac6c7a8",
         "type": "github"
       },
       "original": {
