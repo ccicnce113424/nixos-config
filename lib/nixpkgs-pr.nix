@@ -12,6 +12,10 @@ in
     default = [
       # linuxPackages.nvidiaPackages: separate and refactor
       519313
+      # egl-wayland2: 1.0.1 -> 1.0.2
+      559958
+      # egl-{wayland,gbm,x11}: update - #559965
+      559965
     ];
   };
 

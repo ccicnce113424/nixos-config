@@ -1,0 +1,31 @@
+From b51022332fe01f0da5fb1a5d51f4272bfcef1c10 Mon Sep 17 00:00:00 2001
+From: Chris Marchesi <chrism@vancluevertech.com>
+Date: Fri, 4 Sep 2026 09:41:31 -0700
+Subject: [PATCH] egl-wayland2: 1.0.1 -> 1.0.2
+
+Release notes:
+    https://github.com/NVIDIA/egl-wayland2/releases/tag/v1.0.2
+---
+ pkgs/by-name/eg/egl-wayland2/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/by-name/eg/egl-wayland2/package.nix b/pkgs/by-name/eg/egl-wayland2/package.nix
+index 5af0b014e10a5..8dd9d5c94b4ce 100644
+--- a/pkgs/by-name/eg/egl-wayland2/package.nix
++++ b/pkgs/by-name/eg/egl-wayland2/package.nix
+@@ -17,13 +17,13 @@
+ 
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "egl-wayland2";
+-  version = "1.0.1";
++  version = "1.0.2";
+ 
+   src = fetchFromGitHub {
+     owner = "NVIDIA";
+     repo = "egl-wayland2";
+     tag = "v${finalAttrs.version}";
+-    hash = "sha256-Udr+tihx/Si2ynFyM1FW2CIUgTg9SQn7AgrOPpGTxpY=";
++    hash = "sha256-oL5qXRmPqOASfEQN7eEltDj4+R2JxczDrKWWkY29amQ=";
+   };
+ 
+   depsBuildBuild = [
