@@ -29,7 +29,6 @@
     dorion = {
       enable = true;
       package = pkgs.dorion-git;
-      autoClearCache = true;
       clientMods = [ "Shelter" ];
       cacheCss = true;
       desktopNotifications = true;
