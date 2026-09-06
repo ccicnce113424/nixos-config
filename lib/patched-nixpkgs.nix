@@ -14,7 +14,7 @@ in
     perSystem =
       { system, ... }:
       {
-        packages.patchedNixpkgs = (config.lib'.patchedNixpkgs { inherit system; }).finalNixpkgs;
+        packages.patchedNixpkgs = (config.lib'.patchedNixpkgs { forceSystem = system; }).finalNixpkgs;
       };
   };
   options = {
@@ -35,7 +35,9 @@ in
       default =
         host:
         let
-          bootstrapPkgs = import inputs.nixpkgs { inherit (host) system; };
+          bootstrapPkgs = import inputs.nixpkgs {
+            system = host.forceSystem or builtins.currentSystem or host.system;
+          };
           hostCfg = host.hostCfg or { };
           patches = lib.fileset.toList cfg.patches;
 
