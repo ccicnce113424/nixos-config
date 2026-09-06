@@ -69,7 +69,7 @@ in
               cudaSupport = true;
             }
             // lib.optionalAttrs (hostCfg.gpu.amdgpu or false) {
-              rocmSupport = true;
+              # rocmSupport = true;
             };
             overlays = [
               (inputs.multiverse.lib.pinOverlay {
