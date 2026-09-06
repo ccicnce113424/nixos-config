@@ -10,7 +10,6 @@
     tor-browser
     qbittorrent-enhanced
     motrix-next-beta
-    cherry-studio
 
     # nur.repos.xddxdd.peerbanhelper
     # nur.repos.lonerOrz.qq

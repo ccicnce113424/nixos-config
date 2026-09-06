@@ -42,7 +42,6 @@ in
             "gimp-with-plugins"
             "hplip"
             # "winboat"
-            "cherry-studio"
             "spectacle"
             "mvs"
             "hermes-desktop"
