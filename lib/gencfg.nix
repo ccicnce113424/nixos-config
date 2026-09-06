@@ -23,6 +23,7 @@
             sharedModules = [
               ../hosts/runtime.nix
               {
+                nixpkgs.flake.source = inputs.nixpkgs.outPath;
                 nix.registry = {
                   nixpkgs-patched.to = {
                     type = "path";
