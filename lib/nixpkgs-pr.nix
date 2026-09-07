@@ -12,10 +12,6 @@ in
     default = [
       # linuxPackages.nvidiaPackages: separate and refactor
       519313
-      # egl-{wayland,gbm,x11}: update
-      559965
-      # pkgsCuda.suitesparse: fix build
-      560414
     ];
   };
 
