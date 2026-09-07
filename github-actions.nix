@@ -51,7 +51,6 @@ in
 
             "splayer-next-dev"
             "open-orpheus-dev"
-            "kdeplasma-addons"
           ]
           (desktopCfg.environment.systemPackages ++ desktopCfg.home-manager.users.ccicnce113424.home.packages)
         )
