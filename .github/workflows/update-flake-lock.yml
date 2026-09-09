@@ -24,7 +24,7 @@ jobs:
             accept-flake-config = true
 
       - name: Update flake.lock
-        uses: DeterminateSystems/update-flake-lock@v28
+        uses: DeterminateSystems/update-flake-lock@v29
         with:
           token: ${{ secrets.GH_TOKEN_FOR_UPDATES }} # https://github.com/DeterminateSystems/update-flake-lock#with-a-personal-authentication-token
           pr-title: "Update flake.lock" # Title of PR to be created
