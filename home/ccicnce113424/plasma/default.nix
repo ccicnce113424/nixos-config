@@ -17,15 +17,15 @@
           "org.kde.plasma.pager"
           "org.kde.plasma.icontasks"
           "org.kde.plasma.marginsseparator"
-          {
-            name = pkgs.lyrica.passthru.id;
-            config = {
-              Backend = {
-                tlyricMode = 3;
-              };
-              Frontend.shouldUseDefaultThemeTextColor = false;
-            };
-          }
+          # {
+          #   name = pkgs.lyrica.passthru.id;
+          #   config = {
+          #     Backend = {
+          #       tlyricMode = 3;
+          #     };
+          #     Frontend.shouldUseDefaultThemeTextColor = false;
+          #   };
+          # }
           # {
           #   name = "plasmusic-toolbar";
           #   config.General = {
@@ -97,7 +97,7 @@
   home.packages =
     with pkgs;
     [
-      lyrica
+      # lyrica
       kurve
       plasmusic-toolbar
       kdePackages.wallpaper-engine-plugin
