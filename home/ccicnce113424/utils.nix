@@ -7,7 +7,7 @@
     kdePackages.francis
     kdePackages.skanpage
     # winboat
-    llm-agents.hermes-agent
-    llm-agents.hermes-desktop
+    # llm-agents.hermes-agent
+    # llm-agents.hermes-desktop
   ];
 }
