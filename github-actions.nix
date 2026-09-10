@@ -48,9 +48,6 @@ in
             "codex"
             "omp"
             "wineprefix-preparer"
-
-            "splayer-next-dev"
-            "open-orpheus-dev"
           ]
           (desktopCfg.environment.systemPackages ++ desktopCfg.home-manager.users.ccicnce113424.home.packages)
         )

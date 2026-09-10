@@ -1,7 +1,6 @@
 {
   patchedNixpkgs = {
     pins = {
-      electron_43 = "43.2.0";
     };
     overridePackagesFromMv = _mv: {
     };
