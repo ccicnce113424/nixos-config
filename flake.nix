@@ -44,7 +44,6 @@ rec {
         flake-parts.follows = "flake-parts";
         treefmt-nix.follows = "treefmt-nix";
         nvfetcher.inputs.flake-utils.inputs.systems.follows = "systems";
-        flake-compat.follows = "";
         nix-github-actions.follows = "";
       };
     };
@@ -78,7 +77,6 @@ rec {
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixpkgs-nixcord.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
         treefmt-nix.follows = "treefmt-nix";
       };
     };
@@ -86,9 +84,9 @@ rec {
       url = "github:GunduLabs/gaze";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
     multiverse.url = "github:fzakaria/nixpkgs-multiverse";
-    flake-compat.url = "github:lix-project/flake-compat";
+    flake-compat.url = "https://git.lix.systems/lix-project/flake-compat/archive/main.tar.gz";
 
     # not used directly
     systems.url = "github:nix-systems/default";

@@ -38,15 +38,26 @@
       "locked": {
         "lastModified": 1777699697,
         "narHash": "sha256-Eg9b/rq/ECYwNwEXs5i9wHyhxNI0JrYx2srdI2uZMaQ=",
-        "owner": "lix-project",
-        "repo": "flake-compat",
         "rev": "382052b74656a369c5408822af3f2501e9b1af81",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://git.lix.systems/api/v1/repos/lix-project/flake-compat/archive/382052b74656a369c5408822af3f2501e9b1af81.tar.gz"
       },
       "original": {
-        "owner": "lix-project",
-        "repo": "flake-compat",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://git.lix.systems/lix-project/flake-compat/archive/main.tar.gz"
+      }
+    },
+    "flake-compat_2": {
+      "locked": {
+        "lastModified": 1777699697,
+        "narHash": "sha256-Eg9b/rq/ECYwNwEXs5i9wHyhxNI0JrYx2srdI2uZMaQ=",
+        "rev": "382052b74656a369c5408822af3f2501e9b1af81",
+        "type": "tarball",
+        "url": "https://git.lix.systems/api/v1/repos/lix-project/flake-compat/archive/382052b74656a369c5408822af3f2501e9b1af81.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://git.lix.systems/lix-project/flake-compat/archive/main.tar.gz"
       }
     },
     "flake-parts": {
@@ -96,11 +107,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788993543,
-        "narHash": "sha256-0BPApET3kANNeSn2mFAmShK5tR49UDJA3FgaKkAjaTc=",
+        "lastModified": 1788995650,
+        "narHash": "sha256-Afi0H56TYaGKfQ35zEjPW+g529Ejf1Lf9skrUlz20b8=",
         "owner": "GunduLabs",
         "repo": "gaze",
-        "rev": "ab28ff442d93b18ced7465a23b651d505154ac5c",
+        "rev": "75fd46e287cd367826811da582ef94a8c01a60b8",
         "type": "github"
       },
       "original": {
@@ -193,11 +204,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788988243,
-        "narHash": "sha256-jaMfS6xRISkPiFRwnBWeRN7sDfuZyNp8lP+Kii1MTCM=",
+        "lastModified": 1788998422,
+        "narHash": "sha256-cUrjdd2QOoAGugTeLHQqC1lsTMmF8qtcumZcEeNcduo=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "d89d69ab9d67483b2d37ed1ae4f88892020a67b1",
+        "rev": "2bf21da56f1e199fda37be0f6fb3e225d46a6831",
         "type": "github"
       },
       "original": {
@@ -310,7 +321,7 @@
     },
     "nix-packages": {
       "inputs": {
-        "flake-compat": [],
+        "flake-compat": "flake-compat_2",
         "flake-parts": [
           "flake-parts"
         ],
@@ -324,11 +335,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788910791,
-        "narHash": "sha256-DpxjLcFtXKUHNSOJomodla4bJedsou2GLDW9/YAKmdY=",
+        "lastModified": 1788999065,
+        "narHash": "sha256-bUyfwmQU8ek616vwR3Z7k1I5z2bDZLEqz5XmwHKm0I4=",
         "owner": "ccicnce113424",
         "repo": "nix-packages",
-        "rev": "ddadd906167d18d089a7298d1326e1ff28db1234",
+        "rev": "845342646e4381ce80a9f945a3a3b8637132512e",
         "type": "github"
       },
       "original": {
@@ -339,9 +350,6 @@
     },
     "nixcord": {
       "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
         "home-manager": "home-manager_2",
         "nix-darwin": "nix-darwin",
         "nixpkgs": [
@@ -355,11 +363,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788994490,
-        "narHash": "sha256-pGTG9FYrAFO2pWakqM3XzN83lUClUmONzr1GUbu+WYY=",
+        "lastModified": 1788996000,
+        "narHash": "sha256-tqtH7awT0UBkzYR2H5z72LIl1OdOoLH9tw1aMI1Bl3k=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "ff5e29b8faef1e13beec6c902b9811c33785d0a5",
+        "rev": "3c1333e6cc389fe93bee1cdb4732770bf8403faf",
         "type": "github"
       },
       "original": {
@@ -371,17 +379,14 @@
     "nixpkgs": {
       "locked": {
         "lastModified": 1788881743,
-        "narHash": "sha256-2V9GZGvPfrNzxFozhI9dcqV+c3QdA8YZrvAAzqEB+dI=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
+        "narHash": "sha256-151taSq/21cxagiIu7hyMVl68+FbHfwBP4lh6TB6KOM=",
         "rev": "d6524aaca2ff07876657ae2b323f24be4874944b",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1069856.d6524aaca2ff/nixexprs.tar.zst"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst"
       }
     },
     "nur": {
@@ -394,11 +399,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788993620,
-        "narHash": "sha256-/1cbKewE+mKoiFwsxfD2xLABYCKLQTGvjVkKbZxcgZo=",
+        "lastModified": 1788999195,
+        "narHash": "sha256-V+nL/+440X3M4h7UH9Fp7lwNNo4/ohzLTe9uYRs5LMQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "a3ce0d9a2251267821b62b557b0e1c674d5b8c8e",
+        "rev": "3f864983600086b71a286770f11872a3bbd1982d",
         "type": "github"
       },
       "original": {
@@ -410,8 +415,7 @@
     "nvfetcher": {
       "inputs": {
         "flake-compat": [
-          "nix-packages",
-          "flake-compat"
+          "nix-packages"
         ],
         "flake-utils": "flake-utils",
         "nixpkgs": [
