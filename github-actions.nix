@@ -44,7 +44,7 @@ in
             # "winboat"
             "spectacle"
             "mvs"
-            "hermes-desktop"
+            # "hermes-desktop"
             "codex"
             "omp"
             "wineprefix-preparer"
