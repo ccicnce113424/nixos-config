@@ -5,7 +5,7 @@
     { pkgs, ... }:
     {
       treefmt = {
-        projectRootFile = "flake.nix";
+        projectRootFile = ".git/config";
         programs.nixfmt = {
           enable = true;
           package = pkgs.nixfmt-rs;
