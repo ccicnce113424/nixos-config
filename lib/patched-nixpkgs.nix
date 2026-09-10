@@ -47,6 +47,8 @@ in
             (bootstrapPkgs.applyPatches p).overrideAttrs (prev: {
               nativeBuildInputs = prev.nativeBuildInputs or [ ] ++ [ bootstrapPkgs.fuc ];
               installPhase = "cpz ./ $out";
+              __structuredAttrs = true;
+              unsafeDiscardReferences.out = true;
             });
 
           patchedNixpkgs = applyPatches {
