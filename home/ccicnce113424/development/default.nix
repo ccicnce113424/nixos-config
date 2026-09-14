@@ -14,9 +14,9 @@
     gh
     shellcheck
     llm-agents.mimo-code
-    llm-agents.cc-switch-cli
-    llm-agents.codex
     llm-agents.reasonix
-    llm-agents.omp
+    cc-switch-cli
+    codex
+    omp
   ];
 }

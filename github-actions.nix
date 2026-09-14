@@ -45,8 +45,7 @@ in
             "spectacle"
             "mvs"
             # "hermes-desktop"
-            "codex"
-            "omp"
+            "reasonix"
             "wineprefix-preparer"
           ]
           (desktopCfg.environment.systemPackages ++ desktopCfg.home-manager.users.ccicnce113424.home.packages)
