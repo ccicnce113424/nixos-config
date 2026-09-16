@@ -1,7 +1,7 @@
 From 47aba3dbce540d2afe06b1a183ad088df4b562e9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 11:44:13 +0800
-Subject: [PATCH 1/2] linuxPackages.nvidiaPackages: move userspace utilities to
+Subject: [PATCH 1/3] linuxPackages.nvidiaPackages: move userspace utilities to
  a separate file
 
 Assisted-by: Zed Agent:DeepSeek V4 Pro
@@ -1030,7 +1030,7 @@ index e47dc3cb4e613..ba8b44f0de4fc 100644
 From f12c40d7cdeb533a4b148ac5b78317f71c2c7b7f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
-Subject: [PATCH 2/2] nvidia-modprobe: move to linuxPackages.nvidiaPackages
+Subject: [PATCH 2/3] nvidia-modprobe: move to linuxPackages.nvidiaPackages
 
 ---
  pkgs/by-name/li/libnvidia-container/package.nix  | 11 ++++++-----
@@ -1249,3 +1249,77 @@ index b1c9c7f9c0d94..4b8836cb4ca26 100644
 +    mainProgram = "nvidia-modprobe";
    };
  })
+
+From b03f19d5cbaa7d665d43f15e3b1c002e4ed7d5f4 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Tue, 15 Sep 2026 03:59:36 +0800
+Subject: [PATCH 3/3] nvidia-settings: get profiles from /run/current-system/sw
+
+---
+ pkgs/os-specific/linux/nvidia-x11/generic.nix  |  4 ++--
+ pkgs/os-specific/linux/nvidia-x11/settings.nix | 10 +++++-----
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+index 05995804125db..c28e39a36c302 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+@@ -199,12 +199,12 @@ nvidiaDriver.overrideAttrs (
+       settings =
+         if useSettings then
+           (if settings32Bit then pkgsi686Linux.callPackage else callPackage) ./settings.nix {
+-            nvidia_x11 = finalAttrs.finalPackage;
+             version = settingsVersion;
+             hash = settingsSha256;
+             withGtk2 = preferGtk2;
+             withGtk3 = !preferGtk2;
+-            inherit fetchFromGithubOrNvidia;
++            inherit fetchFromGithubOrNvidia useProfiles;
++            inherit (finalAttrs.meta) platforms;
+           }
+         else
+           { };
+diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+index ba8b44f0de4fc..2c139de65fdc8 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+@@ -19,9 +19,10 @@
+   libglvnd,
+   wrapGAppsHook3,
+   addDriverRunpath,
+-  nvidia_x11,
++  platforms,
+   version,
+   hash,
++  useProfiles,
+   withGtk2 ? false,
+   withGtk3 ? true,
+ }:
+@@ -36,7 +37,7 @@ let
+ 
+   meta = {
+     homepage = "https://www.nvidia.com/object/unix.html";
+-    platforms = nvidia_x11.meta.platforms;
++    inherit platforms;
+   };
+ 
+   libXNVCtrl = stdenv.mkDerivation {
+@@ -113,8 +114,8 @@ stdenv.mkDerivation {
+           hash = "sha256-wKuO5CUTUuwYvsP46Pz+6fI0yxLNpZv8qlbL0TFkEFE=";
+         });
+ 
+-  postPatch = lib.optionalString nvidia_x11.useProfiles ''
+-    sed -i 's,/usr/share/nvidia/,${nvidia_x11.bin}/share/nvidia/,g' src/gtk+-2.x/ctkappprofile.c
++  postPatch = lib.optionalString useProfiles ''
++    sed -i 's,/usr/share/nvidia/,/run/current-system/sw/share/nvidia/,g' src/gtk+-2.x/ctkappprofile.c
+   '';
+ 
+   enableParallelBuilding = true;
+@@ -142,7 +143,6 @@ stdenv.mkDerivation {
+     libxext
+     libxxf86vm
+     libvdpau
+-    nvidia_x11
+     dbus
+     vulkan-headers
+   ]
