@@ -9,7 +9,7 @@
     telegram-desktop
     tor-browser
     qbittorrent-enhanced
-    motrix-next-beta
+    rayburst-beta
 
     # nur.repos.xddxdd.peerbanhelper
     # nur.repos.lonerOrz.qq
