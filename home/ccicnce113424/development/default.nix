@@ -15,8 +15,8 @@
     shellcheck
     llm-agents.mimo-code
     llm-agents.reasonix
-    cc-switch-cli
-    codex
-    omp
+    llm-agents.cc-switch-cli
+    llm-agents.codex
+    llm-agents.omp
   ];
 }
