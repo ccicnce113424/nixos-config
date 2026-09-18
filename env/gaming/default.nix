@@ -52,9 +52,9 @@
 
         # following packages are from nix-gaming
         umu-launcher
-        (osu-lazer-tachyon-bin.override {
-          pipewire_latency = "128/48000";
-        })
+        # (osu-lazer-tachyon-bin.override {
+        #   pipewire_latency = "128/48000";
+        # })
       ])
       (lib.mkIf config.hostCfg.gpu.nvidia [ pkgs.dxvk-nvapi-vkreflex-layer ])
       (lib.mkIf config.hostCfg.gpu.amdgpu [ pkgs.low-latency-layer ])
