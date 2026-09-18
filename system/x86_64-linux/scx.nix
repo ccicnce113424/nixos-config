@@ -2,6 +2,7 @@
 {
   services.scx-loader = {
     enable = true;
+    config.default_mode = "Auto";
     # config.default_sched = "scx_pandemonium";
     # schedsPackages = [
     #   (pkgs.runCommand "scx_customscheds" { inherit (pkgs.scx.rustscheds) passthru; } ''
