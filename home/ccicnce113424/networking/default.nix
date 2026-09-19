@@ -7,7 +7,6 @@
     enimul
     # wemeet
     telegram-desktop
-    tor-browser
     qbittorrent-enhanced
     rayburst-beta
 
