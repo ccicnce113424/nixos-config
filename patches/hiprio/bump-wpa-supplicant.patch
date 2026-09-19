@@ -1,0 +1,316 @@
+Commit ID: 63175318f1811440c72be4c7293f2ab24e62d453
+Change ID: ulztsyoynymnrnpmqyzpvwowpuknrqvm
+Author   : Jan Solanti <jhs@psonet.com> (2026-09-08 08:43:28)
+Committer: ccicnce113424 <ccicnce113424@gmail.com> (2026-09-19 12:30:53)
+
+    wpa_supplicant: 2.11 -> 2.12
+
+    Also bump wpa_gui to Qt 6 as per upstream changelog.
+
+diff --git a/pkgs/by-name/wp/wpa_supplicant/multiple-configs.patch b/pkgs/by-name/wp/wpa_supplicant/multiple-configs.patch
+index f7d88c9cbe..a4efd44652 100644
+--- a/pkgs/by-name/wp/wpa_supplicant/multiple-configs.patch
++++ b/pkgs/by-name/wp/wpa_supplicant/multiple-configs.patch
+@@ -1,4 +1,4 @@
+-commit ca4bcfbd9d2233c90080b9ad400bf576db221781
++commit d88fba577e027c9849b39af57038b6dc8a0db6c2
+ Author: rnhmjoj <rnhmjoj@inventati.org>
+ Date:   Sat Sep 13 13:54:00 2025 +0200
+ 
+@@ -24,10 +24,10 @@
+        </varlistentry>
+  
+ diff --git a/wpa_supplicant/main.c b/wpa_supplicant/main.c
+-index 9229eb51f..ff877f3b9 100644
++index 4874bcf11..418a7c29b 100644
+ --- a/wpa_supplicant/main.c
+ +++ b/wpa_supplicant/main.c
+-@@ -76,7 +76,7 @@ static void usage(void)
++@@ -79,7 +79,7 @@ static void usage(void)
+  	       "  -G = global ctrl_interface group\n"
+  	       "  -h = show this help text\n"
+  	       "  -i = interface name\n"
+@@ -36,7 +36,7 @@
+  	       "  -K = include keys (passwords, etc.) in debug output\n"
+  	       "  -L = show license (BSD)\n"
+  #ifdef CONFIG_P2P
+-@@ -183,7 +183,8 @@ int main(int argc, char *argv[])
++@@ -194,7 +194,8 @@ int main(int argc, char *argv[])
+  {
+  	int c, i;
+  	struct wpa_interface *ifaces, *iface;
+@@ -46,7 +46,7 @@
+  	struct wpa_params params;
+  	struct wpa_global *global;
+  
+-@@ -253,7 +254,15 @@ int main(int argc, char *argv[])
++@@ -264,7 +265,15 @@ int main(int argc, char *argv[])
+  			iface->ifname = optarg;
+  			break;
+  		case 'I':
+@@ -64,10 +64,10 @@
+  		case 'K':
+  			params.wpa_debug_show_keys++;
+ diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
+-index d45002fd9..af5836ef5 100644
++index d872c1e31..dc2a998be 100644
+ --- a/wpa_supplicant/wpa_supplicant.c
+ +++ b/wpa_supplicant/wpa_supplicant.c
+-@@ -675,8 +675,10 @@ static void wpa_supplicant_cleanup(struct wpa_supplicant *wpa_s)
++@@ -665,8 +665,10 @@ static void wpa_supplicant_cleanup(struct wpa_supplicant *wpa_s)
+  	os_free(wpa_s->confname);
+  	wpa_s->confname = NULL;
+  
+@@ -80,7 +80,7 @@
+  
+  	os_free(wpa_s->last_con_fail_realm);
+  	wpa_s->last_con_fail_realm = NULL;
+-@@ -1404,6 +1406,7 @@ int wpa_supplicant_reload_configuration(struct wpa_supplicant *wpa_s)
++@@ -1428,6 +1430,7 @@ int wpa_supplicant_reload_configuration(struct wpa_supplicant *wpa_s)
+  	struct wpa_config *conf;
+  	int reconf_ctrl;
+  	int old_ap_scan;
+@@ -88,19 +88,20 @@
+  
+  	if (wpa_s->confname == NULL)
+  		return -1;
+-@@ -1413,12 +1416,14 @@ int wpa_supplicant_reload_configuration(struct wpa_supplicant *wpa_s)
++@@ -1438,13 +1441,14 @@ int wpa_supplicant_reload_configuration(struct wpa_supplicant *wpa_s)
+  			"file '%s' - exiting", wpa_s->confname);
+  		return -1;
+  	}
+ -	if (wpa_s->confanother &&
+--	    !wpa_config_read(wpa_s->confanother, conf, true)) {
++-	    !wpa_config_read(wpa_s->confanother, conf, true,
++-			     wpa_s->global->params.show_details)) {
+ -		wpa_msg(wpa_s, MSG_ERROR,
+ -			"Failed to parse the configuration file '%s' - exiting",
+ -			wpa_s->confanother);
+ -		return -1;
+-+
+ +	for (i = 0; wpa_s->confanother[i] != NULL; i++) {
+-+		if (!wpa_config_read(wpa_s->confanother[i], conf, true)) {
+++		if (!wpa_config_read(wpa_s->confanother[i], conf, true,
+++				wpa_s->global->params.show_details)) {
+ +			wpa_msg(wpa_s, MSG_ERROR,
+ +				"Failed to parse the configuration file '%s' - exiting",
+ +				wpa_s->confanother[i]);
+@@ -109,35 +110,36 @@
+  	}
+  
+  	conf->changed_parameters = (unsigned int) -1;
+-@@ -7658,13 +7663,16 @@ static int wpa_supplicant_init_iface(struct wpa_supplicant *wpa_s,
++@@ -7906,14 +7910,16 @@ static int wpa_supplicant_init_iface(struct wpa_supplicant *wpa_s,
+  				   "configuration '%s'.", wpa_s->confname);
+  			return -1;
+  		}
+ -		wpa_s->confanother = os_rel2abs_path(iface->confanother);
+ -		if (wpa_s->confanother &&
+--		    !wpa_config_read(wpa_s->confanother, wpa_s->conf, true)) {
++-		    !wpa_config_read(wpa_s->confanother, wpa_s->conf, true,
++-				     wpa_s->global->params.show_details)) {
+ -			wpa_printf(MSG_ERROR,
+ -				   "Failed to read or parse configuration '%s'.",
+ -				   wpa_s->confanother);
+ -			return -1;
+-+
+ +		for (int i = 0; iface->confanother[i] != NULL; i++) {
+ +			wpa_s->confanother[i] = os_rel2abs_path(iface->confanother[i]);
+ +			if (wpa_s->confanother[i] &&
+-+					!wpa_config_read(wpa_s->confanother[i], wpa_s->conf, true)) {
+++				!wpa_config_read(wpa_s->confanother[i], wpa_s->conf, true,
+++					wpa_s->global->params.show_details)) {
+ +				wpa_printf(MSG_ERROR,
+-+						 "Failed to read or parse configuration '%s'.",
+-+						 wpa_s->confanother[i]);
+++					"Failed to read or parse configuration '%s'.",
+++					wpa_s->confanother[i]);
+ +				return -1;
+ +			}
+  		}
+  
+  		/*
+ diff --git a/wpa_supplicant/wpa_supplicant_i.h b/wpa_supplicant/wpa_supplicant_i.h
+-index 2f77413d5..84c009e78 100644
++index cd763693f..919be6334 100644
+ --- a/wpa_supplicant/wpa_supplicant_i.h
+ +++ b/wpa_supplicant/wpa_supplicant_i.h
+-@@ -66,12 +66,12 @@ struct wpa_interface {
++@@ -67,12 +67,12 @@ struct wpa_interface {
+  	const char *confname;
+  
+  	/**
+@@ -152,7 +154,7 @@
+  
+  	/**
+  	 * ctrl_interface - Control interface parameter
+-@@ -713,7 +713,7 @@ struct wpa_supplicant {
++@@ -779,7 +779,7 @@ struct wpa_supplicant {
+  	char bridge_ifname[16];
+  
+  	char *confname;
+diff --git a/pkgs/by-name/wp/wpa_supplicant/package.nix b/pkgs/by-name/wp/wpa_supplicant/package.nix
+index 7fe7be2341..26a57bb38b 100644
+--- a/pkgs/by-name/wp/wpa_supplicant/package.nix
++++ b/pkgs/by-name/wp/wpa_supplicant/package.nix
+@@ -2,7 +2,6 @@
+   lib,
+   stdenv,
+   fetchurl,
+-  fetchpatch,
+   openssl,
+   pkg-config,
+   libnl,
+@@ -18,37 +17,24 @@
+ }:
+ 
+ stdenv.mkDerivation (finalAttrs: {
+-  version = "2.11";
++  version = "2.12";
+ 
+   pname = "wpa_supplicant";
+ 
+   src = fetchurl {
+     url = "https://w1.fi/releases/wpa_supplicant-${finalAttrs.version}.tar.gz";
+-    hash = "sha256-kS6gb3TjCo42+7aAZNbN/yGNjVkdsPxddd7myBrH/Ao=";
++    hash = "sha256-COI5N+FtAVXlXKsrUfUfvhDYChqpHE4VRCZFBZtzfvY=";
+   };
+ 
+   patches = [
+-    (fetchpatch {
+-      name = "revert-change-breaking-auth-broadcom.patch";
+-      url = "https://w1.fi/cgit/hostap/patch/?id=41638606054a09867fe3f9a2b5523aa4678cbfa5";
+-      hash = "sha256-X6mBbj7BkW66aYeSCiI3JKBJv10etLQxaTRfRgwsFmM=";
+-      revert = true;
+-    })
+-    (fetchpatch {
+-      name = "suppress-ctrl-event-signal-change.patch";
+-      url = "https://w1.fi/cgit/hostap/patch/?id=c330b5820eefa8e703dbce7278c2a62d9c69166a";
+-      hash = "sha256-5ti5OzgnZUFznjU8YH8Cfktrj4YBzsbbrEbNvec+ppQ=";
+-    })
+-    (fetchpatch {
+-      name = "ensure-full-key-match";
+-      url = "https://git.w1.fi/cgit/hostap/patch/?id=1ce37105da371c8b9cf3f349f78f5aac77d40836";
+-      hash = "sha256-leCk0oexNBZyVK5Q5gR4ZcgWxa0/xt/aU+DssTa0UwE=";
+-    })
+-    ./unsurprising-ext-password.patch
+     ./multiple-configs.patch
+   ]
+   ++ lib.optional unprivileged ./unprivileged-daemon.patch;
+ 
++  strictDeps = true;
++  __structuredAttrs = true;
++  enableParallelBuilding = true;
++
+   # TODO: Patch epoll so that the dbus actually responds
+   # TODO: Figure out how to get privsep working, currently getting SIGBUS
+   extraConfig = ''
+diff --git a/pkgs/by-name/wp/wpa_supplicant/unsurprising-ext-password.patch b/pkgs/by-name/wp/wpa_supplicant/unsurprising-ext-password.patch
+deleted file mode 100644
+index d971acaeb7..0000000000
+--- a/pkgs/by-name/wp/wpa_supplicant/unsurprising-ext-password.patch
++++ /dev/null
+@@ -1,66 +0,0 @@
+-From e5ac0dd1af48e085bb824082ef3b64afba673ded Mon Sep 17 00:00:00 2001
+-From: rnhmjoj <rnhmjoj@inventati.org>
+-Date: Wed, 18 Sep 2024 13:43:44 +0200
+-Subject: [PATCH] ext_password_file: do not use wpa_config_get_line
+-To: hostap@lists.infradead.org
+-
+-The file-based backed of the ext_password framework uses
+-`wpa_config_get_line` to read the passwords line-by-line from a file.
+-This function is meant to parse a single line from the
+-wpa_supplicant.conf file, so it handles whitespace, quotes and other
+-characters specially.
+-
+-Its behavior, however, it's not compatible with the rest of the
+-ext_password framework implementation. For example, if a passphrase
+-contains a `#` character it must be quoted to prevent parsing the
+-remaining characters as an inline comment, but the code handling the
+-external password in `wpa_supplicant_get_psk` does not handle quotes.
+-The result is that either it will hash the enclosing quotes, producing a
+-wrong PSK, or if the passphrase is long enough, fail the length check.
+-As a consequence, some passphrases are impossible to input correctly.
+-
+-To solve this and other issues, this patch changes the behaviour of the
+-`ext_password_file_get` function (which was not documented in details,
+-at least w.r.t. special characters) to simply treat all characters
+-literally: including trailing whitespaces (except CR and LF), `#` for
+-inline comments, etc. Empty lines and full-line comments are still
+-supported.
+-
+-Signed-off-by: Michele Guerini Rocco <rnhmjoj@inventati.org>
+----
+- src/utils/ext_password_file.c | 12 ++++++++++--
+- 1 file changed, 10 insertions(+), 2 deletions(-)
+-
+-diff --git a/src/utils/ext_password_file.c b/src/utils/ext_password_file.c
+-index 4bb0095f3..f631ff15c 100644
+---- a/src/utils/ext_password_file.c
+-+++ b/src/utils/ext_password_file.c
+-@@ -9,7 +9,6 @@
+- #include "includes.h"
+- 
+- #include "utils/common.h"
+--#include "utils/config.h"
+- #include "ext_password_i.h"
+- 
+- 
+-@@ -97,7 +96,16 @@ static struct wpabuf * ext_password_file_get(void *ctx, const char *name)
+- 
+- 	wpa_printf(MSG_DEBUG, "EXT PW FILE: get(%s)", name);
+- 
+--	while (wpa_config_get_line(buf, sizeof(buf), f, &line, &pos)) {
+-+	while ((pos = fgets(buf, sizeof(buf), f))) {
+-+		line++;
+-+
+-+		/* Strip newline characters */
+-+		pos[strcspn(pos, "\r\n")] = 0;
+-+
+-+		/* Skip comments and empty lines */
+-+		if (*pos == '#' || *pos == '\0')
+-+		  continue;
+-+
+- 		char *sep = os_strchr(pos, '=');
+- 
+- 		if (!sep) {
+--- 
+-2.44.1
+-
+diff --git a/pkgs/by-name/wp/wpa_supplicant_gui/package.nix b/pkgs/by-name/wp/wpa_supplicant_gui/package.nix
+index efb73f3fe8..9635409936 100644
+--- a/pkgs/by-name/wp/wpa_supplicant_gui/package.nix
++++ b/pkgs/by-name/wp/wpa_supplicant_gui/package.nix
+@@ -1,7 +1,7 @@
+ {
+   lib,
+   stdenv,
+-  qt5,
++  qt6,
+   inkscape,
+   imagemagick,
+   wpa_supplicant,
+@@ -12,16 +12,20 @@
+   inherit (wpa_supplicant) version src patches;
+ 
+   buildInputs = [
+-    qt5.qtbase
++    qt6.qtbase
+   ];
+ 
+   nativeBuildInputs = [
+-    qt5.qmake
++    qt6.qmake
+     inkscape
+     imagemagick
+-    qt5.wrapQtAppsHook
++    qt6.wrapQtAppsHook
+   ];
+ 
++  strictDeps = true;
++  __structuredAttrs = true;
++  enableParallelBuilding = true;
++
+   postPatch = ''
+     cd wpa_supplicant/wpa_gui-qt4
+   '';

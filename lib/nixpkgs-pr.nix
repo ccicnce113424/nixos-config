@@ -14,6 +14,8 @@ in
       519313
       # nixos/dbus: fix "ignoring duplicate name" errors
       549241
+      # hostapd,wpa_supplicant: 2.11 -> 2.12
+      # 561106
     ];
   };
 
