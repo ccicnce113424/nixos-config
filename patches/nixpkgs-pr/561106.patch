@@ -1,14 +1,19 @@
-Commit ID: 63175318f1811440c72be4c7293f2ab24e62d453
-Change ID: ulztsyoynymnrnpmqyzpvwowpuknrqvm
-Author   : Jan Solanti <jhs@psonet.com> (2026-09-08 08:43:28)
-Committer: ccicnce113424 <ccicnce113424@gmail.com> (2026-09-19 12:30:53)
+From 44f1e91538d01fcf08261264af449171efa84f92 Mon Sep 17 00:00:00 2001
+From: Jan Solanti <jhs@psonet.com>
+Date: Tue, 8 Sep 2026 03:43:28 +0300
+Subject: [PATCH 1/2] wpa_supplicant: 2.11 -> 2.12
 
-    wpa_supplicant: 2.11 -> 2.12
-
-    Also bump wpa_gui to Qt 6 as per upstream changelog.
+Also bump wpa_gui to Qt 6 as per upstream changelog.
+---
+ .../wp/wpa_supplicant/multiple-configs.patch  | 44 +++++++------
+ pkgs/by-name/wp/wpa_supplicant/package.nix    | 26 ++------
+ .../unsurprising-ext-password.patch           | 66 -------------------
+ .../by-name/wp/wpa_supplicant_gui/package.nix | 12 ++--
+ 4 files changed, 37 insertions(+), 111 deletions(-)
+ delete mode 100644 pkgs/by-name/wp/wpa_supplicant/unsurprising-ext-password.patch
 
 diff --git a/pkgs/by-name/wp/wpa_supplicant/multiple-configs.patch b/pkgs/by-name/wp/wpa_supplicant/multiple-configs.patch
-index f7d88c9cbe..a4efd44652 100644
+index f7d88c9cbe931..a4efd44652f77 100644
 --- a/pkgs/by-name/wp/wpa_supplicant/multiple-configs.patch
 +++ b/pkgs/by-name/wp/wpa_supplicant/multiple-configs.patch
 @@ -1,4 +1,4 @@
@@ -17,7 +22,7 @@ index f7d88c9cbe..a4efd44652 100644
  Author: rnhmjoj <rnhmjoj@inventati.org>
  Date:   Sat Sep 13 13:54:00 2025 +0200
  
-@@ -24,10 +24,10 @@
+@@ -24,10 +24,10 @@ index df538e332..71195d0d3 100644
         </varlistentry>
   
  diff --git a/wpa_supplicant/main.c b/wpa_supplicant/main.c
@@ -30,7 +35,7 @@ index f7d88c9cbe..a4efd44652 100644
   	       "  -G = global ctrl_interface group\n"
   	       "  -h = show this help text\n"
   	       "  -i = interface name\n"
-@@ -36,7 +36,7 @@
+@@ -36,7 +36,7 @@ index 9229eb51f..ff877f3b9 100644
   	       "  -K = include keys (passwords, etc.) in debug output\n"
   	       "  -L = show license (BSD)\n"
   #ifdef CONFIG_P2P
@@ -39,7 +44,7 @@ index f7d88c9cbe..a4efd44652 100644
   {
   	int c, i;
   	struct wpa_interface *ifaces, *iface;
-@@ -46,7 +46,7 @@
+@@ -46,7 +46,7 @@ index 9229eb51f..ff877f3b9 100644
   	struct wpa_params params;
   	struct wpa_global *global;
   
@@ -48,7 +53,7 @@ index f7d88c9cbe..a4efd44652 100644
   			iface->ifname = optarg;
   			break;
   		case 'I':
-@@ -64,10 +64,10 @@
+@@ -64,10 +64,10 @@ index 9229eb51f..ff877f3b9 100644
   		case 'K':
   			params.wpa_debug_show_keys++;
  diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
@@ -61,7 +66,7 @@ index f7d88c9cbe..a4efd44652 100644
   	os_free(wpa_s->confname);
   	wpa_s->confname = NULL;
   
-@@ -80,7 +80,7 @@
+@@ -80,7 +80,7 @@ index d45002fd9..af5836ef5 100644
   
   	os_free(wpa_s->last_con_fail_realm);
   	wpa_s->last_con_fail_realm = NULL;
@@ -70,7 +75,7 @@ index f7d88c9cbe..a4efd44652 100644
   	struct wpa_config *conf;
   	int reconf_ctrl;
   	int old_ap_scan;
-@@ -88,19 +88,20 @@
+@@ -88,19 +88,20 @@ index d45002fd9..af5836ef5 100644
   
   	if (wpa_s->confname == NULL)
   		return -1;
@@ -95,7 +100,7 @@ index f7d88c9cbe..a4efd44652 100644
  +			wpa_msg(wpa_s, MSG_ERROR,
  +				"Failed to parse the configuration file '%s' - exiting",
  +				wpa_s->confanother[i]);
-@@ -109,35 +110,36 @@
+@@ -109,35 +110,36 @@ index d45002fd9..af5836ef5 100644
   	}
   
   	conf->changed_parameters = (unsigned int) -1;
@@ -140,7 +145,7 @@ index f7d88c9cbe..a4efd44652 100644
   	const char *confname;
   
   	/**
-@@ -152,7 +154,7 @@
+@@ -152,7 +154,7 @@ index 2f77413d5..84c009e78 100644
   
   	/**
   	 * ctrl_interface - Control interface parameter
@@ -150,7 +155,7 @@ index f7d88c9cbe..a4efd44652 100644
   
   	char *confname;
 diff --git a/pkgs/by-name/wp/wpa_supplicant/package.nix b/pkgs/by-name/wp/wpa_supplicant/package.nix
-index 7fe7be2341..26a57bb38b 100644
+index 7fe7be2341997..26a57bb38bbc6 100644
 --- a/pkgs/by-name/wp/wpa_supplicant/package.nix
 +++ b/pkgs/by-name/wp/wpa_supplicant/package.nix
 @@ -2,7 +2,6 @@
@@ -207,7 +212,7 @@ index 7fe7be2341..26a57bb38b 100644
    extraConfig = ''
 diff --git a/pkgs/by-name/wp/wpa_supplicant/unsurprising-ext-password.patch b/pkgs/by-name/wp/wpa_supplicant/unsurprising-ext-password.patch
 deleted file mode 100644
-index d971acaeb7..0000000000
+index d971acaeb7b95..0000000000000
 --- a/pkgs/by-name/wp/wpa_supplicant/unsurprising-ext-password.patch
 +++ /dev/null
 @@ -1,66 +0,0 @@
@@ -278,7 +283,7 @@ index d971acaeb7..0000000000
 -2.44.1
 -
 diff --git a/pkgs/by-name/wp/wpa_supplicant_gui/package.nix b/pkgs/by-name/wp/wpa_supplicant_gui/package.nix
-index efb73f3fe8..9635409936 100644
+index efb73f3fe865e..9635409936daf 100644
 --- a/pkgs/by-name/wp/wpa_supplicant_gui/package.nix
 +++ b/pkgs/by-name/wp/wpa_supplicant_gui/package.nix
 @@ -1,7 +1,7 @@
@@ -290,7 +295,7 @@ index efb73f3fe8..9635409936 100644
    inkscape,
    imagemagick,
    wpa_supplicant,
-@@ -12,16 +12,20 @@
+@@ -12,16 +12,20 @@ stdenv.mkDerivation {
    inherit (wpa_supplicant) version src patches;
  
    buildInputs = [
@@ -314,3 +319,55 @@ index efb73f3fe8..9635409936 100644
    postPatch = ''
      cd wpa_supplicant/wpa_gui-qt4
    '';
+
+From 6b31d9bd1a8ca5fbc026bc7ddcc304a945cfd1f5 Mon Sep 17 00:00:00 2001
+From: Jan Solanti <jhs@psonet.com>
+Date: Tue, 8 Sep 2026 03:43:50 +0300
+Subject: [PATCH 2/2] hostapd: 2.11 -> 2.12
+
+---
+ doc/release-notes/rl-2611.section.md | 2 ++
+ pkgs/by-name/ho/hostapd/package.nix  | 7 +++++--
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
+index 7f873e9c8a729..e82706044582a 100644
+--- a/doc/release-notes/rl-2611.section.md
++++ b/doc/release-notes/rl-2611.section.md
+@@ -152,6 +152,8 @@
+ 
+ - `luaPackages.lrexlib-pcre` has been removed as part of the process to fully migrate from the end-of-life PRCE library to PCRE2. `luaPackages.lrexlib-pcre2` and multiple other versions of lrexlib can be used instead.
+ 
++- `hostapd` was upgraded to version 2.12+, which moves move supported, basic, and beacon transmission rate configuration to be at BSS level instead of per-radio for all BSSs. Refer to the [upstream example config](https://git.w1.fi/cgit/hostap/plain/hostapd/hostapd.conf) for details.
++
+ - `pnpm_10` was upgraded to version 10.34.1+, which introduced stricter integrity checks. If you encounter `ERR_PNPM_MISSING_TARBALL_INTEGRITY`, you can fall back to the older `pnpm_10_34_0`.
+ 
+ - `buildMozillaMach` is now using `enable<feature>` and `with<dependency>`
+diff --git a/pkgs/by-name/ho/hostapd/package.nix b/pkgs/by-name/ho/hostapd/package.nix
+index 1387b69dffddc..33815f3ccd47d 100644
+--- a/pkgs/by-name/ho/hostapd/package.nix
++++ b/pkgs/by-name/ho/hostapd/package.nix
+@@ -11,11 +11,11 @@
+ 
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "hostapd";
+-  version = "2.11";
++  version = "2.12";
+ 
+   src = fetchurl {
+     url = "https://w1.fi/releases/hostapd-${finalAttrs.version}.tar.gz";
+-    sha256 = "sha256-Kz+stjL9T2XjL0v4Kna0tyxQH5laT2LjMCGf567RdHo=";
++    sha256 = "sha256-9DUCVhwoukerd+GOGpc9BzYcaMyLFBeOYZvVeWtw6r0=";
+   };
+ 
+   nativeBuildInputs = [ pkg-config ];
+@@ -39,6 +39,9 @@ stdenv.mkDerivation (finalAttrs: {
+     "man"
+   ];
+ 
++  strictDeps = true;
++  enableParallelBuilding = true;
++
+   # Based on hostapd's defconfig. Only differences are tracked.
+   extraConfig = ''
+     # Use epoll(7) instead of select(2) on linux
