@@ -152,11 +152,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790110821,
-        "narHash": "sha256-4vgPxAtYGryB/9SZVFMrcRKmNcOqcN3+MwRJPTVpb1o=",
+        "lastModified": 1790128159,
+        "narHash": "sha256-ZAd7VUcc6V4p0C65Ngdf9dt72Ix1TabuNWAEhxI/Py8=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "a5768f1a46942657352e58037b7891bdcbc0741f",
+        "rev": "9fc630b32efbcee34295820ee44d7d65252b7fb3",
         "type": "github"
       },
       "original": {
@@ -204,11 +204,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790113366,
-        "narHash": "sha256-LCuRRIWKlV2gKUo2J7xQluJFxKbTKHpcEWYisBN847k=",
+        "lastModified": 1790122280,
+        "narHash": "sha256-uWgg4A+hrlViz1L0y9D8zMkIjQU8UzJqoyxaZ3xY24Q=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "bcecdffca7ae294525c9a47241257b6a90209be2",
+        "rev": "fcf80443a6e5363f30dc9b191bcb65cfcd788df2",
         "type": "github"
       },
       "original": {
@@ -335,11 +335,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790085576,
-        "narHash": "sha256-ftDZO1I2YljsivFwSVeYykkLM9F7fnYJsC0hctx79Xg=",
+        "lastModified": 1790128229,
+        "narHash": "sha256-0RYulRuS3QaINsgXUUXlQYtZgbs5E45b1FQa0S+0Qeo=",
         "owner": "ccicnce113424",
         "repo": "nix-packages",
-        "rev": "42204f7b28b1dda4875b9088e15a447cde7d6fe9",
+        "rev": "0cf6ba308b5e6e0d1be46ea1971b86f7e725344d",
         "type": "github"
       },
       "original": {
@@ -399,11 +399,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790118259,
-        "narHash": "sha256-4RYxg0VULgK4QBuLOI+m3AKj+h82i6Pk94XHhGfK5DA=",
+        "lastModified": 1790122003,
+        "narHash": "sha256-V4qG56zBNPzyLUqV5KLo3JuBqsjcABnS1QJmZKci1T4=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "917009f3a336bd06ee74e0a2ea5b7db34d8b2e7a",
+        "rev": "3985fdf87c1c767a3a7fe8f30018907a47a7e2fa",
         "type": "github"
       },
       "original": {
