@@ -13,7 +13,7 @@ in
       # linuxPackages.nvidiaPackages: separate and refactor
       519313
       # nixos/dbus: fix "ignoring duplicate name" errors
-      549241
+      # 549241
     ];
   };
 
