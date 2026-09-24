@@ -6,9 +6,16 @@
       default_mode = "Auto";
       default_sched = "scx_p2dq";
       scheds.scx_p2dq.auto_mode = [
-        "-a"
-        "-f"
-        "-y"
+        "--autoslice"
+        "--interactive-ratio"
+        "5"
+        "--task-slice"
+        "true"
+        "--cpu-priority"
+        "true"
+        "--deadline"
+        "--interactive-sticky"
+        "--freq-control"
       ];
     };
 
