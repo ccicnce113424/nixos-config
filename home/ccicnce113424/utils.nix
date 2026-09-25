@@ -6,7 +6,6 @@
     shijima-qt
     kdePackages.francis
     kdePackages.skanpage
-    diffoscopeMinimal
     # winboat
     # llm-agents.hermes-agent
     # llm-agents.hermes-desktop

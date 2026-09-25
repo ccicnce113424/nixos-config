@@ -48,6 +48,7 @@
   home.packages = with pkgs; [
     dust
     tokei
+    diffoscopeMinimal
   ];
 
   programs.nix-index.enable = true;
@@ -78,6 +79,6 @@
 
   programs.fastfetch = {
     enable = true;
-    # package = pkgs.fastfetch.minimal;
+    package = pkgs.fastfetch.minimal;
   };
 }
