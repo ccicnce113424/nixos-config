@@ -14,6 +14,8 @@ in
       519313
       # nixos/dbus: fix "ignoring duplicate name" errors
       # 549241
+      # kmscon: 10.0.3 -> 10.0.4
+      567032
     ];
   };
 

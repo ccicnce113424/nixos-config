@@ -1,4 +1,4 @@
-From f6ddb419e7402d841c570f3900e11a47637bb527 Mon Sep 17 00:00:00 2001
+From 58aa3fdee6bf54b2e454881afac54cf1ca0f291a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:28:00 +0800
 Subject: [PATCH 1/4] linuxPackages.nvidiaPackages: fetch open kernel module
@@ -22,18 +22,18 @@ Assisted-by: omp: DeepSeek V4.1 Flash
  5 files changed, 52 insertions(+), 18 deletions(-)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index cd657064ff4ec..5325dea3a1a5e 100644
+index 54ff60842f3c0..7f76b17ce29d1 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -74,7 +74,8 @@ rec {
-     version = "595.99.02";
-     sha256_64bit = "sha256-6HR3lYv3YwcFSTJL1a1slI66btIQ5EAFs+/4SUD24ew=";
-     sha256_aarch64 = "sha256-CCqHZTN2KNOZ4yZp2rDcuRJp9pHfRw47k4m4dWnS/2w=";
--    openSha256 = "sha256-T36x/jx8yQ8l3LFp1rZIrTfcSwbGy8YSAvXOUSptpb4=";
-+    openSha256 = "sha256-EfNJwJNgjWCJnHDvvw0rviiDojJN22GnntlnjXMDvu0=";
+     version = "595.104.02";
+     sha256_64bit = "sha256-5CHCAuTHn1jDx/MWG75xRU67PYiTb4ggWg4yfNBMWco=";
+     sha256_aarch64 = "sha256-PafStmwNMufeDp3VtpTGGCoW+53Gor/mieO1m1pI7gI=";
+-    openSha256 = "sha256-FWk5ra2yjz8VAxAA8GXrSoeBj/XC1BKvsKsBKR09joE=";
++    openSha256 = "sha256-fUUcMNQxJSCo91jFj47ExYnQie4L82ooD7/r20BVv1c=";
 +    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-GYCcnxfKPrTCrsmd25sMyzfC5cqJQJx0c31haooyTYM=";
-     persistencedSha256 = "sha256-VyKtF/HdHPQrHHK6opSO69M72LmnGZtauuchj9uuje8=";
+     settingsSha256 = "sha256-4Kxro6tvI5aX4nu2RspgyBsW+Jq3/VYjSAS5UGdzTCU=";
+     persistencedSha256 = "sha256-JsMLPqJuZwAtHngsQODMsmgO7F2tVkQ2arc7fYa2bwo=";
    };
 @@ -83,7 +84,8 @@ rec {
      version = "615.71.09";
@@ -259,7 +259,7 @@ index e47dc3cb4e613..41f14b075fc2c 100644
    };
  
 
-From 9aacf9897857ee24cfa39e809cdfb91b5727e8c6 Mon Sep 17 00:00:00 2001
+From bd9d57378753d0d7a0e7f23f4fe0b68a2170f512 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 2/4] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -301,14 +301,14 @@ index 734eeecac9853..ff473e076c680 100644
        (replaceVars ./modprobe.patch {
          inherit modprobeVersion;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 5325dea3a1a5e..afa9c95c51924 100644
+index 7f76b17ce29d1..c9714aad5a25d 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -78,6 +78,7 @@ rec {
      fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-GYCcnxfKPrTCrsmd25sMyzfC5cqJQJx0c31haooyTYM=";
-     persistencedSha256 = "sha256-VyKtF/HdHPQrHHK6opSO69M72LmnGZtauuchj9uuje8=";
-+    modprobeSha256 = "sha256-zyz/gjRNXw/Uh/XQPrBLLbQRLsP/u4uxjoHvLVSn+2o=";
+     settingsSha256 = "sha256-4Kxro6tvI5aX4nu2RspgyBsW+Jq3/VYjSAS5UGdzTCU=";
+     persistencedSha256 = "sha256-JsMLPqJuZwAtHngsQODMsmgO7F2tVkQ2arc7fYa2bwo=";
++    modprobeSha256 = "sha256-TSP1RySipE2cA6pFopdbBPp+6bLTkGzOZ098OOuAse8=";
    };
  
    new_feature = generic {
@@ -484,7 +484,7 @@ index b1c9c7f9c0d94..4b8836cb4ca26 100644
    };
  })
 
-From da5a66b7b43308a69ddead833617243430e88093 Mon Sep 17 00:00:00 2001
+From 31c9f53f4f95f8743ff6a42a45555ce947c1fc71 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:30:08 +0800
 Subject: [PATCH 3/4] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -725,7 +725,7 @@ index 0000000000000..030d312078640
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index afa9c95c51924..a26b647f6eb56 100644
+index c9714aad5a25d..5ac3b50293a9c 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -10,17 +10,7 @@
@@ -1394,7 +1394,7 @@ index 41f14b075fc2c..ba8b44f0de4fc 100644
      gtk3
      librsvg
 
-From 52d1855e85b89795e3090c3ffa1d29e958380b0a Mon Sep 17 00:00:00 2001
+From a6f29178c8b79a62aff62f93125569b1f77cea96 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 22:50:14 +0800
 Subject: [PATCH 4/4] nvidia-settings: get profiles from /run/current-system/sw

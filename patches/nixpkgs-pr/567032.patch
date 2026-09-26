@@ -1,0 +1,166 @@
+From d93f3199a8fa3bc32159cd7addab82cefc413311 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sat, 26 Sep 2026 09:51:24 +0800
+Subject: [PATCH 1/3] libtsm: 4.7.1 -> 4.8.0
+
+Changelog: https://github.com/kmscon/libtsm/releases/tag/v4.8.0
+---
+ pkgs/by-name/li/libtsm/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/by-name/li/libtsm/package.nix b/pkgs/by-name/li/libtsm/package.nix
+index 298a238e0bece..30160cdd0a7f3 100644
+--- a/pkgs/by-name/li/libtsm/package.nix
++++ b/pkgs/by-name/li/libtsm/package.nix
+@@ -12,13 +12,13 @@
+ 
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "libtsm";
+-  version = "4.7.1";
++  version = "4.8.0";
+ 
+   src = fetchFromGitHub {
+     owner = "kmscon";
+     repo = "libtsm";
+     tag = "v${finalAttrs.version}";
+-    hash = "sha256-VT4dOlQT98/AaFRGd4vOoyDe8W1KRvvFRaCkr/Abu9Y=";
++    hash = "sha256-CA80Tsc6rr2NCOVnH6+vGB2fuO6jZpuoCaiz4MuJ9xM=";
+   };
+ 
+   strictDeps = true;
+
+From 3b27ba752d1a079afd10847b35fb226fb532375a Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sat, 26 Sep 2026 09:52:13 +0800
+Subject: [PATCH 2/3] kmscon: 10.0.3 -> 10.0.4
+
+Changelog: https://github.com/kmscon/kmscon/releases/tag/v10.0.4
+---
+ pkgs/by-name/km/kmscon/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
+index 080dba722166e..b5065112b0f4f 100644
+--- a/pkgs/by-name/km/kmscon/package.nix
++++ b/pkgs/by-name/km/kmscon/package.nix
+@@ -33,13 +33,13 @@
+ }:
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "kmscon";
+-  version = "10.0.3";
++  version = "10.0.4";
+ 
+   src = fetchFromGitHub {
+     owner = "kmscon";
+     repo = "kmscon";
+     tag = "v${finalAttrs.version}";
+-    hash = "sha256-qSxEdgHT8jVLWhx23w+VrT0IvJa8RjbzhCs6rvFBkTM=";
++    hash = "sha256-F4XI924K4YxREEjqP0XLeFcvaW/9v5Iyuy9n75c9Osc=";
+   };
+ 
+   strictDeps = true;
+
+From 781c5da47a0d0721442df9ff3f531521a50b2b57 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sat, 26 Sep 2026 10:01:39 +0800
+Subject: [PATCH 3/3] kmscon: disable libseat feature as it cannot build
+
+---
+ nixos/modules/services/ttys/kmscon.nix | 48 --------------------------
+ pkgs/by-name/km/kmscon/package.nix     |  3 --
+ 2 files changed, 51 deletions(-)
+
+diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
+index fc3361e308e8c..6a45316bcc070 100644
+--- a/nixos/modules/services/ttys/kmscon.nix
++++ b/nixos/modules/services/ttys/kmscon.nix
+@@ -110,7 +110,6 @@ in
+             ]);
+           options = {
+             hwaccel = mkEnableOption "use hardware acceleration for rendering";
+-            libseat = mkEnableOption "use libseat for seat management";
+           };
+         };
+       };
+@@ -160,8 +159,6 @@ in
+ 
+     systemd.services."kmsconvt@" = {
+       serviceConfig = {
+-        User = lib.mkIf (!cfg.config.libseat) "";
+-        PAMName = lib.mkIf (!cfg.config.libseat) "";
+         Environment = [ "XKB_CONFIG_ROOT=${config.services.xserver.xkb.dir}" ];
+         ExecStart = [
+           "" # override upstream default with an empty ExecStart
+@@ -195,51 +192,6 @@ in
+     ];
+ 
+     systemd.suppressedSystemUnits = [ "getty@.service" ];
+-
+-    security.pam.services.kmscon = lib.mkIf cfg.config.libseat {
+-      useDefaultRules = false;
+-      rules = {
+-        auth = utils.pam.autoOrderRules [
+-          {
+-            name = "permit";
+-            control = "required";
+-            modulePath = "${config.security.pam.package}/lib/security/pam_permit.so";
+-          }
+-        ];
+-        account = utils.pam.autoOrderRules [
+-          {
+-            name = "unix";
+-            control = "required";
+-            modulePath = config.security.pam.pam_unixModulePath;
+-          }
+-        ];
+-        session = utils.pam.autoOrderRules [
+-          {
+-            name = "env";
+-            control = "required";
+-            modulePath = "${config.security.pam.package}/lib/security/pam_env.so";
+-            settings = {
+-              conffile = "/etc/pam/environment";
+-              readenv = 0;
+-            };
+-          }
+-          {
+-            name = "unix";
+-            control = "required";
+-            modulePath = config.security.pam.pam_unixModulePath;
+-          }
+-          {
+-            name = "systemd";
+-            control = "optional";
+-            modulePath = "${config.systemd.package}/lib/security/pam_systemd.so";
+-            settings = {
+-              type = "tty";
+-              class = "greeter";
+-            };
+-          }
+-        ];
+-      };
+-    };
+   };
+ 
+   meta.maintainers = with lib.maintainers; [
+diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
+index b5065112b0f4f..479a90b702e9c 100644
+--- a/pkgs/by-name/km/kmscon/package.nix
++++ b/pkgs/by-name/km/kmscon/package.nix
+@@ -2,7 +2,6 @@
+   lib,
+   stdenv,
+   fetchFromGitHub,
+-  fetchpatch2,
+   meson,
+   libtsm,
+   systemdLibs,
+@@ -85,8 +84,6 @@ stdenv.mkDerivation (finalAttrs: {
+     "man"
+   ];
+ 
+-  mesonFlags = [ (lib.mesonEnable "libseat" true) ];
+-
+   env = {
+     PKG_CONFIG_SYSTEMD_SYSTEMDSYSTEMUNITDIR = "${placeholder "out"}/lib/systemd/system";
+     DESTDIR = "/";
