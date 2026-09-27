@@ -39,7 +39,7 @@
                   };
                 };
                 nix.settings = {
-                  flake-registry = inputs.flake-registry.outPath + /flake-registry.json;
+                  flake-registry = inputs.flake-registry.outPath + "/flake-registry.json";
                 };
                 system.configurationRevision = self.rev or self.dirtyRev;
                 system.nixos.label = "${inputs.nixpkgs.shortRev}.${builtins.substring 0 8 self.lastModifiedDate}.${
