@@ -60,15 +60,15 @@ index 080dba722166e..b5065112b0f4f 100644
  
    strictDeps = true;
 
-From 781c5da47a0d0721442df9ff3f531521a50b2b57 Mon Sep 17 00:00:00 2001
+From a0b27cfd215f5f0622f81a18d95f20585e2a539b Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 26 Sep 2026 10:01:39 +0800
 Subject: [PATCH 3/3] kmscon: disable libseat feature as it cannot build
 
 ---
  nixos/modules/services/ttys/kmscon.nix | 48 --------------------------
- pkgs/by-name/km/kmscon/package.nix     |  3 --
- 2 files changed, 51 deletions(-)
+ pkgs/by-name/km/kmscon/package.nix     |  5 ---
+ 2 files changed, 53 deletions(-)
 
 diff --git a/nixos/modules/services/ttys/kmscon.nix b/nixos/modules/services/ttys/kmscon.nix
 index fc3361e308e8c..6a45316bcc070 100644
@@ -144,7 +144,7 @@ index fc3361e308e8c..6a45316bcc070 100644
  
    meta.maintainers = with lib.maintainers; [
 diff --git a/pkgs/by-name/km/kmscon/package.nix b/pkgs/by-name/km/kmscon/package.nix
-index b5065112b0f4f..479a90b702e9c 100644
+index b5065112b0f4f..614bc0aeafb36 100644
 --- a/pkgs/by-name/km/kmscon/package.nix
 +++ b/pkgs/by-name/km/kmscon/package.nix
 @@ -2,7 +2,6 @@
@@ -155,7 +155,23 @@ index b5065112b0f4f..479a90b702e9c 100644
    meson,
    libtsm,
    systemdLibs,
-@@ -85,8 +84,6 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -21,7 +20,6 @@
+   ncurses,
+   libxslt,
+   libgbm,
+-  seatd,
+   dbus,
+   ninja,
+   check,
+@@ -61,7 +59,6 @@ stdenv.mkDerivation (finalAttrs: {
+     pango
+     systemdLibs
+     libgbm
+-    seatd
+     dbus
+     check
+     # Needed for autoPatchShebangs when strictDeps = true
+@@ -85,8 +82,6 @@ stdenv.mkDerivation (finalAttrs: {
      "man"
    ];
  
