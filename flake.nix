@@ -84,6 +84,10 @@ rec {
       url = "github:GunduLabs/gaze";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    flake-registry = {
+      url = "github:NixOS/flake-registry";
+      flake = false;
+    };
     nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.zst";
     multiverse.url = "github:fzakaria/nixpkgs-multiverse";
     flake-compat.url = "https://git.lix.systems/lix-project/flake-compat/archive/main.tar.gz";
