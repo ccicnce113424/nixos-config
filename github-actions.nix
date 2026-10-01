@@ -47,6 +47,7 @@ in
             # "hermes-desktop"
             "reasonix"
             "codex"
+            "cc-switch-cli"
             "omp"
             "wineprefix-preparer"
           ]
