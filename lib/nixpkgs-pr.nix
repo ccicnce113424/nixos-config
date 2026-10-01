@@ -18,6 +18,8 @@ in
       567032
       # cudaPackages.buildRedistHook: remove fixupPropagatedBuildOutputsForMultipleOutputs fix
       568318
+      # mergiraf: build with -fno-strict-aliasing
+      568226
     ];
   };
 
