@@ -16,6 +16,8 @@ in
       # 549241
       # kmscon: 10.0.3 -> 10.0.4
       567032
+      # cudaPackages.buildRedistHook: remove fixupPropagatedBuildOutputsForMultipleOutputs fix
+      568318
     ];
   };
 
