@@ -25,18 +25,11 @@
 
   programs.nixcord = {
     enable = true;
-    discord.enable = false;
-    dorion = {
-      enable = true;
-      package = pkgs.dorion-git;
-      clientMods = [ "Shelter" ];
-      cacheCss = true;
-      desktopNotifications = true;
-      rpcServer = true;
-      streamerModeDetection = true;
-      sysTray = true;
-      updateNotify = false;
-      extraSettings.autoupdate = true;
+    discord = {
+      vencord.enable = false;
+
+      # I WANT VANILLA DISCORD
+      silenceNoModClientWarning = true;
     };
   };
 }
