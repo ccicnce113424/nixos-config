@@ -1,7 +1,7 @@
 From 58aa3fdee6bf54b2e454881afac54cf1ca0f291a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:28:00 +0800
-Subject: [PATCH 1/4] linuxPackages.nvidiaPackages: fetch open kernel module
+Subject: [PATCH 1/6] linuxPackages.nvidiaPackages: fetch open kernel module
  sources from NVIDIA
 
 Serve the open-gpu-kernel-modules source through fetchFromGithubOrNvidia
@@ -262,7 +262,7 @@ index e47dc3cb4e613..41f14b075fc2c 100644
 From bd9d57378753d0d7a0e7f23f4fe0b68a2170f512 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
-Subject: [PATCH 2/4] nvidia-modprobe: move to linuxPackages.nvidiaPackages
+Subject: [PATCH 2/6] nvidia-modprobe: move to linuxPackages.nvidiaPackages
 
 Assisted-by: omp: DeepSeek V4.1 Flash
 ---
@@ -484,21 +484,740 @@ index b1c9c7f9c0d94..4b8836cb4ca26 100644
    };
  })
 
-From 31c9f53f4f95f8743ff6a42a45555ce947c1fc71 Mon Sep 17 00:00:00 2001
+From 8edd76d490542a78ad8015a019b807687fad774e Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Fri, 2 Oct 2026 18:23:22 +0800
+Subject: [PATCH 3/6] maintainers/scripts/nvidia-source-hashes: add a per-URL
+ hash verifier
+
+The script walks linuxPackages.nvidiaPackages, picks up every component whose .src is a fixed-output fetch, and builds one salted, single-URL derivation per URL, so each link is downloaded and checked against the declared hash on its own. Platform specific sources are read from a nixpkgs evaluation for each supported platform and their URL and hash are transplanted onto the host derivation, which covers the 32-bit and aarch64 hashes without a builder for them. --prefetch prints the hashes a URL currently serves.
+
+Assisted-by: omp:DeepSeek V4.1 Flash
+---
+ .../scripts/nvidia-source-hashes/default.nix  | 268 ++++++++++++++++++
+ .../scripts/nvidia-source-hashes/verify.sh    | 251 ++++++++++++++++
+ 2 files changed, 519 insertions(+)
+ create mode 100644 maintainers/scripts/nvidia-source-hashes/default.nix
+ create mode 100755 maintainers/scripts/nvidia-source-hashes/verify.sh
+
+diff --git a/maintainers/scripts/nvidia-source-hashes/default.nix b/maintainers/scripts/nvidia-source-hashes/default.nix
+new file mode 100644
+index 0000000000000..324fa347036a3
+--- /dev/null
++++ b/maintainers/scripts/nvidia-source-hashes/default.nix
+@@ -0,0 +1,268 @@
++# Per-URL hash verification for every source fetched by
++# `pkgs.linuxPackages.nvidiaPackages.*`.
++#
++# This is the Nix side of ./verify.sh; run that script rather than this file
++# directly.  The result is a flat attribute set mapping
++# "<path>-<system>-u<index>" to a fixed-output derivation that downloads
++# exactly one URL of that source and checks it against the hash declared in
++# nixpkgs.
++#
++# Nothing here knows about the NVIDIA namespace, about its component names or
++# about concrete URLs.  The namespace is walked recursively: plain attribute
++# sets are descended into (so a driver version exposed as a scope is found just
++# like any other set) and every derivation whose `.src` is a fixed-output
++# derivation carrying `urls`/`url` becomes one test per URL.  A derivation also
++# contributes the entries of its `passthru`, one level deep, which is how the
++# extra packages are exposed today; when they move into a scope instead, the
++# plain attribute set recursion picks them up.
++#
++# The derivations are salted with `pkgs.testers.invalidateFetcherByDrvHash`,
++# so each one has a unique store path that cannot be satisfied by an already
++# populated store or binary cache: an actual download always happens on the
++# first run.  This catches the case this file exists for, a hash that is only
++# wrong for one of the URLs a source lists (GitHub vs. NVIDIA), which a normal
++# build of the combined derivation would never notice because it stops at the
++# first URL that works.
++#
++# Platform specific sources (the binary driver and fabricmanager archives) are
++# read from a nixpkgs evaluation for each supported platform, so the 64-bit,
++# 32-bit and aarch64 hashes are all covered.  Because the archives themselves
++# are platform independent, each URL is downloaded by the host's own source
++# derivation, with only the URL and the hash of that platform transplanted
++# onto it.  That way a foreign platform is verified without a builder for it.
++#
++# Components that resolve to the same download (aliases such as `stable` and
++# `production`, the `dc` alias, a driver's bundled `lib32`) each get their own
++# check but share one derivation, so nothing is downloaded twice.
++#
++# Arguments (all optional):
++#   pkgs     nixpkgs instance used to build the checks.  Defaults to this
++#            repository with `allowUnfree` and `nvidia.acceptLicense` enabled,
++#            which the unfree NVIDIA sources require.
++#   systems  Linux platforms to read platform specific sources from, as a list
++#            or a comma-separated string.  Platforms a driver does not support
++#            are ignored.  Defaults to x86_64-linux, i686-linux and
++#            aarch64-linux.
++#   path     comma-separated substrings a component's path must contain, e.g.
++#            "production" or "passthru.open"; empty means everything.
++#   prefetch when true, every check asks for a bogus hash instead of the
++#            declared one, so realising it always fails and reports the hash the
++#            URL actually yields.  Used by ./verify.sh --prefetch to obtain new
++#            hashes; the URLs still come from nixpkgs.
++{
++  pkgs ? import ../../.. {
++    config = {
++      allowUnfree = true;
++      nvidia.acceptLicense = true;
++    };
++  },
++  systems ? null,
++  path ? "",
++  prefetch ? false,
++}:
++
++let
++  inherit (pkgs) lib;
++
++  defaultSystems = [
++    "x86_64-linux"
++    "i686-linux"
++    "aarch64-linux"
++  ];
++
++  resolvedSystems =
++    if systems == null || systems == "" then
++      defaultSystems
++    else if lib.isString systems then
++      lib.splitString "," systems
++    else
++      systems;
++
++  repo = ../../..;
++  config = {
++    allowUnfree = true;
++    nvidia.acceptLicense = true;
++  };
++
++  hostSystem = pkgs.stdenv.hostPlatform.system;
++
++  namespaceFor =
++    system:
++    (if system == hostSystem then pkgs else import repo { inherit system config; })
++    .linuxPackages.nvidiaPackages;
++
++  hostNamespace = namespaceFor hostSystem;
++
++  # A component whose `.src` is a fixed-output derivation with URLs.  Anything
++  # else (`mod.src` is a store path, disabled components are `{ }`, a driver's
++  # `lib32` output, version strings) is skipped.
++  isSource =
++    drv:
++    drv ? src
++    && (
++      let
++        s = drv.src;
++      in
++      lib.isDerivation s && (s ? urls || s ? url)
++    );
++
++  urlsOf = src: lib.unique (if src ? urls && src.urls != [ ] then src.urls else [ src.url ]);
++
++  # Attribute names must not contain ".", "/" or ":", which nix-instantiate
++  # would read as an attribute path and silently skip.
++  pathString = parts: lib.concatStringsSep "-" parts;
++
++  normalizeSelector = selector: builtins.replaceStrings [ "." "/" ] [ "-" "-" ] selector;
++
++  # A derivation is only touched for a platform it claims to support; foreign
++  # (and unsupported) derivations may not even evaluate.  Without a
++  # `meta.platforms` it is checked on the host only.
++  available =
++    system: drv:
++    if drv ? meta && drv.meta ? platforms then
++      lib.meta.availableOn { inherit system; } drv
++    else
++      system == hostSystem;
++
++  # Recursively walk the namespace.  Plain attribute sets are descended into,
++  # so a driver version exposed as a scope is discovered like any other set; a
++  # derivation contributes itself and, when it is not already inside a
++  # `passthru`, its `passthru` (where the extra packages live today).  The
++  # `passthru` descent is deliberately one level deep, so a passthru entry that
++  # is itself a package does not contribute its own passthru again.  Subtrees
++  # that cannot be evaluated for `system` - unsupported platform branches, a
++  # driver's bundled 32-bit libs - are dropped with `tryEval`.
++  sourcesIn =
++    system: namespace:
++    let
++      walk =
++        inPassthru: path: value:
++        let
++          step = builtins.tryEval (
++            if lib.isFunction value then
++              [ ]
++            else if lib.isDerivation value then
++              lib.optionals (available system value) (
++                [
++                  {
++                    inherit path;
++                    drv = value;
++                  }
++                ]
++                ++ lib.optionals (!inPassthru && value ? passthru) (
++                  walk true (path ++ [ "passthru" ]) value.passthru
++                )
++              )
++            else if lib.isAttrs value then
++              lib.concatMap (name: walk inPassthru (path ++ [ name ]) value.${name}) (builtins.attrNames value)
++            else
++              [ ]
++          );
++        in
++        if step.success then step.value else [ ];
++    in
++    walk false [ ] namespace;
++
++  recordOf =
++    system: component:
++    let
++      src = component.drv.src;
++    in
++    lib.imap0 (index: url: {
++      inherit (component) path;
++      inherit system index url;
++      inherit (src)
++        hash
++        outputHash
++        outputHashAlgo
++        outputHashMode
++        ;
++      source = src;
++    }) (urlsOf src);
++
++  records = lib.concatMap (
++    system:
++    lib.concatMap (
++      component:
++      let
++        check = builtins.tryEval (isSource component.drv);
++      in
++      lib.optionals (check.success && check.value) (recordOf system component)
++    ) (sourcesIn system (namespaceFor system))
++  ) resolvedSystems;
++
++  # Identity of the actual download.  Aliases (`stable` for `production`, `dc`
++  # for `dc_580`, ...) and platform-independent sources shared by several
++  # platforms have the same identity, so they resolve to one derivation and a
++  # single download.
++  fetchKey =
++    r:
++    "${r.url}\n${toString r.outputHash}\n${
++      if r.outputHashAlgo == null then "" else r.outputHashAlgo
++    }\n${toString r.outputHashMode}";
++
++  # One check per (component, URL): the same component seen again under another
++  # platform is dropped, but different components (including aliases) stay.
++  pathKey = r: "${pathString r.path}\n${fetchKey r}";
++
++  checks = lib.foldl' (
++    acc: r: if lib.any (seen: pathKey seen == pathKey r) acc then acc else acc ++ [ r ]
++  ) [ ] records;
++
++  representative = r: lib.findFirst (x: fetchKey x == fetchKey r) r records;
++
++  systemTag = system: lib.head (lib.splitString "-" system);
++
++  pathMatches =
++    p:
++    path == ""
++    || lib.any (selector: lib.hasInfix (normalizeSelector selector) p) (lib.splitString "," path);
++
++  # The host-buildable source derivation for the same component, with the
++  # requested platform's URL and hash transplanted onto it.  In prefetch mode
++  # the hash is replaced by a bogus one so realising it reports the real hash.
++  mkTest =
++    record:
++    let
++      base = (lib.getAttrFromPath record.path hostNamespace).src;
++      name = "nvidia-source-hash-${pathString record.path}-${systemTag record.system}-u${toString record.index}";
++      hashAttrs = {
++        inherit (record) outputHashMode;
++      }
++      // (
++        if prefetch then
++          {
++            hash = lib.fakeHash;
++            outputHash = lib.fakeHash;
++            outputHashAlgo = null;
++          }
++        else
++          {
++            inherit (record)
++              hash
++              outputHash
++              outputHashAlgo
++              ;
++          }
++      );
++    in
++    pkgs.testers.invalidateFetcherByDrvHash (
++      args:
++      base.overrideAttrs (
++        _:
++        {
++          inherit (args) name;
++          urls = [ record.url ];
++        }
++        // hashAttrs
++      )
++    ) { inherit name; };
++in
++lib.listToAttrs (
++  map (
++    r:
++    lib.nameValuePair "${pathString r.path}-${systemTag r.system}-u${toString r.index}" (
++      mkTest (representative r)
++    )
++  ) (lib.filter (r: pathMatches (pathString r.path)) checks)
++)
+diff --git a/maintainers/scripts/nvidia-source-hashes/verify.sh b/maintainers/scripts/nvidia-source-hashes/verify.sh
+new file mode 100755
+index 0000000000000..ba91eef75f5f4
+--- /dev/null
++++ b/maintainers/scripts/nvidia-source-hashes/verify.sh
+@@ -0,0 +1,251 @@
++#!/usr/bin/env nix-shell
++#!nix-shell -i bash -p jq
++
++# shellcheck shell=bash
++# Verify that every source URL fetched by `linuxPackages.nvidiaPackages.*`
++# actually serves the content nixpkgs declares a hash for.
++#
++# Each check downloads a single URL into a freshly salted fixed-output
++# derivation, so a stale hash cannot be hidden by an already populated store
++# or binary cache.  Every URL of a source is checked separately: a source that
++# lists several URLs (GitHub and NVIDIA) is only correct if all of them match.
++# This is exactly the case a normal build misses, because it stops at the
++# first URL that works.
++#
++# Intended for a Linux host; can be run from anywhere inside the nixpkgs
++# checkout.  Platform specific sources (the binary driver and fabricmanager)
++# are evaluated for every supported platform and downloaded with the host's
++# fetcher, so `sha256_64bit`, `sha256_32bit` and `sha256_aarch64` are all
++# covered.  Use --systems to restrict that.
++#
++# Usage: verify.sh [options]
++#
++# Options:
++#   -p, --path LIST     Comma-separated substrings a component's path must
++#                       contain, e.g. "production" or "passthru.open".
++#                       Default: everything.
++#   -s, --systems LIST  Comma-separated platforms whose binary driver and
++#                       fabricmanager archives are checked, e.g. "x86_64-linux".
++#                       Platforms a driver does not support are ignored.
++#                       Default: x86_64-linux, i686-linux, aarch64-linux.
++#   -l, --list          Only list the checks that would run, then exit.
++#   -n, --dry-run       Like --list, but also print each hash.
++#   -P, --prefetch      Download every selected URL and print the hash it
++#                       actually yields, instead of checking the declared one.
++#                       Use this when bumping a version: it prints the hashes
++#                       to put into nixpkgs.  The URLs still come from nixpkgs,
++#                       and the hash is taken the same way nixpkgs does
++#                       (unpacked for the fetchzip sources, after postFetch for
++#                       the open kernel modules), so the printed hash is the
++#                       one to paste.
++#   -h, --help          Show this help.
++#
++# Examples:
++#   # everything (slow: downloads every driver from every URL)
++#   ./verify.sh
++#
++#   # only the sources that gained an NVIDIA URL
++#   ./verify.sh --path passthru.open,passthru.modprobe
++#
++#   # a single driver and only the binary driver archives
++#   ./verify.sh --path production
++#
++#   # only the 32-bit binary driver archives
++#   ./verify.sh --path legacy_390 --systems i686-linux
++#
++#   # print the hashes currently served for one driver (after a version bump)
++#   ./verify.sh --prefetch --path beta
++#
++# A URL that fails is reported and the run continues, so one failure does not
++# hide the others.  Exit status is 0 when every selected URL matched its
++# declared hash, 1 when at least one did not (missing URLs such as a 404 count
++# as a mismatch), and 130 when interrupted with Ctrl+C.  In --prefetch mode the
++# status is 0 once every URL reported a hash, 1 if some URL could not be
++# fetched.
++
++set -o errexit -o nounset -o pipefail
++
++script_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
++nix_file="$script_dir/default.nix"
++
++path=""
++systems=""
++mode="run"
++
++usage() {
++    awk 'NR > 2 && !/^[[:space:]]*$/ { if (/^#/) print; else exit }' "$0" |
++        sed -e 's/^# \{0,1\}//' |
++        grep -v '^shellcheck ' || true
++}
++
++die() {
++    echo >&2 "error: $*"
++    echo >&2
++    usage >&2
++    exit 1
++}
++
++while (( $# > 0 )); do
++    case "$1" in
++        -p|--path) path=${2:?"--path requires an argument"}; shift 2 ;;
++        -s|--systems) systems=${2:?"--systems requires an argument"}; shift 2 ;;
++        -l|--list) mode=list; shift ;;
++        -n|--dry-run) mode=dry-run; shift ;;
++        -P|--prefetch) mode=prefetch; shift ;;
++        -h|--help) usage; exit 0 ;;
++        --) shift; break ;;
++        -*) die "unknown option '$1'" ;;
++        *) die "unexpected argument '$1'" ;;
++    esac
++done
++
++tmp=$(mktemp -d)
++cleanup() {
++    set +o errexit
++    rm -rf "$tmp"
++}
++trap cleanup EXIT
++
++# A single Ctrl+C stops the run.  Without this, the signal also reaches the
++# nix-store build, whose death looks like a failed check and lets the loop
++# continue with the next URL.
++interrupted() {
++    printf '\nInterrupted.\n' >&2
++    exit 130
++}
++trap interrupted INT
++
++# Both helpers take the same arguments; `pkgs` is left to default.nix so that
++# this repository's nixpkgs is always the one being inspected.
++cat > "$tmp/meta.nix" <<'EOF'
++{ nixFile, systems ? "", path ? "", prefetch ? false }:
++let
++  tests = import nixFile { inherit systems path prefetch; };
++in
++builtins.mapAttrs (key: drv: {
++  inherit key;
++  name = drv.name;
++  drvPath = drv.drvPath;
++  hash = drv.hash or "";
++  urls = drv.urls or [ ];
++}) tests
++EOF
++
++cat > "$tmp/drvs.nix" <<'EOF'
++{ nixFile, systems ? "", path ? "", prefetch ? false }:
++import nixFile { inherit systems path prefetch; }
++EOF
++
++if [[ "$mode" == prefetch ]]; then
++    prefetch_arg=true
++else
++    prefetch_arg=false
++fi
++
++filter_args=(
++    --argstr nixFile "$nix_file"
++    --argstr systems "$systems"
++    --argstr path "$path"
++    --arg prefetch "$prefetch_arg"
++)
++
++echo >&2 "Evaluating linuxPackages.nvidiaPackages sources.."
++nix-instantiate --eval --strict --json "${filter_args[@]}" "$tmp/meta.nix" > "$tmp/meta.json"
++
++total=$(jq 'length' "$tmp/meta.json")
++if (( total == 0 )); then
++    echo "No source URL matched the given filters." >&2
++    exit 0
++fi
++
++case "$mode" in
++    list|dry-run)
++        if [[ "$mode" == dry-run ]]; then
++            jq -r 'to_entries[] | "\(.key)\n    url:  \(.value.urls[0])\n    hash: \(.value.hash)"' "$tmp/meta.json"
++        else
++            jq -r 'to_entries[] | "\(.key)\n    \(.value.urls[0])"' "$tmp/meta.json"
++        fi
++        echo "$total check(s) selected." >&2
++        exit 0
++        ;;
++esac
++
++# Instantiate once so every derivation is on disk, then realise each one
++# individually to get per-URL results without re-evaluating nixpkgs.
++if ! nix-instantiate "${filter_args[@]}" "$tmp/drvs.nix" > /dev/null 2> "$tmp/instantiate.err"; then
++    echo >&2 "error: failed to instantiate the selected derivations:"
++    cat >&2 "$tmp/instantiate.err"
++    exit 1
++fi
++
++if [[ "$mode" == prefetch ]]; then
++    ok=0
++    bad=0
++    while IFS=$'\t' read -r key drv_path url; do
++        log="$tmp/log"
++        if nix-store --realise "$drv_path" > /dev/null 2> "$log"; then
++            bad=$((bad + 1))
++            printf '%s\n    %s\n    ERROR: unexpectedly matched the bogus hash\n' "$key" "$url" >&2
++            continue
++        fi
++        got=$(sed -n 's/^ *got: *//p' "$log" | head -n 1)
++        if [[ -n "$got" ]]; then
++            ok=$((ok + 1))
++            printf '%s\n    %s\n    -> %s\n' "$key" "$url" "$got"
++        else
++            bad=$((bad + 1))
++            printf '%s\n    %s\n' "$key" "$url" >&2
++            if grep -qE "curl: \(22\)|returned error: 4[0-9][0-9]" "$log"; then
++                printf '    URL NOT AVAILABLE\n' >&2
++            else
++                printf '    ERROR\n' >&2
++            fi
++            grep -E "curl:|error:" "$log" | head -n 3 | sed 's/^ */    /' >&2 || true
++        fi
++    done < <(jq -r 'to_entries[] | [.key, .value.drvPath, (.value.urls[0] // "")] | @tsv' "$tmp/meta.json")
++    printf '\n%d hash(es) obtained' "$ok"
++    if (( bad > 0 )); then
++        printf ', %d failed\n' "$bad"
++        exit 1
++    fi
++    printf '.\n'
++    exit 0
++fi
++
++pass=0
++fail=0
++declare -a failures=()
++n=0
++
++while IFS=$'\t' read -r key drv_path hash url; do
++    n=$((n + 1))
++    printf '\n[%d/%d] %s\n    %s\n' "$n" "$total" "$key" "$url"
++
++    log="$tmp/log"
++    if nix-store --realise "$drv_path" > /dev/null 2> "$log"; then
++        pass=$((pass + 1))
++        printf '    hash ok: %s\n' "$hash"
++        continue
++    fi
++
++    fail=$((fail + 1))
++    failures+=("$key")
++    if grep -q "hash mismatch in fixed-output derivation" "$log"; then
++        printf '    \033[31mHASH MISMATCH\033[0m\n'
++        printf '    expected: %s\n' "$hash"
++        sed -n 's/^ *got: */    got:      /p' "$log"
++    elif grep -qE "curl: \(22\)|returned error: 4[0-9][0-9]" "$log"; then
++        printf '    \033[31mURL NOT AVAILABLE\033[0m\n'
++        grep -E "curl: \(22\)|returned error: 4[0-9][0-9]" "$log" | sed 's/^ */    /'
++    else
++        printf '    \033[31mFAILED\033[0m\n'
++        sed 's/^ */    /' "$log" | head -n 5
++    fi
++done < <(jq -r 'to_entries[] | [.key, .value.drvPath, .value.hash, (.value.urls[0] // "")] | @tsv' "$tmp/meta.json")
++
++printf '\n%d/%d URL(s) matched their declared hash' "$pass" "$total"
++if (( fail > 0 )); then
++    printf ', %d failed: %s\n' "$fail" "${failures[*]}"
++    exit 1
++fi
++printf '.\n'
+
+From 04cb3cf42cc19eddff9b5ecb633a965f7af870a3 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Fri, 2 Oct 2026 20:08:54 +0800
+Subject: [PATCH 4/6] nvidia-x11: document driver updates and custom versions
+
+Add pkgs/os-specific/linux/nvidia-x11/README.md covering how a driver is added or updated, how hashes are obtained and verified, and how to call mkDriver with a custom version. Point the hardware.nvidia.package option at it.
+
+Assisted-by: omp:DeepSeek V4.1 Flash
+---
+ nixos/modules/hardware/video/nvidia.nix     |   3 +-
+ pkgs/os-specific/linux/nvidia-x11/README.md | 136 ++++++++++++++++++++
+ 2 files changed, 138 insertions(+), 1 deletion(-)
+ create mode 100644 pkgs/os-specific/linux/nvidia-x11/README.md
+
+diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
+index 68ed2cb3a3fb5..1b1f5fdfe0dc8 100644
+--- a/nixos/modules/hardware/video/nvidia.nix
++++ b/nixos/modules/hardware/video/nvidia.nix
+@@ -354,7 +354,8 @@ in
+           your configured kernel.
+ 
+           For custom versions, you can use `nvidiaPackages.mkDriver`; see
+-          `pkgs/os-specific/linux/nvidia-x11/default.nix` for examples.
++          `pkgs/os-specific/linux/nvidia-x11/README.md` for an example and how
++          to obtain the hashes.
+         '';
+       };
+ 
+diff --git a/pkgs/os-specific/linux/nvidia-x11/README.md b/pkgs/os-specific/linux/nvidia-x11/README.md
+new file mode 100644
+index 0000000000000..ee9f6ca260e03
+--- /dev/null
++++ b/pkgs/os-specific/linux/nvidia-x11/README.md
+@@ -0,0 +1,136 @@
++# NVIDIA driver packages
++
++The drivers are built from the files here. `default.nix` defines one attribute
++per driver branch in `nvidiaPackages`, reachable as
++`config.boot.kernelPackages.nvidiaPackages` or `pkgs.linuxPackages.nvidiaPackages`,
++and exports the builder as `nvidiaPackages.mkDriver`. That builder is `generic`
++in `default.nix`; the per-driver arguments are handled in `generic.nix`.
++
++Each entry names a version and a set of hashes. The version selects the URLs,
++the hashes pin the downloaded content.
++
++## Adding or updating a driver in nixpkgs
++
++Add an entry to `default.nix`, or change the hashes of an existing one:
++
++```nix
++{
++  production = generic {
++    version = "595.104.02";
++    sha256_64bit = "sha256-...";
++    sha256_aarch64 = "sha256-...";
++    openSha256 = "sha256-...";
++    fetchOpenFromNvidia = true;
++    settingsSha256 = "sha256-...";
++    persistencedSha256 = "sha256-...";
++    modprobeSha256 = "sha256-...";
++  };
++}
++```
++
++`version` and `sha256_64bit` are required. The rest are optional and select
++the sources a branch ships:
++
++- `sha256_32bit` adds the i686 driver archive. Drivers older than 391 need it.
++- `sha256_aarch64` adds the aarch64 driver archive.
++- `openSha256` enables the open kernel modules. `fetchOpenFromNvidia` also
++  lists the NVIDIA-hosted tarball next to the GitHub archive.
++- `settingsSha256`, `persistencedSha256`, `fabricmanagerSha256` and
++  `modprobeSha256` enable the components of the same name. `useSettings`,
++  `usePersistenced` and `useFabricmanager` turn a component off without
++  removing its hash. `settingsVersion`, `persistencedVersion`,
++  `fabricmanagerVersion` and `modprobeVersion` default to `version` and only
++  need to be set when a component follows another version, as `vulkan_beta`
++  does.
++- `url` overrides the binary driver URL instead of deriving it from `version`.
++  `vulkan_beta` and the data center drivers use it.
++
++The `open`, `modprobe`, `settings` and `persistenced` sources go through
++`fetchFromGithubOrNvidia`: the GitHub archive is tried first, the NVIDIA-hosted
++tarball is the fallback, and one hash covers both. The open kernel module
++source removes `.github` and `CHANGELOG.md` in `postFetch` before hashing,
++because the two archives do not ship the same files. The binary driver and the
++fabricmanager archive use a plain `fetchurl`.
++
++After a version change the hashes change too. Update them with the helper
++script in `maintainers/scripts/nvidia-source-hashes`, or by building and
++reading the mismatch error (see the next section).
++
++Adding a legacy driver also means adding it to `pkgs/top-level/linux-kernels.nix`
++in the `nvidia_x11_legacy*` entries.
++
++## Getting and checking hashes
++
++`maintainers/scripts/nvidia-source-hashes/verify.sh` covers every URL of every
++source in `linuxPackages.nvidiaPackages`. Run it from the nixpkgs checkout.
++
++```sh
++# print the hash that each URL serves, for the sources of one driver
++./maintainers/scripts/nvidia-source-hashes/verify.sh --prefetch --path beta
++
++# check the hashes already declared in nixpkgs
++./maintainers/scripts/nvidia-source-hashes/verify.sh --path beta
++
++# list the checks without downloading anything
++./maintainers/scripts/nvidia-source-hashes/verify.sh --list
++```
++
++`--prefetch` downloads the selected URLs and prints the hash each one yields.
++The hash is computed the way nixpkgs computes it: the unpacked tree for the
++`fetchzip` sources, and after `postFetch` for the open kernel modules. Paste
++the printed value into the matching hash field. One hash covers all URLs of a
++source, so the values printed for those URLs should be equal.
++
++Without `--prefetch` the script checks the declared hashes and reports any
++mismatch. `--path` filters by component path, such as `production` or
++`passthru.open`. `--systems` restricts the platforms, and `--list` shows what
++would run without downloading.
++
++Each URL is tested on its own. A normal build stops at the first URL that
++works, so it never notices a hash that only matches one of them.
++
++## Using a custom driver version in your configuration
++
++For a version that is not in nixpkgs, call `mkDriver` from your configuration:
++
++```nix
++{ config, ... }:
++{
++  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
++    version = "595.104.02";
++    sha256_64bit = "";
++    sha256_aarch64 = "";
++    openSha256 = "";
++    fetchOpenFromNvidia = true;
++    settingsSha256 = "";
++    persistencedSha256 = "";
++    modprobeSha256 = "";
++  };
++}
++```
++
++Leave a hash you do not have as `""`, or set it to `lib.fakeHash` when `lib` is
++in scope. Either way Nix fetches the source, fails the fixed-output check, and
++prints the hash it got:
++
++```
++error: hash mismatch in fixed-output derivation '...':
++         specified: sha256-AAAA...=
++            got:    sha256-...
++```
++
++Copy the `got` value into the matching argument and build again. Repeat for
++each component your configuration builds. The binary driver needs
++`sha256_64bit`; `settingsSha256` and `persistencedSha256` are needed unless you
++set `useSettings = false` or `usePersistenced = false`.
++
++`sha256_aarch64` and `sha256_32bit` are only checked when you build for aarch64
++or i686, so a build on x86_64 does not report them.
++
++With `fetchOpenFromNvidia = true` the open sources list two URLs and the single
++`openSha256` has to match both, so use the hash from whichever URL your network
++can reach. The helper script picks the working URL for the versions already in
++nixpkgs.
++
++`hardware.nvidia.open` selects the open kernel modules and uses the package's
++`.open` output when set to `true`.
+
+From 73c45b8e256488d79d4391b65969897399332b56 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:30:08 +0800
-Subject: [PATCH 3/4] linuxPackages.nvidiaPackages: move userspace utilities to
+Subject: [PATCH 5/6] linuxPackages.nvidiaPackages: move userspace utilities to
  a separate file
 
 Assisted-by: Zed Agent:DeepSeek V4 Pro
 ---
  .../os-specific/linux/nvidia-x11/binaries.nix | 217 +++++++++++
- pkgs/os-specific/linux/nvidia-x11/default.nix |  12 +-
+ pkgs/os-specific/linux/nvidia-x11/default.nix |  20 +-
  .../linux/nvidia-x11/fabricmanager.nix        |  17 +-
  pkgs/os-specific/linux/nvidia-x11/generic.nix | 366 ++++++------------
  .../linux/nvidia-x11/persistenced.nix         |  21 +-
  .../os-specific/linux/nvidia-x11/settings.nix |  32 +-
- 6 files changed, 372 insertions(+), 293 deletions(-)
+ 6 files changed, 376 insertions(+), 297 deletions(-)
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/binaries.nix
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
@@ -725,7 +1444,7 @@ index 0000000000000..030d312078640
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index c9714aad5a25d..5ac3b50293a9c 100644
+index c9714aad5a25d..5429242824bd9 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -10,17 +10,7 @@
@@ -746,6 +1465,21 @@ index c9714aad5a25d..5ac3b50293a9c 100644
 +  generic = callPackage ./generic.nix;
  
    selectHighestVersion = a: b: if lib.versionOlder a.version b.version then b else a;
+ 
+@@ -298,10 +288,10 @@ rec {
+     in
+     generic {
+       version = "340.108";
+-      sha256_32bit = "1jkwa1phf0x4sgw8pvr9d6krmmr3wkgwyygrxhdazwyr2bbalci0";
+-      sha256_64bit = "06xp6c0sa7v1b82gf0pq0i5p0vdhmm3v964v0ypw36y0nzqx8wf6";
+-      settingsSha256 = "0zm29jcf0mp1nykcravnzb5isypm8l8mg2gpsvwxipb7nk1ivy34";
+-      persistencedSha256 = "1ax4xn3nmxg1y6immq933cqzw6cj04x93saiasdc0kjlv0pvvnkn";
++      sha256_32bit = "sha256-IDKq1hLZ868a7Pl5z9/kI9eap2kp74v406QDB29QfMo=";
++      sha256_64bit = "sha256-xnHU8bfAm8GvB5uYtEetsG1wSwT4AvcEWmEfpQEztxs=";
++      settingsSha256 = "sha256-ZPgdw7Rn3dj51veJVxFF9Xody/p2q8ymt+FW4JhMon4=";
++      persistencedSha256 = "sha256-dtq9L9hUTsCaVlHpkToBkhn+MRsj4Vqj8eH1aoftpKs=";
+       modprobeSha256 = "sha256-aEVCKYliPCk8SJybZ/wcgU8bppmx7tlAUuOaAQqJgeQ=";
+       useGLVND = false;
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
 index d0cac9dee6ade..455864c967c46 100644
@@ -1394,10 +2128,10 @@ index 41f14b075fc2c..ba8b44f0de4fc 100644
      gtk3
      librsvg
 
-From a6f29178c8b79a62aff62f93125569b1f77cea96 Mon Sep 17 00:00:00 2001
+From 6e37ef04d6a43dd8244ee0a6ec506a0bd5efbcf7 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 22:50:14 +0800
-Subject: [PATCH 4/4] nvidia-settings: get profiles from /run/current-system/sw
+Subject: [PATCH 6/6] nvidia-settings: get profiles from /run/current-system/sw
 
 ---
  pkgs/os-specific/linux/nvidia-x11/generic.nix  |  4 ++--
