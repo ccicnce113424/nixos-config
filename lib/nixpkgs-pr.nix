@@ -3,26 +3,7 @@
   lib,
   ...
 }:
-let
-  cfg = config.nixpkgsPrs;
-in
 {
-  options.nixpkgsPrs = lib.mkOption {
-    type = lib.types.listOf lib.types.ints.positive;
-    default = [
-      # linuxPackages.nvidiaPackages: separate and refactor
-      519313
-      # nixos/dbus: fix "ignoring duplicate name" errors
-      # 549241
-      # kmscon: 10.0.3 -> 10.0.4
-      567032
-      # cudaPackages.buildRedistHook: remove fixupPropagatedBuildOutputsForMultipleOutputs fix
-      568318
-      # mergiraf: build with -fno-strict-aliasing
-      568226
-    ];
-  };
-
   config = {
     patchedNixpkgs.patches = config.lib'.pathToPatchFileset ../patches/nixpkgs-pr;
     perSystem =
@@ -32,46 +13,23 @@ in
         ...
       }:
       {
-        packages.update-prs = pkgs.writeShellApplication {
-          name = "update-prs";
+        packages.nixpkgs-prs = pkgs.writeShellApplication {
+          name = "nixpkgs-prs";
           runtimeInputs = with pkgs; [
             curl
+            diffutils
+            jq
+            moreutils
           ];
           derivationArgs = {
             preferLocalBuild = true;
             allowSubstitutes = false;
           };
-          text = ''
-            output_dir="''${1:-patches/nixpkgs-pr}"
-
-            mkdir -p "$output_dir"
-
-            shopt -s nullglob
-            old_patches=("$output_dir"/*.patch)
-            if ((''${#old_patches[@]})); then
-              echo "Cleaning existing patch files in: $output_dir" >&2
-              rm -f -- "''${old_patches[@]}"
-            fi
-
-            ${lib.concatMapStringsSep "\n" (
-              p:
-              let
-                pr = toString p;
-              in
-              ''
-                echo "Downloading PR #${pr}..." >&2
-                url=https://patch-diff.githubusercontent.com/raw/NixOS/nixpkgs/pull/${pr}.patch
-                patch_file="$output_dir/${pr}.patch"
-                curl -fL --retry 3 --retry-delay 1 --output "$patch_file" "$url"
-              ''
-            ) cfg}
-
-            echo "Downloaded patches to: $output_dir"
-          '';
+          text = builtins.readFile ../scripts/nixpkgs-prs.sh;
         };
-        apps.update-prs = {
+        apps.nixpkgs-prs = {
           type = "app";
-          program = lib.getExe config.packages.update-prs;
+          program = lib.getExe config.packages.nixpkgs-prs;
         };
       };
   };

@@ -1,0 +1,18 @@
+[
+  {
+    "url": "https://github.com/NixOS/nixpkgs/pull/519313",
+    "rev": "a6f29178c8b79a62aff62f93125569b1f77cea96"
+  },
+  {
+    "url": "https://github.com/NixOS/nixpkgs/pull/567032",
+    "rev": "a0b27cfd215f5f0622f81a18d95f20585e2a539b"
+  },
+  {
+    "url": "https://github.com/NixOS/nixpkgs/pull/568318",
+    "rev": "65fe9eae2b57c9cb7bfbe5f352944d01b5c5be0b"
+  },
+  {
+    "url": "https://github.com/NixOS/nixpkgs/pull/568226",
+    "rev": "1ad1b5a7d6e8a9289fc4a2d9c576e261da8a4c30"
+  }
+]
