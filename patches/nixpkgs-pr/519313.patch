@@ -1,7 +1,7 @@
 From 58aa3fdee6bf54b2e454881afac54cf1ca0f291a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:28:00 +0800
-Subject: [PATCH 1/6] linuxPackages.nvidiaPackages: fetch open kernel module
+Subject: [PATCH 1/7] linuxPackages.nvidiaPackages: fetch open kernel module
  sources from NVIDIA
 
 Serve the open-gpu-kernel-modules source through fetchFromGithubOrNvidia
@@ -262,7 +262,7 @@ index e47dc3cb4e613..41f14b075fc2c 100644
 From bd9d57378753d0d7a0e7f23f4fe0b68a2170f512 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
-Subject: [PATCH 2/6] nvidia-modprobe: move to linuxPackages.nvidiaPackages
+Subject: [PATCH 2/7] nvidia-modprobe: move to linuxPackages.nvidiaPackages
 
 Assisted-by: omp: DeepSeek V4.1 Flash
 ---
@@ -484,19 +484,21 @@ index b1c9c7f9c0d94..4b8836cb4ca26 100644
    };
  })
 
-From 8edd76d490542a78ad8015a019b807687fad774e Mon Sep 17 00:00:00 2001
+From a20bb8acf21b1d62fbc5772bb5600e72ff7e56f2 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 18:23:22 +0800
-Subject: [PATCH 3/6] maintainers/scripts/nvidia-source-hashes: add a per-URL
+Subject: [PATCH 3/7] maintainers/scripts/nvidia-source-hashes: add a per-URL
  hash verifier
 
 The script walks linuxPackages.nvidiaPackages, picks up every component whose .src is a fixed-output fetch, and builds one salted, single-URL derivation per URL, so each link is downloaded and checked against the declared hash on its own. Platform specific sources are read from a nixpkgs evaluation for each supported platform and their URL and hash are transplanted onto the host derivation, which covers the 32-bit and aarch64 hashes without a builder for them. --prefetch prints the hashes a URL currently serves.
 
+A URL that is not published yet is reported separately and does not fail the run, because GitHub and NVIDIA publish the same release at different times; --strict makes it fail.  The README says the same.
+
 Assisted-by: omp:DeepSeek V4.1 Flash
 ---
- .../scripts/nvidia-source-hashes/default.nix  | 268 ++++++++++++++++++
- .../scripts/nvidia-source-hashes/verify.sh    | 251 ++++++++++++++++
- 2 files changed, 519 insertions(+)
+ .../scripts/nvidia-source-hashes/default.nix  | 268 +++++++++++++++++
+ .../scripts/nvidia-source-hashes/verify.sh    | 280 ++++++++++++++++++
+ 2 files changed, 548 insertions(+)
  create mode 100644 maintainers/scripts/nvidia-source-hashes/default.nix
  create mode 100755 maintainers/scripts/nvidia-source-hashes/verify.sh
 
@@ -776,10 +778,10 @@ index 0000000000000..324fa347036a3
 +)
 diff --git a/maintainers/scripts/nvidia-source-hashes/verify.sh b/maintainers/scripts/nvidia-source-hashes/verify.sh
 new file mode 100755
-index 0000000000000..ba91eef75f5f4
+index 0000000000000..0c072168a5425
 --- /dev/null
 +++ b/maintainers/scripts/nvidia-source-hashes/verify.sh
-@@ -0,0 +1,251 @@
+@@ -0,0 +1,280 @@
 +#!/usr/bin/env nix-shell
 +#!nix-shell -i bash -p jq
 +
@@ -820,6 +822,11 @@ index 0000000000000..ba91eef75f5f4
 +#                       (unpacked for the fetchzip sources, after postFetch for
 +#                       the open kernel modules), so the printed hash is the
 +#                       one to paste.
++#       --strict        Treat a URL that does not exist (HTTP 4xx) as a
++#                       failure.  By default such URLs are listed separately
++#                       and do not fail the run, because GitHub and NVIDIA
++#                       publish the same release at different times, so one of
++#                       a source's URLs can legitimately be missing.
 +#   -h, --help          Show this help.
 +#
 +# Examples:
@@ -839,11 +846,12 @@ index 0000000000000..ba91eef75f5f4
 +#   ./verify.sh --prefetch --path beta
 +#
 +# A URL that fails is reported and the run continues, so one failure does not
-+# hide the others.  Exit status is 0 when every selected URL matched its
-+# declared hash, 1 when at least one did not (missing URLs such as a 404 count
-+# as a mismatch), and 130 when interrupted with Ctrl+C.  In --prefetch mode the
-+# status is 0 once every URL reported a hash, 1 if some URL could not be
-+# fetched.
++# hide the others.  A URL that does not exist (HTTP 4xx) is listed separately
++# and only fails the run with --strict.  Exit status is 0 when every selected
++# URL matched its declared hash, 1 when at least one did not, and 130 when
++# interrupted with Ctrl+C.  In --prefetch mode the status is 0 once every
++# selected URL either yielded a hash or was not published, and 1 if some URL
++# failed for another reason.
 +
 +set -o errexit -o nounset -o pipefail
 +
@@ -853,6 +861,7 @@ index 0000000000000..ba91eef75f5f4
 +path=""
 +systems=""
 +mode="run"
++strict=""
 +
 +usage() {
 +    awk 'NR > 2 && !/^[[:space:]]*$/ { if (/^#/) print; else exit }' "$0" |
@@ -874,6 +883,7 @@ index 0000000000000..ba91eef75f5f4
 +        -l|--list) mode=list; shift ;;
 +        -n|--dry-run) mode=dry-run; shift ;;
 +        -P|--prefetch) mode=prefetch; shift ;;
++        --strict) strict=1; shift ;;
 +        -h|--help) usage; exit 0 ;;
 +        --) shift; break ;;
 +        -*) die "unknown option '$1'" ;;
@@ -963,6 +973,8 @@ index 0000000000000..ba91eef75f5f4
 +if [[ "$mode" == prefetch ]]; then
 +    ok=0
 +    bad=0
++    unavailable=0
++    unavailable_keys=()
 +    while IFS=$'\t' read -r key drv_path url; do
 +        log="$tmp/log"
 +        if nix-store --realise "$drv_path" > /dev/null 2> "$log"; then
@@ -974,29 +986,36 @@ index 0000000000000..ba91eef75f5f4
 +        if [[ -n "$got" ]]; then
 +            ok=$((ok + 1))
 +            printf '%s\n    %s\n    -> %s\n' "$key" "$url" "$got"
++        elif grep -qE "curl: \(22\)|returned error: 4[0-9][0-9]" "$log"; then
++            unavailable=$((unavailable + 1))
++            unavailable_keys+=("$key")
++            printf '%s\n    %s\n    URL NOT AVAILABLE\n' "$key" "$url" >&2
 +        else
 +            bad=$((bad + 1))
-+            printf '%s\n    %s\n' "$key" "$url" >&2
-+            if grep -qE "curl: \(22\)|returned error: 4[0-9][0-9]" "$log"; then
-+                printf '    URL NOT AVAILABLE\n' >&2
-+            else
-+                printf '    ERROR\n' >&2
-+            fi
++            printf '%s\n    %s\n    ERROR\n' "$key" "$url" >&2
 +            grep -E "curl:|error:" "$log" | head -n 3 | sed 's/^ */    /' >&2 || true
 +        fi
 +    done < <(jq -r 'to_entries[] | [.key, .value.drvPath, (.value.urls[0] // "")] | @tsv' "$tmp/meta.json")
 +    printf '\n%d hash(es) obtained' "$ok"
++    if (( unavailable > 0 )); then
++        printf ', %d URL(s) not published: %s' "$unavailable" "${unavailable_keys[*]}"
++    fi
 +    if (( bad > 0 )); then
 +        printf ', %d failed\n' "$bad"
 +        exit 1
 +    fi
 +    printf '.\n'
++    if (( strict && unavailable > 0 )); then
++        exit 1
++    fi
 +    exit 0
 +fi
 +
 +pass=0
 +fail=0
++unavailable=0
 +declare -a failures=()
++declare -a unavailable_keys=()
 +n=0
 +
 +while IFS=$'\t' read -r key drv_path hash url; do
@@ -1010,40 +1029,52 @@ index 0000000000000..ba91eef75f5f4
 +        continue
 +    fi
 +
-+    fail=$((fail + 1))
-+    failures+=("$key")
 +    if grep -q "hash mismatch in fixed-output derivation" "$log"; then
++        fail=$((fail + 1))
++        failures+=("$key")
 +        printf '    \033[31mHASH MISMATCH\033[0m\n'
 +        printf '    expected: %s\n' "$hash"
 +        sed -n 's/^ *got: */    got:      /p' "$log"
 +    elif grep -qE "curl: \(22\)|returned error: 4[0-9][0-9]" "$log"; then
-+        printf '    \033[31mURL NOT AVAILABLE\033[0m\n'
++        unavailable=$((unavailable + 1))
++        unavailable_keys+=("$key")
++        printf '    \033[33mURL NOT AVAILABLE\033[0m\n'
 +        grep -E "curl: \(22\)|returned error: 4[0-9][0-9]" "$log" | sed 's/^ */    /'
 +    else
++        fail=$((fail + 1))
++        failures+=("$key")
 +        printf '    \033[31mFAILED\033[0m\n'
 +        sed 's/^ */    /' "$log" | head -n 5
 +    fi
 +done < <(jq -r 'to_entries[] | [.key, .value.drvPath, .value.hash, (.value.urls[0] // "")] | @tsv' "$tmp/meta.json")
 +
 +printf '\n%d/%d URL(s) matched their declared hash' "$pass" "$total"
++if (( unavailable > 0 )); then
++    printf ', %d URL(s) not published: %s' "$unavailable" "${unavailable_keys[*]}"
++fi
 +if (( fail > 0 )); then
-+    printf ', %d failed: %s\n' "$fail" "${failures[*]}"
-+    exit 1
++    printf ', %d failed: %s' "$fail" "${failures[*]}"
 +fi
 +printf '.\n'
++if (( unavailable > 0 && !strict )); then
++    echo >&2 "A URL that does not exist is not a hash mismatch; pass --strict to fail on it."
++fi
++if (( fail > 0 || (strict && unavailable > 0) )); then
++    exit 1
++fi
 
-From 04cb3cf42cc19eddff9b5ecb633a965f7af870a3 Mon Sep 17 00:00:00 2001
+From d56abe0ae59c0fc72aaac1f3985f1d163a42d0a0 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 20:08:54 +0800
-Subject: [PATCH 4/6] nvidia-x11: document driver updates and custom versions
+Subject: [PATCH 4/7] nvidia-x11: document driver updates and custom versions
 
 Add pkgs/os-specific/linux/nvidia-x11/README.md covering how a driver is added or updated, how hashes are obtained and verified, and how to call mkDriver with a custom version. Point the hardware.nvidia.package option at it.
 
 Assisted-by: omp:DeepSeek V4.1 Flash
 ---
  nixos/modules/hardware/video/nvidia.nix     |   3 +-
- pkgs/os-specific/linux/nvidia-x11/README.md | 136 ++++++++++++++++++++
- 2 files changed, 138 insertions(+), 1 deletion(-)
+ pkgs/os-specific/linux/nvidia-x11/README.md | 140 ++++++++++++++++++++
+ 2 files changed, 142 insertions(+), 1 deletion(-)
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/README.md
 
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
@@ -1062,10 +1093,10 @@ index 68ed2cb3a3fb5..1b1f5fdfe0dc8 100644
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/README.md b/pkgs/os-specific/linux/nvidia-x11/README.md
 new file mode 100644
-index 0000000000000..ee9f6ca260e03
+index 0000000000000..32ef094b06713
 --- /dev/null
 +++ b/pkgs/os-specific/linux/nvidia-x11/README.md
-@@ -0,0 +1,136 @@
+@@ -0,0 +1,140 @@
 +# NVIDIA driver packages
 +
 +The drivers are built from the files here. `default.nix` defines one attribute
@@ -1157,6 +1188,10 @@ index 0000000000000..ee9f6ca260e03
 +Each URL is tested on its own. A normal build stops at the first URL that
 +works, so it never notices a hash that only matches one of them.
 +
++A URL that does not exist yet is reported separately and does not fail the run,
++because GitHub and NVIDIA publish the same release at different times. Pass
++`--strict` to treat it as a failure.
++
 +## Using a custom driver version in your configuration
 +
 +For a version that is not in nixpkgs, call `mkDriver` from your configuration:
@@ -1203,29 +1238,218 @@ index 0000000000000..ee9f6ca260e03
 +`hardware.nvidia.open` selects the open kernel modules and uses the package's
 +`.open` output when set to `true`.
 
-From 73c45b8e256488d79d4391b65969897399332b56 Mon Sep 17 00:00:00 2001
+From 4c9a3f13f96ee37676e8e8307c49888529546375 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Fri, 2 Oct 2026 23:42:50 +0800
+Subject: [PATCH 5/7] nvidia-x11: check the version of the fetched sources
+
+A version bump whose hash was not updated silently reuses the old source from
+the store, which the second URL and the postFetch in this PR make more likely.
+Check the version each build actually produced:
+
+- nvidia-modprobe, nvidia-settings and nvidia-persistenced use
+  versionCheckHook on their --version output.
+- The open and the non-open kernel modules carry MODULE_VERSION, which
+  installCheckPhase reads back with modinfo.
+- The driver has no executable that reports its version without a loaded
+  driver, so it checks that a library in its output is named after the
+  version.
+
+Assisted-by: omp:DeepSeek V4.1 Flash
+---
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 16 +++++++++++++
+ .../linux/nvidia-x11/kernel-modules.nix       | 23 +++++++++++++++++++
+ .../os-specific/linux/nvidia-x11/modprobe.nix |  7 ++++++
+ .../linux/nvidia-x11/persistenced.nix         |  6 +++++
+ .../os-specific/linux/nvidia-x11/settings.nix | 20 ++++++++++++++++
+ 5 files changed, 72 insertions(+)
+
+diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+index 28f27b9844169..097e973bd5b8a 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+@@ -206,6 +206,22 @@ stdenv.mkDerivation (finalAttrs: {
+   ++ lib.optional (!libsOnly && firmware) "firmware";
+   outputDev = if libsOnly then null else "bin";
+ 
++  # None of the packaged executables reports the driver version without a
++  # loaded driver, so check the unpacked driver itself: its libraries are named
++  # after the version.  This catches an archive whose hash was not updated on a
++  # version bump and which would otherwise be silently reused from the store.
++  # stdenv sets nullglob, so the glob is counted instead of listed.
++  doInstallCheck = true;
++  installCheckPhase = ''
++    runHook preInstallCheck
++    if ! { set -- "$out"/lib/*.so."$version"; [ $# -gt 0 ]; }; then
++      echo "no library is named after version $version, the driver archive is not the expected version:" >&2
++      ls "$out/lib" >&2 || true
++      exit 1
++    fi
++    runHook postInstallCheck
++  '';
++
+   dontStrip = true;
+   dontPatchELF = true;
+ 
+diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+index 54082f301c2b9..d4bc5e0cf26b6 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+@@ -9,6 +9,7 @@
+   patches,
+   broken,
+   hash ? null,
++  kmod,
+ }:
+ 
+ assert open -> hash != null;
+@@ -55,6 +56,28 @@ stdenv.mkDerivation {
+   installTargets = [ "modules_install" ];
+   enableParallelBuilding = true;
+ 
++  # Both variants end up with MODULE_VERSION from the version of the sources
++  # they were built from (version.mk for the open module, the driver's
++  # NV_VERSION_STRING for the non-open one).  Reading it back catches a hash
++  # that was not updated on a version bump, which would otherwise silently
++  # reuse the old tree from the store.
++  doInstallCheck = true;
++  nativeInstallCheckInputs = [ kmod ];
++  installCheckPhase = ''
++    runHook preInstallCheck
++    module=$(find "$out/lib/modules" \( -name nvidia.ko -o -name 'nvidia.ko.*' \) -print -quit)
++    if [ -z "$module" ]; then
++      echo "no nvidia.ko found under $out/lib/modules" >&2
++      exit 1
++    fi
++    got=$(modinfo -F version "$module")
++    if [ "$got" != "${nvidia_x11.version}" ]; then
++      echo "nvidia.ko reports version '$got', expected '${nvidia_x11.version}'" >&2
++      exit 1
++    fi
++    runHook postInstallCheck
++  '';
++
+   allowedReferences = [ ];
+ 
+   meta = {
+diff --git a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
+index 4b8836cb4ca26..f3e7a11a79eef 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
+@@ -6,6 +6,7 @@
+   nvidia_x11,
+   version,
+   hash,
++  versionCheckHook,
+ }:
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "nvidia-modprobe";
+@@ -20,6 +21,12 @@ stdenv.mkDerivation (finalAttrs: {
+ 
+   nativeBuildInputs = [ gnum4 ];
+ 
++  # `nvidia-modprobe --version` prints the version of the source it was built
++  # from, so a source whose hash was not updated on a version bump is caught
++  # here instead of silently reusing the old tree from the store.
++  doInstallCheck = true;
++  nativeInstallCheckInputs = [ versionCheckHook ];
++
+   postPatch = ''
+     substituteInPlace utils.mk --replace-fail "/usr/local" "$out"
+   '';
+diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
+index d7ddca5d91665..75c0aed476845 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
+@@ -9,6 +9,7 @@ nvidia_x11: sha256:
+   pkg-config,
+   addDriverRunpath,
+   libtirpc,
++  versionCheckHook,
+ }:
+ 
+ stdenv.mkDerivation {
+@@ -35,6 +36,11 @@ stdenv.mkDerivation {
+     addDriverRunpath
+   ];
+ 
++  # `nvidia-persistenced --version` prints the version of the source it was
++  # built from, catching a hash that was not updated on a version bump.
++  doInstallCheck = true;
++  nativeInstallCheckInputs = [ versionCheckHook ];
++
+   buildInputs = [
+     libtirpc
+   ];
+diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+index 41f14b075fc2c..b51700908bae0 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+@@ -21,6 +21,7 @@ nvidia_x11: sha256:
+   libglvnd,
+   wrapGAppsHook3,
+   addDriverRunpath,
++  versionCheckHook,
+   withGtk2 ? false,
+   withGtk3 ? true,
+ }:
+@@ -58,6 +59,20 @@ let
+       "libXNVCtrl.so"
+     ];
+ 
++    # The library carries no version of its own and has no program to run, but
++    # its source states which nvidia-settings release it came from.  A version
++    # bump whose hash was not updated would build it from the old tree.
++    doCheck = true;
++    checkPhase = ''
++      runHook preCheck
++      if ! grep -q "NVIDIA_VERSION = $version" $src/version.mk; then
++        echo "the source is not nvidia-settings $version:" >&2
++        grep -m1 NVIDIA_VERSION $src/version.mk >&2 || true
++        exit 1
++      fi
++      runHook postCheck
++    '';
++
+     patches = [
+       # Patch the Makefile to also produce a shared library.
+       (
+@@ -126,6 +141,11 @@ stdenv.mkDerivation {
+   enableParallelBuilding = true;
+   makeFlags = [ "NV_USE_BUNDLED_LIBJANSSON=0" ];
+ 
++  # `nvidia-settings --version` prints the version of the source it was built
++  # from, catching a hash that was not updated on a version bump.
++  doInstallCheck = true;
++  nativeInstallCheckInputs = [ versionCheckHook ];
++
+   preBuild = ''
+     if [ -e src/libXNVCtrl/libXNVCtrl.a ]; then
+       ( cd src/libXNVCtrl
+
+From 02240a46449219a531a83942540fdce327819ac6 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:30:08 +0800
-Subject: [PATCH 5/6] linuxPackages.nvidiaPackages: move userspace utilities to
+Subject: [PATCH 6/7] linuxPackages.nvidiaPackages: move userspace utilities to
  a separate file
 
 Assisted-by: Zed Agent:DeepSeek V4 Pro
 ---
- .../os-specific/linux/nvidia-x11/binaries.nix | 217 +++++++++++
+ .../os-specific/linux/nvidia-x11/binaries.nix | 233 +++++++++++
  pkgs/os-specific/linux/nvidia-x11/default.nix |  20 +-
  .../linux/nvidia-x11/fabricmanager.nix        |  17 +-
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 366 ++++++------------
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 382 ++++++------------
  .../linux/nvidia-x11/persistenced.nix         |  21 +-
  .../os-specific/linux/nvidia-x11/settings.nix |  32 +-
- 6 files changed, 376 insertions(+), 297 deletions(-)
+ 6 files changed, 392 insertions(+), 313 deletions(-)
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/binaries.nix
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 new file mode 100644
-index 0000000000000..030d312078640
+index 0000000000000..4c30002896463
 --- /dev/null
 +++ b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-@@ -0,0 +1,217 @@
+@@ -0,0 +1,233 @@
 +{
 +  # Package dependencies
 +  lib,
@@ -1399,6 +1623,22 @@ index 0000000000000..030d312078640
 +  ++ lib.optional (!libsOnly && firmware) "firmware";
 +  outputDev = if libsOnly then null else "bin";
 +
++  # None of the packaged executables reports the driver version without a
++  # loaded driver, so check the unpacked driver itself: its libraries are named
++  # after the version.  This catches an archive whose hash was not updated on a
++  # version bump and which would otherwise be silently reused from the store.
++  # stdenv sets nullglob, so the glob is counted instead of listed.
++  doInstallCheck = true;
++  installCheckPhase = ''
++    runHook preInstallCheck
++    if ! { set -- "$out"/lib/*.so."$version"; [ $# -gt 0 ]; }; then
++      echo "no library is named after version $version, the driver archive is not the expected version:" >&2
++      ls "$out/lib" >&2 || true
++      exit 1
++    fi
++    runHook postInstallCheck
++  '';
++
 +  dontStrip = true;
 +  dontPatchELF = true;
 +
@@ -1533,7 +1773,7 @@ index d0cac9dee6ade..455864c967c46 100644
 -}
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index 28f27b9844169..05995804125db 100644
+index 097e973bd5b8a..05995804125db 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -1,20 +1,32 @@
@@ -1663,7 +1903,7 @@ index 28f27b9844169..05995804125db 100644
    # Rewrites patches meant for the kernel/* folder structure to kernel-open/*
    rewritePatch =
      { from, to }:
-@@ -96,173 +110,60 @@ let
+@@ -96,189 +110,60 @@ let
            --clean "$patch" > "$out"
        '';
  
@@ -1777,6 +2017,22 @@ index 28f27b9844169..05995804125db 100644
 -  ++ lib.optional (!libsOnly && firmware) "firmware";
 -  outputDev = if libsOnly then null else "bin";
 -
+-  # None of the packaged executables reports the driver version without a
+-  # loaded driver, so check the unpacked driver itself: its libraries are named
+-  # after the version.  This catches an archive whose hash was not updated on a
+-  # version bump and which would otherwise be silently reused from the store.
+-  # stdenv sets nullglob, so the glob is counted instead of listed.
+-  doInstallCheck = true;
+-  installCheckPhase = ''
+-    runHook preInstallCheck
+-    if ! { set -- "$out"/lib/*.so."$version"; [ $# -gt 0 ]; }; then
+-      echo "no library is named after version $version, the driver archive is not the expected version:" >&2
+-      ls "$out/lib" >&2 || true
+-      exit 1
+-    fi
+-    runHook postInstallCheck
+-  '';
+-
 -  dontStrip = true;
 -  dontPatchELF = true;
 -
@@ -1884,7 +2140,7 @@ index 28f27b9844169..05995804125db 100644
              patches = [ ];
              inherit broken fetchFromGithubOrNvidia;
            }
-@@ -297,21 +198,23 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -313,21 +198,23 @@ stdenv.mkDerivation (finalAttrs: {
        ) openSha256;
        settings =
          if useSettings then
@@ -1917,7 +2173,7 @@ index 28f27b9844169..05995804125db 100644
              }
            ) persistencedSha256
          else
-@@ -319,7 +222,11 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -335,7 +222,11 @@ stdenv.mkDerivation (finalAttrs: {
        fabricmanager =
          if useFabricmanager then
            lib.mapNullable (
@@ -1930,7 +2186,7 @@ index 28f27b9844169..05995804125db 100644
            ) fabricmanagerSha256
          else
            { };
-@@ -327,43 +234,16 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -343,43 +234,16 @@ stdenv.mkDerivation (finalAttrs: {
          hash:
          callPackage ./modprobe.nix {
            inherit hash fetchFromGithubOrNvidia;
@@ -1984,10 +2240,10 @@ index 28f27b9844169..05995804125db 100644
 +  }
 +)
 diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index d7ddca5d91665..cfcb471cab3f7 100644
+index 75c0aed476845..0de5b1cb98b20 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-@@ -1,28 +1,28 @@
+@@ -1,29 +1,29 @@
 -nvidia_x11: sha256:
 -
  {
@@ -2002,6 +2258,7 @@ index d7ddca5d91665..cfcb471cab3f7 100644
    libtirpc,
 +  version,
 +  hash,
+   versionCheckHook,
  }:
  
 -stdenv.mkDerivation {
@@ -2025,7 +2282,7 @@ index d7ddca5d91665..cfcb471cab3f7 100644
      NIX_CFLAGS_COMPILE = toString [ "-I${libtirpc.dev}/include/tirpc" ];
      NIX_LDFLAGS = toString [ "-ltirpc" ];
    };
-@@ -61,8 +61,7 @@ stdenv.mkDerivation {
+@@ -67,8 +67,7 @@ stdenv.mkDerivation {
      homepage = "https://github.com/NVIDIA/nvidia-persistenced";
      description = "NVIDIA driver persistence daemon";
      license = lib.licenses.mit;
@@ -2036,7 +2293,7 @@ index d7ddca5d91665..cfcb471cab3f7 100644
 -}
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index 41f14b075fc2c..ba8b44f0de4fc 100644
+index b51700908bae0..7b4cfbca5abbc 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
 @@ -1,9 +1,7 @@
@@ -2050,11 +2307,12 @@ index 41f14b075fc2c..ba8b44f0de4fc 100644
    fetchpatch,
    pkg-config,
    m4,
-@@ -21,16 +19,19 @@ nvidia_x11: sha256:
+@@ -21,17 +19,20 @@ nvidia_x11: sha256:
    libglvnd,
    wrapGAppsHook3,
    addDriverRunpath,
 +  nvidia_x11,
+   versionCheckHook,
 +  version,
 +  hash,
    withGtk2 ? false,
@@ -2073,7 +2331,7 @@ index 41f14b075fc2c..ba8b44f0de4fc 100644
    };
  
    meta = {
-@@ -40,8 +41,7 @@ let
+@@ -41,8 +42,7 @@ let
  
    libXNVCtrl = stdenv.mkDerivation {
      pname = "libXNVCtrl";
@@ -2083,7 +2341,7 @@ index 41f14b075fc2c..ba8b44f0de4fc 100644
  
      buildInputs = [
        libxrandr
-@@ -61,7 +61,7 @@ let
+@@ -76,7 +76,7 @@ let
      patches = [
        # Patch the Makefile to also produce a shared library.
        (
@@ -2092,7 +2350,7 @@ index 41f14b075fc2c..ba8b44f0de4fc 100644
            ./libxnvctrl-build-shared-3xx.patch
          else
            ./libxnvctrl-build-shared.patch
-@@ -97,22 +97,16 @@ in
+@@ -112,22 +112,16 @@ in
  
  stdenv.mkDerivation {
    pname = "nvidia-settings";
@@ -2118,7 +2376,7 @@ index 41f14b075fc2c..ba8b44f0de4fc 100644
          (fetchpatch {
            # fix wayland support for compositors that use wl_output version 4
            url = "https://github.com/NVIDIA/nvidia-settings/pull/99/commits/2e0575197e2b3247deafd2a48f45afc038939a06.patch";
-@@ -152,7 +146,7 @@ stdenv.mkDerivation {
+@@ -172,7 +166,7 @@ stdenv.mkDerivation {
      dbus
      vulkan-headers
    ]
@@ -2128,15 +2386,15 @@ index 41f14b075fc2c..ba8b44f0de4fc 100644
      gtk3
      librsvg
 
-From 6e37ef04d6a43dd8244ee0a6ec506a0bd5efbcf7 Mon Sep 17 00:00:00 2001
+From c93bac0ab864bfa3d83f7494255432a707ed4247 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 22:50:14 +0800
-Subject: [PATCH 6/6] nvidia-settings: get profiles from /run/current-system/sw
+Subject: [PATCH 7/7] nvidia-settings: get profiles from /run/current-system/sw
 
 ---
  pkgs/os-specific/linux/nvidia-x11/generic.nix  |  4 ++--
- pkgs/os-specific/linux/nvidia-x11/settings.nix | 10 +++++-----
- 2 files changed, 7 insertions(+), 7 deletions(-)
+ pkgs/os-specific/linux/nvidia-x11/settings.nix | 12 ++++++------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 index 05995804125db..c28e39a36c302 100644
@@ -2158,22 +2416,24 @@ index 05995804125db..c28e39a36c302 100644
          else
            { };
 diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index ba8b44f0de4fc..2c139de65fdc8 100644
+index 7b4cfbca5abbc..ecc5b8c9462f2 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-@@ -19,9 +19,10 @@
+@@ -19,10 +19,11 @@
    libglvnd,
    wrapGAppsHook3,
    addDriverRunpath,
 -  nvidia_x11,
+-  versionCheckHook,
 +  platforms,
    version,
    hash,
 +  useProfiles,
++  versionCheckHook,
    withGtk2 ? false,
    withGtk3 ? true,
  }:
-@@ -36,7 +37,7 @@ let
+@@ -37,7 +38,7 @@ let
  
    meta = {
      homepage = "https://www.nvidia.com/object/unix.html";
@@ -2182,7 +2442,7 @@ index ba8b44f0de4fc..2c139de65fdc8 100644
    };
  
    libXNVCtrl = stdenv.mkDerivation {
-@@ -113,8 +114,8 @@ stdenv.mkDerivation {
+@@ -128,8 +129,8 @@ stdenv.mkDerivation {
            hash = "sha256-wKuO5CUTUuwYvsP46Pz+6fI0yxLNpZv8qlbL0TFkEFE=";
          });
  
@@ -2193,7 +2453,7 @@ index ba8b44f0de4fc..2c139de65fdc8 100644
    '';
  
    enableParallelBuilding = true;
-@@ -142,7 +143,6 @@ stdenv.mkDerivation {
+@@ -162,7 +163,6 @@ stdenv.mkDerivation {
      libxext
      libxxf86vm
      libvdpau
