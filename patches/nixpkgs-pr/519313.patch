@@ -1,4 +1,4 @@
-From 58aa3fdee6bf54b2e454881afac54cf1ca0f291a Mon Sep 17 00:00:00 2001
+From a47d20fc77e91b634ae46a7a2aab10005315abc6 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:28:00 +0800
 Subject: [PATCH 1/7] linuxPackages.nvidiaPackages: fetch open kernel module
@@ -259,7 +259,7 @@ index e47dc3cb4e613..41f14b075fc2c 100644
    };
  
 
-From bd9d57378753d0d7a0e7f23f4fe0b68a2170f512 Mon Sep 17 00:00:00 2001
+From 9b2ca876e15699c3f7c1496322a559987c2f7a8f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 2/7] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -270,7 +270,8 @@ Assisted-by: omp: DeepSeek V4.1 Flash
  pkgs/os-specific/linux/nvidia-x11/default.nix    | 13 +++++++++++++
  pkgs/os-specific/linux/nvidia-x11/generic.nix    | 11 +++++++++++
  .../linux/nvidia-x11/modprobe.nix}               | 16 ++++++++++------
- 4 files changed, 40 insertions(+), 11 deletions(-)
+ pkgs/top-level/aliases.nix                       |  1 +
+ 5 files changed, 41 insertions(+), 11 deletions(-)
  rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (66%)
 
 diff --git a/pkgs/by-name/li/libnvidia-container/package.nix b/pkgs/by-name/li/libnvidia-container/package.nix
@@ -483,8 +484,20 @@ index b1c9c7f9c0d94..4b8836cb4ca26 100644
 +    mainProgram = "nvidia-modprobe";
    };
  })
+diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
+index e3d12c9deb63c..cb202181a3163 100644
+--- a/pkgs/top-level/aliases.nix
++++ b/pkgs/top-level/aliases.nix
+@@ -1928,6 +1928,7 @@ mapAliases {
+   numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
+   nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
+   nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
++  nvidia-modprobe = throw "'nvidia-modprobe' has been moved to 'linuxPackages.nvidiaPackages.<driver>.modprobe'"; # Added 2026-10-03
+   o = throw "'o' has been renamed to/replaced by 'orbiton'"; # Converted to throw 2025-10-27
+   oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
+   oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 
-From a20bb8acf21b1d62fbc5772bb5600e72ff7e56f2 Mon Sep 17 00:00:00 2001
+From aca25d361e76d60573a825329c2999f18b8a7cc4 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 18:23:22 +0800
 Subject: [PATCH 3/7] maintainers/scripts/nvidia-source-hashes: add a per-URL
@@ -496,9 +509,9 @@ A URL that is not published yet is reported separately and does not fail the run
 
 Assisted-by: omp:DeepSeek V4.1 Flash
 ---
- .../scripts/nvidia-source-hashes/default.nix  | 268 +++++++++++++++++
- .../scripts/nvidia-source-hashes/verify.sh    | 280 ++++++++++++++++++
- 2 files changed, 548 insertions(+)
+ .../scripts/nvidia-source-hashes/default.nix  | 268 +++++++++++++++
+ .../scripts/nvidia-source-hashes/verify.sh    | 313 ++++++++++++++++++
+ 2 files changed, 581 insertions(+)
  create mode 100644 maintainers/scripts/nvidia-source-hashes/default.nix
  create mode 100755 maintainers/scripts/nvidia-source-hashes/verify.sh
 
@@ -778,10 +791,10 @@ index 0000000000000..324fa347036a3
 +)
 diff --git a/maintainers/scripts/nvidia-source-hashes/verify.sh b/maintainers/scripts/nvidia-source-hashes/verify.sh
 new file mode 100755
-index 0000000000000..0c072168a5425
+index 0000000000000..ffbca3a9bb0ca
 --- /dev/null
 +++ b/maintainers/scripts/nvidia-source-hashes/verify.sh
-@@ -0,0 +1,280 @@
+@@ -0,0 +1,313 @@
 +#!/usr/bin/env nix-shell
 +#!nix-shell -i bash -p jq
 +
@@ -822,11 +835,11 @@ index 0000000000000..0c072168a5425
 +#                       (unpacked for the fetchzip sources, after postFetch for
 +#                       the open kernel modules), so the printed hash is the
 +#                       one to paste.
-+#       --strict        Treat a URL that does not exist (HTTP 4xx) as a
-+#                       failure.  By default such URLs are listed separately
-+#                       and do not fail the run, because GitHub and NVIDIA
-+#                       publish the same release at different times, so one of
-+#                       a source's URLs can legitimately be missing.
++#       --strict        Treat a URL that returns 404 as a failure.  By default
++#                       such URLs are listed separately and do not fail the
++#                       run, because GitHub and NVIDIA publish the same release
++#                       at different times, so one of a source's URLs can
++#                       legitimately be missing.
 +#   -h, --help          Show this help.
 +#
 +# Examples:
@@ -846,12 +859,13 @@ index 0000000000000..0c072168a5425
 +#   ./verify.sh --prefetch --path beta
 +#
 +# A URL that fails is reported and the run continues, so one failure does not
-+# hide the others.  A URL that does not exist (HTTP 4xx) is listed separately
-+# and only fails the run with --strict.  Exit status is 0 when every selected
-+# URL matched its declared hash, 1 when at least one did not, and 130 when
-+# interrupted with Ctrl+C.  In --prefetch mode the status is 0 once every
-+# selected URL either yielded a hash or was not published, and 1 if some URL
-+# failed for another reason.
++# hide the others.  A URL that returns 404 is listed separately and only fails
++# the run with --strict, but a source whose URLs all return 404 always fails,
++# since then no host has published it.  A 503, or a 429 from rate limiting,
++# counts as a failure.  Exit status is 0 when every selected URL matched its
++# declared hash, 1 when at least one did not, and 130 when interrupted with
++# Ctrl+C.  In --prefetch mode the status is 0 once every selected URL either
++# yielded a hash or returned 404, and 1 if some URL failed for another reason.
 +
 +set -o errexit -o nounset -o pipefail
 +
@@ -906,6 +920,22 @@ index 0000000000000..0c072168a5425
 +    exit 130
 +}
 +trap interrupted INT
++
++# A source whose URLs all return 404 is a failure in both modes.  One missing
++# URL can be a host that has not published a release yet; when every URL is
++# missing, no host has it.
++dead_components() {
++    local keys=("$@")
++    local comp
++    local here all
++    for comp in $(printf '%s\n' "${keys[@]}" | sed 's/-u[0-9]*$//' | sort -u); do
++        here=$(printf '%s\n' "${keys[@]}" | sed 's/-u[0-9]*$//' | grep -cx -- "$comp")
++        all=$(jq -r --arg prefix "$comp-" '[keys[] | select(startswith($prefix))] | length' "$tmp/meta.json")
++        if [[ "$here" == "$all" ]]; then
++            printf '%s\n' "$comp"
++        fi
++    done
++}
 +
 +# Both helpers take the same arguments; `pkgs` is left to default.nix so that
 +# this repository's nixpkgs is always the one being inspected.
@@ -986,7 +1016,7 @@ index 0000000000000..0c072168a5425
 +        if [[ -n "$got" ]]; then
 +            ok=$((ok + 1))
 +            printf '%s\n    %s\n    -> %s\n' "$key" "$url" "$got"
-+        elif grep -qE "curl: \(22\)|returned error: 4[0-9][0-9]" "$log"; then
++        elif grep -qE "returned error: 404" "$log"; then
 +            unavailable=$((unavailable + 1))
 +            unavailable_keys+=("$key")
 +            printf '%s\n    %s\n    URL NOT AVAILABLE\n' "$key" "$url" >&2
@@ -996,16 +1026,24 @@ index 0000000000000..0c072168a5425
 +            grep -E "curl:|error:" "$log" | head -n 3 | sed 's/^ */    /' >&2 || true
 +        fi
 +    done < <(jq -r 'to_entries[] | [.key, .value.drvPath, (.value.urls[0] // "")] | @tsv' "$tmp/meta.json")
++    declare -a dead=()
++    if (( unavailable > 0 )); then
++        mapfile -t dead < <(dead_components "${unavailable_keys[@]}")
++    fi
++
 +    printf '\n%d hash(es) obtained' "$ok"
 +    if (( unavailable > 0 )); then
 +        printf ', %d URL(s) not published: %s' "$unavailable" "${unavailable_keys[*]}"
++    fi
++    if (( ${#dead[@]} > 0 )); then
++        printf ', no URL published for: %s' "${dead[*]}"
 +    fi
 +    if (( bad > 0 )); then
 +        printf ', %d failed\n' "$bad"
 +        exit 1
 +    fi
 +    printf '.\n'
-+    if (( strict && unavailable > 0 )); then
++    if (( strict && unavailable > 0 )) || (( ${#dead[@]} > 0 )); then
 +        exit 1
 +    fi
 +    exit 0
@@ -1035,35 +1073,43 @@ index 0000000000000..0c072168a5425
 +        printf '    \033[31mHASH MISMATCH\033[0m\n'
 +        printf '    expected: %s\n' "$hash"
 +        sed -n 's/^ *got: */    got:      /p' "$log"
-+    elif grep -qE "curl: \(22\)|returned error: 4[0-9][0-9]" "$log"; then
++    elif grep -qE "returned error: 404" "$log"; then
 +        unavailable=$((unavailable + 1))
 +        unavailable_keys+=("$key")
 +        printf '    \033[33mURL NOT AVAILABLE\033[0m\n'
-+        grep -E "curl: \(22\)|returned error: 4[0-9][0-9]" "$log" | sed 's/^ */    /'
++        grep -E "returned error: 404" "$log" | sed 's/^ */    /'
 +    else
 +        fail=$((fail + 1))
 +        failures+=("$key")
 +        printf '    \033[31mFAILED\033[0m\n'
-+        sed 's/^ */    /' "$log" | head -n 5
++        grep -E "curl:|error:" "$log" | head -n 3 | sed 's/^ */    /' || true
 +    fi
 +done < <(jq -r 'to_entries[] | [.key, .value.drvPath, .value.hash, (.value.urls[0] // "")] | @tsv' "$tmp/meta.json")
++
++declare -a dead=()
++if (( unavailable > 0 )); then
++    mapfile -t dead < <(dead_components "${unavailable_keys[@]}")
++fi
 +
 +printf '\n%d/%d URL(s) matched their declared hash' "$pass" "$total"
 +if (( unavailable > 0 )); then
 +    printf ', %d URL(s) not published: %s' "$unavailable" "${unavailable_keys[*]}"
 +fi
++if (( ${#dead[@]} > 0 )); then
++    printf ', no URL published for: %s' "${dead[*]}"
++fi
 +if (( fail > 0 )); then
 +    printf ', %d failed: %s' "$fail" "${failures[*]}"
 +fi
 +printf '.\n'
-+if (( unavailable > 0 && !strict )); then
-+    echo >&2 "A URL that does not exist is not a hash mismatch; pass --strict to fail on it."
++if (( unavailable > 0 && !strict && ${#dead[@]} == 0 )); then
++    echo >&2 "A URL that returns 404 is not a hash mismatch; pass --strict to fail on it."
 +fi
-+if (( fail > 0 || (strict && unavailable > 0) )); then
++if (( fail > 0 || ${#dead[@]} > 0 || (strict && unavailable > 0) )); then
 +    exit 1
 +fi
 
-From d56abe0ae59c0fc72aaac1f3985f1d163a42d0a0 Mon Sep 17 00:00:00 2001
+From 3aa94751cf41939fac4b8a4a5962651ec3e56169 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 20:08:54 +0800
 Subject: [PATCH 4/7] nvidia-x11: document driver updates and custom versions
@@ -1073,8 +1119,8 @@ Add pkgs/os-specific/linux/nvidia-x11/README.md covering how a driver is added o
 Assisted-by: omp:DeepSeek V4.1 Flash
 ---
  nixos/modules/hardware/video/nvidia.nix     |   3 +-
- pkgs/os-specific/linux/nvidia-x11/README.md | 140 ++++++++++++++++++++
- 2 files changed, 142 insertions(+), 1 deletion(-)
+ pkgs/os-specific/linux/nvidia-x11/README.md | 144 ++++++++++++++++++++
+ 2 files changed, 146 insertions(+), 1 deletion(-)
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/README.md
 
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
@@ -1093,10 +1139,10 @@ index 68ed2cb3a3fb5..1b1f5fdfe0dc8 100644
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/README.md b/pkgs/os-specific/linux/nvidia-x11/README.md
 new file mode 100644
-index 0000000000000..32ef094b06713
+index 0000000000000..c92750b3b2948
 --- /dev/null
 +++ b/pkgs/os-specific/linux/nvidia-x11/README.md
-@@ -0,0 +1,140 @@
+@@ -0,0 +1,144 @@
 +# NVIDIA driver packages
 +
 +The drivers are built from the files here. `default.nix` defines one attribute
@@ -1134,13 +1180,14 @@ index 0000000000000..32ef094b06713
 +- `sha256_aarch64` adds the aarch64 driver archive.
 +- `openSha256` enables the open kernel modules. `fetchOpenFromNvidia` also
 +  lists the NVIDIA-hosted tarball next to the GitHub archive.
-+- `settingsSha256`, `persistencedSha256`, `fabricmanagerSha256` and
-+  `modprobeSha256` enable the components of the same name. `useSettings`,
-+  `usePersistenced` and `useFabricmanager` turn a component off without
-+  removing its hash. `settingsVersion`, `persistencedVersion`,
-+  `fabricmanagerVersion` and `modprobeVersion` default to `version` and only
-+  need to be set when a component follows another version, as `vulkan_beta`
-+  does.
++- `modprobeSha256` enables `nvidia-modprobe`. `settingsSha256` and
++  `persistencedSha256` are required for nvidia-settings and
++  nvidia-persistenced, which are on unless `useSettings` or `usePersistenced`
++  is set to `false`. `fabricmanagerSha256` only matters together with
++  `useFabricmanager = true`, which the data center entries set.
++  `settingsVersion`, `persistencedVersion`, `fabricmanagerVersion` and
++  `modprobeVersion` default to `version` and only need to be set when a
++  component follows another version, as `vulkan_beta` does.
 +- `url` overrides the binary driver URL instead of deriving it from `version`.
 +  `vulkan_beta` and the data center drivers use it.
 +
@@ -1227,18 +1274,21 @@ index 0000000000000..32ef094b06713
 +`sha256_64bit`; `settingsSha256` and `persistencedSha256` are needed unless you
 +set `useSettings = false` or `usePersistenced = false`.
 +
-+`sha256_aarch64` and `sha256_32bit` are only checked when you build for aarch64
-+or i686, so a build on x86_64 does not report them.
++`sha256_aarch64` is only used for aarch64 builds. `sha256_32bit` also matters
++on x86_64 for drivers older than 391: their `lib32` is the i686 build of the
++`Linux-x86` archive, and `hardware.graphics.enable32Bit` puts that output into
++`extraPackages32`.
 +
 +With `fetchOpenFromNvidia = true` the open sources list two URLs and the single
 +`openSha256` has to match both, so use the hash from whichever URL your network
-+can reach. The helper script picks the working URL for the versions already in
-+nixpkgs.
++can reach. The helper script checks every URL of a source on its own: a URL
++that returns 404 is reported as not published and does not fail the run unless
++`--strict` is given, while a source whose URLs all return 404 fails.
 +
 +`hardware.nvidia.open` selects the open kernel modules and uses the package's
 +`.open` output when set to `true`.
 
-From 4c9a3f13f96ee37676e8e8307c49888529546375 Mon Sep 17 00:00:00 2001
+From 50c0b2b49b2510b3040e59fb06d5f884c52d0c2e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 23:42:50 +0800
 Subject: [PATCH 5/7] nvidia-x11: check the version of the fetched sources
@@ -1254,6 +1304,9 @@ Check the version each build actually produced:
 - The driver has no executable that reports its version without a loaded
   driver, so it checks that a library in its output is named after the
   version.
+- libXNVCtrl has no version in its output and no program to run, so its
+  checkPhase compares NVIDIA_VERSION in the source version.mk with the version
+  it is built as.
 
 Assisted-by: omp:DeepSeek V4.1 Flash
 ---
@@ -1427,7 +1480,7 @@ index 41f14b075fc2c..b51700908bae0 100644
      if [ -e src/libXNVCtrl/libXNVCtrl.a ]; then
        ( cd src/libXNVCtrl
 
-From 02240a46449219a531a83942540fdce327819ac6 Mon Sep 17 00:00:00 2001
+From b80aa2073f0d7a2d8a9c2a2c8aaed279d1a741cf Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:30:08 +0800
 Subject: [PATCH 6/7] linuxPackages.nvidiaPackages: move userspace utilities to
@@ -2386,7 +2439,7 @@ index b51700908bae0..7b4cfbca5abbc 100644
      gtk3
      librsvg
 
-From c93bac0ab864bfa3d83f7494255432a707ed4247 Mon Sep 17 00:00:00 2001
+From e00c1fbdaf356a197a1bca89189f8c05fdd9c85c Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 22:50:14 +0800
 Subject: [PATCH 7/7] nvidia-settings: get profiles from /run/current-system/sw
