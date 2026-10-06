@@ -30,6 +30,7 @@
 
       # I WANT VANILLA DISCORD
       silenceNoModClientWarning = true;
+      krisp.enable = true;
     };
   };
 }
