@@ -1,0 +1,29 @@
+From d7fbe9860358d00dc0241e85b98d9b2f50cffd2d Mon Sep 17 00:00:00 2001
+From: "R. Ryantm" <ryantm-bot@ryantm.com>
+Date: Mon, 28 Sep 2026 00:22:38 +0000
+Subject: [PATCH] libtsm: 4.7.1 -> 4.8.0
+
+---
+ pkgs/by-name/li/libtsm/package.nix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/pkgs/by-name/li/libtsm/package.nix b/pkgs/by-name/li/libtsm/package.nix
+index 298a238e0bece..30160cdd0a7f3 100644
+--- a/pkgs/by-name/li/libtsm/package.nix
++++ b/pkgs/by-name/li/libtsm/package.nix
+@@ -12,13 +12,13 @@
+ 
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "libtsm";
+-  version = "4.7.1";
++  version = "4.8.0";
+ 
+   src = fetchFromGitHub {
+     owner = "kmscon";
+     repo = "libtsm";
+     tag = "v${finalAttrs.version}";
+-    hash = "sha256-VT4dOlQT98/AaFRGd4vOoyDe8W1KRvvFRaCkr/Abu9Y=";
++    hash = "sha256-CA80Tsc6rr2NCOVnH6+vGB2fuO6jZpuoCaiz4MuJ9xM=";
+   };
+ 
+   strictDeps = true;
