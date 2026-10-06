@@ -13,10 +13,10 @@
     just
     gh
     shellcheck
-    llm-agents.mimo-code
+    # llm-agents.mimo-code
     llm-agents.reasonix
-    llm-agents.cc-switch-cli
-    llm-agents.codex
+    # llm-agents.cc-switch-cli
+    # llm-agents.codex
     llm-agents.omp
   ];
 }

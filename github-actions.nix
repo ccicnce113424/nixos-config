@@ -46,8 +46,8 @@ in
             "mvs"
             # "hermes-desktop"
             "reasonix"
-            "codex"
-            "cc-switch-cli"
+            # "codex"
+            # "cc-switch-cli"
             "omp"
             "wineprefix-preparer"
           ]
