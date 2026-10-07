@@ -1,6 +1,9 @@
 name: Update nixpkgs PR Patches
 
 on:
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       add:
@@ -34,6 +37,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
+          # On pull_request, check out the PR head branch (not the refs/pull/N/merge
+          # default) so the refresh commits can be pushed back to it; manual runs
+          # keep the ref they were started from.
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
           # PAT so the push triggers CI (the default GITHUB_TOKEN does not).
           token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
 
@@ -51,8 +59,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
+          # pull_request runs have no inputs; keep the manual default (prune on).
+          prune="${PRUNE:-true}"
           flags=()
-          if [ "$PRUNE" = "true" ]; then
+          if [ "$prune" = "true" ]; then
             flags+=(--prune)
           fi
           if [ -n "$REMOVE" ]; then
@@ -91,16 +101,22 @@ jobs:
       - name: Commit and push
         if: steps.stage.outputs.changed == 'true'
         env:
+          EVENT_NAME: ${{ github.event_name }}
           REF_TYPE: ${{ github.ref_type }}
-          REF_NAME: ${{ github.ref_name }}
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
         run: |
           set -euo pipefail
-          if [ "$REF_TYPE" != branch ]; then
-            echo "Ref '$REF_NAME' is not a branch; refusing to push" >&2
+          # A manual run can be started from a tag, which cannot take a push.
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$REF_TYPE" != branch ]; then
+            echo "Ref type '$REF_TYPE' is not a branch; refusing to push" >&2
+            exit 1
+          fi
+          if [ -z "$TARGET_BRANCH" ]; then
+            echo "No target branch resolved; refusing to push" >&2
             exit 1
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update nixpkgs PR patches"
           git show --stat --oneline HEAD
-          git push origin "HEAD:refs/heads/$REF_NAME"
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
