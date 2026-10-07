@@ -1,0 +1,64 @@
+From d71443d19c9c5cd8bea0139956cb734b23e5ee4a Mon Sep 17 00:00:00 2001
+From: kai <1556588440@qq.com>
+Date: Wed, 7 Oct 2026 13:09:41 +0800
+Subject: [PATCH] nixos/dbus: fix "ignoring duplicate name" errors
+
+---
+ nixos/doc/manual/release-notes/rl-2611.section.md | 2 ++
+ nixos/modules/services/system/dbus.nix            | 6 ------
+ nixos/modules/system/boot/systemd.nix             | 5 ++++-
+ 3 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
+index b0a90013b325d..ba626b0eac853 100644
+--- a/nixos/doc/manual/release-notes/rl-2611.section.md
++++ b/nixos/doc/manual/release-notes/rl-2611.section.md
+@@ -201,6 +201,8 @@
+   Deployments running the server and worker in the same network namespace must also set at least the worker
+   `AUTHENTIK_LISTEN__HTTP` address so that the server and worker do not bind to the same address.
+ 
++- `system.path` is no longer included as a search path in the configuration of the D‑Bus system‑wide or session‑wide message bus. D‑Bus configuration files are also no longer exposed under `/run/current‑system/sw`. This means D‑Bus configuration files must now be managed and installed via `services.dbus.packages` and can no longer be installed through `environment.systemPackages`.
++
+ - `qt.platformTheme` no longer supports the `gtk2` option as GTK 2 had reached end-of-life and will be removed in Nixpkgs.
+ 
+ - `services.paperless` has been updated to paperless-ngx 3.0, a major release; review the [upstream v3 migration guide](https://docs.paperless-ngx.com/migration-v3/) before upgrading.
+diff --git a/nixos/modules/services/system/dbus.nix b/nixos/modules/services/system/dbus.nix
+index 3e4b4ecd15308..3e9d42e2c4fad 100644
+--- a/nixos/modules/services/system/dbus.nix
++++ b/nixos/modules/services/system/dbus.nix
+@@ -120,11 +120,6 @@ in
+ 
+       environment.etc."dbus-1".source = configDir;
+ 
+-      environment.pathsToLink = [
+-        "/etc/dbus-1"
+-        "/share/dbus-1"
+-      ];
+-
+       users.users.messagebus = {
+         uid = config.ids.uids.messagebus;
+         description = "D-Bus system message bus daemon user";
+@@ -147,7 +142,6 @@ in
+ 
+       services.dbus.packages = [
+         cfg.dbusPackage
+-        config.system.path
+       ];
+ 
+       systemd.user.sockets.dbus.wantedBy = [
+diff --git a/nixos/modules/system/boot/systemd.nix b/nixos/modules/system/boot/systemd.nix
+index a2078f1ce4564..12c65d3b8b0d8 100644
+--- a/nixos/modules/system/boot/systemd.nix
++++ b/nixos/modules/system/boot/systemd.nix
+@@ -692,7 +692,10 @@ in
+         "sysctl.d/50-default.conf".source = "${cfg.package}/example/sysctl.d/50-default.conf";
+       };
+ 
+-    services.dbus.enable = true;
++    services.dbus = {
++      enable = true;
++      packages = [ cfg.package ];
++    };
+ 
+     users.users.systemd-network = {
+       uid = config.ids.uids.systemd-network;

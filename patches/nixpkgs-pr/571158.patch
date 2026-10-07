@@ -1,0 +1,767 @@
+From 31b1b1a9cfd88c83086f72fee0630fb7b750712e Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sun, 4 Oct 2026 12:06:55 +0800
+Subject: [PATCH] nixos/dbus: register D-Bus service packages in
+ services.dbus.packages
+
+#549241 stops the D-Bus daemons from searching the system profile, so a
+package's D-Bus configuration only reaches them once a module lists it in
+services.dbus.packages.
+
+The packages were selected mechanically: nix-index was queried for every
+package carrying dbus-1 configuration, hits whose paths are only empty
+directories or symlinks were dropped, and the remaining names were matched
+against nixos/modules both as pkgs.NAME references and as mkPackageOption
+defaults, which text search alone misses.  The result was then checked by
+evaluation: for 45 NixOS configurations, environment.systemPackages was
+compared against services.dbus.packages and every unregistered package
+reported.  Only systemd stays out, since #549241 registers it itself.
+
+A registration mirrors the statement that installs the package, its conditions
+and its excludePackages filter included, so environment.plasma6.excludePackages
+drops a package from both sides.  Packages that only reach systemd.packages,
+services.udev.packages or the X11/Wayland session path stay out, as do those
+only reachable through xdg.portal.extraPortals, which config/xdg/portal.nix
+covers.
+
+Merge together with (or after) #549241: on master alone system.path is still a
+D-Bus search path, so each registered package is found twice.
+
+Assisted-by: omp:Space Bunny Alpha
+---
+ .../manual/release-notes/rl-2611.section.md   |  8 +++
+ nixos/modules/config/qt.nix                   |  6 ++
+ nixos/modules/programs/calls.nix              |  1 +
+ nixos/modules/programs/gamemode.nix           |  3 +
+ nixos/modules/programs/geary.nix              |  1 +
+ nixos/modules/programs/k3b.nix                |  2 +
+ nixos/modules/programs/kde-pim.nix            |  8 +++
+ nixos/modules/programs/kdeconnect.nix         |  3 +
+ nixos/modules/programs/ladybird.nix           |  1 +
+ nixos/modules/programs/nxdumpclient.nix       |  1 +
+ nixos/modules/services/audio/alsa.nix         |  2 +
+ nixos/modules/services/audio/jack.nix         |  2 +
+ nixos/modules/services/audio/pulseaudio.nix   |  2 +
+ .../services/desktop-managers/budgie.nix      | 10 ++-
+ .../services/desktop-managers/cosmic.nix      |  9 +++
+ .../services/desktop-managers/gnome.nix       | 63 +++++++++++++++++++
+ .../services/desktop-managers/lomiri.nix      | 16 ++++-
+ .../services/desktop-managers/pantheon.nix    | 14 +++++
+ .../services/desktop-managers/plasma6.nix     | 35 +++++++++++
+ .../desktops/gnome/gnome-software.nix         |  4 ++
+ .../modules/services/desktops/playerctld.nix  |  1 +
+ nixos/modules/services/hardware/bolt.nix      |  1 +
+ .../services/hardware/inputplumber.nix        |  1 +
+ .../services/hardware/powerstation.nix        |  1 +
+ nixos/modules/services/hardware/tlp.nix       |  2 +
+ .../openthread-border-router.nix              |  3 +
+ nixos/modules/services/networking/connman.nix |  2 +
+ nixos/modules/services/networking/netplan.nix |  2 +
+ nixos/modules/services/security/usbguard.nix  |  1 +
+ .../x11/desktop-managers/cinnamon.nix         | 26 +++++++-
+ .../services/x11/desktop-managers/mate.nix    | 17 +++++
+ .../services/x11/desktop-managers/phosh.nix   |  2 +
+ .../services/x11/desktop-managers/xfce.nix    |  6 ++
+ .../services/x11/display-managers/xpra.nix    |  4 ++
+ .../x11/window-managers/wmderland.nix         |  5 ++
+ 35 files changed, 259 insertions(+), 6 deletions(-)
+
+diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
+index b0a90013b325d..9ec7dbe34b9cb 100644
+--- a/nixos/doc/manual/release-notes/rl-2611.section.md
++++ b/nixos/doc/manual/release-notes/rl-2611.section.md
+@@ -360,6 +360,14 @@
+ 
+ <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
+ 
++- NixOS modules now register the packages they install that ship D-Bus configuration files in {option}`services.dbus.packages`. The D-Bus daemons read service directories from that option and no longer from the system profile. Register packages you install through {option}`environment.systemPackages` as well:
++
++  ```nix
++  {
++    services.dbus.packages = [ pkgs.example ];
++  }
++  ```
++
+ - `services.k3s` and `services.rke2` now expose the images declared in `images` through a `/nix/store` directory symlinked into `/var/lib/rancher/${name}/agent/images/nixos/`. The directory's store path changes whenever any image derivation changes, which makes k3s/rke2 detect and re-import the new archives, while `/var/lib/rancher/${name}/agent/images/` itself remains a normal directory that can still be used for manually added images. Previously, each image was linked with a fixed file name directly in that directory, so the cluster would not notice image updates and old symlinks could become dangling. After upgrading, you may want to remove those dangling symlinks (that was the case already when you wanted to stop deploying an image).
+ 
+ - `programs.regreet` has been renamed to `services.displayManager.regreet`.
+diff --git a/nixos/modules/config/qt.nix b/nixos/modules/config/qt.nix
+index 04aec113e2bbf..6c16d6335e5fc 100644
+--- a/nixos/modules/config/qt.nix
++++ b/nixos/modules/config/qt.nix
+@@ -214,5 +214,11 @@ in
+     environment.systemPackages =
+       lib.optionals (cfg.platformTheme != null) (platformPackages.${cfg.platformTheme})
+       ++ lib.optionals (cfg.style != null) (stylePackages.${cfg.style});
++
++    # `kdePackages.kio` above ships D-Bus service files.  The D-Bus daemons do
++    # not look at the system profile, so it has to be registered explicitly.
++    services.dbus.packages = lib.optionals (cfg.platformTheme == "kde") [
++      pkgs.kdePackages.kio
++    ];
+   };
+ }
+diff --git a/nixos/modules/programs/calls.nix b/nixos/modules/programs/calls.nix
+index 17ab06f959ef2..0efc420a528f2 100644
+--- a/nixos/modules/programs/calls.nix
++++ b/nixos/modules/programs/calls.nix
+@@ -25,6 +25,7 @@ in
+     ];
+ 
+     services.dbus.packages = [
++      pkgs.calls
+       pkgs.callaudiod
+     ];
+   };
+diff --git a/nixos/modules/programs/gamemode.nix b/nixos/modules/programs/gamemode.nix
+index 12e7d34a8f042..b38687e331a89 100644
+--- a/nixos/modules/programs/gamemode.nix
++++ b/nixos/modules/programs/gamemode.nix
+@@ -59,6 +59,9 @@ in
+       etc."gamemode.ini".source = configFile;
+     };
+ 
++    # systemPackages puts gamemode's session D-Bus service file in the system profile.
++    services.dbus.packages = [ cfg.package ];
++
+     security = {
+       polkit = {
+         enable = true;
+diff --git a/nixos/modules/programs/geary.nix b/nixos/modules/programs/geary.nix
+index 6c881dc8ccafd..dd77fb0572037 100644
+--- a/nixos/modules/programs/geary.nix
++++ b/nixos/modules/programs/geary.nix
+@@ -20,6 +20,7 @@ in
+ 
+   config = lib.mkIf cfg.enable {
+     environment.systemPackages = [ pkgs.geary ];
++    services.dbus.packages = [ pkgs.geary ];
+     programs.dconf.enable = true;
+     services.gnome.gnome-keyring.enable = true;
+     services.gnome.gnome-online-accounts.enable = true;
+diff --git a/nixos/modules/programs/k3b.nix b/nixos/modules/programs/k3b.nix
+index f51327dc23cb8..0c07ecf0dde0b 100644
+--- a/nixos/modules/programs/k3b.nix
++++ b/nixos/modules/programs/k3b.nix
+@@ -29,6 +29,8 @@
+       cdrtools
+     ];
+ 
++    services.dbus.packages = [ pkgs.kdePackages.k3b ];
++
+     security.wrappers = {
+       cdrdao = {
+         setuid = true;
+diff --git a/nixos/modules/programs/kde-pim.nix b/nixos/modules/programs/kde-pim.nix
+index 022d263471b7a..03d213f2adb9b 100644
+--- a/nixos/modules/programs/kde-pim.nix
++++ b/nixos/modules/programs/kde-pim.nix
+@@ -43,5 +43,13 @@ in
+           akonadi-contacts
+         ]
+       );
++
++    services.dbus.packages =
++      with pkgs.kdePackages;
++      [
++        akonadi
++      ]
++      ++ lib.optional cfg.kmail kmail
++      ++ lib.optional cfg.kontact kontact;
+   };
+ }
+diff --git a/nixos/modules/programs/kdeconnect.nix b/nixos/modules/programs/kdeconnect.nix
+index c1029c46b4ce8..0d7f5a9119040 100644
+--- a/nixos/modules/programs/kdeconnect.nix
++++ b/nixos/modules/programs/kdeconnect.nix
+@@ -28,6 +28,9 @@
+       environment.systemPackages = lib.optionals (cfg.package != null) [
+         cfg.package
+       ];
++      services.dbus.packages = lib.optionals (cfg.package != null) [
++        cfg.package
++      ];
+       networking.firewall = rec {
+         allowedTCPPortRanges = [
+           {
+diff --git a/nixos/modules/programs/ladybird.nix b/nixos/modules/programs/ladybird.nix
+index 20183f55c9820..8783bbe6adf43 100644
+--- a/nixos/modules/programs/ladybird.nix
++++ b/nixos/modules/programs/ladybird.nix
+@@ -15,6 +15,7 @@ in
+ 
+   config = lib.mkIf cfg.enable {
+     environment.systemPackages = [ pkgs.ladybird ];
++    services.dbus.packages = [ pkgs.ladybird ];
+     fonts.fontDir.enable = true;
+   };
+ }
+diff --git a/nixos/modules/programs/nxdumpclient.nix b/nixos/modules/programs/nxdumpclient.nix
+index 941b63f237aa5..956e21ecf1c18 100644
+--- a/nixos/modules/programs/nxdumpclient.nix
++++ b/nixos/modules/programs/nxdumpclient.nix
+@@ -12,6 +12,7 @@
+ 
+   config = lib.mkIf config.programs.nxdumpclient.enable {
+     environment.systemPackages = [ pkgs.nxdumpclient ];
++    services.dbus.packages = [ pkgs.nxdumpclient ];
+     services.udev.packages = [ pkgs.nxdumpclient ];
+   };
+ }
+diff --git a/nixos/modules/services/audio/alsa.nix b/nixos/modules/services/audio/alsa.nix
+index 7bd0200e3c020..6e56cab259b6e 100644
+--- a/nixos/modules/services/audio/alsa.nix
++++ b/nixos/modules/services/audio/alsa.nix
+@@ -446,6 +446,8 @@ in
+ 
+       # Install CLI tools and systemd units
+       environment.systemPackages = [ pkgs.bluez-alsa ];
++      services.dbus.packages = [ pkgs.bluez-alsa ];
++
+       systemd.packages = [ pkgs.bluez-alsa ];
+ 
+       # See Nixpkgs issue #81138
+diff --git a/nixos/modules/services/audio/jack.nix b/nixos/modules/services/audio/jack.nix
+index d6d8b502b0c7b..bd1fce5165e93 100644
+--- a/nixos/modules/services/audio/jack.nix
++++ b/nixos/modules/services/audio/jack.nix
+@@ -248,6 +248,8 @@ in
+         variables.JACK_PROMISCUOUS_SERVER = "jackaudio";
+       };
+ 
++      services.dbus.packages = [ cfg.jackd.package ];
++
+       services.udev.extraRules = ''
+         ACTION=="add", SUBSYSTEM=="sound", ATTRS{id}!="Loopback", TAG+="systemd", ENV{SYSTEMD_WANTS}="jack.service"
+       '';
+diff --git a/nixos/modules/services/audio/pulseaudio.nix b/nixos/modules/services/audio/pulseaudio.nix
+index 214fb0e561399..dcf9dc8e77911 100644
+--- a/nixos/modules/services/audio/pulseaudio.nix
++++ b/nixos/modules/services/audio/pulseaudio.nix
+@@ -250,6 +250,8 @@ in
+ 
+         environment.systemPackages = [ overriddenPackage ];
+ 
++        services.dbus.packages = [ overriddenPackage ];
++
+         environment.etc = {
+           "alsa/conf.d/99-pulseaudio.conf".text = alsaConf;
+ 
+diff --git a/nixos/modules/services/desktop-managers/budgie.nix b/nixos/modules/services/desktop-managers/budgie.nix
+index 807d6b019b729..ad991781e64ff 100644
+--- a/nixos/modules/services/desktop-managers/budgie.nix
++++ b/nixos/modules/services/desktop-managers/budgie.nix
+@@ -288,11 +288,17 @@ in
+     services.gnome.gnome-settings-daemon.enable = mkDefault true;
+     services.gvfs.enable = mkDefault true;
+ 
+-    # Register packages for DBus.
++    # Register packages for D-Bus.  The D-Bus daemons do not look at the
++    # system profile, so these have to be registered explicitly.
+     services.dbus.packages = [
+       budgie-control-center'
+       pkgs.budgie-desktop-services
+-    ];
++    ]
++    ++ utils.removePackagesByName (with pkgs; [
++      atril
++      engrampa
++      nemo
++    ]) config.environment.budgie.excludePackages;
+ 
+     # Shell integration for MATE Terminal.
+     programs.bash.vteIntegration = true;
+diff --git a/nixos/modules/services/desktop-managers/cosmic.nix b/nixos/modules/services/desktop-managers/cosmic.nix
+index 6367414da6c90..ac53492fdf972 100644
+--- a/nixos/modules/services/desktop-managers/cosmic.nix
++++ b/nixos/modules/services/desktop-managers/cosmic.nix
+@@ -133,6 +133,15 @@ in
+ 
+     systemd.packages = [ pkgs.cosmic-session ];
+ 
++    # Packages from above that ship D-Bus service files.  The D-Bus daemons do
++    # not look at the system profile, so they have to be registered explicitly.
++    services.dbus.packages = utils.removePackagesByName (with pkgs; [
++      cosmic-applets
++      playerctl
++      pulseaudio
++      config.services.displayManager.cosmic-greeter.package
++    ]) config.environment.cosmic.excludePackages;
++
+     fonts.packages = with pkgs; [
+       fira
+       noto-fonts
+diff --git a/nixos/modules/services/desktop-managers/gnome.nix b/nixos/modules/services/desktop-managers/gnome.nix
+index d6537622102f8..42bd1bd21f956 100644
+--- a/nixos/modules/services/desktop-managers/gnome.nix
++++ b/nixos/modules/services/desktop-managers/gnome.nix
+@@ -464,6 +464,15 @@ in
+           ];
+         in
+         mandatoryPackages ++ removeExcluded optionalPackages;
++
++      # D-Bus service files are only picked up from registered packages.
++      services.dbus.packages = [
++        pkgs.gnome-shell
++      ]
++      ++ removeExcluded [
++        pkgs.gnome-control-center
++        pkgs.gnome-tour
++      ];
+     })
+ 
+     # Adapt from https://gitlab.gnome.org/GNOME/gnome-build-meta/-/blob/gnome-48/elements/core/meta-gnome-core-apps.bst
+@@ -496,6 +505,31 @@ in
+         pkgs.yelp
+       ];
+ 
++      # D-Bus service files are only picked up from registered packages.
++      services.dbus.packages = removeExcluded [
++        pkgs.baobab
++        pkgs.decibels
++        pkgs.epiphany
++        pkgs.gnome-calculator
++        pkgs.gnome-calendar
++        pkgs.gnome-characters
++        pkgs.gnome-clocks
++        pkgs.gnome-console
++        pkgs.gnome-contacts
++        pkgs.gnome-connections
++        pkgs.gnome-font-viewer
++        pkgs.gnome-logs
++        pkgs.gnome-maps
++        pkgs.gnome-music
++        pkgs.gnome-system-monitor
++        pkgs.gnome-text-editor
++        pkgs.gnome-weather
++        pkgs.loupe
++        pkgs.nautilus
++        pkgs.showtime
++        pkgs.snapshot
++      ];
++
+       # Enable default program modules
+       # Since some of these have a corresponding package, we only
+       # enable that program module if the package hasn't been excluded
+@@ -549,6 +583,26 @@ in
+         pkgs.swell-foop
+         pkgs.tali
+       ];
++
++      # D-Bus service files are only picked up from registered packages.
++      services.dbus.packages = removeExcluded [
++        pkgs.five-or-more
++        pkgs.four-in-a-row
++        pkgs.gnome-2048
++        pkgs.gnome-chess
++        pkgs.gnome-klotski
++        pkgs.gnome-mahjongg
++        pkgs.gnome-mines
++        pkgs.gnome-nibbles
++        pkgs.gnome-robots
++        pkgs.gnome-sudoku
++        pkgs.gnome-taquin
++        pkgs.gnome-tetravex
++        pkgs.iagno
++        pkgs.lightsoff
++        pkgs.quadrapassel
++        pkgs.swell-foop
++      ];
+     })
+ 
+     # Adapt from https://gitlab.gnome.org/GNOME/gnome-build-meta/-/blob/gnome-48/elements/core/meta-gnome-core-developer-tools.bst
+@@ -566,6 +620,15 @@ in
+         pkgs.sysprof
+       ];
+ 
++      # `pkgs.sysprof` is registered by `services/misc/sysprof.nix` whenever
++      # `services.sysprof.enable` is set, which it is right below.
++      services.dbus.packages = removeExcluded [
++        pkgs.d-spy
++        pkgs.dconf-editor
++        pkgs.devhelp
++        pkgs.gnome-builder
++      ];
++
+       services.sysprof.enable = notExcluded pkgs.sysprof;
+     })
+   ];
+diff --git a/nixos/modules/services/desktop-managers/lomiri.nix b/nixos/modules/services/desktop-managers/lomiri.nix
+index a05923fd82b5c..29696c5e851fe 100644
+--- a/nixos/modules/services/desktop-managers/lomiri.nix
++++ b/nixos/modules/services/desktop-managers/lomiri.nix
+@@ -145,11 +145,23 @@ in
+         lomiri-download-manager
+       ];
+ 
+-      services.dbus.packages = with pkgs.lomiri; [
++      # Packages from above that ship D-Bus service files.  The D-Bus daemons
++      # do not look at the system profile, so they have to be registered
++      # explicitly.
++      services.dbus.packages = [
++        pkgs.ubports-click
++      ]
++      ++ (with pkgs.lomiri; [
+         hfd-service
+         libusermetrics
++        lomiri-content-hub
+         lomiri-download-manager
+-      ];
++        lomiri-history-service
++        lomiri-telephony-service
++        lomiri-thumbnailer
++        lomiri-url-dispatcher
++        mediascanner2
++      ]);
+ 
+       services.accounts-daemon.enable = true;
+       services.udisks2.enable = true;
+diff --git a/nixos/modules/services/desktop-managers/pantheon.nix b/nixos/modules/services/desktop-managers/pantheon.nix
+index 9ff9d1a025393..7e207f1bbfe93 100644
+--- a/nixos/modules/services/desktop-managers/pantheon.nix
++++ b/nixos/modules/services/desktop-managers/pantheon.nix
+@@ -161,6 +161,9 @@ in
+       services.dbus.packages = with pkgs.pantheon; [
+         switchboard-plug-power
+         elementary-default-settings # accountsservice extensions
++        (switchboard-with-plugs.override {
++          plugs = cfg.extraSwitchboardPlugs;
++        })
+       ];
+       services.pantheon.apps.enable = mkDefault true;
+       services.pantheon.contractor.enable = mkDefault true;
+@@ -359,6 +362,15 @@ in
+         )
+       ) config.environment.pantheon.excludePackages;
+ 
++      # Packages from above that ship D-Bus service files.  The D-Bus daemons
++      # do not look at the system profile, so they have to be registered
++      # explicitly.
++      services.dbus.packages = utils.removePackagesByName [
++        pkgs.pantheon.epiphany
++        pkgs.file-roller
++        pkgs.gnome-font-viewer
++      ] config.environment.pantheon.excludePackages;
++
+       # needed by screenshot
+       fonts.packages = [
+         pkgs.pantheon.elementary-redacted-script
+@@ -371,6 +383,8 @@ in
+         file-roller-contract
+       ];
+ 
++      services.dbus.packages = [ pkgs.pantheon.contractor ];
++
+       environment.pathsToLink = [
+         "/share/contractor"
+       ];
+diff --git a/nixos/modules/services/desktop-managers/plasma6.nix b/nixos/modules/services/desktop-managers/plasma6.nix
+index f6106d3e83fe5..9470d40729b3d 100644
+--- a/nixos/modules/services/desktop-managers/plasma6.nix
++++ b/nixos/modules/services/desktop-managers/plasma6.nix
+@@ -226,6 +226,41 @@ in
+       ++ lib.optional config.services.xserver.wacom.enable wacomtablet
+       ++ lib.optional config.services.flatpak.enable flatpak-kcm;
+ 
++    # Packages from above that ship D-Bus service files.  The D-Bus daemons do
++    # not look at the system profile, so they have to be registered explicitly.
++    services.dbus.packages =
++      with kdePackages;
++      [
++        kactivitymanagerd
++        kauth
++        kded
++        kde-inotify-survey
++        kdeplasma-addons
++        drkonqi
++        kinfocenter
++        kio
++        kio-admin
++        kio-extras
++        kio-fuse
++        knighttime
++        kscreen
++        ksystemstats
++        libkscreen
++        libksysguard
++        kwallet
++        kwalletmanager
++        plasma-workspace
++      ]
++      ++ utils.removePackagesByName [
++        dolphin
++        elisa
++        khelpcenter
++        ktexteditor
++        spectacle
++      ] config.environment.plasma6.excludePackages
++      ++ lib.optional config.powerManagement.enable powerdevil
++      ++ lib.optional config.services.samba.enable kdenetwork-filesharing;
++
+     environment.pathsToLink = [
+       # FIXME: modules should link subdirs of `/share` rather than relying on this
+       "/share"
+diff --git a/nixos/modules/services/desktops/gnome/gnome-software.nix b/nixos/modules/services/desktops/gnome/gnome-software.nix
+index 6bbe4d5487ab1..86b4920075d8a 100644
+--- a/nixos/modules/services/desktops/gnome/gnome-software.nix
++++ b/nixos/modules/services/desktops/gnome/gnome-software.nix
+@@ -21,6 +21,10 @@
+       pkgs.gnome-software
+     ];
+ 
++    services.dbus.packages = [
++      pkgs.gnome-software
++    ];
++
+     systemd.packages = [
+       pkgs.gnome-software
+     ];
+diff --git a/nixos/modules/services/desktops/playerctld.nix b/nixos/modules/services/desktops/playerctld.nix
+index ef4866d75715d..593d60d43ed15 100644
+--- a/nixos/modules/services/desktops/playerctld.nix
++++ b/nixos/modules/services/desktops/playerctld.nix
+@@ -17,6 +17,7 @@ in
+ 
+   config = lib.mkIf cfg.enable {
+     environment.systemPackages = [ cfg.package ];
++    services.dbus.packages = [ cfg.package ];
+     systemd.user.services.playerctld = {
+       description = "Playerctld daemon to track media player activity";
+       wantedBy = [ "default.target" ];
+diff --git a/nixos/modules/services/hardware/bolt.nix b/nixos/modules/services/hardware/bolt.nix
+index 3c024b0245658..09c93d0b0c47d 100644
+--- a/nixos/modules/services/hardware/bolt.nix
++++ b/nixos/modules/services/hardware/bolt.nix
+@@ -27,6 +27,7 @@ in
+ 
+   config = lib.mkIf cfg.enable {
+     environment.systemPackages = [ cfg.package ];
++    services.dbus.packages = [ cfg.package ];
+     services.udev.packages = [ cfg.package ];
+     systemd.packages = [ cfg.package ];
+   };
+diff --git a/nixos/modules/services/hardware/inputplumber.nix b/nixos/modules/services/hardware/inputplumber.nix
+index fa281b94261f4..a83bed35650c3 100644
+--- a/nixos/modules/services/hardware/inputplumber.nix
++++ b/nixos/modules/services/hardware/inputplumber.nix
+@@ -17,6 +17,7 @@ in
+   config = lib.mkIf cfg.enable {
+     environment.systemPackages = [ cfg.package ];
+     environment.pathsToLink = [ "/share/inputplumber" ];
++    services.dbus.packages = [ cfg.package ];
+ 
+     systemd.services.inputplumber = {
+       description = "InputPlumber Service";
+diff --git a/nixos/modules/services/hardware/powerstation.nix b/nixos/modules/services/hardware/powerstation.nix
+index 2ea4c96c6c968..a2854a27432ba 100644
+--- a/nixos/modules/services/hardware/powerstation.nix
++++ b/nixos/modules/services/hardware/powerstation.nix
+@@ -16,6 +16,7 @@ in
+ 
+   config = lib.mkIf cfg.enable {
+     environment.systemPackages = [ cfg.package ];
++    services.dbus.packages = [ cfg.package ];
+ 
+     systemd.services.powerstation = {
+       description = "PowerStation Service";
+diff --git a/nixos/modules/services/hardware/tlp.nix b/nixos/modules/services/hardware/tlp.nix
+index faf4d18b503e6..dfc31c3561ac3 100644
+--- a/nixos/modules/services/hardware/tlp.nix
++++ b/nixos/modules/services/hardware/tlp.nix
+@@ -118,6 +118,8 @@ in
+     ]
+     ++ lib.optionals cfg.pd.enable [ cfg.pd.package ];
+ 
++    services.dbus.packages = lib.optionals cfg.pd.enable [ cfg.pd.package ];
++
+     services.tlp.settings =
+       let
+         cfg = config.powerManagement;
+diff --git a/nixos/modules/services/home-automation/openthread-border-router.nix b/nixos/modules/services/home-automation/openthread-border-router.nix
+index 4d0c84e5b204b..aeb4b0158806e 100644
+--- a/nixos/modules/services/home-automation/openthread-border-router.nix
++++ b/nixos/modules/services/home-automation/openthread-border-router.nix
+@@ -175,6 +175,9 @@ in
+     # ot-ctl can be used to query the router instance
+     environment.systemPackages = [ cfg.package ];
+ 
++    # otbr-agent ships a D-Bus service file.
++    services.dbus.packages = [ cfg.package ];
++
+     # Shared by the agent and web interface for the OpenThread control socket.
+     users.groups.otbr = { };
+ 
+diff --git a/nixos/modules/services/networking/connman.nix b/nixos/modules/services/networking/connman.nix
+index 45168c643ee90..0068bb0f2f246 100644
+--- a/nixos/modules/services/networking/connman.nix
++++ b/nixos/modules/services/networking/connman.nix
+@@ -115,6 +115,8 @@ in
+ 
+     environment.systemPackages = [ cfg.package ];
+ 
++    services.dbus.packages = [ cfg.package ];
++
+     systemd.services.connman = {
+       description = "Connection service";
+       wantedBy = [ "multi-user.target" ];
+diff --git a/nixos/modules/services/networking/netplan.nix b/nixos/modules/services/networking/netplan.nix
+index a4ab0f901f552..b2e7699bf72ec 100644
+--- a/nixos/modules/services/networking/netplan.nix
++++ b/nixos/modules/services/networking/netplan.nix
+@@ -39,6 +39,8 @@ in
+     warnings = lib.optionals (!(networkdEnabled || networkmanagerEnabled)) [
+       "You enabled the netplan-configure service, but you haven't enabled a backend for it. It's likely you want to enable either networkd or NetworkManager."
+     ];
++    services.dbus.packages = [ cfg.package ];
++
+     environment = {
+       systemPackages = [ cfg.package ];
+       etc = builtins.listToAttrs (
+diff --git a/nixos/modules/services/security/usbguard.nix b/nixos/modules/services/security/usbguard.nix
+index ef06910b14975..13e0832ade6ee 100644
+--- a/nixos/modules/services/security/usbguard.nix
++++ b/nixos/modules/services/security/usbguard.nix
+@@ -184,6 +184,7 @@ in
+   config = lib.mkIf cfg.enable {
+ 
+     environment.systemPackages = [ cfg.package ];
++    services.dbus.packages = [ cfg.package ];
+ 
+     systemd.services = {
+       usbguard = {
+diff --git a/nixos/modules/services/x11/desktop-managers/cinnamon.nix b/nixos/modules/services/x11/desktop-managers/cinnamon.nix
+index b356c55ec1221..e1c7ac37f364c 100644
+--- a/nixos/modules/services/x11/desktop-managers/cinnamon.nix
++++ b/nixos/modules/services/x11/desktop-managers/cinnamon.nix
+@@ -116,12 +116,19 @@ in
+         enablePkexecWrapper = lib.mkDefault true;
+       };
+       services.accounts-daemon.enable = true;
+-      services.dbus.packages = with pkgs; [
++
++      # Packages from below that ship D-Bus service files.  The D-Bus daemons do
++      # not look at the system profile, so they have to be registered explicitly.
++      services.dbus.packages = utils.removePackagesByName (with pkgs; [
+         cinnamon
++        cinnamon-settings-daemon
+         cinnamon-screensaver
+         nemo-with-extensions
+         xapp
+-      ];
++
++        # accessibility
++        onboard
++      ]) config.environment.cinnamon.excludePackages;
+       systemd.packages =
+         with pkgs;
+         [
+@@ -291,6 +298,21 @@ in
+           file-roller
+           gucharmap
+         ] config.environment.cinnamon.excludePackages;
++
++      # The D-Bus daemons do not look at the system profile, so the packages
++      # above that ship D-Bus service files have to be registered explicitly.
++      services.dbus.packages = utils.removePackagesByName (with pkgs; [
++        # cinnamon xapp
++        xed-editor
++        xreader
++
++        # external apps shipped with linux-mint
++        celluloid
++        gnome-calculator
++        gnome-calendar
++        gnome-screenshot
++        file-roller
++      ]) config.environment.cinnamon.excludePackages;
+     })
+   ];
+ }
+diff --git a/nixos/modules/services/x11/desktop-managers/mate.nix b/nixos/modules/services/x11/desktop-managers/mate.nix
+index be5ed185e68df..a00a28a7fcddc 100644
+--- a/nixos/modules/services/x11/desktop-managers/mate.nix
++++ b/nixos/modules/services/x11/desktop-managers/mate.nix
+@@ -123,6 +123,23 @@ in
+         yelp # for 'Contents' in 'Help' menus
+       ]) config.environment.mate.excludePackages;
+ 
++      # Packages from above that ship D-Bus service files.  The D-Bus daemons do
++      # not look at the system profile, so they have to be registered explicitly.
++      services.dbus.packages = utils.removePackagesByName (with pkgs; [
++        atril
++        engrampa
++        mate-applets
++        mate-indicator-applet
++        mate-netbook
++        mate-notification-daemon
++        mate-power-manager
++        mate-settings-daemon
++
++        (caja-with-extensions.override {
++          extensions = cfg.extraCajaExtensions;
++        })
++      ]) config.environment.mate.excludePackages;
++
+       programs.dconf.enable = true;
+       # Shell integration for VTE terminals
+       programs.bash.vteIntegration = mkDefault true;
+diff --git a/nixos/modules/services/x11/desktop-managers/phosh.nix b/nixos/modules/services/x11/desktop-managers/phosh.nix
+index 734ccc3b81c37..df455aafee268 100644
+--- a/nixos/modules/services/x11/desktop-managers/phosh.nix
++++ b/nixos/modules/services/x11/desktop-managers/phosh.nix
+@@ -232,6 +232,8 @@ in
+ 
+     systemd.packages = [ cfg.package ];
+ 
++    services.dbus.packages = [ cfg.package ];
++
+     programs.feedbackd.enable = true;
+ 
+     # Without this, the stevia OSK does not function when selecting text fields.
+diff --git a/nixos/modules/services/x11/desktop-managers/xfce.nix b/nixos/modules/services/x11/desktop-managers/xfce.nix
+index d448f10cdfa8d..76bc9968eb550 100644
+--- a/nixos/modules/services/x11/desktop-managers/xfce.nix
++++ b/nixos/modules/services/x11/desktop-managers/xfce.nix
+@@ -166,6 +166,12 @@ in
+       ++ lib.optional cfg.enableScreensaver xfce4-screensaver
+     ) excludePackages;
+ 
++    # Packages from above that ship D-Bus service files.  The D-Bus daemons do
++    # not look at the system profile, so they have to be registered explicitly.
++    services.dbus.packages = utils.removePackagesByName (
++      [ pkgs.xfce4-notifyd ] ++ lib.optional cfg.enableScreensaver pkgs.xfce4-screensaver
++    ) excludePackages;
++
+     programs.gnupg.agent.pinentryPackage = mkDefault pkgs.pinentry-gnome3;
+     programs.xfconf.enable = true;
+     programs.thunar.enable = true;
+diff --git a/nixos/modules/services/x11/display-managers/xpra.nix b/nixos/modules/services/x11/display-managers/xpra.nix
+index d7d31e6fc4285..b8a03d4d1d216 100644
+--- a/nixos/modules/services/x11/display-managers/xpra.nix
++++ b/nixos/modules/services/x11/display-managers/xpra.nix
+@@ -327,6 +327,10 @@ in
+ 
+     environment.systemPackages = [ pkgs.xpra ];
+ 
++    # `xpra` ships D-Bus configuration files.  The D-Bus daemons do not look at
++    # the system profile, so it has to be registered explicitly.
++    services.dbus.packages = [ pkgs.xpra ];
++
+     services.pulseaudio.enable = mkDefault cfg.pulseaudio;
+     services.pulseaudio.systemWide = mkDefault cfg.pulseaudio;
+   };
+diff --git a/nixos/modules/services/x11/window-managers/wmderland.nix b/nixos/modules/services/x11/window-managers/wmderland.nix
+index 96f3a8e34dff1..9f765673bb059 100644
+--- a/nixos/modules/services/x11/window-managers/wmderland.nix
++++ b/nixos/modules/services/x11/window-managers/wmderland.nix
+@@ -64,5 +64,10 @@ in
+       pkgs.wmderlandc
+     ]
+     ++ cfg.extraPackages;
++
++    # `dunst` from `extraPackages` above ships a D-Bus service file.  The D-Bus
++    # daemons do not look at the system profile, so it has to be registered
++    # explicitly, but only when it is actually installed.
++    services.dbus.packages = lib.optional (elem pkgs.dunst cfg.extraPackages) pkgs.dunst;
+   };
+ }
