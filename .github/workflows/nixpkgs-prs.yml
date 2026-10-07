@@ -45,61 +45,13 @@ jobs:
           # PAT so the push triggers CI (the default GITHUB_TOKEN does not).
           token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
 
-      - name: Detect nixpkgs pin change
-        id: nixpkgs
-        env:
-          EVENT_NAME: ${{ github.event_name }}
-          BASE_REF: ${{ github.base_ref }}
-          BASE_REPO: ${{ github.repository }}
-          TOKEN: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
-        run: |
-          set -euo pipefail
-          # Only PR runs are gated: a manual run is always intentional.
-          if [ "$EVENT_NAME" != pull_request ]; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          # Identical lookup to scripts/nixpkgs-prs.sh cmd_prune: resolve the node
-          # via root.inputs (no hardcoded node name), prefer the recorded rev,
-          # else parse it out of the versioned release URL.
-          pin_of() {
-            jq -r '.nodes[(.nodes.root.inputs.nixpkgs // "nixpkgs")].locked
-              | .rev // ((.url // "") | capture("nixos-[^/]*\\.(?<rev>[0-9a-f]{12})/")? | .rev)
-              // empty' "$1" 2>/dev/null || true
-          }
-          # The checkout above is the PR head branch, possibly on a fork, so the
-          # base flake.lock is fetched from the base repository.
-          base_url="https://github.com/$BASE_REPO.git"
-          if [ -n "$TOKEN" ]; then
-            base_url="https://x-access-token:$TOKEN@github.com/$BASE_REPO.git"
-          fi
-          git fetch --no-tags --depth=1 "$base_url" "refs/heads/$BASE_REF"
-          base_lock=$(mktemp)
-          git show FETCH_HEAD:flake.lock > "$base_lock"
-          head_pin=$(pin_of flake.lock)
-          base_pin=$(pin_of "$base_lock")
-          rm -f "$base_lock"
-          if [ -z "$head_pin" ] || [ -z "$base_pin" ]; then
-            echo "Cannot resolve the nixpkgs pin (base='$base_pin' head='$head_pin')" >&2
-            exit 1
-          fi
-          if [ "$head_pin" = "$base_pin" ]; then
-            echo "nixpkgs pin unchanged ($head_pin); nothing to update"
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "nixpkgs pin changed: $base_pin -> $head_pin"
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Install Nix
-        if: steps.nixpkgs.outputs.changed != 'false'
         uses: nixbuild/nix-quick-install-action@v35
         with:
           nix_conf: |
             accept-flake-config = true
 
       - name: Update patches
-        if: steps.nixpkgs.outputs.changed != 'false'
         env:
           ADD: ${{ inputs.add }}
           REMOVE: ${{ inputs.remove }}
