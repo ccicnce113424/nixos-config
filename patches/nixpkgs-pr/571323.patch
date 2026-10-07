@@ -1,0 +1,73 @@
+From 8daba8569464c25bdeb198e4d77f2cd5a569a870 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Wed, 7 Oct 2026 21:36:31 +0800
+Subject: [PATCH] firewalld: fix gettext package name, enable parallel building
+
+---
+ pkgs/by-name/fi/firewalld/fix_gettext_domain.patch | 13 +++++++++++++
+ pkgs/by-name/fi/firewalld/gettext-0.25.patch       | 14 --------------
+ pkgs/by-name/fi/firewalld/package.nix              |  3 ++-
+ 3 files changed, 15 insertions(+), 15 deletions(-)
+ create mode 100644 pkgs/by-name/fi/firewalld/fix_gettext_domain.patch
+ delete mode 100644 pkgs/by-name/fi/firewalld/gettext-0.25.patch
+
+diff --git a/pkgs/by-name/fi/firewalld/fix_gettext_domain.patch b/pkgs/by-name/fi/firewalld/fix_gettext_domain.patch
+new file mode 100644
+index 0000000000000..957f3e496ab30
+--- /dev/null
++++ b/pkgs/by-name/fi/firewalld/fix_gettext_domain.patch
+@@ -0,0 +1,13 @@
++--- a/configure.ac
+++++ b/configure.ac
++@@ -137,8 +137,8 @@ AC_ARG_VAR([DEFAULT_LOG_TARGET], m4_flatten([
++ 
++ #############################################################
++ 
++-AC_SUBST([GETTEXT_PACKAGE], [PACKAGE_NAME])
++-AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],)
+++GETTEXT_PACKAGE=firewalld
+++AC_SUBST(GETTEXT_PACKAGE)
++ 
++ IT_PROG_INTLTOOL([0.35.0], [no-xml])
++ AM_PO_SUBDIRS
+diff --git a/pkgs/by-name/fi/firewalld/gettext-0.25.patch b/pkgs/by-name/fi/firewalld/gettext-0.25.patch
+deleted file mode 100644
+index 0205e1914d52d..0000000000000
+--- a/pkgs/by-name/fi/firewalld/gettext-0.25.patch
++++ /dev/null
+@@ -1,14 +0,0 @@
+---- a/configure.ac
+-+++ b/configure.ac
+-@@ -152,8 +152,10 @@
+- AC_SUBST([GETTEXT_PACKAGE], '[PKG_NAME]')
+- AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],)
+- 
+-+AM_GNU_GETTEXT_VERSION([0.22.5])
+-+AM_GNU_GETTEXT([external])
+-+
+- IT_PROG_INTLTOOL([0.35.0], [no-xml])
+--AM_PO_SUBDIRS
+- 
+- AC_CONFIG_COMMANDS([xsl-cleanup],,[rm -f doc/xml/transform-*.xsl])
+- 
+diff --git a/pkgs/by-name/fi/firewalld/package.nix b/pkgs/by-name/fi/firewalld/package.nix
+index a98ed2ff03abc..84169c1b5c1de 100644
+--- a/pkgs/by-name/fi/firewalld/package.nix
++++ b/pkgs/by-name/fi/firewalld/package.nix
+@@ -47,6 +47,7 @@ stdenv.mkDerivation (finalAttrs: {
+ 
+   __structuredAttrs = true;
+   strictDeps = true;
++  enableParallelBuilding = true;
+ 
+   src = fetchFromGitHub {
+     owner = "firewalld";
+@@ -60,7 +61,7 @@ stdenv.mkDerivation (finalAttrs: {
+     ./respect-xml-catalog-files-var.patch
+     ./specify-localedir.patch
+ 
+-    ./gettext-0.25.patch
++    ./fix_gettext_domain.patch
+   ]
+   ++ lib.optional withGui ./nm-connection-editor.patch;
+ 
