@@ -5,7 +5,6 @@ pull_request_rules:
           - label=dependencies
           - check-success=All Eval
           - check-success=All Builds
-          - check-success=Update PR patches
     actions:
       update:
       merge:
