@@ -1,22 +1,23 @@
-{ ... }:
+{ pkgs, ... }:
 {
   services.scx-loader = {
     enable = true;
+    schedsPackages = [ pkgs.scx_rustscheds ];
     config = {
       default_mode = "Auto";
-      default_sched = "scx_p2dq";
-      scheds.scx_p2dq.auto_mode = [
-        "--autoslice"
-        # "--interactive-ratio"
-        # "5"
-        "--task-slice"
-        "true"
-        "--cpu-priority"
-        "true"
-        "--deadline"
-        "--interactive-sticky"
-        "--freq-control"
-      ];
+      default_sched = "scx_mlfq";
+      # scheds.scx_p2dq.auto_mode = [
+      #   "--autoslice"
+      #   # "--interactive-ratio"
+      #   # "5"
+      #   "--task-slice"
+      #   "true"
+      #   "--cpu-priority"
+      #   "true"
+      #   "--deadline"
+      #   "--interactive-sticky"
+      #   "--freq-control"
+      # ];
     };
 
     # schedsPackages = [
