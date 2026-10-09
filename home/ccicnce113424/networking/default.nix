@@ -13,7 +13,7 @@
     # nur.repos.xddxdd.peerbanhelper
     # nur.repos.lonerOrz.qq
 
-    nur.repos.DzmingLi.wechat
+    wechat
 
     (nur.repos.mio.qq_bwrap.override {
       bindDesktop = true;
