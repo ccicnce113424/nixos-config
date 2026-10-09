@@ -13,10 +13,10 @@ on:
         required: false
         default: ""
         type: string
-      prune:
-        description: Also drop patches already in the nixpkgs revision pinned in flake.lock
+      refresh:
+        description: Also re-download every patch listed in nixpkgs-prs.json
         required: false
-        default: true
+        default: false
         type: boolean
 
 permissions:
@@ -47,13 +47,15 @@ jobs:
         env:
           ADD: ${{ inputs.add }}
           REMOVE: ${{ inputs.remove }}
-          PRUNE: ${{ inputs.prune }}
+          REFRESH: ${{ inputs.refresh }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
+          # `update` always prunes PRs already in the pinned nixpkgs;
+          # --refresh is the only optional part.
           flags=()
-          if [ "$PRUNE" = "true" ]; then
-            flags+=(--prune)
+          if [ "$REFRESH" = "true" ]; then
+            flags+=(--refresh)
           fi
           if [ -n "$REMOVE" ]; then
             read -r -a refs <<< "${REMOVE//,/ }"
@@ -63,7 +65,7 @@ jobs:
             read -r -a refs <<< "${ADD//,/ }"
             for r in "${refs[@]}"; do flags+=(--add "$r"); done
           fi
-          nix run .#nixpkgs-prs -- refresh "${flags[@]}"
+          nix run .#nixpkgs-prs -- update "${flags[@]}"
 
       - name: Stage patch changes
         id: stage

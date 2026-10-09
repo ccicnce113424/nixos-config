@@ -9,12 +9,12 @@ output_dir=patches/nixpkgs-pr
 
 usage() {
   {
-    echo "Usage: nixpkgs-prs [show | refresh | add | remove | prune] [ARGS...]"
+    echo "Usage: nixpkgs-prs [show | update | add | remove | prune] [ARGS...]"
     echo
     echo "  nixpkgs-prs               same as show (default)"
     echo "  nixpkgs-prs show          list PRs: patch/PR state, branch reached, links"
-    echo "  nixpkgs-prs refresh       re-download every patch listed in $manifest"
-    echo "                            options: --prune, --remove REF, --add REF (repeatable)"
+    echo "  nixpkgs-prs update        prune landed PRs, then apply --remove/--add"
+    echo "                            options: --refresh (re-download every patch), --remove REF, --add REF (repeatable)"
     echo "  nixpkgs-prs add REF...    add PRs to $manifest, then download their patches"
     echo "  nixpkgs-prs remove REF... remove PRs from $manifest, then delete their patches"
     echo "  nixpkgs-prs prune         drop PRs already in the nixpkgs pinned in flake.lock"
@@ -318,15 +318,15 @@ case "${1:-}" in
 "" | show)
   cmd_show
   ;;
-refresh)
+update)
   shift
-  do_prune=false
+  do_refresh=false
   removes=()
   adds=()
   while (($# > 0)); do
     case "$1" in
-    --prune)
-      do_prune=true
+    --refresh)
+      do_refresh=true
       shift
       ;;
     --remove | --add)
@@ -343,11 +343,13 @@ refresh)
       ;;
     esac
   done
-  # prune/remove first, add last: one refresh covers every listed patch exactly once.
-  if $do_prune; then cmd_prune; fi
+  # Prune/remove first, add last: at most one download per listed patch.
+  cmd_prune
   if (("${#removes[@]}" > 0)); then cmd_remove "${removes[@]}"; fi
-  refresh_all
-  echo "Downloaded patches to: $output_dir" >&2
+  if $do_refresh; then
+    refresh_all
+    echo "Downloaded patches to: $output_dir" >&2
+  fi
   if (("${#adds[@]}" > 0)); then cmd_add "${adds[@]}"; fi
   ;;
 add)
