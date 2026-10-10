@@ -14,7 +14,7 @@
   services.firewalld.enable = true;
 
   services.daed = {
-    enable = true;
+    enable = false;
     package = pkgs.daed;
     openFirewall = {
       enable = true;
@@ -22,6 +22,11 @@
     };
     configDir = "/etc/daed";
     listen = "127.0.0.1:2023";
+  };
+
+  services.honk-core = {
+    enable = true;
+    openFirewall = true;
   };
 
   environment.systemPackages = with pkgs; [
