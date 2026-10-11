@@ -1,4 +1,4 @@
-From 31b1b1a9cfd88c83086f72fee0630fb7b750712e Mon Sep 17 00:00:00 2001
+From 0c28275f82bf6bf4c919eb98b867c07078aefca9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 12:06:55 +0800
 Subject: [PATCH] nixos/dbus: register D-Bus service packages in
@@ -47,6 +47,7 @@ Assisted-by: omp:Space Bunny Alpha
  .../services/desktop-managers/gnome.nix       | 63 +++++++++++++++++++
  .../services/desktop-managers/lomiri.nix      | 16 ++++-
  .../services/desktop-managers/pantheon.nix    | 14 +++++
+ .../services/desktop-managers/phosh.nix       |  2 +
  .../services/desktop-managers/plasma6.nix     | 35 +++++++++++
  .../desktops/gnome/gnome-software.nix         |  4 ++
  .../modules/services/desktops/playerctld.nix  |  1 +
@@ -60,17 +61,16 @@ Assisted-by: omp:Space Bunny Alpha
  nixos/modules/services/security/usbguard.nix  |  1 +
  .../x11/desktop-managers/cinnamon.nix         | 26 +++++++-
  .../services/x11/desktop-managers/mate.nix    | 17 +++++
- .../services/x11/desktop-managers/phosh.nix   |  2 +
  .../services/x11/desktop-managers/xfce.nix    |  6 ++
  .../services/x11/display-managers/xpra.nix    |  4 ++
  .../x11/window-managers/wmderland.nix         |  5 ++
  35 files changed, 259 insertions(+), 6 deletions(-)
 
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index b0a90013b325d..9ec7dbe34b9cb 100644
+index 8a006ed906702..b60407df29f81 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
-@@ -360,6 +360,14 @@
+@@ -369,6 +369,14 @@
  
  <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
  
@@ -153,10 +153,10 @@ index f51327dc23cb8..0c07ecf0dde0b 100644
        cdrdao = {
          setuid = true;
 diff --git a/nixos/modules/programs/kde-pim.nix b/nixos/modules/programs/kde-pim.nix
-index 022d263471b7a..03d213f2adb9b 100644
+index c7425b138aa15..bf535ae5c089a 100644
 --- a/nixos/modules/programs/kde-pim.nix
 +++ b/nixos/modules/programs/kde-pim.nix
-@@ -43,5 +43,13 @@ in
+@@ -51,5 +51,13 @@ in
            akonadi-contacts
          ]
        );
@@ -171,13 +171,13 @@ index 022d263471b7a..03d213f2adb9b 100644
    };
  }
 diff --git a/nixos/modules/programs/kdeconnect.nix b/nixos/modules/programs/kdeconnect.nix
-index c1029c46b4ce8..0d7f5a9119040 100644
+index c582e756938e8..7009a2f782c37 100644
 --- a/nixos/modules/programs/kdeconnect.nix
 +++ b/nixos/modules/programs/kdeconnect.nix
-@@ -28,6 +28,9 @@
-       environment.systemPackages = lib.optionals (cfg.package != null) [
-         cfg.package
+@@ -30,6 +30,9 @@
        ];
+       # digitizer plugin requires uinput
+       hardware.uinput.enable = lib.mkDefault true;
 +      services.dbus.packages = lib.optionals (cfg.package != null) [
 +        cfg.package
 +      ];
@@ -455,6 +455,19 @@ index 9ff9d1a025393..7e207f1bbfe93 100644
        environment.pathsToLink = [
          "/share/contractor"
        ];
+diff --git a/nixos/modules/services/desktop-managers/phosh.nix b/nixos/modules/services/desktop-managers/phosh.nix
+index 84776d0792f5c..8f29596ec13f5 100644
+--- a/nixos/modules/services/desktop-managers/phosh.nix
++++ b/nixos/modules/services/desktop-managers/phosh.nix
+@@ -239,6 +239,8 @@ in
+ 
+     systemd.packages = [ cfg.package ];
+ 
++    services.dbus.packages = [ cfg.package ];
++
+     programs.feedbackd.enable = true;
+ 
+     # Without this, the stevia OSK does not function when selecting text fields.
 diff --git a/nixos/modules/services/desktop-managers/plasma6.nix b/nixos/modules/services/desktop-managers/plasma6.nix
 index f6106d3e83fe5..9470d40729b3d 100644
 --- a/nixos/modules/services/desktop-managers/plasma6.nix
@@ -705,19 +718,6 @@ index be5ed185e68df..a00a28a7fcddc 100644
        programs.dconf.enable = true;
        # Shell integration for VTE terminals
        programs.bash.vteIntegration = mkDefault true;
-diff --git a/nixos/modules/services/x11/desktop-managers/phosh.nix b/nixos/modules/services/x11/desktop-managers/phosh.nix
-index 734ccc3b81c37..df455aafee268 100644
---- a/nixos/modules/services/x11/desktop-managers/phosh.nix
-+++ b/nixos/modules/services/x11/desktop-managers/phosh.nix
-@@ -232,6 +232,8 @@ in
- 
-     systemd.packages = [ cfg.package ];
- 
-+    services.dbus.packages = [ cfg.package ];
-+
-     programs.feedbackd.enable = true;
- 
-     # Without this, the stevia OSK does not function when selecting text fields.
 diff --git a/nixos/modules/services/x11/desktop-managers/xfce.nix b/nixos/modules/services/x11/desktop-managers/xfce.nix
 index d448f10cdfa8d..76bc9968eb550 100644
 --- a/nixos/modules/services/x11/desktop-managers/xfce.nix
