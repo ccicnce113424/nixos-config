@@ -4,19 +4,19 @@ queue_rules:
     queue_conditions:
       - check-success=All Eval
       - check-success=All Builds
-    merge_conditions: []
+    merge_conditions:
+      - check-success=All Eval
+      - check-success=All Builds
     batch_size:
       min: 1
       max: 8
-    batch_max_wait_time: "1 minute"
 
 pull_request_rules:
-  - name: Queue when labeled and all CI jobs pass
+  - name: Queue when labeled
     conditions:
       - and:
           - label=dependencies
-          - check-success=All Eval
-          - check-success=All Builds
+          - base=main
     actions:
       queue:
         name: default
