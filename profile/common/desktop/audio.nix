@@ -45,7 +45,10 @@
             {
               matches = [
                 {
-                  "device.name" = "~alsa_card.usb-FIIO_JadeAudio_JA11*";
+                  "device.vendor.id" = "0x2972";
+                }
+                {
+                  "device.vendor.id" = "0x31b2";
                 }
               ];
               actions = {
