@@ -123,11 +123,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791850345,
-        "narHash": "sha256-3v7seCD61BBn+QlQc9fkZ9EByb64IkrYpyzIzck0A9o=",
+        "lastModified": 1791914564,
+        "narHash": "sha256-8Xy3I2+QnHLy3CZBytc6uW5EOjQ5++nXcaEFUARoTTI=",
         "owner": "GunduLabs",
         "repo": "gaze",
-        "rev": "3b8ba3380433ae336bf6ee40229e73d38422f026",
+        "rev": "422182a0a13dde70fb5226f100cde7737c78f22f",
         "type": "github"
       },
       "original": {
