@@ -43,8 +43,8 @@
         # lutris
 
         # heroic
-        lsfg-vk
-        lsfg-vk-ui
+        # lsfg-vk
+        # lsfg-vk-ui
 
         # protonup-qt
 
