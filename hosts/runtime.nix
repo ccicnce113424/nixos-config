@@ -38,8 +38,7 @@
   };
 
   imports = [
-    inputs.nix-packages.nixosModules.daed
-    inputs.nix-packages.nixosModules.honk-core
+    inputs.nix-packages.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
     inputs.gaze.nixosModules.default
     self.nixosModules.nixos-tweaks

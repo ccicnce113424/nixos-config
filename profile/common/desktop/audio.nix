@@ -63,6 +63,8 @@
       alsa.support32Bit = lib.mkIf config.enable32Bit true;
     };
 
+    services.pipewire-bluez5-lhdc.enable = true;
+
     environment.systemPackages = with pkgs; [ alsa-utils ];
   };
 }
