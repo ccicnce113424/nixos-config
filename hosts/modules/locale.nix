@@ -15,10 +15,7 @@ let
       ];
 
       nix.settings.substituters = [
-        # "https://mirrors.ustc.edu.cn/nix-channels/store"
-        # "https://mirror.sjtu.edu.cn/nix-channels/store"
-        # "https://mirrors.sjtug.sjtu.edu.cn/nix-channels/store"
-        "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store"
+        "https://mirrors.cernet.edu.cn/nix-channels/store"
       ];
 
       networking.timeServers = [
