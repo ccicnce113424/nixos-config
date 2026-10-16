@@ -1,506 +1,7 @@
-From d956f6e11522b6eb8982ec8c1b2039ff0e4c1c48 Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Wed, 23 Sep 2026 20:28:00 +0800
-Subject: [PATCH 01/10] linuxPackages.nvidiaPackages: fetch open kernel module
- sources from NVIDIA
-
-Serve the open-gpu-kernel-modules source through fetchFromGithubOrNvidia
-with the NVIDIA-hosted NVIDIA-kernel-module-source tarball as an
-additional URL, stripping files that differ between the two archives so
-one hash covers both, and stop curl from retrying 4xx responses so the
-fallback URL is tried immediately. Enable the new fetchOpenFromNvidia
-option for every driver shipping open module sources and update their
-openSha256.
-
-Assisted-by: omp: DeepSeek V4.1 Flash
----
- pkgs/os-specific/linux/nvidia-x11/default.nix | 27 ++++++++++------
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 31 ++++++++++++++++---
- .../linux/nvidia-x11/kernel-modules.nix       |  8 +++--
- .../linux/nvidia-x11/persistenced.nix         |  2 +-
- .../os-specific/linux/nvidia-x11/settings.nix |  2 +-
- 5 files changed, 52 insertions(+), 18 deletions(-)
-
-diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 54ff60842f3c0..7f76b17ce29d1 100644
---- a/pkgs/os-specific/linux/nvidia-x11/default.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
-@@ -74,7 +74,8 @@ rec {
-     version = "595.104.02";
-     sha256_64bit = "sha256-5CHCAuTHn1jDx/MWG75xRU67PYiTb4ggWg4yfNBMWco=";
-     sha256_aarch64 = "sha256-PafStmwNMufeDp3VtpTGGCoW+53Gor/mieO1m1pI7gI=";
--    openSha256 = "sha256-FWk5ra2yjz8VAxAA8GXrSoeBj/XC1BKvsKsBKR09joE=";
-+    openSha256 = "sha256-fUUcMNQxJSCo91jFj47ExYnQie4L82ooD7/r20BVv1c=";
-+    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-4Kxro6tvI5aX4nu2RspgyBsW+Jq3/VYjSAS5UGdzTCU=";
-     persistencedSha256 = "sha256-JsMLPqJuZwAtHngsQODMsmgO7F2tVkQ2arc7fYa2bwo=";
-   };
-@@ -83,7 +84,8 @@ rec {
-     version = "615.71.09";
-     sha256_64bit = "sha256-zc7tIrvrYSSNGm3qvCWWZz46ZQFpjucayNL9wo87cP4=";
-     sha256_aarch64 = "sha256-IbekQhE7cFfmnPZaLY9NDYcF7CoNZ+2Qb7sRd4EOgWM=";
--    openSha256 = "sha256-3gByMYIwFzRaLdDG+roCEOuKRRJDrljG9AlLnRZTirM=";
-+    openSha256 = "sha256-1YJjsanE+6pwXGRb1oDTRei59LP9e/vReCiH+waJ9JE=";
-+    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-LK1LU8mDkM/XVRKPBtuOZh9nIP/lGFLAJnmasEX8jhg=";
-     persistencedSha256 = "sha256-qPRb+3d88+2RcpUkoBTbjIaImnQ+jX+/6p1vXcJ5geE=";
-   };
-@@ -92,7 +94,8 @@ rec {
-     version = "595.45.04";
-     sha256_64bit = "sha256-zUllSSRsuio7dSkcbBTuxF+dN12d6jEPE0WgGvVOj14=";
-     sha256_aarch64 = "sha256-jl6lQWsgF6ya22sAhYPpERJ9r+wjnWzbGnINDpUMzsk=";
--    openSha256 = "sha256-uqNfImwTKhK8gncUdP1TPp0D6Gog4MSeIJMZQiJWDoE=";
-+    openSha256 = "sha256-zkNIsepBEgDwlw0GvSB0CoZk3Zozsv6peqprs62U3rU=";
-+    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
-     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
-   };
-@@ -104,7 +107,8 @@ rec {
-     persistencedVersion = "595.45.04";
-     settingsVersion = "595.45.04";
-     sha256_64bit = "sha256-LOcwE47hUG1aZX7JvLmTb/yC5qQgXYZ0TAavSn38Xug=";
--    openSha256 = "sha256-QboSiRWRZWseFg7GN/a4vZVQGGBF1UJlC9MyAxUxyF4=";
-+    openSha256 = "sha256-+ZLnlNhMkLG7UNMRmc4yHojs4lsBSiFC/bGf2qk0W+o=";
-+    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
-     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
-     url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
-@@ -119,7 +123,8 @@ rec {
-     sha256_64bit = "sha256-ueL4BpN4FDHMh/TNKRCeEz3Oy1ClDWto1LO/LWlr1ok=";
-     persistencedSha256 = "sha256-wsNeuw7IaY6Qc/i/AzT/4N82lPjkwfrhxidKWUtcwW8=";
-     fabricmanagerSha256 = "sha256-f/AQ8HrgoqBQyXNrXA/UaI4OMQ9QcjjYWIhr1/5uM74=";
--    openSha256 = "sha256-hECHfguzwduEfPo5pCDjWE/MjtRDhINVr4b1awFdP44=";
-+    openSha256 = "sha256-uGQQkQf1oKkGhOXgJ3IzQX1NkB7cGFcnl0HWuqeN8d4=";
-+    fetchOpenFromNvidia = true;
-     useSettings = false;
-     usePersistenced = true;
-     useFabricmanager = true;
-@@ -131,7 +136,8 @@ rec {
-     sha256_64bit = "sha256-WXWobuRb/8tib1GuM9EWmxCBhqLqR61lHnLxP6S21vk=";
-     persistencedSha256 = "sha256-3Omj160wtWdKAZDzWt/m/cbUTQ9DMJ1rSxMrnIrKXiw=";
-     fabricmanagerSha256 = "sha256-xZnTQYZy/uPrTLD6mACflGGWtaYB4luzh0AFxTstNIw=";
--    openSha256 = "sha256-7eXEROG2rQK9+Ag26nG4jFPrnKeveVUQ0ugIAshJZPQ=";
-+    openSha256 = "sha256-/wWZGvDN+Rmq2j6otbBjbrnbzGR9seMYmrATNnhKBnA=";
-+    fetchOpenFromNvidia = true;
-     useSettings = false;
-     usePersistenced = true;
-     useFabricmanager = true;
-@@ -143,7 +149,8 @@ rec {
-     sha256_64bit = "sha256-AlaGfggsr5PXsl+nyOabMWBiqcbHLG4ij617I4xvoX0=";
-     persistencedSha256 = "sha256-x4K0Gp89LdL5YJhAI0AydMRxl6fyBylEnj+nokoBrK8=";
-     fabricmanagerSha256 = "sha256-jSTKzeRVTUcYma1Cb0ajSdXKCi6KzUXCp2OByPSWSR4=";
--    openSha256 = "sha256-aTV5J4zmEgRCOavo6wLwh5efOZUG+YtoeIT/tnrC1Hg=";
-+    openSha256 = "sha256-bwJQUj7eEM7XMji1bjS8T1Uw3qJtSE+fzZCtBKyHPH0=";
-+    fetchOpenFromNvidia = true;
-     useSettings = false;
-     usePersistenced = true;
-     useFabricmanager = true;
-@@ -158,7 +165,8 @@ rec {
-     version = "580.178.04";
-     sha256_64bit = "sha256-WXWobuRb/8tib1GuM9EWmxCBhqLqR61lHnLxP6S21vk=";
-     sha256_aarch64 = "sha256-71nsXSSFDhLW91UOwffPhNtTqEzpxj6zulXvXtDE8Ek=";
--    openSha256 = "sha256-7eXEROG2rQK9+Ag26nG4jFPrnKeveVUQ0ugIAshJZPQ=";
-+    openSha256 = "sha256-/wWZGvDN+Rmq2j6otbBjbrnbzGR9seMYmrATNnhKBnA=";
-+    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-KcrGHoR+ZMdsFyI4myU8/eVls2f8GkNSX/j2JnZndyM=";
-     persistencedSha256 = "sha256-3Omj160wtWdKAZDzWt/m/cbUTQ9DMJ1rSxMrnIrKXiw=";
-   };
-@@ -169,7 +177,8 @@ rec {
-     version = "535.288.01";
-     sha256_64bit = "sha256-8gwy/W7NH3BcbfJ5fAwIQlPs9/9I8sNH+Co5YZiC7OE=";
-     sha256_aarch64 = "sha256-2d3RYzU+W4uS6mUvpCNCfoVcAJA/aerNwm7Xbg0YJBo=";
--    openSha256 = "sha256-kDM8jeHjcRCyhOs8AQk+ce3Qzf2cI5RGzzIraJrSmOE=";
-+    openSha256 = "sha256-cepwckGQ7L+HV5B+1vROQfGQKzVeGM0/i6exSnuy2do=";
-+    fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-hN4IWAD/M+th7brbzdBtgOQ2P1QUVrrWITgVGiuCxWw=";
-     persistencedSha256 = "sha256-q061VN6om3UzbpWD7+tJJVgU/e2YCJF4IgEv53qx9ZA=";
-   };
-diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index e6c1595ae572d..8e6d25c01ac3e 100644
---- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-@@ -11,6 +11,8 @@
-   persistencedVersion ? null,
-   fabricmanagerSha256 ? null,
-   fabricmanagerVersion ? null,
-+  # Whether to fetch the open-source kernel module sources from NVIDIA
-+  fetchOpenFromNvidia ? false,
-   useGLVND ? true,
-   useProfiles ? true,
-   preferGtk2 ? false,
-@@ -41,6 +43,7 @@
-   pkgsi686Linux,
-   fetchurl,
-   fetchzip,
-+  fetchFromGitHub,
-   which,
-   libarchive,
-   jq,
-@@ -221,14 +224,18 @@ stdenv.mkDerivation (finalAttrs: {
-         {
-           owner,
-           repo,
--          rev,
-+          tag,
-+          nvrepo ? repo,
-+          nvext ? "bz2",
-           ...
-         }@args:
-         let
-           args' = removeAttrs args [
-             "owner"
-             "repo"
--            "rev"
-+            "tag"
-+            "nvrepo"
-+            "nvext"
-           ];
-           baseUrl = "https://github.com/${owner}/${repo}";
-         in
-@@ -236,12 +243,14 @@ stdenv.mkDerivation (finalAttrs: {
-           args'
-           // {
-             urls = [
--              "${baseUrl}/archive/${rev}.tar.gz"
--              "https://download.nvidia.com/XFree86/${repo}/${repo}-${rev}.tar.bz2"
-+              "${baseUrl}/archive/${tag}.tar.gz"
-+              "https://download.nvidia.com/XFree86/${nvrepo}/${nvrepo}-${tag}.tar.${nvext}"
-             ];
-             # github and nvidia use different compression algorithms,
-             #  use an invalid file extension to force detection.
-             extension = "tar.??";
-+            # do not try to retry 4xx errors
-+            curlOptsList = [ "--no-retry-all-errors" ];
-           }
-         );
-     in
-@@ -253,7 +262,7 @@ stdenv.mkDerivation (finalAttrs: {
-             nvidia_x11 = finalAttrs.finalPackage;
-             # build files already patched when building the main package, so no need to patch them again
-             patches = [ ];
--            inherit broken;
-+            inherit broken fetchFromGithubOrNvidia;
-           }
-         else
-           { };
-@@ -270,6 +279,18 @@ stdenv.mkDerivation (finalAttrs: {
-             }) patches)
-             ++ patchesOpen;
-           broken = brokenOpen;
-+          fetchFromGithubOrNvidia =
-+            if fetchOpenFromNvidia then
-+              fetchFromGithubOrNvidia
-+            else
-+              args:
-+              fetchFromGitHub (
-+                removeAttrs args [
-+                  "nvrepo"
-+                  "nvext"
-+                  "postFetch"
-+                ]
-+              );
-         }
-       ) openSha256;
-       settings =
-diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index 1ba5815aa3817..54082f301c2b9 100644
---- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-@@ -1,7 +1,7 @@
- {
-   stdenv,
-   lib,
--  fetchFromGitHub,
-+  fetchFromGithubOrNvidia,
-   kernel,
-   kernelModuleMakeFlags,
-   nvidia_x11,
-@@ -19,11 +19,15 @@ stdenv.mkDerivation {
- 
-   src =
-     if open then
--      fetchFromGitHub {
-+      fetchFromGithubOrNvidia {
-         owner = "NVIDIA";
-         repo = "open-gpu-kernel-modules";
-         tag = nvidia_x11.version;
-+        nvrepo = "NVIDIA-kernel-module-source";
-+        nvext = "xz";
-         inherit hash;
-+        # remove files which causes hash mismatches
-+        postFetch = "rm -rf $out/.github $out/CHANGELOG.md";
-       }
-     else
-       nvidia_x11.modsrc;
-diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index 556e53f937af3..d7ddca5d91665 100644
---- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-@@ -18,7 +18,7 @@ stdenv.mkDerivation {
-   src = fetchFromGitHub {
-     owner = "NVIDIA";
-     repo = "nvidia-persistenced";
--    rev = nvidia_x11.persistencedVersion;
-+    tag = nvidia_x11.persistencedVersion;
-     inherit sha256;
-   };
- 
-diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index e47dc3cb4e613..41f14b075fc2c 100644
---- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-@@ -29,7 +29,7 @@ let
-   src = fetchFromGitHub {
-     owner = "NVIDIA";
-     repo = "nvidia-settings";
--    rev = nvidia_x11.settingsVersion;
-+    tag = nvidia_x11.settingsVersion;
-     inherit sha256;
-   };
- 
-
-From e811798f0d71e2cdf1aa17b46d8a428e2237c1fc Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Tue, 12 May 2026 15:44:41 +0800
-Subject: [PATCH 02/10] nvidia-modprobe: move to linuxPackages.nvidiaPackages
-
-Assisted-by: omp: DeepSeek V4.1 Flash
----
- pkgs/by-name/li/libnvidia-container/package.nix  | 11 ++++++-----
- pkgs/os-specific/linux/nvidia-x11/default.nix    | 13 +++++++++++++
- pkgs/os-specific/linux/nvidia-x11/generic.nix    | 11 +++++++++++
- .../linux/nvidia-x11/modprobe.nix}               | 16 ++++++++++------
- pkgs/top-level/aliases.nix                       |  1 +
- 5 files changed, 41 insertions(+), 11 deletions(-)
- rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (66%)
-
-diff --git a/pkgs/by-name/li/libnvidia-container/package.nix b/pkgs/by-name/li/libnvidia-container/package.nix
-index 734eeecac9853..ff473e076c680 100644
---- a/pkgs/by-name/li/libnvidia-container/package.nix
-+++ b/pkgs/by-name/li/libnvidia-container/package.nix
-@@ -13,16 +13,17 @@
-   removeReferencesTo,
-   replaceVars,
-   applyPatches,
--  nvidia-modprobe,
-+  linuxPackages,
-   go,
- }:
- let
-   modprobeVersion = "550.54.14";
-   patchedModprobe = applyPatches {
--    src = nvidia-modprobe.src.override {
--      version = modprobeVersion;
--      hash = "sha256-iBRMkvOXacs/llTtvc/ZC5i/q9gc8lMuUHxMbu8A+Kg=";
--    };
-+    src =
-+      (linuxPackages.nvidiaPackages.stable.modprobe.override {
-+        version = modprobeVersion;
-+        hash = "sha256-iBRMkvOXacs/llTtvc/ZC5i/q9gc8lMuUHxMbu8A+Kg=";
-+      }).src;
-     patches = [
-       (replaceVars ./modprobe.patch {
-         inherit modprobeVersion;
-diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 7f76b17ce29d1..c9714aad5a25d 100644
---- a/pkgs/os-specific/linux/nvidia-x11/default.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
-@@ -78,6 +78,7 @@ rec {
-     fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-4Kxro6tvI5aX4nu2RspgyBsW+Jq3/VYjSAS5UGdzTCU=";
-     persistencedSha256 = "sha256-JsMLPqJuZwAtHngsQODMsmgO7F2tVkQ2arc7fYa2bwo=";
-+    modprobeSha256 = "sha256-TSP1RySipE2cA6pFopdbBPp+6bLTkGzOZ098OOuAse8=";
-   };
- 
-   new_feature = generic {
-@@ -88,6 +89,7 @@ rec {
-     fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-LK1LU8mDkM/XVRKPBtuOZh9nIP/lGFLAJnmasEX8jhg=";
-     persistencedSha256 = "sha256-qPRb+3d88+2RcpUkoBTbjIaImnQ+jX+/6p1vXcJ5geE=";
-+    modprobeSha256 = "sha256-aj8GeAdRqX5/zSHkaqfETjklbphVR7EH1oEqABQIlOs=";
-   };
- 
-   beta = generic {
-@@ -98,6 +100,7 @@ rec {
-     fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
-     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
-+    modprobeSha256 = "sha256-DDeSu6R1JsUux77LfsrAVBTwW6MPu6P1v8W4o2VCN2g=";
-   };
- 
-   # Vulkan developer beta driver
-@@ -106,11 +109,13 @@ rec {
-     version = "595.44.09";
-     persistencedVersion = "595.45.04";
-     settingsVersion = "595.45.04";
-+    modprobeVersion = "595.45.04";
-     sha256_64bit = "sha256-LOcwE47hUG1aZX7JvLmTb/yC5qQgXYZ0TAavSn38Xug=";
-     openSha256 = "sha256-+ZLnlNhMkLG7UNMRmc4yHojs4lsBSiFC/bGf2qk0W+o=";
-     fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
-     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
-+    modprobeSha256 = "sha256-DDeSu6R1JsUux77LfsrAVBTwW6MPu6P1v8W4o2VCN2g=";
-     url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
-   };
- 
-@@ -125,6 +130,7 @@ rec {
-     fabricmanagerSha256 = "sha256-f/AQ8HrgoqBQyXNrXA/UaI4OMQ9QcjjYWIhr1/5uM74=";
-     openSha256 = "sha256-uGQQkQf1oKkGhOXgJ3IzQX1NkB7cGFcnl0HWuqeN8d4=";
-     fetchOpenFromNvidia = true;
-+    modprobeSha256 = "sha256-Vtp5FDDmzbwtDe11O0w/S8Mptpp8Li21/gBfJzfE0/g=";
-     useSettings = false;
-     usePersistenced = true;
-     useFabricmanager = true;
-@@ -138,6 +144,7 @@ rec {
-     fabricmanagerSha256 = "sha256-xZnTQYZy/uPrTLD6mACflGGWtaYB4luzh0AFxTstNIw=";
-     openSha256 = "sha256-/wWZGvDN+Rmq2j6otbBjbrnbzGR9seMYmrATNnhKBnA=";
-     fetchOpenFromNvidia = true;
-+    modprobeSha256 = "sha256-2zdTEcAQDrmik2R2FDk6UL5oczkMTHQ9KcinD3jJCCI=";
-     useSettings = false;
-     usePersistenced = true;
-     useFabricmanager = true;
-@@ -151,6 +158,7 @@ rec {
-     fabricmanagerSha256 = "sha256-jSTKzeRVTUcYma1Cb0ajSdXKCi6KzUXCp2OByPSWSR4=";
-     openSha256 = "sha256-bwJQUj7eEM7XMji1bjS8T1Uw3qJtSE+fzZCtBKyHPH0=";
-     fetchOpenFromNvidia = true;
-+    modprobeSha256 = "sha256-Sk5ogsasf6DBz0j54dhlqZp7p8swnNnvITkdIudc69k=";
-     useSettings = false;
-     usePersistenced = true;
-     useFabricmanager = true;
-@@ -169,6 +177,7 @@ rec {
-     fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-KcrGHoR+ZMdsFyI4myU8/eVls2f8GkNSX/j2JnZndyM=";
-     persistencedSha256 = "sha256-3Omj160wtWdKAZDzWt/m/cbUTQ9DMJ1rSxMrnIrKXiw=";
-+    modprobeSha256 = "sha256-2zdTEcAQDrmik2R2FDk6UL5oczkMTHQ9KcinD3jJCCI=";
-   };
- 
-   # Last one without the bug reported here:
-@@ -181,6 +190,7 @@ rec {
-     fetchOpenFromNvidia = true;
-     settingsSha256 = "sha256-hN4IWAD/M+th7brbzdBtgOQ2P1QUVrrWITgVGiuCxWw=";
-     persistencedSha256 = "sha256-q061VN6om3UzbpWD7+tJJVgU/e2YCJF4IgEv53qx9ZA=";
-+    modprobeSha256 = "sha256-4GYNBKQthFpV3BnFQkUTkElcemssyV0oKGzDzHbSWW0=";
-   };
- 
-   # Last one supporting Kepler architecture
-@@ -199,6 +209,7 @@ rec {
-       sha256_aarch64 = "sha256-e+QvE+S3Fv3JRqC9ZyxTSiCu8gJdZXSz10gF/EN6DY0=";
-       settingsSha256 = "sha256-kftQ4JB0iSlE8r/Ze/+UMnwLzn0nfQtqYXBj+t6Aguk=";
-       persistencedSha256 = "sha256-iYoSib9VEdwjOPBP1+Hx5wCIMhW8q8cCHu9PULWfnyQ=";
-+      modprobeSha256 = "sha256-x2bMn0Hjb8axAdqhjODFvKR875DhP7R3OiwxI3FVy1M=";
- 
-       patches = map (patch: "${aurPatches}/${patch}") [
-         "0001-Fix-conftest-to-ignore-implicit-function-declaration.patch"
-@@ -228,6 +239,7 @@ rec {
-     sha256_64bit = "sha256-W+u8puj+1da52BBw+541HxjtxTSVJVPL3HHo/QubMoo=";
-     settingsSha256 = "sha256-uJZO4ak/w/yeTQ9QdXJSiaURDLkevlI81de0q4PpFpw=";
-     persistencedSha256 = "sha256-NuqUQbVt80gYTXgIcu0crAORfsj9BCRooyH3Gp1y1ns=";
-+    modprobeSha256 = "sha256-RxFTC1Nc8f6Gzlvllsa4QGwNurfOocvC4QC4gPYO3lY=";
- 
-     patches = map (patch: "${aurPatches}/${patch}") [
-       "kernel-4.16+-memory-encryption.patch"
-@@ -290,6 +302,7 @@ rec {
-       sha256_64bit = "06xp6c0sa7v1b82gf0pq0i5p0vdhmm3v964v0ypw36y0nzqx8wf6";
-       settingsSha256 = "0zm29jcf0mp1nykcravnzb5isypm8l8mg2gpsvwxipb7nk1ivy34";
-       persistencedSha256 = "1ax4xn3nmxg1y6immq933cqzw6cj04x93saiasdc0kjlv0pvvnkn";
-+      modprobeSha256 = "sha256-aEVCKYliPCk8SJybZ/wcgU8bppmx7tlAUuOaAQqJgeQ=";
-       useGLVND = false;
- 
-       broken = kernel.kernelAtLeast "6.7";
-diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index 8e6d25c01ac3e..28f27b9844169 100644
---- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-@@ -11,6 +11,8 @@
-   persistencedVersion ? null,
-   fabricmanagerSha256 ? null,
-   fabricmanagerVersion ? null,
-+  modprobeSha256 ? null,
-+  modprobeVersion ? null,
-   # Whether to fetch the open-source kernel module sources from NVIDIA
-   fetchOpenFromNvidia ? false,
-   useGLVND ? true,
-@@ -321,11 +323,20 @@ stdenv.mkDerivation (finalAttrs: {
-           ) fabricmanagerSha256
-         else
-           { };
-+      modprobe = lib.mapNullable (
-+        hash:
-+        callPackage ./modprobe.nix {
-+          inherit hash fetchFromGithubOrNvidia;
-+          version = if modprobeVersion != null then modprobeVersion else finalAttrs.version;
-+          nvidia_x11 = finalAttrs.finalPackage;
-+        }
-+      ) modprobeSha256;
-       settingsVersion = if settingsVersion != null then settingsVersion else finalAttrs.version;
-       persistencedVersion =
-         if persistencedVersion != null then persistencedVersion else finalAttrs.version;
-       fabricmanagerVersion =
-         if fabricmanagerVersion != null then fabricmanagerVersion else finalAttrs.version;
-+      modprobeVersion = if modprobeVersion != null then modprobeVersion else finalAttrs.version;
-       compressFirmware = false;
-       ibtSupport = ibtSupport || (lib.versionAtLeast version "530");
-     }
-diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-similarity index 66%
-rename from pkgs/by-name/nv/nvidia-modprobe/package.nix
-rename to pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-index b1c9c7f9c0d94..4b8836cb4ca26 100644
---- a/pkgs/by-name/nv/nvidia-modprobe/package.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-@@ -1,18 +1,21 @@
- {
-   stdenv,
-   lib,
--  fetchFromGitHub,
-+  fetchFromGithubOrNvidia,
-   gnum4,
-+  nvidia_x11,
-+  version,
-+  hash,
- }:
- stdenv.mkDerivation (finalAttrs: {
-   pname = "nvidia-modprobe";
--  version = "595.71.05";
-+  inherit version;
- 
--  src = fetchFromGitHub {
-+  src = fetchFromGithubOrNvidia {
-     owner = "NVIDIA";
-     repo = "nvidia-modprobe";
--    rev = finalAttrs.version;
--    hash = "sha256-XVWvnUZkEqEh3UjPIU6DaZuYU9DvjfIMsWbLJ78jJWs=";
-+    tag = finalAttrs.version;
-+    inherit hash;
-   };
- 
-   nativeBuildInputs = [ gnum4 ];
-@@ -25,6 +28,7 @@ stdenv.mkDerivation (finalAttrs: {
-     description = "Load the NVIDIA kernel module and create NVIDIA character device files";
-     homepage = "https://github.com/NVIDIA/nvidia-modprobe";
-     license = lib.licenses.gpl2;
--    platforms = lib.platforms.linux;
-+    platforms = nvidia_x11.meta.platforms;
-+    mainProgram = "nvidia-modprobe";
-   };
- })
-diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index e3d12c9deb63c..cb202181a3163 100644
---- a/pkgs/top-level/aliases.nix
-+++ b/pkgs/top-level/aliases.nix
-@@ -1928,6 +1928,7 @@ mapAliases {
-   numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
-   nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
-   nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
-+  nvidia-modprobe = throw "'nvidia-modprobe' has been moved to 'linuxPackages.nvidiaPackages.<driver>.modprobe'"; # Added 2026-10-03
-   o = throw "'o' has been renamed to/replaced by 'orbiton'"; # Converted to throw 2025-10-27
-   oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
-   oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
-
-From 8eaeedd42b1d4d00b3181d92c914a8054c6e1a05 Mon Sep 17 00:00:00 2001
+From f31f0c544ca833c203fe7c9b04a7638baece9ba7 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 18:23:22 +0800
-Subject: [PATCH 03/10] maintainers/scripts/nvidia-source-hashes: add a per-URL
+Subject: [PATCH 01/10] maintainers/scripts/nvidia-source-hashes: add a per-URL
  hash verifier
 
 The script walks linuxPackages.nvidiaPackages, picks up every component whose .src is a fixed-output fetch, and builds one salted, single-URL derivation per URL, so each link is downloaded and checked against the declared hash on its own. Platform specific sources are read from a nixpkgs evaluation for each supported platform and their URL and hash are transplanted onto the host derivation, which covers the 32-bit and aarch64 hashes without a builder for them. --prefetch prints the hashes a URL currently serves.
@@ -791,7 +292,7 @@ index 0000000000000..324fa347036a3
 +)
 diff --git a/maintainers/scripts/nvidia-source-hashes/verify.sh b/maintainers/scripts/nvidia-source-hashes/verify.sh
 new file mode 100755
-index 0000000000000..ffbca3a9bb0ca
+index 0000000000000..05cc1bdc40cbb
 --- /dev/null
 +++ b/maintainers/scripts/nvidia-source-hashes/verify.sh
 @@ -0,0 +1,313 @@
@@ -976,8 +477,8 @@ index 0000000000000..ffbca3a9bb0ca
 +
 +total=$(jq 'length' "$tmp/meta.json")
 +if (( total == 0 )); then
-+    echo "No source URL matched the given filters." >&2
-+    exit 0
++    echo "No source URL matched the given filters. Check --path and --systems against the component names in pkgs/os-specific/linux/nvidia-x11/README.md." >&2
++    exit 1
 +fi
 +
 +case "$mode" in
@@ -1109,10 +610,734 @@ index 0000000000000..ffbca3a9bb0ca
 +    exit 1
 +fi
 
-From f00216545599e624e637c05800e0ad5e13ad9bf4 Mon Sep 17 00:00:00 2001
+From ba514a60b691853b894ed05042d7e164b4f997b8 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Fri, 2 Oct 2026 23:42:50 +0800
+Subject: [PATCH 02/10] nvidia-x11: check the version of the fetched sources
+
+A version bump whose hash was not updated silently reuses the old source from
+the store, which the second URL and the postFetch in this PR make more likely.
+Check the version each build actually produced:
+
+- nvidia-modprobe, nvidia-settings and nvidia-persistenced use
+  versionCheckHook on their --version output.
+- The open and the non-open kernel modules carry MODULE_VERSION, which
+  installCheckPhase reads back with modinfo.
+- The driver has no executable that reports its version without a loaded
+  driver, so it checks that a library in its output is named after the
+  version.
+- libXNVCtrl has no version in its output and no program to run, so its
+  checkPhase compares NVIDIA_VERSION in the source version.mk with the version
+  it is built as.
+
+Assisted-by: omp:DeepSeek V4.1 Flash
+---
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 16 +++++++++++++
+ .../linux/nvidia-x11/kernel-modules.nix       | 23 +++++++++++++++++++
+ .../linux/nvidia-x11/persistenced.nix         |  6 +++++
+ .../os-specific/linux/nvidia-x11/settings.nix | 20 ++++++++++++++++
+ 4 files changed, 65 insertions(+)
+
+diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+index e6c1595ae572d..4f33a254d03d5 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+@@ -201,6 +201,22 @@ stdenv.mkDerivation (finalAttrs: {
+   ++ lib.optional (!libsOnly && firmware) "firmware";
+   outputDev = if libsOnly then null else "bin";
+ 
++  # None of the packaged executables reports the driver version without a
++  # loaded driver, so check the unpacked driver itself: its libraries are named
++  # after the version.  This catches an archive whose hash was not updated on a
++  # version bump and which would otherwise be silently reused from the store.
++  # stdenv sets nullglob, so the glob is counted instead of listed.
++  doInstallCheck = true;
++  installCheckPhase = ''
++    runHook preInstallCheck
++    if ! { set -- "$out"/lib/*.so."$version"; [ $# -gt 0 ]; }; then
++      echo "no library is named after version $version, the driver archive is not the expected version:" >&2
++      ls "$out/lib" >&2 || true
++      exit 1
++    fi
++    runHook postInstallCheck
++  '';
++
+   dontStrip = true;
+   dontPatchELF = true;
+ 
+diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+index 1ba5815aa3817..1b01e460d4c57 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+@@ -9,6 +9,7 @@
+   patches,
+   broken,
+   hash ? null,
++  kmod,
+ }:
+ 
+ assert open -> hash != null;
+@@ -51,6 +52,28 @@ stdenv.mkDerivation {
+   installTargets = [ "modules_install" ];
+   enableParallelBuilding = true;
+ 
++  # Both variants end up with MODULE_VERSION from the version of the sources
++  # they were built from (version.mk for the open module, the driver's
++  # NV_VERSION_STRING for the non-open one).  Reading it back catches a hash
++  # that was not updated on a version bump, which would otherwise silently
++  # reuse the old tree from the store.
++  doInstallCheck = true;
++  nativeInstallCheckInputs = [ kmod ];
++  installCheckPhase = ''
++    runHook preInstallCheck
++    module=$(find "$out/lib/modules" \( -name nvidia.ko -o -name 'nvidia.ko.*' \) -print -quit)
++    if [ -z "$module" ]; then
++      echo "no nvidia.ko found under $out/lib/modules" >&2
++      exit 1
++    fi
++    got=$(modinfo -F version "$module")
++    if [ "$got" != "${nvidia_x11.version}" ]; then
++      echo "nvidia.ko reports version '$got', expected '${nvidia_x11.version}'" >&2
++      exit 1
++    fi
++    runHook postInstallCheck
++  '';
++
+   allowedReferences = [ ];
+ 
+   meta = {
+diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
+index 556e53f937af3..4b87c7a294626 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
+@@ -9,6 +9,7 @@ nvidia_x11: sha256:
+   pkg-config,
+   addDriverRunpath,
+   libtirpc,
++  versionCheckHook,
+ }:
+ 
+ stdenv.mkDerivation {
+@@ -35,6 +36,11 @@ stdenv.mkDerivation {
+     addDriverRunpath
+   ];
+ 
++  # `nvidia-persistenced --version` prints the version of the source it was
++  # built from, catching a hash that was not updated on a version bump.
++  doInstallCheck = true;
++  nativeInstallCheckInputs = [ versionCheckHook ];
++
+   buildInputs = [
+     libtirpc
+   ];
+diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+index e47dc3cb4e613..81427e4bb09c9 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+@@ -21,6 +21,7 @@ nvidia_x11: sha256:
+   libglvnd,
+   wrapGAppsHook3,
+   addDriverRunpath,
++  versionCheckHook,
+   withGtk2 ? false,
+   withGtk3 ? true,
+ }:
+@@ -58,6 +59,20 @@ let
+       "libXNVCtrl.so"
+     ];
+ 
++    # The library carries no version of its own and has no program to run, but
++    # its source states which nvidia-settings release it came from.  A version
++    # bump whose hash was not updated would build it from the old tree.
++    doCheck = true;
++    checkPhase = ''
++      runHook preCheck
++      if ! grep -q "NVIDIA_VERSION = $version" $src/version.mk; then
++        echo "the source is not nvidia-settings $version:" >&2
++        grep -m1 NVIDIA_VERSION $src/version.mk >&2 || true
++        exit 1
++      fi
++      runHook postCheck
++    '';
++
+     patches = [
+       # Patch the Makefile to also produce a shared library.
+       (
+@@ -126,6 +141,11 @@ stdenv.mkDerivation {
+   enableParallelBuilding = true;
+   makeFlags = [ "NV_USE_BUNDLED_LIBJANSSON=0" ];
+ 
++  # `nvidia-settings --version` prints the version of the source it was built
++  # from, catching a hash that was not updated on a version bump.
++  doInstallCheck = true;
++  nativeInstallCheckInputs = [ versionCheckHook ];
++
+   preBuild = ''
+     if [ -e src/libXNVCtrl/libXNVCtrl.a ]; then
+       ( cd src/libXNVCtrl
+
+From f17976e61974e821306a4750690113f2daf73d20 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Wed, 23 Sep 2026 20:28:00 +0800
+Subject: [PATCH 03/10] linuxPackages.nvidiaPackages: fetch open kernel module
+ sources from NVIDIA
+
+Serve the open-gpu-kernel-modules source through fetchFromGithubOrNvidia
+with the NVIDIA-hosted NVIDIA-kernel-module-source tarball as an
+additional URL, stripping files that differ between the two archives so
+one hash covers both, and stop curl from retrying 4xx responses so the
+fallback URL is tried immediately. Enable the new fetchOpenFromNvidia
+option for every driver shipping open module sources and update their
+openSha256.
+
+Assisted-by: omp: DeepSeek V4.1 Flash
+---
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 27 ++++++++++------
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 31 ++++++++++++++++---
+ .../linux/nvidia-x11/kernel-modules.nix       |  8 +++--
+ .../linux/nvidia-x11/persistenced.nix         |  2 +-
+ .../os-specific/linux/nvidia-x11/settings.nix |  2 +-
+ 5 files changed, 52 insertions(+), 18 deletions(-)
+
+diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
+index 41418e1335210..fb99c0fc691ed 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/default.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
+@@ -74,7 +74,8 @@ rec {
+     version = "595.104.02";
+     sha256_64bit = "sha256-5CHCAuTHn1jDx/MWG75xRU67PYiTb4ggWg4yfNBMWco=";
+     sha256_aarch64 = "sha256-PafStmwNMufeDp3VtpTGGCoW+53Gor/mieO1m1pI7gI=";
+-    openSha256 = "sha256-FWk5ra2yjz8VAxAA8GXrSoeBj/XC1BKvsKsBKR09joE=";
++    openSha256 = "sha256-fUUcMNQxJSCo91jFj47ExYnQie4L82ooD7/r20BVv1c=";
++    fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-4Kxro6tvI5aX4nu2RspgyBsW+Jq3/VYjSAS5UGdzTCU=";
+     persistencedSha256 = "sha256-JsMLPqJuZwAtHngsQODMsmgO7F2tVkQ2arc7fYa2bwo=";
+   };
+@@ -83,7 +84,8 @@ rec {
+     version = "615.78.08";
+     sha256_64bit = "sha256-Pj9t3cLudnoIGFMAr3vjyyhuznZpjS3eNSRZl4LQf/4=";
+     sha256_aarch64 = "sha256-UHYBE1AYHoGgMfD9AS/jX+S+N8eCDWUft6qolK9Eejc=";
+-    openSha256 = "sha256-HBINiOjL0ZJLIAJeNIBYHBnwgUXtNwPPtnFpAI1YwF4=";
++    openSha256 = "sha256-4HMf9lyCUU4FkpHyiUkk4cmiCSm/pu5eAccTSRz3AjY=";
++    fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-inDRpG02sdDgHmlqgu/DsgK8OFdOt1fZIYyXdhlGC/c=";
+     persistencedSha256 = "sha256-RzeR6Ldct6MUxjnXRyThdh5Y3jjMehTVg85MtwuWNX4=";
+   };
+@@ -92,7 +94,8 @@ rec {
+     version = "595.45.04";
+     sha256_64bit = "sha256-zUllSSRsuio7dSkcbBTuxF+dN12d6jEPE0WgGvVOj14=";
+     sha256_aarch64 = "sha256-jl6lQWsgF6ya22sAhYPpERJ9r+wjnWzbGnINDpUMzsk=";
+-    openSha256 = "sha256-uqNfImwTKhK8gncUdP1TPp0D6Gog4MSeIJMZQiJWDoE=";
++    openSha256 = "sha256-zkNIsepBEgDwlw0GvSB0CoZk3Zozsv6peqprs62U3rU=";
++    fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
+     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
+   };
+@@ -104,7 +107,8 @@ rec {
+     persistencedVersion = "595.45.04";
+     settingsVersion = "595.45.04";
+     sha256_64bit = "sha256-LOcwE47hUG1aZX7JvLmTb/yC5qQgXYZ0TAavSn38Xug=";
+-    openSha256 = "sha256-QboSiRWRZWseFg7GN/a4vZVQGGBF1UJlC9MyAxUxyF4=";
++    openSha256 = "sha256-+ZLnlNhMkLG7UNMRmc4yHojs4lsBSiFC/bGf2qk0W+o=";
++    fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
+     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
+     url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
+@@ -119,7 +123,8 @@ rec {
+     sha256_64bit = "sha256-ueL4BpN4FDHMh/TNKRCeEz3Oy1ClDWto1LO/LWlr1ok=";
+     persistencedSha256 = "sha256-wsNeuw7IaY6Qc/i/AzT/4N82lPjkwfrhxidKWUtcwW8=";
+     fabricmanagerSha256 = "sha256-f/AQ8HrgoqBQyXNrXA/UaI4OMQ9QcjjYWIhr1/5uM74=";
+-    openSha256 = "sha256-hECHfguzwduEfPo5pCDjWE/MjtRDhINVr4b1awFdP44=";
++    openSha256 = "sha256-uGQQkQf1oKkGhOXgJ3IzQX1NkB7cGFcnl0HWuqeN8d4=";
++    fetchOpenFromNvidia = true;
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -131,7 +136,8 @@ rec {
+     sha256_64bit = "sha256-WXWobuRb/8tib1GuM9EWmxCBhqLqR61lHnLxP6S21vk=";
+     persistencedSha256 = "sha256-3Omj160wtWdKAZDzWt/m/cbUTQ9DMJ1rSxMrnIrKXiw=";
+     fabricmanagerSha256 = "sha256-xZnTQYZy/uPrTLD6mACflGGWtaYB4luzh0AFxTstNIw=";
+-    openSha256 = "sha256-7eXEROG2rQK9+Ag26nG4jFPrnKeveVUQ0ugIAshJZPQ=";
++    openSha256 = "sha256-/wWZGvDN+Rmq2j6otbBjbrnbzGR9seMYmrATNnhKBnA=";
++    fetchOpenFromNvidia = true;
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -143,7 +149,8 @@ rec {
+     sha256_64bit = "sha256-AlaGfggsr5PXsl+nyOabMWBiqcbHLG4ij617I4xvoX0=";
+     persistencedSha256 = "sha256-x4K0Gp89LdL5YJhAI0AydMRxl6fyBylEnj+nokoBrK8=";
+     fabricmanagerSha256 = "sha256-jSTKzeRVTUcYma1Cb0ajSdXKCi6KzUXCp2OByPSWSR4=";
+-    openSha256 = "sha256-aTV5J4zmEgRCOavo6wLwh5efOZUG+YtoeIT/tnrC1Hg=";
++    openSha256 = "sha256-bwJQUj7eEM7XMji1bjS8T1Uw3qJtSE+fzZCtBKyHPH0=";
++    fetchOpenFromNvidia = true;
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -158,7 +165,8 @@ rec {
+     version = "580.178.04";
+     sha256_64bit = "sha256-WXWobuRb/8tib1GuM9EWmxCBhqLqR61lHnLxP6S21vk=";
+     sha256_aarch64 = "sha256-71nsXSSFDhLW91UOwffPhNtTqEzpxj6zulXvXtDE8Ek=";
+-    openSha256 = "sha256-7eXEROG2rQK9+Ag26nG4jFPrnKeveVUQ0ugIAshJZPQ=";
++    openSha256 = "sha256-/wWZGvDN+Rmq2j6otbBjbrnbzGR9seMYmrATNnhKBnA=";
++    fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-KcrGHoR+ZMdsFyI4myU8/eVls2f8GkNSX/j2JnZndyM=";
+     persistencedSha256 = "sha256-3Omj160wtWdKAZDzWt/m/cbUTQ9DMJ1rSxMrnIrKXiw=";
+   };
+@@ -169,7 +177,8 @@ rec {
+     version = "535.288.01";
+     sha256_64bit = "sha256-8gwy/W7NH3BcbfJ5fAwIQlPs9/9I8sNH+Co5YZiC7OE=";
+     sha256_aarch64 = "sha256-2d3RYzU+W4uS6mUvpCNCfoVcAJA/aerNwm7Xbg0YJBo=";
+-    openSha256 = "sha256-kDM8jeHjcRCyhOs8AQk+ce3Qzf2cI5RGzzIraJrSmOE=";
++    openSha256 = "sha256-cepwckGQ7L+HV5B+1vROQfGQKzVeGM0/i6exSnuy2do=";
++    fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-hN4IWAD/M+th7brbzdBtgOQ2P1QUVrrWITgVGiuCxWw=";
+     persistencedSha256 = "sha256-q061VN6om3UzbpWD7+tJJVgU/e2YCJF4IgEv53qx9ZA=";
+   };
+diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+index 4f33a254d03d5..84a36df0f454b 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+@@ -11,6 +11,8 @@
+   persistencedVersion ? null,
+   fabricmanagerSha256 ? null,
+   fabricmanagerVersion ? null,
++  # Whether to fetch the open-source kernel module sources from NVIDIA
++  fetchOpenFromNvidia ? false,
+   useGLVND ? true,
+   useProfiles ? true,
+   preferGtk2 ? false,
+@@ -41,6 +43,7 @@
+   pkgsi686Linux,
+   fetchurl,
+   fetchzip,
++  fetchFromGitHub,
+   which,
+   libarchive,
+   jq,
+@@ -237,14 +240,18 @@ stdenv.mkDerivation (finalAttrs: {
+         {
+           owner,
+           repo,
+-          rev,
++          tag,
++          nvrepo ? repo,
++          nvext ? "bz2",
+           ...
+         }@args:
+         let
+           args' = removeAttrs args [
+             "owner"
+             "repo"
+-            "rev"
++            "tag"
++            "nvrepo"
++            "nvext"
+           ];
+           baseUrl = "https://github.com/${owner}/${repo}";
+         in
+@@ -252,12 +259,14 @@ stdenv.mkDerivation (finalAttrs: {
+           args'
+           // {
+             urls = [
+-              "${baseUrl}/archive/${rev}.tar.gz"
+-              "https://download.nvidia.com/XFree86/${repo}/${repo}-${rev}.tar.bz2"
++              "${baseUrl}/archive/${tag}.tar.gz"
++              "https://download.nvidia.com/XFree86/${nvrepo}/${nvrepo}-${tag}.tar.${nvext}"
+             ];
+             # github and nvidia use different compression algorithms,
+             #  use an invalid file extension to force detection.
+             extension = "tar.??";
++            # do not try to retry 4xx errors
++            curlOptsList = [ "--no-retry-all-errors" ];
+           }
+         );
+     in
+@@ -269,7 +278,7 @@ stdenv.mkDerivation (finalAttrs: {
+             nvidia_x11 = finalAttrs.finalPackage;
+             # build files already patched when building the main package, so no need to patch them again
+             patches = [ ];
+-            inherit broken;
++            inherit broken fetchFromGithubOrNvidia;
+           }
+         else
+           { };
+@@ -286,6 +295,18 @@ stdenv.mkDerivation (finalAttrs: {
+             }) patches)
+             ++ patchesOpen;
+           broken = brokenOpen;
++          fetchFromGithubOrNvidia =
++            if fetchOpenFromNvidia then
++              fetchFromGithubOrNvidia
++            else
++              args:
++              fetchFromGitHub (
++                removeAttrs args [
++                  "nvrepo"
++                  "nvext"
++                  "postFetch"
++                ]
++              );
+         }
+       ) openSha256;
+       settings =
+diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+index 1b01e460d4c57..d4bc5e0cf26b6 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
+@@ -1,7 +1,7 @@
+ {
+   stdenv,
+   lib,
+-  fetchFromGitHub,
++  fetchFromGithubOrNvidia,
+   kernel,
+   kernelModuleMakeFlags,
+   nvidia_x11,
+@@ -20,11 +20,15 @@ stdenv.mkDerivation {
+ 
+   src =
+     if open then
+-      fetchFromGitHub {
++      fetchFromGithubOrNvidia {
+         owner = "NVIDIA";
+         repo = "open-gpu-kernel-modules";
+         tag = nvidia_x11.version;
++        nvrepo = "NVIDIA-kernel-module-source";
++        nvext = "xz";
+         inherit hash;
++        # remove files which causes hash mismatches
++        postFetch = "rm -rf $out/.github $out/CHANGELOG.md";
+       }
+     else
+       nvidia_x11.modsrc;
+diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
+index 4b87c7a294626..75c0aed476845 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
+@@ -19,7 +19,7 @@ stdenv.mkDerivation {
+   src = fetchFromGitHub {
+     owner = "NVIDIA";
+     repo = "nvidia-persistenced";
+-    rev = nvidia_x11.persistencedVersion;
++    tag = nvidia_x11.persistencedVersion;
+     inherit sha256;
+   };
+ 
+diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+index 81427e4bb09c9..b51700908bae0 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
+@@ -30,7 +30,7 @@ let
+   src = fetchFromGitHub {
+     owner = "NVIDIA";
+     repo = "nvidia-settings";
+-    rev = nvidia_x11.settingsVersion;
++    tag = nvidia_x11.settingsVersion;
+     inherit sha256;
+   };
+ 
+
+From f3a62e5e64bf6cfc4a341fecb9f9a82153987ae4 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Tue, 12 May 2026 15:44:41 +0800
+Subject: [PATCH 04/10] nvidia-modprobe: move to linuxPackages.nvidiaPackages
+
+Assisted-by: omp: DeepSeek V4.1 Flash
+---
+ doc/release-notes/rl-2611.section.md          |  5 +++
+ .../li/libnvidia-container/package.nix        | 11 ++---
+ pkgs/by-name/nv/nvidia-modprobe/package.nix   | 30 --------------
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 13 ++++++
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 11 +++++
+ .../os-specific/linux/nvidia-x11/modprobe.nix | 41 +++++++++++++++++++
+ pkgs/top-level/aliases.nix                    |  1 +
+ 7 files changed, 77 insertions(+), 35 deletions(-)
+ delete mode 100644 pkgs/by-name/nv/nvidia-modprobe/package.nix
+ create mode 100644 pkgs/os-specific/linux/nvidia-x11/modprobe.nix
+
+diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
+index 8711712a3c4f6..852240f8d2522 100644
+--- a/doc/release-notes/rl-2611.section.md
++++ b/doc/release-notes/rl-2611.section.md
+@@ -29,6 +29,11 @@
+ 
+ <!-- To avoid merge conflicts, consider adding your item at an arbitrary place in the list instead. -->
+ 
++- `nvidia-modprobe` is no longer a top-level package. It now comes from the
++  driver it belongs to, as `nvidiaPackages.<branch>.modprobe`, or
++  `linuxPackages.nvidiaPackages.<branch>.modprobe` where a kernel is involved.
++  The old `pkgs.nvidia-modprobe` name throws.
++
+ - The `dxvk` Wine setup wrapper now uses DXVK 3.x on Linux. DXVK 3.x requires Wine 10.0 or newer and a Vulkan 1.4-capable driver, and removes the `DXVK_FRAME_RATE` environment variable; use `dxvk.maxFrameRate` instead.
+   The native library is available as `dxvk_3`. The `dxvk_1` and `dxvk_2` packages remain available for older hardware and applications.
+   See the [upstream release notes](https://github.com/doitsujin/dxvk/releases/tag/v3.0) for details.
+diff --git a/pkgs/by-name/li/libnvidia-container/package.nix b/pkgs/by-name/li/libnvidia-container/package.nix
+index 734eeecac9853..ff473e076c680 100644
+--- a/pkgs/by-name/li/libnvidia-container/package.nix
++++ b/pkgs/by-name/li/libnvidia-container/package.nix
+@@ -13,16 +13,17 @@
+   removeReferencesTo,
+   replaceVars,
+   applyPatches,
+-  nvidia-modprobe,
++  linuxPackages,
+   go,
+ }:
+ let
+   modprobeVersion = "550.54.14";
+   patchedModprobe = applyPatches {
+-    src = nvidia-modprobe.src.override {
+-      version = modprobeVersion;
+-      hash = "sha256-iBRMkvOXacs/llTtvc/ZC5i/q9gc8lMuUHxMbu8A+Kg=";
+-    };
++    src =
++      (linuxPackages.nvidiaPackages.stable.modprobe.override {
++        version = modprobeVersion;
++        hash = "sha256-iBRMkvOXacs/llTtvc/ZC5i/q9gc8lMuUHxMbu8A+Kg=";
++      }).src;
+     patches = [
+       (replaceVars ./modprobe.patch {
+         inherit modprobeVersion;
+diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+deleted file mode 100644
+index b1c9c7f9c0d94..0000000000000
+--- a/pkgs/by-name/nv/nvidia-modprobe/package.nix
++++ /dev/null
+@@ -1,30 +0,0 @@
+-{
+-  stdenv,
+-  lib,
+-  fetchFromGitHub,
+-  gnum4,
+-}:
+-stdenv.mkDerivation (finalAttrs: {
+-  pname = "nvidia-modprobe";
+-  version = "595.71.05";
+-
+-  src = fetchFromGitHub {
+-    owner = "NVIDIA";
+-    repo = "nvidia-modprobe";
+-    rev = finalAttrs.version;
+-    hash = "sha256-XVWvnUZkEqEh3UjPIU6DaZuYU9DvjfIMsWbLJ78jJWs=";
+-  };
+-
+-  nativeBuildInputs = [ gnum4 ];
+-
+-  postPatch = ''
+-    substituteInPlace utils.mk --replace-fail "/usr/local" "$out"
+-  '';
+-
+-  meta = {
+-    description = "Load the NVIDIA kernel module and create NVIDIA character device files";
+-    homepage = "https://github.com/NVIDIA/nvidia-modprobe";
+-    license = lib.licenses.gpl2;
+-    platforms = lib.platforms.linux;
+-  };
+-})
+diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
+index fb99c0fc691ed..3e8d13c74ee76 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/default.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
+@@ -78,6 +78,7 @@ rec {
+     fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-4Kxro6tvI5aX4nu2RspgyBsW+Jq3/VYjSAS5UGdzTCU=";
+     persistencedSha256 = "sha256-JsMLPqJuZwAtHngsQODMsmgO7F2tVkQ2arc7fYa2bwo=";
++    modprobeSha256 = "sha256-TSP1RySipE2cA6pFopdbBPp+6bLTkGzOZ098OOuAse8=";
+   };
+ 
+   new_feature = generic {
+@@ -88,6 +89,7 @@ rec {
+     fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-inDRpG02sdDgHmlqgu/DsgK8OFdOt1fZIYyXdhlGC/c=";
+     persistencedSha256 = "sha256-RzeR6Ldct6MUxjnXRyThdh5Y3jjMehTVg85MtwuWNX4=";
++    modprobeSha256 = "sha256-ZAcooGeOaF3JQ4fzVG3SH7UE5skd/xzt/dGWEPuR4K4=";
+   };
+ 
+   beta = generic {
+@@ -98,6 +100,7 @@ rec {
+     fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
+     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
++    modprobeSha256 = "sha256-DDeSu6R1JsUux77LfsrAVBTwW6MPu6P1v8W4o2VCN2g=";
+   };
+ 
+   # Vulkan developer beta driver
+@@ -106,11 +109,13 @@ rec {
+     version = "595.44.09";
+     persistencedVersion = "595.45.04";
+     settingsVersion = "595.45.04";
++    modprobeVersion = "595.45.04";
+     sha256_64bit = "sha256-LOcwE47hUG1aZX7JvLmTb/yC5qQgXYZ0TAavSn38Xug=";
+     openSha256 = "sha256-+ZLnlNhMkLG7UNMRmc4yHojs4lsBSiFC/bGf2qk0W+o=";
+     fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-Y45pryyM+6ZTJyRaRF3LMKaiIWxB5gF5gGEEcQVr9nA=";
+     persistencedSha256 = "sha256-5FoeUaRRMBIPEWGy4Uo0Aho39KXmjzQsuAD9m/XkNpA=";
++    modprobeSha256 = "sha256-DDeSu6R1JsUux77LfsrAVBTwW6MPu6P1v8W4o2VCN2g=";
+     url = "https://developer.nvidia.com/downloads/vulkan-beta-${lib.concatStrings (lib.splitVersion version)}-linux";
+   };
+ 
+@@ -125,6 +130,7 @@ rec {
+     fabricmanagerSha256 = "sha256-f/AQ8HrgoqBQyXNrXA/UaI4OMQ9QcjjYWIhr1/5uM74=";
+     openSha256 = "sha256-uGQQkQf1oKkGhOXgJ3IzQX1NkB7cGFcnl0HWuqeN8d4=";
+     fetchOpenFromNvidia = true;
++    modprobeSha256 = "sha256-Vtp5FDDmzbwtDe11O0w/S8Mptpp8Li21/gBfJzfE0/g=";
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -138,6 +144,7 @@ rec {
+     fabricmanagerSha256 = "sha256-xZnTQYZy/uPrTLD6mACflGGWtaYB4luzh0AFxTstNIw=";
+     openSha256 = "sha256-/wWZGvDN+Rmq2j6otbBjbrnbzGR9seMYmrATNnhKBnA=";
+     fetchOpenFromNvidia = true;
++    modprobeSha256 = "sha256-2zdTEcAQDrmik2R2FDk6UL5oczkMTHQ9KcinD3jJCCI=";
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -151,6 +158,7 @@ rec {
+     fabricmanagerSha256 = "sha256-jSTKzeRVTUcYma1Cb0ajSdXKCi6KzUXCp2OByPSWSR4=";
+     openSha256 = "sha256-bwJQUj7eEM7XMji1bjS8T1Uw3qJtSE+fzZCtBKyHPH0=";
+     fetchOpenFromNvidia = true;
++    modprobeSha256 = "sha256-Sk5ogsasf6DBz0j54dhlqZp7p8swnNnvITkdIudc69k=";
+     useSettings = false;
+     usePersistenced = true;
+     useFabricmanager = true;
+@@ -169,6 +177,7 @@ rec {
+     fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-KcrGHoR+ZMdsFyI4myU8/eVls2f8GkNSX/j2JnZndyM=";
+     persistencedSha256 = "sha256-3Omj160wtWdKAZDzWt/m/cbUTQ9DMJ1rSxMrnIrKXiw=";
++    modprobeSha256 = "sha256-2zdTEcAQDrmik2R2FDk6UL5oczkMTHQ9KcinD3jJCCI=";
+   };
+ 
+   # Last one without the bug reported here:
+@@ -181,6 +190,7 @@ rec {
+     fetchOpenFromNvidia = true;
+     settingsSha256 = "sha256-hN4IWAD/M+th7brbzdBtgOQ2P1QUVrrWITgVGiuCxWw=";
+     persistencedSha256 = "sha256-q061VN6om3UzbpWD7+tJJVgU/e2YCJF4IgEv53qx9ZA=";
++    modprobeSha256 = "sha256-4GYNBKQthFpV3BnFQkUTkElcemssyV0oKGzDzHbSWW0=";
+   };
+ 
+   # Last one supporting Kepler architecture
+@@ -199,6 +209,7 @@ rec {
+       sha256_aarch64 = "sha256-e+QvE+S3Fv3JRqC9ZyxTSiCu8gJdZXSz10gF/EN6DY0=";
+       settingsSha256 = "sha256-kftQ4JB0iSlE8r/Ze/+UMnwLzn0nfQtqYXBj+t6Aguk=";
+       persistencedSha256 = "sha256-iYoSib9VEdwjOPBP1+Hx5wCIMhW8q8cCHu9PULWfnyQ=";
++      modprobeSha256 = "sha256-x2bMn0Hjb8axAdqhjODFvKR875DhP7R3OiwxI3FVy1M=";
+ 
+       patches = map (patch: "${aurPatches}/${patch}") [
+         "0001-Fix-conftest-to-ignore-implicit-function-declaration.patch"
+@@ -228,6 +239,7 @@ rec {
+     sha256_64bit = "sha256-W+u8puj+1da52BBw+541HxjtxTSVJVPL3HHo/QubMoo=";
+     settingsSha256 = "sha256-uJZO4ak/w/yeTQ9QdXJSiaURDLkevlI81de0q4PpFpw=";
+     persistencedSha256 = "sha256-NuqUQbVt80gYTXgIcu0crAORfsj9BCRooyH3Gp1y1ns=";
++    modprobeSha256 = "sha256-RxFTC1Nc8f6Gzlvllsa4QGwNurfOocvC4QC4gPYO3lY=";
+ 
+     patches = map (patch: "${aurPatches}/${patch}") [
+       "kernel-4.16+-memory-encryption.patch"
+@@ -290,6 +302,7 @@ rec {
+       sha256_64bit = "06xp6c0sa7v1b82gf0pq0i5p0vdhmm3v964v0ypw36y0nzqx8wf6";
+       settingsSha256 = "0zm29jcf0mp1nykcravnzb5isypm8l8mg2gpsvwxipb7nk1ivy34";
+       persistencedSha256 = "1ax4xn3nmxg1y6immq933cqzw6cj04x93saiasdc0kjlv0pvvnkn";
++      modprobeSha256 = "sha256-aEVCKYliPCk8SJybZ/wcgU8bppmx7tlAUuOaAQqJgeQ=";
+       useGLVND = false;
+ 
+       broken = kernel.kernelAtLeast "6.7";
+diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+index 84a36df0f454b..097e973bd5b8a 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
+@@ -11,6 +11,8 @@
+   persistencedVersion ? null,
+   fabricmanagerSha256 ? null,
+   fabricmanagerVersion ? null,
++  modprobeSha256 ? null,
++  modprobeVersion ? null,
+   # Whether to fetch the open-source kernel module sources from NVIDIA
+   fetchOpenFromNvidia ? false,
+   useGLVND ? true,
+@@ -337,11 +339,20 @@ stdenv.mkDerivation (finalAttrs: {
+           ) fabricmanagerSha256
+         else
+           { };
++      modprobe = lib.mapNullable (
++        hash:
++        callPackage ./modprobe.nix {
++          inherit hash fetchFromGithubOrNvidia;
++          version = if modprobeVersion != null then modprobeVersion else finalAttrs.version;
++          nvidia_x11 = finalAttrs.finalPackage;
++        }
++      ) modprobeSha256;
+       settingsVersion = if settingsVersion != null then settingsVersion else finalAttrs.version;
+       persistencedVersion =
+         if persistencedVersion != null then persistencedVersion else finalAttrs.version;
+       fabricmanagerVersion =
+         if fabricmanagerVersion != null then fabricmanagerVersion else finalAttrs.version;
++      modprobeVersion = if modprobeVersion != null then modprobeVersion else finalAttrs.version;
+       compressFirmware = false;
+       ibtSupport = ibtSupport || (lib.versionAtLeast version "530");
+     }
+diff --git a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
+new file mode 100644
+index 0000000000000..f3e7a11a79eef
+--- /dev/null
++++ b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
+@@ -0,0 +1,41 @@
++{
++  stdenv,
++  lib,
++  fetchFromGithubOrNvidia,
++  gnum4,
++  nvidia_x11,
++  version,
++  hash,
++  versionCheckHook,
++}:
++stdenv.mkDerivation (finalAttrs: {
++  pname = "nvidia-modprobe";
++  inherit version;
++
++  src = fetchFromGithubOrNvidia {
++    owner = "NVIDIA";
++    repo = "nvidia-modprobe";
++    tag = finalAttrs.version;
++    inherit hash;
++  };
++
++  nativeBuildInputs = [ gnum4 ];
++
++  # `nvidia-modprobe --version` prints the version of the source it was built
++  # from, so a source whose hash was not updated on a version bump is caught
++  # here instead of silently reusing the old tree from the store.
++  doInstallCheck = true;
++  nativeInstallCheckInputs = [ versionCheckHook ];
++
++  postPatch = ''
++    substituteInPlace utils.mk --replace-fail "/usr/local" "$out"
++  '';
++
++  meta = {
++    description = "Load the NVIDIA kernel module and create NVIDIA character device files";
++    homepage = "https://github.com/NVIDIA/nvidia-modprobe";
++    license = lib.licenses.gpl2;
++    platforms = nvidia_x11.meta.platforms;
++    mainProgram = "nvidia-modprobe";
++  };
++})
+diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
+index a140fabc22175..e766efa043e9e 100644
+--- a/pkgs/top-level/aliases.nix
++++ b/pkgs/top-level/aliases.nix
+@@ -1950,6 +1950,7 @@ mapAliases {
+   numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
+   nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
+   nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
++  nvidia-modprobe = throw "'nvidia-modprobe' has been moved to 'linuxPackages.nvidiaPackages.<driver>.modprobe'"; # Added 2026-10-03
+   o = throw "'o' has been renamed to/replaced by 'orbiton'"; # Converted to throw 2025-10-27
+   oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
+   oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
+
+From a8b29fea93aebe2b6e036cf4b3c5db9a7374ba23 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 20:08:54 +0800
-Subject: [PATCH 04/10] nvidia-x11: document driver updates and custom versions
+Subject: [PATCH 05/10] nvidia-x11: document driver updates and custom versions
 
 Add pkgs/os-specific/linux/nvidia-x11/README.md covering how a driver is added or updated, how hashes are obtained and verified, and how to call mkDriver with a custom version. Point the hardware.nvidia.package option at it.
 
@@ -1124,7 +1349,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/README.md
 
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index 68ed2cb3a3fb5..1b1f5fdfe0dc8 100644
+index 91424fbb643d1..fdfd6b3dbbac5 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
 @@ -354,7 +354,8 @@ in
@@ -1288,199 +1513,7 @@ index 0000000000000..c92750b3b2948
 +`hardware.nvidia.open` selects the open kernel modules and uses the package's
 +`.open` output when set to `true`.
 
-From d83396e560a820ffc4c9fc2123f3cdd8c3d789bf Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Fri, 2 Oct 2026 23:42:50 +0800
-Subject: [PATCH 05/10] nvidia-x11: check the version of the fetched sources
-
-A version bump whose hash was not updated silently reuses the old source from
-the store, which the second URL and the postFetch in this PR make more likely.
-Check the version each build actually produced:
-
-- nvidia-modprobe, nvidia-settings and nvidia-persistenced use
-  versionCheckHook on their --version output.
-- The open and the non-open kernel modules carry MODULE_VERSION, which
-  installCheckPhase reads back with modinfo.
-- The driver has no executable that reports its version without a loaded
-  driver, so it checks that a library in its output is named after the
-  version.
-- libXNVCtrl has no version in its output and no program to run, so its
-  checkPhase compares NVIDIA_VERSION in the source version.mk with the version
-  it is built as.
-
-Assisted-by: omp:DeepSeek V4.1 Flash
----
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 16 +++++++++++++
- .../linux/nvidia-x11/kernel-modules.nix       | 23 +++++++++++++++++++
- .../os-specific/linux/nvidia-x11/modprobe.nix |  7 ++++++
- .../linux/nvidia-x11/persistenced.nix         |  6 +++++
- .../os-specific/linux/nvidia-x11/settings.nix | 20 ++++++++++++++++
- 5 files changed, 72 insertions(+)
-
-diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index 28f27b9844169..097e973bd5b8a 100644
---- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-@@ -206,6 +206,22 @@ stdenv.mkDerivation (finalAttrs: {
-   ++ lib.optional (!libsOnly && firmware) "firmware";
-   outputDev = if libsOnly then null else "bin";
- 
-+  # None of the packaged executables reports the driver version without a
-+  # loaded driver, so check the unpacked driver itself: its libraries are named
-+  # after the version.  This catches an archive whose hash was not updated on a
-+  # version bump and which would otherwise be silently reused from the store.
-+  # stdenv sets nullglob, so the glob is counted instead of listed.
-+  doInstallCheck = true;
-+  installCheckPhase = ''
-+    runHook preInstallCheck
-+    if ! { set -- "$out"/lib/*.so."$version"; [ $# -gt 0 ]; }; then
-+      echo "no library is named after version $version, the driver archive is not the expected version:" >&2
-+      ls "$out/lib" >&2 || true
-+      exit 1
-+    fi
-+    runHook postInstallCheck
-+  '';
-+
-   dontStrip = true;
-   dontPatchELF = true;
- 
-diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index 54082f301c2b9..d4bc5e0cf26b6 100644
---- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-@@ -9,6 +9,7 @@
-   patches,
-   broken,
-   hash ? null,
-+  kmod,
- }:
- 
- assert open -> hash != null;
-@@ -55,6 +56,28 @@ stdenv.mkDerivation {
-   installTargets = [ "modules_install" ];
-   enableParallelBuilding = true;
- 
-+  # Both variants end up with MODULE_VERSION from the version of the sources
-+  # they were built from (version.mk for the open module, the driver's
-+  # NV_VERSION_STRING for the non-open one).  Reading it back catches a hash
-+  # that was not updated on a version bump, which would otherwise silently
-+  # reuse the old tree from the store.
-+  doInstallCheck = true;
-+  nativeInstallCheckInputs = [ kmod ];
-+  installCheckPhase = ''
-+    runHook preInstallCheck
-+    module=$(find "$out/lib/modules" \( -name nvidia.ko -o -name 'nvidia.ko.*' \) -print -quit)
-+    if [ -z "$module" ]; then
-+      echo "no nvidia.ko found under $out/lib/modules" >&2
-+      exit 1
-+    fi
-+    got=$(modinfo -F version "$module")
-+    if [ "$got" != "${nvidia_x11.version}" ]; then
-+      echo "nvidia.ko reports version '$got', expected '${nvidia_x11.version}'" >&2
-+      exit 1
-+    fi
-+    runHook postInstallCheck
-+  '';
-+
-   allowedReferences = [ ];
- 
-   meta = {
-diff --git a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-index 4b8836cb4ca26..f3e7a11a79eef 100644
---- a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-@@ -6,6 +6,7 @@
-   nvidia_x11,
-   version,
-   hash,
-+  versionCheckHook,
- }:
- stdenv.mkDerivation (finalAttrs: {
-   pname = "nvidia-modprobe";
-@@ -20,6 +21,12 @@ stdenv.mkDerivation (finalAttrs: {
- 
-   nativeBuildInputs = [ gnum4 ];
- 
-+  # `nvidia-modprobe --version` prints the version of the source it was built
-+  # from, so a source whose hash was not updated on a version bump is caught
-+  # here instead of silently reusing the old tree from the store.
-+  doInstallCheck = true;
-+  nativeInstallCheckInputs = [ versionCheckHook ];
-+
-   postPatch = ''
-     substituteInPlace utils.mk --replace-fail "/usr/local" "$out"
-   '';
-diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index d7ddca5d91665..75c0aed476845 100644
---- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-@@ -9,6 +9,7 @@ nvidia_x11: sha256:
-   pkg-config,
-   addDriverRunpath,
-   libtirpc,
-+  versionCheckHook,
- }:
- 
- stdenv.mkDerivation {
-@@ -35,6 +36,11 @@ stdenv.mkDerivation {
-     addDriverRunpath
-   ];
- 
-+  # `nvidia-persistenced --version` prints the version of the source it was
-+  # built from, catching a hash that was not updated on a version bump.
-+  doInstallCheck = true;
-+  nativeInstallCheckInputs = [ versionCheckHook ];
-+
-   buildInputs = [
-     libtirpc
-   ];
-diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index 41f14b075fc2c..b51700908bae0 100644
---- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-@@ -21,6 +21,7 @@ nvidia_x11: sha256:
-   libglvnd,
-   wrapGAppsHook3,
-   addDriverRunpath,
-+  versionCheckHook,
-   withGtk2 ? false,
-   withGtk3 ? true,
- }:
-@@ -58,6 +59,20 @@ let
-       "libXNVCtrl.so"
-     ];
- 
-+    # The library carries no version of its own and has no program to run, but
-+    # its source states which nvidia-settings release it came from.  A version
-+    # bump whose hash was not updated would build it from the old tree.
-+    doCheck = true;
-+    checkPhase = ''
-+      runHook preCheck
-+      if ! grep -q "NVIDIA_VERSION = $version" $src/version.mk; then
-+        echo "the source is not nvidia-settings $version:" >&2
-+        grep -m1 NVIDIA_VERSION $src/version.mk >&2 || true
-+        exit 1
-+      fi
-+      runHook postCheck
-+    '';
-+
-     patches = [
-       # Patch the Makefile to also produce a shared library.
-       (
-@@ -126,6 +141,11 @@ stdenv.mkDerivation {
-   enableParallelBuilding = true;
-   makeFlags = [ "NV_USE_BUNDLED_LIBJANSSON=0" ];
- 
-+  # `nvidia-settings --version` prints the version of the source it was built
-+  # from, catching a hash that was not updated on a version bump.
-+  doInstallCheck = true;
-+  nativeInstallCheckInputs = [ versionCheckHook ];
-+
-   preBuild = ''
-     if [ -e src/libXNVCtrl/libXNVCtrl.a ]; then
-       ( cd src/libXNVCtrl
-
-From 6be5611225e3ebc6d8d27d12525d4f4e7df5fef0 Mon Sep 17 00:00:00 2001
+From 47e1149afe94d729021d9c68a8c1a2a6c5a44cc7 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:30:08 +0800
 Subject: [PATCH 06/10] linuxPackages.nvidiaPackages: move userspace utilities
@@ -1737,7 +1770,7 @@ index 0000000000000..4c30002896463
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index c9714aad5a25d..5429242824bd9 100644
+index 3e8d13c74ee76..e1412a525bf89 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -10,17 +10,7 @@
@@ -2439,7 +2472,7 @@ index b51700908bae0..7b4cfbca5abbc 100644
      gtk3
      librsvg
 
-From 06a5577d0abcfc4cbc22a46ba66540a082d2f604 Mon Sep 17 00:00:00 2001
+From af2cd760d0fe50bb924b8b323146ae3e42f99c1c Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 22:50:14 +0800
 Subject: [PATCH 07/10] nvidia-settings: get profiles from
@@ -2516,57 +2549,67 @@ index 7b4cfbca5abbc..ecc5b8c9462f2 100644
      vulkan-headers
    ]
 
-From bdc025b371ae4b9f3d4e7881a9091062b171a348 Mon Sep 17 00:00:00 2001
+From 1efd026e278aa865cb82b7f8eddd8f913eada591 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 11:29:02 +0800
-Subject: [PATCH 08/10] nvidia-x11: unpack the installer through a setup hook
+Subject: [PATCH 08/10] nvidia-x11: unpack the installer into a source
+ derivation
 
-The installer is a Makeself archive, which unpackPhase cannot handle. Add a
-setup hook for it and use it for both the userspace libraries and the
-proprietary kernel module, so the module is built from the same sources as the
-driver it belongs to instead of a separately fetched tree.
-
-Identify the archive by its shell preamble rather than by the file name, so the
-Vulkan developer driver, which ships as vulkan-beta-<version>-linux, unpacks
-like the rest.
-
-The kernel ceiling is a brokenAbove on the module now, so a driver that builds
-while its module does not is marked broken where the failure is.
-
-Assisted-by: omp:Space Bunny Alpha
+The installer is a Makeself archive, and both the userspace build and the
+proprietary kernel module build need the tree inside it.  Unpack it once, in
+its own derivation, instead of through a setup hook that every consumer has to
+carry.  The open kernel module does not need it at all.
 ---
- .../os-specific/linux/nvidia-x11/binaries.nix | 22 ++++-------
- pkgs/os-specific/linux/nvidia-x11/builder.sh  | 16 --------
- pkgs/os-specific/linux/nvidia-x11/default.nix |  4 +-
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 33 ++++++++++------
- .../linux/nvidia-x11/kernel-modules.nix       | 39 ++++++++++++++-----
- .../linux/nvidia-x11/unpack-hook.nix          | 32 +++++++++++++++
- .../linux/nvidia-x11/unpack-hook.sh           | 32 +++++++++++++++
- 7 files changed, 123 insertions(+), 55 deletions(-)
- create mode 100644 pkgs/os-specific/linux/nvidia-x11/unpack-hook.nix
- create mode 100644 pkgs/os-specific/linux/nvidia-x11/unpack-hook.sh
+ .../os-specific/linux/nvidia-x11/binaries.nix | 107 +---------
+ pkgs/os-specific/linux/nvidia-x11/builder.sh  |  16 --
+ pkgs/os-specific/linux/nvidia-x11/default.nix |   4 +-
+ pkgs/os-specific/linux/nvidia-x11/generic.nix |  45 +++--
+ .../linux/nvidia-x11/installer.nix            | 183 ++++++++++++++++++
+ .../linux/nvidia-x11/kernel-modules.nix       |  34 +++-
+ 6 files changed, 249 insertions(+), 140 deletions(-)
+ create mode 100644 pkgs/os-specific/linux/nvidia-x11/installer.nix
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-index 4c30002896463..834174322e651 100644
+index 4c30002896463..d1757c87cbe11 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-@@ -4,13 +4,12 @@
+@@ -2,15 +2,13 @@
+   # Package dependencies
+   lib,
    stdenv,
-   fetchurl,
+-  fetchurl,
    which,
 -  libarchive,
    jq,
 -  zstd,
    pkgs,
    pkgsi686Linux,
-   config,
+-  config,
 -  # Whether to build only userspace libraries (without bin/modsrc/firmware outputs)
-+  nvidiaDriverUnpackHook,
++  # The unpacked driver installer, shared with the kernel module build.
++  src,
 +  # Whether to build only userspace libraries (without bin/firmware outputs)
    libsOnly,
    # don't include the bundled 32-bit libraries on 64-bit platforms,
    # even if it's in downloaded binary
-@@ -45,9 +44,6 @@
+@@ -20,16 +18,12 @@
+   # Whether to extract the GSP firmware; datacenter drivers and open
+   # kernel module builds need it
+   firmware ? openSha256 != null || useFabricmanager,
+-  # Whether the user accepts the NVIDIA Software License
+-  acceptLicense ? config.nvidia.acceptLicense or false,
+   # Hash for open kernel modules; if non-null, allows building
+   # without accepting the proprietary license
+   openSha256,
+   # Driver version and sources
+   version,
+-  url,
+   sha256_32bit,
+-  sha256_64bit,
+   sha256_aarch64,
+   # Feature flags
+   useGLVND,
+@@ -45,9 +39,6 @@
    patches,
    preInstall,
    postInstall,
@@ -2576,7 +2619,82 @@ index 4c30002896463..834174322e651 100644
    ...
  }:
  
-@@ -164,10 +160,7 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -76,74 +67,11 @@ let
+       ]
+     );
+ 
+-  # Throw an error about license acceptance
+-  throwLicense = throw ''
+-    Use of NVIDIA Software requires license acceptance of the license:
+-
+-      - License For Customer Use of NVIDIA Software [1]
+-
+-    You can express acceptance by setting acceptLicense to true your nixpkgs.config.
+-    Example:
+-
+-      configuration.nix:
+-        nixpkgs.config.allowUnfree = true;
+-        nixpkgs.config.nvidia.acceptLicense = true;
+-
+-      config.nix:
+-        allowUnfree = true;
+-        nvidia.acceptLicense = true;
+-
+-    [1]: https://www.nvidia.com/content/DriverDownloads/licence.php?lang=us
+-  '';
+-
+-  pkgSuffix = lib.optionalString (lib.versionOlder version "304") "-pkg0";
+   i686bundled = lib.versionAtLeast version "391" && !disable32Bit;
+ 
+   libPath = libPathFor pkgs;
+   libPath32 = lib.optionalString i686bundled (libPathFor pkgsi686Linux);
+ 
+-  src =
+-    if !acceptLicense && (openSha256 == null) then
+-      throwLicense
+-    else if stdenv.hostPlatform.system == "x86_64-linux" then
+-      fetchurl {
+-        urls =
+-          if url != null then
+-            [ url ]
+-          else
+-            [
+-              "https://us.download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}${pkgSuffix}.run"
+-              "https://download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}${pkgSuffix}.run"
+-            ];
+-        sha256 = sha256_64bit;
+-      }
+-    else if stdenv.hostPlatform.system == "i686-linux" then
+-      fetchurl {
+-        urls =
+-          if url != null then
+-            [ url ]
+-          else
+-            [
+-              "https://us.download.nvidia.com/XFree86/Linux-x86/${version}/NVIDIA-Linux-x86-${version}${pkgSuffix}.run"
+-              "https://download.nvidia.com/XFree86/Linux-x86/${version}/NVIDIA-Linux-x86-${version}${pkgSuffix}.run"
+-            ];
+-        sha256 = sha256_32bit;
+-      }
+-    else if stdenv.hostPlatform.system == "aarch64-linux" && sha256_aarch64 != null then
+-      fetchurl {
+-        urls =
+-          if url != null then
+-            [ url ]
+-          else
+-            [
+-              "https://us.download.nvidia.com/XFree86/aarch64/${version}/NVIDIA-Linux-aarch64-${version}${pkgSuffix}.run"
+-              "https://download.nvidia.com/XFree86/Linux-aarch64/${version}/NVIDIA-Linux-aarch64-${version}${pkgSuffix}.run"
+-            ];
+-        sha256 = sha256_aarch64;
+-      }
+-    else
+-      throw "nvidia-x11 does not support platform ${stdenv.hostPlatform.system}";
+-
+ in
+ 
+ stdenv.mkDerivation (finalAttrs: {
+@@ -164,41 +92,21 @@ stdenv.mkDerivation (finalAttrs: {
      "out"
    ]
    ++ lib.optional i686bundled "lib32"
@@ -2588,13 +2706,30 @@ index 4c30002896463..834174322e651 100644
    ++ lib.optional (!libsOnly && firmware) "firmware";
    outputDev = if libsOnly then null else "bin";
  
-@@ -193,12 +186,12 @@ stdenv.mkDerivation (finalAttrs: {
+-  # None of the packaged executables reports the driver version without a
+-  # loaded driver, so check the unpacked driver itself: its libraries are named
+-  # after the version.  This catches an archive whose hash was not updated on a
+-  # version bump and which would otherwise be silently reused from the store.
+-  # stdenv sets nullglob, so the glob is counted instead of listed.
+-  doInstallCheck = true;
+-  installCheckPhase = ''
+-    runHook preInstallCheck
+-    if ! { set -- "$out"/lib/*.so."$version"; [ $# -gt 0 ]; }; then
+-      echo "no library is named after version $version, the driver archive is not the expected version:" >&2
+-      ls "$out/lib" >&2 || true
+-      exit 1
+-    fi
+-    runHook postInstallCheck
+-  '';
+-
+   dontStrip = true;
+   dontPatchELF = true;
+ 
    inherit libPath libPath32;
  
    nativeBuildInputs = [
 -    libarchive
      jq
-+    nvidiaDriverUnpackHook
    ]
 -  # NVIDIA has changed the compression format of their driver to zstd since version 530.30.02
 -  # https://forums.developer.nvidia.com/t/linux-solaris-and-freebsd-driver-530-30-02-beta/244406
@@ -2605,7 +2740,7 @@ index 4c30002896463..834174322e651 100644
  
    passthru = {
      compressFirmware = false;
-@@ -228,6 +221,5 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -228,6 +136,5 @@ stdenv.mkDerivation (finalAttrs: {
        edwtjo
      ];
      priority = 4; # resolves collision with xorg-server's "lib/xorg/modules/extensions/libglx.so"
@@ -2644,7 +2779,7 @@ index cf0a4fefd3996..74c88113446fa 100755
          # Install the GSP firmware
          install -Dm644 -t $firmware/lib/firmware/nvidia/$version firmware/*.bin
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 5429242824bd9..5985eb6036b64 100644
+index e1412a525bf89..c05a319bc1675 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -248,7 +248,7 @@ rec {
@@ -2666,7 +2801,7 @@ index 5429242824bd9..5985eb6036b64 100644
  
        # fixes the bug described in https://bbs.archlinux.org/viewtopic.php?pid=2083439#p2083439
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index c28e39a36c302..380c3827ba221 100644
+index c28e39a36c302..3c836d32258eb 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -4,9 +4,11 @@
@@ -2693,28 +2828,61 @@ index c28e39a36c302..380c3827ba221 100644
  }:
  
  assert useSettings -> settingsSha256 != null;
-@@ -53,6 +56,10 @@ assert useFabricmanager -> fabricmanagerSha256 != null;
+@@ -53,6 +56,21 @@ assert useFabricmanager -> fabricmanagerSha256 != null;
  assert useFabricmanager -> !useSettings;
  
  let
-+  nvidiaDriverUnpackHook = callPackage ./unpack-hook.nix { };
++  # The installer is a Makeself archive that both the userspace build and the
++  # kernel module build read, so it is unpacked once, for each platform.
++  installerArgs = {
++    inherit
++      version
++      url
++      sha256_32bit
++      sha256_64bit
++      sha256_aarch64
++      openSha256
++      ;
++  };
 +
 +  modulesBroken = brokenAbove != null && kernel.kernelAtLeast brokenAbove;
 +
    fetchFromGithubOrNvidia =
      {
        owner,
-@@ -133,8 +140,7 @@ let
+@@ -118,9 +136,7 @@ let
+       driverArgs = {
+         inherit
+           version
+-          url
+           sha256_32bit
+-          sha256_64bit
+           sha256_aarch64
+           openSha256
+           useGLVND
+@@ -133,19 +149,19 @@ let
            patches
            preInstall
            postInstall
 -          broken
 -          brokenOpen
-+          nvidiaDriverUnpackHook
            ;
        };
      in
-@@ -161,11 +167,11 @@ nvidiaDriver.overrideAttrs (
+     callPackage ./binaries.nix (
+       driverArgs
+       // {
++        src = callPackage ./installer.nix installerArgs;
+         inherit libsOnly;
+         lib32 =
+           (pkgsi686Linux.callPackage ./binaries.nix (
+             driverArgs
+             // {
++              src = pkgsi686Linux.callPackage ./installer.nix installerArgs;
+               libsOnly = true;
+               lib32 = null;
+               firmware = false;
+@@ -161,11 +177,11 @@ nvidiaDriver.overrideAttrs (
          if !libsOnly then
            callPackage ./kernel-modules.nix {
              open = false;
@@ -2723,7 +2891,7 @@ index c28e39a36c302..380c3827ba221 100644
 -            # so no need to patch them again
 -            patches = [ ];
 -            inherit broken fetchFromGithubOrNvidia;
-+            inherit fetchFromGithubOrNvidia nvidiaDriverUnpackHook;
++            inherit fetchFromGithubOrNvidia;
 +            inherit prePatch patches patchFlags;
 +            version = finalAttrs.finalPackage.version;
 +            src = finalAttrs.finalPackage.src;
@@ -2731,13 +2899,11 @@ index c28e39a36c302..380c3827ba221 100644
            }
          else
            { };
-@@ -173,15 +179,18 @@ nvidiaDriver.overrideAttrs (
-         hash:
+@@ -174,14 +190,17 @@ nvidiaDriver.overrideAttrs (
          callPackage ./kernel-modules.nix {
            open = true;
--          inherit hash;
+           inherit hash;
 -          nvidia_x11 = finalAttrs.finalPackage;
-+          inherit hash nvidiaDriverUnpackHook;
 +          version = finalAttrs.finalPackage.version;
 +          src = finalAttrs.finalPackage.src;
 +          patchFlags = null;
@@ -2753,16 +2919,204 @@ index c28e39a36c302..380c3827ba221 100644
            fetchFromGithubOrNvidia =
              if fetchOpenFromNvidia then
                fetchFromGithubOrNvidia
+diff --git a/pkgs/os-specific/linux/nvidia-x11/installer.nix b/pkgs/os-specific/linux/nvidia-x11/installer.nix
+new file mode 100644
+index 0000000000000..032f15cb71fb7
+--- /dev/null
++++ b/pkgs/os-specific/linux/nvidia-x11/installer.nix
+@@ -0,0 +1,183 @@
++{
++  lib,
++  stdenvNoCC,
++  fetchurl,
++  # Whether the user accepts the NVIDIA Software License.
++  config,
++  # Extraction: the Makeself preamble drives these, and the payload may be
++  # compressed with any of them.
++  coreutils,
++  gawk,
++  gnugrep,
++  gnused,
++  gnutar,
++  libarchive,
++  which,
++  zstd,
++  version,
++  url ? null,
++  sha256_32bit ? null,
++  sha256_64bit,
++  sha256_aarch64 ? null,
++  acceptLicense ? config.nvidia.acceptLicense or false,
++  openSha256 ? null,
++}:
++
++let
++  # Throw an error about license acceptance
++  throwLicense = throw ''
++    Use of NVIDIA Software requires license acceptance of the license:
++
++      - License For Customer Use of NVIDIA Software [1]
++
++    You can express acceptance by setting acceptLicense to true your nixpkgs.config.
++    Example:
++
++      configuration.nix:
++        nixpkgs.config.allowUnfree = true;
++        nixpkgs.config.nvidia.acceptLicense = true;
++
++      config.nix:
++        allowUnfree = true;
++        nvidia.acceptLicense = true;
++
++    [1]: https://www.nvidia.com/content/DriverDownloads/licence.php?lang=us
++  '';
++
++  pkgSuffix = lib.optionalString (lib.versionOlder version "304") "-pkg0";
++in
++stdenvNoCC.mkDerivation (finalAttrs: {
++  pname = "nvidia-installer-source";
++  inherit version;
++
++  src =
++    let
++      system = stdenvNoCC.hostPlatform.system;
++    in
++    if !acceptLicense && openSha256 == null then
++      throwLicense
++    else if system == "x86_64-linux" then
++      fetchurl {
++        urls =
++          if url != null then
++            [ url ]
++          else
++            [
++              "https://us.download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}${pkgSuffix}.run"
++              "https://download.nvidia.com/XFree86/Linux-x86_64/${version}/NVIDIA-Linux-x86_64-${version}${pkgSuffix}.run"
++            ];
++        sha256 = sha256_64bit;
++      }
++    else if system == "i686-linux" && sha256_32bit != null then
++      fetchurl {
++        urls =
++          if url != null then
++            [ url ]
++          else
++            [
++              "https://us.download.nvidia.com/XFree86/Linux-x86/${version}/NVIDIA-Linux-x86-${version}${pkgSuffix}.run"
++              "https://download.nvidia.com/XFree86/Linux-x86/${version}/NVIDIA-Linux-x86-${version}${pkgSuffix}.run"
++            ];
++        sha256 = sha256_32bit;
++      }
++    else if system == "aarch64-linux" && sha256_aarch64 != null then
++      fetchurl {
++        urls =
++          if url != null then
++            [ url ]
++          else
++            [
++              "https://us.download.nvidia.com/XFree86/aarch64/${version}/NVIDIA-Linux-aarch64-${version}${pkgSuffix}.run"
++              "https://download.nvidia.com/XFree86/Linux-aarch64/${version}/NVIDIA-Linux-aarch64-${version}${pkgSuffix}.run"
++            ];
++        sha256 = sha256_aarch64;
++      }
++    else
++      throw "nvidia-x11 does not support platform ${system}";
++
++  nativeBuildInputs = [
++    coreutils
++    gawk
++    gnugrep
++    gnused
++    gnutar
++    libarchive
++    which
++    zstd
++  ];
++
++  # The installer is a Makeself archive. Unpack it once here, and let the
++  # userspace build and the kernel module build both read the result: the
++  # archive is a few hundred megabytes and there is no reason to extract it
++  # twice.
++  dontUnpack = true;
++  dontBuild = true;
++
++  installPhase = ''
++    runHook preInstall
++
++    # Every installer is a shell script, but not every one is called `.run`:
++    # the Vulkan developer driver comes as `vulkan-beta-<version>-linux`.
++    if ! head -c 2 "$src" | grep -q '#!'; then
++      echo "$src is not a shell archive" >&2
++      exit 1
++    fi
++
++    extracted=$(mktemp -d)
++    cd "$extracted"
++
++    if ! sh "$src" -x; then
++      echo "the installer's own extraction step failed; extracting the embedded tarball" >&2
++
++      # The archive also embeds a plain tarball after a `skip=` line.
++      skip=$(sed 's/^skip=//; t; d' "$src")
++      tail -n +"$skip" "$src" | bsdtar xvf -
++    fi
++
++    # A Makeself extractor leaves one directory holding the payload; the
++    # consumers expect its contents at the source root.
++    if [ "$(ls -A | wc -l)" -eq 1 ] && [ -d "$(ls -A)" ]; then
++      payload=$(ls -A)
++    else
++      payload=.
++    fi
++
++    mkdir -p $out
++    cp -a "$payload"/. $out/
++
++    runHook postInstall
++  '';
++
++  # None of the packaged executables reports the driver version without a
++  # loaded driver, so check the unpacked archive itself: its libraries are named
++  # after the version. This catches an archive whose hash was not updated on a
++  # version bump and which would otherwise be silently reused from the store,
++  # and it is the one place that sees the sources before either build splits
++  # them up. stdenv sets nullglob, so the glob is counted instead of listed.
++  doInstallCheck = true;
++  installCheckPhase = ''
++    runHook preInstallCheck
++    if ! { set -- "$out"/*.so."$version"; [ $# -gt 0 ]; }; then
++      echo "no library is named after version $version, the driver archive is not the expected version:" >&2
++      ls "$out" >&2 || true
++      exit 1
++    fi
++    runHook postInstallCheck
++  '';
++
++  passthru.is32Bit = stdenvNoCC.hostPlatform.system == "i686-linux";
++
++  meta = {
++    homepage = "https://www.nvidia.com/object/unix.html";
++    description = "Unpacked NVIDIA driver installer, shared by the userspace and kernel module builds";
++    # The contents are the proprietary driver, so this must not look like a
++    # free package: Hydra and the release eval filter on this and skip it.
++    license = lib.licenses.unfreeRedistributable;
++    platforms = [
++      "x86_64-linux"
++    ]
++    ++ lib.optional (sha256_32bit != null) "i686-linux"
++    ++ lib.optional (sha256_aarch64 != null) "aarch64-linux";
++    sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
++  };
++})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index d4bc5e0cf26b6..c77cd1c168152 100644
+index d4bc5e0cf26b6..71e5eae7e7fe8 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-@@ -4,9 +4,15 @@
+@@ -4,9 +4,14 @@
    fetchFromGithubOrNvidia,
    kernel,
    kernelModuleMakeFlags,
 -  nvidia_x11,
-+  nvidiaDriverUnpackHook,
    open,
 +  # Driver version and the archive it came from; the proprietary module is
 +  # built from the same installer as the userspace libraries.
@@ -2774,7 +3128,7 @@ index d4bc5e0cf26b6..c77cd1c168152 100644
    broken,
    hash ? null,
    kmod,
-@@ -16,14 +22,14 @@ assert open -> hash != null;
+@@ -16,14 +21,14 @@ assert open -> hash != null;
  
  stdenv.mkDerivation {
    pname = "nvidia-${if open then "open" else "kernel-modules"}";
@@ -2791,7 +3145,7 @@ index d4bc5e0cf26b6..c77cd1c168152 100644
          nvrepo = "NVIDIA-kernel-module-source";
          nvext = "xz";
          inherit hash;
-@@ -31,11 +37,18 @@ stdenv.mkDerivation {
+@@ -31,9 +36,11 @@ stdenv.mkDerivation {
          postFetch = "rm -rf $out/.github $out/CHANGELOG.md";
        }
      else
@@ -2800,20 +3154,12 @@ index d4bc5e0cf26b6..c77cd1c168152 100644
  
 -  inherit patches;
 +  driverVersion = version;
- 
--  nativeBuildInputs = kernel.moduleBuildDependencies;
-+  inherit patches patchFlags prePatch;
 +
-+  nativeBuildInputs =
-+    [
-+      # Brings `bsdtar` and the decompressors the unpack hook shells out to.
-+      nvidiaDriverUnpackHook
-+    ]
-+    ++ kernel.moduleBuildDependencies;
++  inherit patches patchFlags prePatch;
  
-   makeFlags =
-     kernelModuleMakeFlags
-@@ -47,6 +60,12 @@ stdenv.mkDerivation {
+   nativeBuildInputs = kernel.moduleBuildDependencies;
+ 
+@@ -47,6 +54,12 @@ stdenv.mkDerivation {
        "DATE="
        "TARGET_ARCH=${stdenv.hostPlatform.parsed.cpu.name}"
      ]
@@ -2826,7 +3172,7 @@ index d4bc5e0cf26b6..c77cd1c168152 100644
      ++ lib.optionals stdenv.cc.isClang [
        "C_INCLUDE_PATH=${lib.getLib stdenv.cc.cc}/lib/clang/${lib.versions.major stdenv.cc.cc.version}/include"
      ];
-@@ -71,8 +90,8 @@ stdenv.mkDerivation {
+@@ -71,8 +84,8 @@ stdenv.mkDerivation {
        exit 1
      fi
      got=$(modinfo -F version "$module")
@@ -2837,16 +3183,19 @@ index d4bc5e0cf26b6..c77cd1c168152 100644
        exit 1
      fi
      runHook postInstallCheck
-@@ -83,7 +102,7 @@ stdenv.mkDerivation {
+@@ -83,7 +96,10 @@ stdenv.mkDerivation {
    meta = {
      description = "NVIDIA Linux ${lib.optionalString open "Open "}GPU Kernel Modules";
      homepage =
 -      if open then "https://github.com/NVIDIA/open-gpu-kernel-modules" else nvidia_x11.meta.homepage;
-+      if open then "https://github.com/NVIDIA/open-gpu-kernel-modules" else "https://www.nvidia.com/object/unix.html";
++      if open then
++        "https://github.com/NVIDIA/open-gpu-kernel-modules"
++      else
++        "https://www.nvidia.com/object/unix.html";
      license =
        if open then
          with lib.licenses;
-@@ -92,7 +111,7 @@ stdenv.mkDerivation {
+@@ -92,7 +108,7 @@ stdenv.mkDerivation {
            mit
          ]
        else
@@ -2855,86 +3204,8 @@ index d4bc5e0cf26b6..c77cd1c168152 100644
      platforms = [
        "x86_64-linux"
        "aarch64-linux"
-diff --git a/pkgs/os-specific/linux/nvidia-x11/unpack-hook.nix b/pkgs/os-specific/linux/nvidia-x11/unpack-hook.nix
-new file mode 100644
-index 0000000000000..c446298a47713
---- /dev/null
-+++ b/pkgs/os-specific/linux/nvidia-x11/unpack-hook.nix
-@@ -0,0 +1,32 @@
-+# Unpacks the `.run` driver installer, which `unpackPhase` cannot handle on its
-+# own. Both the userspace libraries and the kernel modules are built from that
-+# archive, so they share this hook.
-+{
-+  makeSetupHook,
-+  # Tools the Makeself preamble drives to extract itself. It picks its
-+  # decompressor at runtime: `zstd` since 530.30.02, `gzip`/`bzip2`/`xz` before.
-+  bzip2,
-+  gawk,
-+  gnused,
-+  gzip,
-+  # Provides `bsdtar` for the fallback path in the hook.
-+  libarchive,
-+  gnutar,
-+  xz,
-+  zstd,
-+}:
-+
-+makeSetupHook {
-+  name = "nvidia-driver-unpack-hook";
-+
-+  propagatedBuildInputs = [
-+    bzip2
-+    gawk
-+    gnused
-+    gzip
-+    libarchive
-+    gnutar
-+    xz
-+    zstd
-+  ];
-+} ./unpack-hook.sh
-\ No newline at end of file
-diff --git a/pkgs/os-specific/linux/nvidia-x11/unpack-hook.sh b/pkgs/os-specific/linux/nvidia-x11/unpack-hook.sh
-new file mode 100644
-index 0000000000000..20728240e5f5c
---- /dev/null
-+++ b/pkgs/os-specific/linux/nvidia-x11/unpack-hook.sh
-@@ -0,0 +1,32 @@
-+# shellcheck disable=SC2154,SC2034
-+# shellcheck shell=bash
-+
-+# The installer is a Makeself archive. Extracting it needs its decompressor
-+# (`zstd` since 530.30.02, `gzip`/`bzip2`/`xz` before that) plus the tools the
-+# Makeself preamble drives them with.
-+
-+unpackCmdHooks+=(unpackNvidiaDriver)
-+
-+unpackNvidiaDriver() {
-+    # Every installer is a shell script, but not every one is called `.run`:
-+    # the Vulkan developer driver comes as `vulkan-beta-<version>-linux`.
-+    if ! head -c 2 "$curSrc" | grep -q '#!'; then
-+        return 1
-+    fi
-+
-+    if sh "$curSrc" -x; then
-+        # The installer creates a directory named after the package, which
-+        # `unpackPhase` picks up as the source root on its own.
-+        return 0
-+    fi
-+
-+    echoWarning "unpacking $curSrc by extracting its embedded tarball; the"
-+    echoWarning "installer's own extraction step failed"
-+
-+    # The archive also embeds a plain tarball after a `skip=` line.
-+    skip=$(sed 's/^skip=//; t; d' "$curSrc")
-+    tail -n +"$skip" "$curSrc" | bsdtar xvf -
-+
-+    # That tarball unpacks flat into the current directory.
-+    sourceRoot=.
-+}
-\ No newline at end of file
 
-From cef019b5879762498907f492a55c00bfb904a15b Mon Sep 17 00:00:00 2001
+From 983bfa4971c458a1e67092dc542c12574a73428f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 12:02:47 +0800
 Subject: [PATCH 09/10] nvidia-x11: build each driver in a factory and expose
@@ -2975,30 +3246,27 @@ next commit updates them.
 Assisted-by: omp:Space Bunny Alpha
 ---
  doc/release-notes/rl-2611.section.md          |  15 +
- .../scripts/nvidia-source-hashes/default.nix  |  25 +-
- .../scripts/nvidia-source-hashes/verify.sh    |   4 +-
+ .../scripts/nvidia-source-hashes/default.nix  |  30 +-
  .../manual/release-notes/rl-2611.section.md   |  19 +
- nixos/modules/hardware/video/nvidia.nix       | 107 +--
- pkgs/os-specific/linux/nvidia-x11/README.md   |  63 +-
- .../os-specific/linux/nvidia-x11/binaries.nix |   6 +-
- pkgs/os-specific/linux/nvidia-x11/default.nix | 610 ++++++++++--------
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 424 ++++++------
- .../linux/nvidia-x11/kernel-modules.nix       |  19 +-
+ nixos/modules/hardware/video/nvidia.nix       | 141 ++--
+ pkgs/os-specific/linux/nvidia-x11/README.md   |  77 ++-
+ .../os-specific/linux/nvidia-x11/binaries.nix |  19 +-
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 609 +++++++++---------
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 481 ++++++++------
+ .../linux/nvidia-x11/kernel-modules.nix       |   2 +
  .../os-specific/linux/nvidia-x11/modprobe.nix |   4 +-
- .../linux/nvidia-x11/unpack-hook.nix          |  31 +-
- .../linux/nvidia-x11/unpack-hook.sh           |   2 +-
  pkgs/top-level/aliases.nix                    |   2 +-
  pkgs/top-level/all-packages.nix               |   7 +-
- pkgs/top-level/linux-kernels.nix              |  42 +-
- 16 files changed, 791 insertions(+), 589 deletions(-)
+ pkgs/top-level/linux-kernels.nix              |  84 ++-
+ 13 files changed, 901 insertions(+), 589 deletions(-)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index cf0640dcb3116..10e686ec3ae74 100644
+index 852240f8d2522..2b86c4d418fe1 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
-@@ -33,6 +33,21 @@
-   The native library is available as `dxvk_3`. The `dxvk_1` and `dxvk_2` packages remain available for older hardware and applications.
-   See the [upstream release notes](https://github.com/doitsujin/dxvk/releases/tag/v3.0) for details.
+@@ -46,6 +46,21 @@
+   include built-in login. Set `services.stirling-pdf.package = pkgs.stirling-pdf-free;`
+   to use it with the NixOS service.
  
 +- `linuxPackages.nvidiaPackages.<branch>` is now an attribute set, holding the
 +  driver as `.driver` together with `.settings`, `.modprobe` and
@@ -3012,14 +3280,14 @@ index cf0640dcb3116..10e686ec3ae74 100644
 +  ```
 +
 +  The old output spellings `.out`, `.bin`, `.lib32` and `.firmware` resolve to
-+  the driver's own outputs and warn. `.modsrc` is gone; the kernel module
-+  unpacks the installer archive itself.
++  the driver's own outputs and warn. `.modsrc` is gone; the kernel module is
++  built from the installer's unpacked tree.
 +
  - `moon` has been updated to `2.x` and needs manual migration. See the [migration guide](https://moonrepo.dev/docs/migrate/2.0) for instructions.
  
- - `yeswiki` has been updated from 4.4.2 to 4.6.7 and now requires PHP 8.3 or newer.
+ - `hyperfine` has been updated from 1.21.0 to 2.0.0, which contains several breaking changes:
 diff --git a/maintainers/scripts/nvidia-source-hashes/default.nix b/maintainers/scripts/nvidia-source-hashes/default.nix
-index 324fa347036a3..fce78745bd7b6 100644
+index 324fa347036a3..b48bf2c5a1917 100644
 --- a/maintainers/scripts/nvidia-source-hashes/default.nix
 +++ b/maintainers/scripts/nvidia-source-hashes/default.nix
 @@ -11,10 +11,11 @@
@@ -3038,7 +3306,26 @@ index 324fa347036a3..fce78745bd7b6 100644
  #
  # The derivations are salted with `pkgs.testers.invalidateFetcherByDrvHash`,
  # so each one has a unique store path that cannot be satisfied by an already
-@@ -154,7 +155,21 @@ let
+@@ -32,7 +33,8 @@
+ # onto it.  That way a foreign platform is verified without a builder for it.
+ #
+ # Components that resolve to the same download (aliases such as `stable` and
+-# `production`, the `dc` alias, a driver's bundled `lib32`) each get their own
++# `production`, the `dc` alias, the `installer32` archive older drivers take
++# their 32-bit libraries from) each get their own
+ # check but share one derivation, so nothing is downloaded twice.
+ #
+ # Arguments (all optional):
+@@ -44,7 +46,7 @@
+ #            are ignored.  Defaults to x86_64-linux, i686-linux and
+ #            aarch64-linux.
+ #   path     comma-separated substrings a component's path must contain, e.g.
+-#            "production" or "passthru.open"; empty means everything.
++#            "production" or "open"; empty means everything.
+ #   prefetch when true, every check asks for a bogus hash instead of the
+ #            declared one, so realising it always fails and reports the hash the
+ #            URL actually yields.  Used by ./verify.sh --prefetch to obtain new
+@@ -154,7 +156,21 @@ let
                  )
                )
              else if lib.isAttrs value then
@@ -3061,34 +3348,12 @@ index 324fa347036a3..fce78745bd7b6 100644
              else
                [ ]
            );
-diff --git a/maintainers/scripts/nvidia-source-hashes/verify.sh b/maintainers/scripts/nvidia-source-hashes/verify.sh
-index ffbca3a9bb0ca..1eb2ae69fdb5e 100755
---- a/maintainers/scripts/nvidia-source-hashes/verify.sh
-+++ b/maintainers/scripts/nvidia-source-hashes/verify.sh
-@@ -22,7 +22,7 @@
- #
- # Options:
- #   -p, --path LIST     Comma-separated substrings a component's path must
--#                       contain, e.g. "production" or "passthru.open".
-+#                       contain, e.g. "production" or "open".
- #                       Default: everything.
- #   -s, --systems LIST  Comma-separated platforms whose binary driver and
- #                       fabricmanager archives are checked, e.g. "x86_64-linux".
-@@ -50,7 +50,7 @@
- #   ./verify.sh
- #
- #   # only the sources that gained an NVIDIA URL
--#   ./verify.sh --path passthru.open,passthru.modprobe
-+#   ./verify.sh --path open,modprobe
- #
- #   # a single driver and only the binary driver archives
- #   ./verify.sh --path production
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index 497f42865e11c..b8392e02b30bf 100644
+index 2f59613ac8592..7ee1fd3954b23 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
-@@ -158,6 +158,25 @@
- 
+@@ -188,6 +188,25 @@
+   authentication layer before exposing it to other users.
  - `services.autobrr.secretFile` has been removed, as autobrr no longer uses a session secret since version 1.82.0. Remove the option from your configuration.
  
 +- `hardware.nvidia.package` is now an attribute set per driver branch rather
@@ -3106,36 +3371,67 @@ index 497f42865e11c..b8392e02b30bf 100644
 +  scope from `nvidiaPackages` instead.
 +
 +- The driver packages are in `pkgs.nvidiaPackages.<branch>.driver` and no
-+  longer need a kernel package set. The `nvidia_x11*` and `nvidia_dc` aliases
-+  still work and name that driver. For the kernel modules use `.mod` or `.open`
-+  on the branch instead of the `nvidia_x11_*_open` aliases.
++  longer need a kernel package set. The `nvidia_x11*` and `nvidia_dc` names
++  under `linuxPackages` warn and name that driver. For the kernel modules use
++  `.mod` or `.open` on the branch.
 +
  - Artalk has been updated to 2.10.0. Its default configuration and data
    directory discovery changed; see the [upstream migration
    guide](https://artalk.js.org/en/guide/releases/v2.10.0.html) when invoking
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index 1b1f5fdfe0dc8..444329faea37d 100644
+index fdfd6b3dbbac5..a5b3e4d32f597 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
-@@ -6,7 +6,7 @@
+@@ -6,12 +6,38 @@
  }:
  let
    nvidiaEnabled = lib.elem "nvidia" config.services.xserver.videoDrivers;
 -  nvidia_x11 = if cfg.enabled then cfg.package else null;
 +  nvidia_x11 = if cfg.enabled then cfg.package.driver else null;
++
++  # `hardware.nvidia.package` is a branch from `pkgs.nvidiaPackages`, which is
++  # an attribute set carrying the driver and the tools, not the driver package.
++  nvidiaBranchType = lib.types.mkOptionType {
++    name = "nvidia driver branch";
++    description = "a branch of the nvidiaPackages scope";
++    descriptionClass = "noun";
++    check = x: lib.isAttrs x && x ? branch && x ? driver && x ? version;
++  };
  
    cfg = config.hardware.nvidia;
  
-@@ -20,7 +20,7 @@ let
+   inherit (config.boot.kernelPackages) nvidiaPackages;
+ 
++  # Where the kernel modules come from. A branch from
++  # `config.boot.kernelPackages.nvidiaPackages`, which is what `mkDriver` gives
++  # there, carries them itself; a branch from the top-level `nvidiaPackages`
++  # does not, and they come from the kernel-side set, keyed by branch name.
++  kernelBranch =
++    if cfg.package ? mod then
++      cfg.package
++    else if nvidiaPackages ? ${cfg.package.branch} then
++      nvidiaPackages.${cfg.package.branch}
++    else
++      throw ''
++        hardware.nvidia.package is built from ${cfg.package.branch} sources, which is not
++        a branch of config.boot.kernelPackages.nvidiaPackages. Use
++        config.boot.kernelPackages.nvidiaPackages.mkDriver for a version that is not in
++        nixpkgs, so that the kernel modules come from the same sources.
++      '';
++
+   useOpenModules = cfg.open == true;
+ 
+   pCfg = cfg.prime;
+@@ -20,6 +46,8 @@ let
    reverseSyncCfg = pCfg.reverseSync;
    primeEnabled = syncCfg.enable || reverseSyncCfg.enable || offloadCfg.enable;
    busIDType = lib.types.strMatching "([[:print:]]+:[0-9]{1,3}(@[0-9]{1,10})?:[0-9]{1,2}:[0-9])?";
--  ibtSupport = useOpenModules || (nvidia_x11.ibtSupport or false);
-+  ibtSupport = useOpenModules || (cfg.package.ibtSupport or false);
++  # The driver carries the effective value: a branch that bundles an IBT-aware
++  # driver reports it there, and `binaries.nix` folds in the version rule.
+   ibtSupport = useOpenModules || (nvidia_x11.ibtSupport or false);
    settingsFormat = pkgs.formats.keyValue { };
  in
- {
-@@ -103,7 +103,7 @@ in
+@@ -103,7 +131,7 @@ in
            Requires NVIDIA driver version 595 or newer, and the open source kernel modules.
          ''
          // {
@@ -3144,7 +3440,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
            defaultText = lib.literalExpression ''
              config.hardware.nvidia.open == true && lib.versionAtLeast config.hardware.nvidia.package.version "595"
            '';
-@@ -299,11 +299,9 @@ in
+@@ -299,11 +327,9 @@ in
        '';
  
        branch = lib.mkOption {
@@ -3159,7 +3455,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
          default = if cfg.datacenter.enable then "dc" else "stable";
          defaultText = lib.literalExpression ''
            if config.hardware.nvidia.datacenter.enable then "dc" else "stable"
-@@ -340,30 +338,51 @@ in
+@@ -340,30 +366,52 @@ in
        };
  
        package = lib.mkOption {
@@ -3167,7 +3463,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
 -        default = nvidiaPackages.${cfg.branch};
 -        defaultText = lib.literalExpression "config.boot.kernelPackages.nvidiaPackages.\${config.hardware.nvidia.branch}";
 -        example = lib.literalExpression "config.boot.kernelPackages.nvidiaPackages.legacy_470";
-+        type = lib.types.addCheck lib.types.attrs (x: x ? branch && x ? driver && x ? version);
++        type = nvidiaBranchType;
 +        default = pkgs.nvidiaPackages.${cfg.branch};
 +        defaultText = lib.literalExpression "pkgs.nvidiaPackages.\${config.hardware.nvidia.branch}";
 +        example = lib.literalExpression "pkgs.nvidiaPackages.legacy_470";
@@ -3185,7 +3481,10 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
 -          `config.boot.kernelPackages.nvidiaPackages` so the driver build matches
 -          your configured kernel.
 -
-           For custom versions, you can use `nvidiaPackages.mkDriver`; see
+-          For custom versions, you can use `nvidiaPackages.mkDriver`; see
++          For custom versions, use the kernel's own factory,
++          `config.boot.kernelPackages.nvidiaPackages.mkDriver`, so that the
++          kernel modules come from the same sources; see
            `pkgs/os-specific/linux/nvidia-x11/README.md` for an example and how
            to obtain the hashes.
          '';
@@ -3193,8 +3492,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
  
 +      kernelModules = lib.mkOption {
 +        type = lib.types.package;
-+        default =
-+          (nvidiaPackages.${cfg.package.branch or "stable"}).${if useOpenModules then "open" else "mod"};
++        default = kernelBranch.${if useOpenModules then "open" else "mod"};
 +        # Evaluated while the options are documented, where `config` is not
 +        # available, so this states the shape rather than interpolating the
 +        # branch. The rule is in the description.
@@ -3221,7 +3519,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
          defaultText = lib.literalExpression ''
            if lib.versionOlder config.hardware.nvidia.package.version "560" then false else null
          '';
-@@ -374,7 +393,7 @@ in
+@@ -374,7 +422,7 @@ in
            the GPU System Processor (GSP) on the video card
          ''
          // {
@@ -3230,7 +3528,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
            defaultText = lib.literalExpression ''
              config.hardware.nvidia.open == true || lib.versionAtLeast config.hardware.nvidia.package.version "555"
            '';
-@@ -420,10 +439,14 @@ in
+@@ -420,10 +468,14 @@ in
                '';
              }
              {
@@ -3248,7 +3546,19 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
                '';
              }
            ];
-@@ -569,12 +592,12 @@ in
+@@ -511,6 +563,11 @@ in
+               ];
+             };
+           environment.systemPackages = [ nvidia_x11.bin ];
++          # `nvidia-settings` reads its application-profile key documentation
++          # from a fixed path, and the driver ships it under the `bin` output.
++          # Linking it here is what makes `/run/current-system/sw/share/nvidia`
++          # exist, which is where `nvidia-settings` was pointed at.
++          environment.pathsToLink = [ "share/nvidia" ];
+         }
+ 
+         # X11
+@@ -569,12 +626,12 @@ in
              }
  
              {
@@ -3259,11 +3569,11 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
  
              {
 -              assertion = useOpenModules -> (cfg.package ? open);
-+              assertion = useOpenModules -> (nvidiaPackages.${cfg.package.branch or "stable"}.open != null);
++              assertion = useOpenModules -> (kernelBranch.open != null);
                message = "This version of NVIDIA driver does not provide a corresponding opensource kernel driver.";
              }
  
-@@ -704,8 +727,10 @@ in
+@@ -704,8 +761,10 @@ in
            hardware.graphics.extraPackages = lib.optional cfg.videoAcceleration pkgs.nvidia-vaapi-driver;
  
            environment.systemPackages =
@@ -3276,7 +3586,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
              ++ lib.optional offloadCfg.enableOffloadCmd (
                pkgs.writeShellScriptBin cfg.prime.offload.offloadCmdMainProgram ''
                  export __NV_PRIME_RENDER_OFFLOAD=1
-@@ -757,7 +782,7 @@ in
+@@ -757,7 +816,7 @@ in
                      Type = "forking";
                      Restart = "always";
                      PIDFile = "/var/run/nvidia-persistenced/nvidia-persistenced.pid";
@@ -3285,7 +3595,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
                      ExecStopPost = "${pkgs.coreutils}/bin/rm -rf /var/run/nvidia-persistenced";
                    };
                  };
-@@ -793,8 +818,8 @@ in
+@@ -793,8 +852,8 @@ in
              "d /run/nvidia-xdriver 0770 root users"
            ]
            ++
@@ -3296,7 +3606,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
  
            hardware.nvidia.moduleParams = lib.mkMerge (
              lib.optional (offloadCfg.enable || cfg.modesetting.enable) { nvidia-drm.modeset = 1; }
-@@ -814,7 +839,7 @@ in
+@@ -814,7 +873,7 @@ in
            );
  
            boot = {
@@ -3305,7 +3615,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
              # nvidia-uvm is required by CUDA applications.
              kernelModules = lib.optionals config.services.xserver.enable [
                "nvidia"
-@@ -857,12 +882,12 @@ in
+@@ -857,12 +916,12 @@ in
          })
          # Data Center
          (lib.mkIf (cfg.datacenter.enable) {
@@ -3321,7 +3631,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
  
              services = lib.mkMerge [
                {
-@@ -877,18 +902,18 @@ in
+@@ -877,18 +936,18 @@ in
                      TimeoutStartSec = 240;
                      ExecStart =
                        let
@@ -3344,7 +3654,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
                      LimitCORE = "infinity";
                    };
                  };
-@@ -901,7 +926,7 @@ in
+@@ -901,7 +960,7 @@ in
                      Type = "forking";
                      Restart = "always";
                      PIDFile = "/var/run/nvidia-persistenced/nvidia-persistenced.pid";
@@ -3353,7 +3663,7 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
                      ExecStopPost = "${pkgs.coreutils}/bin/rm -rf /var/run/nvidia-persistenced";
                    };
                  };
-@@ -910,8 +935,10 @@ in
+@@ -910,8 +969,10 @@ in
            };
  
            environment.systemPackages =
@@ -3367,10 +3677,10 @@ index 1b1f5fdfe0dc8..444329faea37d 100644
        ]
      );
 diff --git a/pkgs/os-specific/linux/nvidia-x11/README.md b/pkgs/os-specific/linux/nvidia-x11/README.md
-index c92750b3b2948..7f30395bb09e1 100644
+index c92750b3b2948..897078461a49c 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/README.md
 +++ b/pkgs/os-specific/linux/nvidia-x11/README.md
-@@ -1,13 +1,39 @@
+@@ -1,13 +1,50 @@
  # NVIDIA driver packages
  
 -The drivers are built from the files here. `default.nix` defines one attribute
@@ -3386,11 +3696,11 @@ index c92750b3b2948..7f30395bb09e1 100644
 -the hashes pin the downloaded content.
 +```nix
 +{
-+  # from default.nix, no kernel
-+  driver = pkgs.nvidiaPackages.production;
++  # from default.nix, no kernel: the userspace half
++  driver = pkgs.nvidiaPackages.production.driver;
 +
-+  # the same factory, with a kernel
-+  driverWithModules = pkgs.linuxPackages.nvidiaPackages.production;
++  # the same factory, with a kernel: the same driver, plus the modules
++  kernelModule = pkgs.linuxPackages.nvidiaPackages.production.mod;
 +}
 +```
 +
@@ -3409,15 +3719,26 @@ index c92750b3b2948..7f30395bb09e1 100644
 +| `mod`, `open`   | the kernel modules, only from `linuxPackages`                  |
 +
 +`out`, `bin`, `firmware` and `lib32` warn and hand back the driver's own output
-+of that name; `modsrc` throws. Where the driver builds no such output the alias
-+throws too, naming the branch: `legacy_340` and `legacy_390` have no `lib32`,
-+and those two plus `legacy_470` have no `firmware`.
++or `passthru` entry of that name; `modsrc` throws. Where the driver has no such
++name the alias throws instead, naming the branch: `legacy_340`, `legacy_390` and
++`legacy_470` have no `firmware`, and no branch has `lib32` on a host that builds
++no i686, such as aarch64.
++
++They are there only while `config.allowAliases` is on, which is the default. The
++release and eval configurations turn it off, so the walk that turns each package
++into a job never sees them.
++
++Hydra builds the userspace branches under `pkgs.nvidiaPackages`, and the kernel
++modules under `linuxPackages.nvidiaModules`. That second path exists only so the
++release walk can find the modules; the branches under
++`linuxPackages.nvidiaPackages` are the interface, and its userspace members are
++the same derivations as the top-level ones, so they are not jobs of their own.
 +
 +`nvidiaPackages.mkDriver` builds a branch that is not in nixpkgs.
  
  ## Adding or updating a driver in nixpkgs
  
-@@ -15,7 +41,7 @@ Add an entry to `default.nix`, or change the hashes of an existing one:
+@@ -15,7 +52,7 @@ Add an entry to `default.nix`, or change the hashes of an existing one:
  
  ```nix
  {
@@ -3426,18 +3747,19 @@ index c92750b3b2948..7f30395bb09e1 100644
      version = "595.104.02";
      sha256_64bit = "sha256-...";
      sha256_aarch64 = "sha256-...";
-@@ -57,8 +83,8 @@ After a version change the hashes change too. Update them with the helper
+@@ -57,8 +94,9 @@ After a version change the hashes change too. Update them with the helper
  script in `maintainers/scripts/nvidia-source-hashes`, or by building and
  reading the mismatch error (see the next section).
  
 -Adding a legacy driver also means adding it to `pkgs/top-level/linux-kernels.nix`
 -in the `nvidia_x11_legacy*` entries.
-+Adding a legacy driver also means adding a `nvidia_x11_legacy*` throw to
-+`pkgs/top-level/linux-kernels.nix`, so the old name fails with the replacement.
++Adding a legacy driver also means adding a `nvidia_x11_legacy*` entry to the
++rename map in `pkgs/top-level/linux-kernels.nix`, so the old name warns with the
++replacement.
  
  ## Getting and checking hashes
  
-@@ -80,12 +106,12 @@ source in `linuxPackages.nvidiaPackages`. Run it from the nixpkgs checkout.
+@@ -80,12 +118,12 @@ source in `linuxPackages.nvidiaPackages`. Run it from the nixpkgs checkout.
  The hash is computed the way nixpkgs computes it: the unpacked tree for the
  `fetchzip` sources, and after `postFetch` for the open kernel modules. Paste
  the printed value into the matching hash field. One hash covers all URLs of a
@@ -3454,16 +3776,18 @@ index c92750b3b2948..7f30395bb09e1 100644
  
  Each URL is tested on its own. A normal build stops at the first URL that
  works, so it never notices a hash that only matches one of them.
-@@ -101,7 +127,7 @@ For a version that is not in nixpkgs, call `mkDriver` from your configuration:
+@@ -96,7 +134,9 @@ because GitHub and NVIDIA publish the same release at different times. Pass
+ 
+ ## Using a custom driver version in your configuration
+ 
+-For a version that is not in nixpkgs, call `mkDriver` from your configuration:
++For a version that is not in nixpkgs, call `mkDriver` from your configuration,
++from the kernel's own package set so that the kernel modules come from the same
++sources:
+ 
  ```nix
  { config, ... }:
- {
--  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-+  hardware.nvidia.package = pkgs.nvidiaPackages.mkDriver {
-     version = "595.104.02";
-     sha256_64bit = "";
-     sha256_aarch64 = "";
-@@ -111,6 +137,9 @@ For a version that is not in nixpkgs, call `mkDriver` from your configuration:
+@@ -111,6 +151,9 @@ For a version that is not in nixpkgs, call `mkDriver` from your configuration:
      persistencedSha256 = "";
      modprobeSha256 = "";
    };
@@ -3473,7 +3797,7 @@ index c92750b3b2948..7f30395bb09e1 100644
  }
  ```
  
-@@ -140,5 +169,5 @@ can reach. The helper script checks every URL of a source on its own: a URL
+@@ -140,5 +183,5 @@ can reach. The helper script checks every URL of a source on its own: a URL
  that returns 404 is reported as not published and does not fail the run unless
  `--strict` is given, while a source whose URLs all return 404 fails.
  
@@ -3482,34 +3806,66 @@ index c92750b3b2948..7f30395bb09e1 100644
 +`hardware.nvidia.open` selects the open kernel modules, which
 +`hardware.nvidia.kernelModules` then picks up from the branch.
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-index 834174322e651..7b83022d5ba97 100644
+index d1757c87cbe11..a02934206e9db 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-@@ -3,7 +3,6 @@
+@@ -2,7 +2,6 @@
+   # Package dependencies
    lib,
    stdenv,
-   fetchurl,
 -  which,
    jq,
    pkgs,
    pkgsi686Linux,
-@@ -188,10 +187,7 @@ stdenv.mkDerivation (finalAttrs: {
-   nativeBuildInputs = [
-     jq
-     nvidiaDriverUnpackHook
+@@ -10,9 +9,10 @@
+   src,
+   # Whether to build only userspace libraries (without bin/firmware outputs)
+   libsOnly,
+-  # don't include the bundled 32-bit libraries on 64-bit platforms,
+-  # even if it's in downloaded binary
+-  disable32Bit ? stdenv.hostPlatform.system == "aarch64-linux",
++  # Set when the installer carries the 32-bit libraries itself, so that no
++  # separate i686 build is needed.  `generic.nix` decides this, since it is also
++  # the one that fetches the archive.
++  i686bundled,
+   # 32 bit libs only version of this package
+   lib32,
+   # Whether to extract the GSP firmware; datacenter drivers and open
+@@ -67,8 +67,6 @@ let
+       ]
+     );
+ 
+-  i686bundled = lib.versionAtLeast version "391" && !disable32Bit;
+-
+   libPath = libPathFor pkgs;
+   libPath32 = lib.optionalString i686bundled (libPathFor pkgsi686Linux);
+ 
+@@ -101,18 +99,13 @@ stdenv.mkDerivation (finalAttrs: {
+ 
+   inherit libPath libPath32;
+ 
+-  nativeBuildInputs = [
+-    jq
 -  ]
 -  # Drivers older than 530 need `which` in the build, see
 -  # https://github.com/NixOS/nixpkgs/pull/498612#discussion_r3064133935
 -  ++ lib.optional (lib.versionOlder version "530") [ which ];
-+  ];
++  nativeBuildInputs = [ jq ];
  
    passthru = {
      compressFirmware = false;
+     ibtSupport = ibtSupport || (lib.versionAtLeast version "530");
+   }
+-  // lib.optionalAttrs (!i686bundled) {
++  // lib.optionalAttrs (!i686bundled && lib32 != null) {
+     inherit lib32;
+   };
+ 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 5985eb6036b64..aee48218cba2d 100644
+index c05a319bc1675..2992a89916b1a 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
-@@ -1,302 +1,288 @@
+@@ -1,302 +1,287 @@
  {
    lib,
 -  callPackage,
@@ -3524,6 +3880,8 @@ index 5985eb6036b64..aee48218cba2d 100644
 +  # Set when `linuxPackages` instantiates this, which is the only place the
 +  # kernel modules can be built.
 +  kernel ? null,
++  # The kernel's common make flags. Passed only together with `kernel`, and
++  # the module build needs them.
 +  kernelModuleMakeFlags ? [ ],
  }:
  
@@ -3590,14 +3948,14 @@ index 5985eb6036b64..aee48218cba2d 100644
 -  };
 -
 -  new_feature = generic {
--    version = "615.71.09";
--    sha256_64bit = "sha256-zc7tIrvrYSSNGm3qvCWWZz46ZQFpjucayNL9wo87cP4=";
--    sha256_aarch64 = "sha256-IbekQhE7cFfmnPZaLY9NDYcF7CoNZ+2Qb7sRd4EOgWM=";
--    openSha256 = "sha256-1YJjsanE+6pwXGRb1oDTRei59LP9e/vReCiH+waJ9JE=";
+-    version = "615.78.08";
+-    sha256_64bit = "sha256-Pj9t3cLudnoIGFMAr3vjyyhuznZpjS3eNSRZl4LQf/4=";
+-    sha256_aarch64 = "sha256-UHYBE1AYHoGgMfD9AS/jX+S+N8eCDWUft6qolK9Eejc=";
+-    openSha256 = "sha256-4HMf9lyCUU4FkpHyiUkk4cmiCSm/pu5eAccTSRz3AjY=";
 -    fetchOpenFromNvidia = true;
--    settingsSha256 = "sha256-LK1LU8mDkM/XVRKPBtuOZh9nIP/lGFLAJnmasEX8jhg=";
--    persistencedSha256 = "sha256-qPRb+3d88+2RcpUkoBTbjIaImnQ+jX+/6p1vXcJ5geE=";
--    modprobeSha256 = "sha256-aj8GeAdRqX5/zSHkaqfETjklbphVR7EH1oEqABQIlOs=";
+-    settingsSha256 = "sha256-inDRpG02sdDgHmlqgu/DsgK8OFdOt1fZIYyXdhlGC/c=";
+-    persistencedSha256 = "sha256-RzeR6Ldct6MUxjnXRyThdh5Y3jjMehTVg85MtwuWNX4=";
+-    modprobeSha256 = "sha256-ZAcooGeOaF3JQ4fzVG3SH7UE5skd/xzt/dGWEPuR4K4=";
 -  };
 -
 -  beta = generic {
@@ -3709,8 +4067,6 @@ index 5985eb6036b64..aee48218cba2d 100644
 -        url = "https://aur.archlinux.org/nvidia-470xx-utils.git";
 -        rev = "7abbeeb510742be09e1eb806c14bab2833a25783";
 -        hash = "sha256-hRBws0o4DWI5fvZRn0OwitXRSR9HCkRkgnvnkiZI6Ko=";
-+assert kernel != null -> kernelModuleMakeFlags != [ ];
-+
 +lib.makeScope newScope (
 +  self:
 +  let
@@ -3720,7 +4076,11 @@ index 5985eb6036b64..aee48218cba2d 100644
 +    # userspace libraries have to keep the toolchain they build with.
 +    generic = self.callPackage ./generic.nix;
 +
-+    mkBranch = args: generic (args // { inherit kernel kernelModuleMakeFlags; });
++    # `recurseIntoAttrs` so the release walk reaches a branch's members. That
++    # only takes effect where the enclosing scope is recursed, which is
++    # `pkgs.nvidiaPackages`; the kernel modules, the one part that exists per
++    # kernel, are reachable through `linuxPackages.nvidiaModules` instead.
++    mkBranch = args: lib.recurseIntoAttrs (generic (args // { inherit kernel kernelModuleMakeFlags; }));
 +
 +    selectHighestVersion = a: b: if lib.versionOlder a.version b.version then b else a;
 +
@@ -3758,11 +4118,6 @@ index 5985eb6036b64..aee48218cba2d 100644
 +    };
 +  in
 +  {
-+    # Unpacks the NVIDIA driver installer, which is a Makeself archive that
-+    # `unpackPhase` cannot handle. Every branch unpacks one, so the hook is
-+    # built once here and each branch takes it from the scope.
-+    nvidiaDriverUnpackHook = self.callPackage ./unpack-hook.nix { };
-+
 +    mkDriver = mkBranch;
 +
 +    # Derived rather than listed, so that adding a branch above is enough. This
@@ -3795,14 +4150,14 @@ index 5985eb6036b64..aee48218cba2d 100644
 +
 +    new_feature = mkBranch {
 +      branch = "new_feature";
-+      version = "615.71.09";
-+      sha256_64bit = "sha256-zc7tIrvrYSSNGm3qvCWWZz46ZQFpjucayNL9wo87cP4=";
-+      sha256_aarch64 = "sha256-IbekQhE7cFfmnPZaLY9NDYcF7CoNZ+2Qb7sRd4EOgWM=";
-+      openSha256 = "sha256-1YJjsanE+6pwXGRb1oDTRei59LP9e/vReCiH+waJ9JE=";
++      version = "615.78.08";
++      sha256_64bit = "sha256-Pj9t3cLudnoIGFMAr3vjyyhuznZpjS3eNSRZl4LQf/4=";
++      sha256_aarch64 = "sha256-UHYBE1AYHoGgMfD9AS/jX+S+N8eCDWUft6qolK9Eejc=";
++      openSha256 = "sha256-4HMf9lyCUU4FkpHyiUkk4cmiCSm/pu5eAccTSRz3AjY=";
 +      fetchOpenFromNvidia = true;
-+      settingsSha256 = "sha256-LK1LU8mDkM/XVRKPBtuOZh9nIP/lGFLAJnmasEX8jhg=";
-+      persistencedSha256 = "sha256-qPRb+3d88+2RcpUkoBTbjIaImnQ+jX+/6p1vXcJ5geE=";
-+      modprobeSha256 = "sha256-aj8GeAdRqX5/zSHkaqfETjklbphVR7EH1oEqABQIlOs=";
++      settingsSha256 = "sha256-inDRpG02sdDgHmlqgu/DsgK8OFdOt1fZIYyXdhlGC/c=";
++      persistencedSha256 = "sha256-RzeR6Ldct6MUxjnXRyThdh5Y3jjMehTVg85MtwuWNX4=";
++      modprobeSha256 = "sha256-ZAcooGeOaF3JQ4fzVG3SH7UE5skd/xzt/dGWEPuR4K4=";
 +    };
 +
 +    beta = mkBranch {
@@ -3993,12 +4348,7 @@ index 5985eb6036b64..aee48218cba2d 100644
 -        "nvidia-470xx-fix-linux-6.19-part1.patch"
 -        "nvidia-470xx-fix-linux-6.19-part2.patch"
 -        "nvidia-470xx-fix-linux-7.0.patch"
-+        "kernel-6.13.patch"
-+        "kernel-6.14.patch"
-+        "gcc-15.patch"
-+        "kernel-6.15.patch"
-+        "kernel-6.17.patch"
-       ];
+-      ];
 -      patchFlags = [
 -        "-p1"
 -        "--directory=kernel"
@@ -4067,7 +4417,12 @@ index 5985eb6036b64..aee48218cba2d 100644
 -        "0013-kernel-6.3.patch"
 -        "0014-kernel-6.5.patch"
 -        "0015-kernel-6.6.patch"
--      ];
++        "kernel-6.13.patch"
++        "kernel-6.14.patch"
++        "gcc-15.patch"
++        "kernel-6.15.patch"
++        "kernel-6.17.patch"
+       ];
 -    in
 -    generic {
 -      version = "340.108";
@@ -4080,11 +4435,11 @@ index 5985eb6036b64..aee48218cba2d 100644
 -
 -      brokenAbove = "6.7";
 -      patches = map (patch: "${aurPatches}/${patch}") patchset;
-+      brokenAbove = "6.18";
++      brokenFrom = "6.18";
  
        # fixes the bug described in https://bbs.archlinux.org/viewtopic.php?pid=2083439#p2083439
        # see https://bbs.archlinux.org/viewtopic.php?pid=2083651#p2083651
-@@ -306,4 +292,54 @@ rec {
+@@ -306,4 +291,54 @@ rec {
          rmdir $out/lib/tls
        '';
      };
@@ -4127,7 +4482,7 @@ index 5985eb6036b64..aee48218cba2d 100644
 +        modprobeSha256 = "sha256-aEVCKYliPCk8SJybZ/wcgU8bppmx7tlAUuOaAQqJgeQ=";
 +        useGLVND = false;
 +
-+        brokenAbove = "6.7";
++        brokenFrom = "6.7";
 +        patches = map (patch: "${aurPatches}/${patch}") patchset;
 +
 +        # fixes the bug described in https://bbs.archlinux.org/viewtopic.php?pid=2083439#p2083439
@@ -4141,20 +4496,28 @@ index 5985eb6036b64..aee48218cba2d 100644
 +  }
 +)
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index 380c3827ba221..2c2a7fa6f7feb 100644
+index 3c836d32258eb..50d6e72d956c7 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-@@ -4,7 +4,7 @@
+@@ -1,17 +1,32 @@
+ {
+   # Package dependencies
+   lib,
++  stdenv,
++  config,
    runCommandLocal,
    patchutils,
    callPackage,
 -  kernel,
-+  nvidiaDriverUnpackHook,
    pkgsi686Linux,
    fetchzip,
    fetchFromGitHub,
-@@ -12,6 +12,14 @@
+ 
    libsOnly ? false,
++  # Older drivers carry no 32-bit libraries in their own archive and take them
++  # from a separate i686 one, which a platform without 32-bit x86 support does
++  # not fetch.
++  disable32Bit ? stdenv.hostPlatform.system == "aarch64-linux",
    # Driver version and sources
    version,
 +  # Name of this driver branch, so that a driver and the modules built from
@@ -4164,27 +4527,133 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 +  # Only set when instantiating the factory from `linuxPackages`, where the
 +  # same driver also builds its kernel modules.
 +  kernel ? null,
++  # The kernel's common make flags. Passed only together with `kernel`, and
++  # the module build needs them.
 +  kernelModuleMakeFlags ? [ ],
    url ? null,
    sha256_32bit ? null,
    sha256_64bit,
-@@ -54,205 +62,243 @@ assert useSettings -> settingsSha256 != null;
+@@ -47,222 +62,290 @@
+   postInstall ? null,
+   # Kernel modules from these sources do not build against this kernel version
+   # or newer. The userspace libraries have no such limit.
+-  brokenAbove ? null,
++  brokenFrom ? null,
+ }:
+ 
+ assert useSettings -> settingsSha256 != null;
  assert usePersistenced -> persistencedSha256 != null;
  assert useFabricmanager -> fabricmanagerSha256 != null;
  assert useFabricmanager -> !useSettings;
-+assert kernel != null -> kernelModuleMakeFlags != [ ];
 +# `makeScope` hands out a `callPackage` bound to the scope, and taking it
 +# forces every member, so a scope cannot carry the throwing names below.
  
 -let
--  nvidiaDriverUnpackHook = callPackage ./unpack-hook.nix { };
+-  # The installer is a Makeself archive that both the userspace build and the
+-  # kernel module build read, so it is unpacked once, for each platform.
+-  installerArgs = {
 +lib.makeExtensible (
 +  self:
 +  let
 +    nvidiaDriver = self.driver;
++
++    modulesBroken = brokenFrom != null && kernel.kernelAtLeast brokenFrom;
++
++    # The installer is a Makeself archive that both the userspace build and the
++    # kernel module build read, so it is unpacked once, for each platform.
++    installerArgs = {
++      inherit
++        version
++        url
++        sha256_32bit
++        sha256_64bit
++        sha256_aarch64
++        openSha256
++        ;
++    };
++
++    # Drivers from 391 on carry the 32-bit libraries in their own archive;
++    # older ones come from a separate i686 archive, fetched as its own source.
++    i686bundled = lib.versionAtLeast version "391" && !disable32Bit;
++
++    fetchFromGithubOrNvidia =
++      {
++        owner,
++        repo,
++        tag,
++        nvrepo ? repo,
++        nvext ? "bz2",
++        ...
++      }@fetchArgs:
++      let
++        fetchArgs' = removeAttrs fetchArgs [
++          "owner"
++          "repo"
++          "tag"
++          "nvrepo"
++          "nvext"
++        ];
++        baseUrl = "https://github.com/${owner}/${repo}";
++      in
++      fetchzip (
++        fetchArgs'
++        // {
++          urls = [
++            "${baseUrl}/archive/${tag}.tar.gz"
++            "https://download.nvidia.com/XFree86/${nvrepo}/${nvrepo}-${tag}.tar.${nvext}"
++          ];
++          # github and nvidia use different compression algorithms,
++          # use an invalid file extension to force detection.
++          extension = "tar.??";
++          # do not try to retry 4xx errors
++          curlOptsList = [ "--no-retry-all-errors" ];
++        }
++      );
++
++    # Rewrites patches meant for the kernel/* folder structure to kernel-open/*
++    rewritePatch =
++      { from, to }:
++      patch:
++      runCommandLocal (baseNameOf patch)
++        {
++          inherit patch;
++          nativeBuildInputs = [ patchutils ];
++        }
++        ''
++          lsdiff \
++            -p1 -i ${from}/'*' \
++            "$patch" \
++          | sort -u | sed -e 's/[*?]/\\&/g' \
++          | xargs -I{} \
++            filterdiff \
++            --include={} \
++            --strip=2 \
++            --addoldprefix=a/${to}/ \
++            --addnewprefix=b/${to}/ \
++            --clean "$patch" > "$out"
++        '';
++  in
++  {
+     inherit
++      branch
+       version
+-      url
+-      sha256_32bit
+-      sha256_64bit
+-      sha256_aarch64
+-      openSha256
++      ibtSupport
++      useGLVND
++      useProfiles
+       ;
+-  };
  
 -  modulesBroken = brokenAbove != null && kernel.kernelAtLeast brokenAbove;
-+    modulesBroken = brokenAbove != null && kernel.kernelAtLeast brokenAbove;
++    # The unpacked installer archive.  A member rather than something private to
++    # `driver`, because the proprietary kernel module build reads the same tree,
++    # and because the hash verifier in `maintainers/scripts/` looks for a
++    # component whose `.src` carries the archive's URLs.
++    installer = callPackage ./installer.nix installerArgs;
  
 -  fetchFromGithubOrNvidia =
 -    {
@@ -4211,23 +4680,7 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -        urls = [
 -          "${baseUrl}/archive/${tag}.tar.gz"
 -          "https://download.nvidia.com/XFree86/${nvrepo}/${nvrepo}-${tag}.tar.${nvext}"
-+    fetchFromGithubOrNvidia =
-+      {
-+        owner,
-+        repo,
-+        tag,
-+        nvrepo ? repo,
-+        nvext ? "bz2",
-+        ...
-+      }@fetchArgs:
-+      let
-+        fetchArgs' = removeAttrs fetchArgs [
-+          "owner"
-+          "repo"
-+          "tag"
-+          "nvrepo"
-+          "nvext"
-         ];
+-        ];
 -        # github and nvidia use different compression algorithms,
 -        # use an invalid file extension to force detection.
 -        extension = "tar.??";
@@ -4235,22 +4688,28 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -        curlOptsList = [ "--no-retry-all-errors" ];
 -      }
 -    );
-+        baseUrl = "https://github.com/${owner}/${repo}";
-+      in
-+      fetchzip (
-+        fetchArgs'
-+        // {
-+          urls = [
-+            "${baseUrl}/archive/${tag}.tar.gz"
-+            "https://download.nvidia.com/XFree86/${nvrepo}/${nvrepo}-${tag}.tar.${nvext}"
-+          ];
-+          # github and nvidia use different compression algorithms,
-+          # use an invalid file extension to force detection.
-+          extension = "tar.??";
-+          # do not try to retry 4xx errors
-+          curlOptsList = [ "--no-retry-all-errors" ];
-+        }
-+      );
++    driver =
++      let
++        # Driver arguments shared between the main build and the i686 lib32 build.
++        driverArgs = {
++          inherit
++            version
++            sha256_32bit
++            sha256_aarch64
++            openSha256
++            useGLVND
++            useProfiles
++            useFabricmanager
++            ibtSupport
++            prePatch
++            postPatch
++            patchFlags
++            patches
++            preInstall
++            postInstall
++            i686bundled
++            ;
++        };
  
 -  # Rewrites patches meant for the kernel/* folder structure to kernel-open/*
 -  rewritePatch =
@@ -4274,37 +4733,33 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -          --addnewprefix=b/${to}/ \
 -          --clean "$patch" > "$out"
 -      '';
-+    # Rewrites patches meant for the kernel/* folder structure to kernel-open/*
-+    rewritePatch =
-+      { from, to }:
-+      patch:
-+      runCommandLocal (baseNameOf patch)
-+        {
-+          inherit patch;
-+          nativeBuildInputs = [ patchutils ];
++        # The 32-bit libraries of a driver that does not carry them in its own
++        # archive, built from the i686 one.  Only where the host can build i686
++        # at all, which rules out aarch64.
++        driverLib32 =
++          if i686bundled || disable32Bit then
++            null
++          else
++            pkgsi686Linux.callPackage ./binaries.nix (
++              driverArgs
++              // {
++                src = self.installer32;
++                libsOnly = true;
++                lib32 = null;
++                firmware = false;
++              }
++            );
++      in
++      # The main build: extracts the libraries, binaries and firmware from the
++      # NVIDIA driver installer.
++      callPackage ./binaries.nix (
++        driverArgs
++        // {
++          src = self.installer;
++          inherit libsOnly;
++          lib32 = if driverLib32 == null then null else driverLib32.out;
 +        }
-+        ''
-+          lsdiff \
-+            -p1 -i ${from}/'*' \
-+            "$patch" \
-+          | sort -u | sed -e 's/[*?]/\\&/g' \
-+          | xargs -I{} \
-+            filterdiff \
-+            --include={} \
-+            --strip=2 \
-+            --addoldprefix=a/${to}/ \
-+            --addnewprefix=b/${to}/ \
-+            --clean "$patch" > "$out"
-+        '';
-+  in
-+  {
-+    inherit
-+      branch
-+      version
-+      ibtSupport
-+      useGLVND
-+      useProfiles
-+      ;
++      );
  
 -  # The main build: extracts libraries, binaries, kernel module sources
 -  # and firmware from the NVIDIA driver installer.
@@ -4314,9 +4769,7 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -      driverArgs = {
 -        inherit
 -          version
--          url
 -          sha256_32bit
--          sha256_64bit
 -          sha256_aarch64
 -          openSha256
 -          useGLVND
@@ -4329,18 +4782,19 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -          patches
 -          preInstall
 -          postInstall
--          nvidiaDriverUnpackHook
 -          ;
 -      };
 -    in
 -    callPackage ./binaries.nix (
 -      driverArgs
 -      // {
+-        src = callPackage ./installer.nix installerArgs;
 -        inherit libsOnly;
 -        lib32 =
 -          (pkgsi686Linux.callPackage ./binaries.nix (
 -            driverArgs
 -            // {
+-              src = pkgsi686Linux.callPackage ./installer.nix installerArgs;
 -              libsOnly = true;
 -              lib32 = null;
 -              firmware = false;
@@ -4356,51 +4810,19 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -        if !libsOnly then
 -          callPackage ./kernel-modules.nix {
 -            open = false;
--            inherit fetchFromGithubOrNvidia nvidiaDriverUnpackHook;
+-            inherit fetchFromGithubOrNvidia;
 -            inherit prePatch patches patchFlags;
 -            version = finalAttrs.finalPackage.version;
 -            src = finalAttrs.finalPackage.src;
 -            broken = modulesBroken;
-+    driver =
-+      let
-+        # Driver arguments shared between the main build and the i686 lib32 build.
-+        driverArgs = {
-+          inherit
-+            version
-+            url
-+            sha256_32bit
-+            sha256_64bit
-+            sha256_aarch64
-+            openSha256
-+            useGLVND
-+            useProfiles
-+            useFabricmanager
-+            ibtSupport
-+            prePatch
-+            postPatch
-+            patchFlags
-+            patches
-+            preInstall
-+            postInstall
-+            nvidiaDriverUnpackHook
-+            ;
-+        };
-+
-+        # The bundled 32-bit libraries are a separate build of the same installer.
-+        driverLib32 = pkgsi686Linux.callPackage ./binaries.nix (
-+          driverArgs
-+          // {
-+            libsOnly = true;
-+            lib32 = null;
-+            firmware = false;
-           }
+-          }
 -        else
 -          { };
 -      open = lib.mapNullable (
 -        hash:
 -        callPackage ./kernel-modules.nix {
 -          open = true;
--          inherit hash nvidiaDriverUnpackHook;
+-          inherit hash;
 -          version = finalAttrs.finalPackage.version;
 -          src = finalAttrs.finalPackage.src;
 -          patchFlags = null;
@@ -4424,15 +4846,15 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -                  "postFetch"
 -                ]
 -              );
-+        );
-+      in
-+      # The main build: extracts the libraries, binaries and firmware from the
-+      # NVIDIA driver installer.
-+      callPackage ./binaries.nix (
-+        driverArgs
-+        // {
-+          inherit libsOnly;
-+          lib32 = driverLib32.out;
++    settings =
++      if useSettings then
++        (if settings32Bit then pkgsi686Linux.callPackage else callPackage) ./settings.nix {
++          version = settingsVersion;
++          hash = settingsSha256;
++          withGtk2 = preferGtk2;
++          withGtk3 = !preferGtk2;
++          inherit fetchFromGithubOrNvidia useProfiles;
++          inherit (nvidiaDriver.meta) platforms;
          }
 -      ) openSha256;
 -      settings =
@@ -4444,7 +4866,17 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -            withGtk3 = !preferGtk2;
 -            inherit fetchFromGithubOrNvidia useProfiles;
 -            inherit (finalAttrs.meta) platforms;
--          }
++      else
++        null;
++
++    persistenced =
++      if usePersistenced then
++        lib.mapNullable (
++          hash:
++          callPackage ./persistenced.nix {
++            version = persistencedVersion;
++            inherit fetchFromGithubOrNvidia hash;
+           }
 -        else
 -          { };
 -      persistenced =
@@ -4475,30 +4907,8 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 -          inherit hash fetchFromGithubOrNvidia;
 -          version = modprobeVersion;
 -          nvidia_x11 = finalAttrs.finalPackage;
-+      );
-+
-+    settings =
-+      if useSettings then
-+        (if settings32Bit then pkgsi686Linux.callPackage else callPackage) ./settings.nix {
-+          version = settingsVersion;
-+          hash = settingsSha256;
-+          withGtk2 = preferGtk2;
-+          withGtk3 = !preferGtk2;
-+          inherit fetchFromGithubOrNvidia useProfiles;
-+          inherit (nvidiaDriver.meta) platforms;
-         }
+-        }
 -      ) modprobeSha256;
-+      else
-+        null;
-+
-+    persistenced =
-+      if usePersistenced then
-+        lib.mapNullable (
-+          hash:
-+          callPackage ./persistenced.nix {
-+            version = persistencedVersion;
-+            inherit fetchFromGithubOrNvidia hash;
-+          }
 +        ) persistencedSha256
 +      else
 +        null;
@@ -4532,12 +4942,20 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 +      ;
 +
 +  }
++  // lib.optionalAttrs (!i686bundled && !disable32Bit && sha256_32bit != null) {
++    # The i686 archive that older drivers take their 32-bit libraries from.  A
++    # member so that its URLs sit on the branch, where the hash verifier in
++    # `maintainers/scripts/` finds them.  It has to stay absent where there is
++    # no such archive or the host cannot build i686, otherwise the member is an
++    # evaluation error instead of a source.
++    installer32 = pkgsi686Linux.callPackage ./installer.nix installerArgs;
++  }
 +  // lib.optionalAttrs (kernel != null) {
 +    # The kernel modules only exist in the `linuxPackages` instantiation, where
 +    # `kernel` was passed in.
 +    mod = callPackage ./kernel-modules.nix {
 +      open = false;
-+      inherit fetchFromGithubOrNvidia nvidiaDriverUnpackHook;
++      inherit fetchFromGithubOrNvidia;
 +      inherit prePatch patches patchFlags;
        inherit
 -        settingsVersion
@@ -4549,7 +4967,7 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 +        version
 +        branch
          ;
-+      inherit (nvidiaDriver) src;
++      src = self.installer;
 +      broken = modulesBroken;
      };
 +
@@ -4564,7 +4982,7 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 +          version
 +          branch
 +          ;
-+        inherit (nvidiaDriver) src;
++        src = self.installer;
 +        patches =
 +          (map (rewritePatch {
 +            from = "kernel";
@@ -4587,34 +5005,28 @@ index 380c3827ba221..2c2a7fa6f7feb 100644
 +      }
 +    ) openSha256;
 +
-+    # The driver's outputs used to be attributes of the branch itself.
-+  }
-+  // (lib.genAttrs [ "out" "bin" "firmware" "lib32" ] (
-+    name:
-+    if builtins.elem name nvidiaDriver.outputs then
-+      lib.warnOnInstantiate "nvidiaPackages.${branch}.${name} is now .driver.${name}" nvidiaDriver.${name}
-+    else
-+      throw "nvidiaPackages.${branch} builds no '${name}' output, so .driver.${name} does not exist either"
-+  ))
-+  // {
-+    modsrc = throw "nvidiaPackages.${branch}.modsrc has been removed. The kernel module is now built from the installer archive itself; see pkgs/os-specific/linux/nvidia-x11/README.md";
    }
++  # What the driver's outputs and the module sources were called on the branch
++  # itself. The release and eval configs turn `allowAliases` off, so these are
++  # absent there and the release walk never reaches a warning or a throw.
++  // lib.optionalAttrs config.allowAliases (
++    lib.genAttrs [ "out" "bin" "firmware" "lib32" ] (
++      name:
++      if nvidiaDriver ? ${name} then
++        lib.warnOnInstantiate "nvidiaPackages.${branch}.${name} is now .driver.${name}" nvidiaDriver.${name}
++      else
++        throw "nvidiaPackages.${branch} builds no '${name}' output, so .driver.${name} does not exist either"
++    )
++    // {
++      modsrc = throw "nvidiaPackages.${branch}.modsrc has been removed. The kernel module is now built from the installer archive itself; see pkgs/os-specific/linux/nvidia-x11/README.md";
++    }
++  )
  )
 diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index c77cd1c168152..8703aeed4aac9 100644
+index 71e5eae7e7fe8..50a41d47f57df 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-@@ -4,13 +4,16 @@
-   fetchFromGithubOrNvidia,
-   kernel,
-   kernelModuleMakeFlags,
--  nvidiaDriverUnpackHook,
-+  # Only the proprietary module is built from the installer; the open sources
-+  # are a tarball.
-+  nvidiaDriverUnpackHook ? null,
-   open,
-   # Driver version and the archive it came from; the proprietary module is
-   # built from the same installer as the userspace libraries.
+@@ -10,6 +10,7 @@
    version,
    src,
    patches,
@@ -4622,7 +5034,7 @@ index c77cd1c168152..8703aeed4aac9 100644
    patchFlags ? null,
    prePatch ? null,
    broken,
-@@ -39,16 +42,15 @@ stdenv.mkDerivation {
+@@ -38,6 +39,7 @@ stdenv.mkDerivation {
      else
        src;
  
@@ -4630,31 +5042,6 @@ index c77cd1c168152..8703aeed4aac9 100644
    driverVersion = version;
  
    inherit patches patchFlags prePatch;
- 
-   nativeBuildInputs =
--    [
--      # Brings `bsdtar` and the decompressors the unpack hook shells out to.
--      nvidiaDriverUnpackHook
--    ]
--    ++ kernel.moduleBuildDependencies;
-+    # The open sources are a plain tarball that `unpackPhase` handles itself;
-+    # only the proprietary module needs the installer unpacked.
-+    lib.optionals (!open) [ nvidiaDriverUnpackHook ] ++ kernel.moduleBuildDependencies;
- 
-   makeFlags =
-     kernelModuleMakeFlags
-@@ -102,7 +104,10 @@ stdenv.mkDerivation {
-   meta = {
-     description = "NVIDIA Linux ${lib.optionalString open "Open "}GPU Kernel Modules";
-     homepage =
--      if open then "https://github.com/NVIDIA/open-gpu-kernel-modules" else "https://www.nvidia.com/object/unix.html";
-+      if open then
-+        "https://github.com/NVIDIA/open-gpu-kernel-modules"
-+      else
-+        "https://www.nvidia.com/object/unix.html";
-     license =
-       if open then
-         with lib.licenses;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
 index f3e7a11a79eef..60f5b348c41bb 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
@@ -4677,76 +5064,11 @@ index f3e7a11a79eef..60f5b348c41bb 100644
      mainProgram = "nvidia-modprobe";
    };
  })
-diff --git a/pkgs/os-specific/linux/nvidia-x11/unpack-hook.nix b/pkgs/os-specific/linux/nvidia-x11/unpack-hook.nix
-index c446298a47713..67cc9f2c682cc 100644
---- a/pkgs/os-specific/linux/nvidia-x11/unpack-hook.nix
-+++ b/pkgs/os-specific/linux/nvidia-x11/unpack-hook.nix
-@@ -1,18 +1,21 @@
--# Unpacks the `.run` driver installer, which `unpackPhase` cannot handle on its
--# own. Both the userspace libraries and the kernel modules are built from that
--# archive, so they share this hook.
-+# Unpacks the NVIDIA driver installer, a Makeself archive that `unpackPhase`
-+# cannot handle on its own. Both the userspace libraries and the proprietary
-+# kernel module are built from it, so they share this hook.
- {
-   makeSetupHook,
--  # Tools the Makeself preamble drives to extract itself. It picks its
--  # decompressor at runtime: `zstd` since 530.30.02, `gzip`/`bzip2`/`xz` before.
--  bzip2,
-+  # What the Makeself preamble runs, checked against the 595 and Vulkan-beta
-+  # installers: `cksum`/`cut`/`tail`/`head` come from coreutils, the rest here.
-   gawk,
-   gnused,
--  gzip,
--  # Provides `bsdtar` for the fallback path in the hook.
--  libarchive,
-   gnutar,
--  xz,
-+  # `bsdtar` for the fallback path in the hook. It detects the compression
-+  # itself, so an archive needing `gzip`, `bzip2` or `xz` as a separate program
-+  # is still unpacked that way.
-+  libarchive,
-+  # Older Makeself releases, which the 340-470 drivers ship, locate their
-+  # helpers with `which`.
-+  which,
-+  # The decompressor since 530.30.02; earlier installers ship their own.
-   zstd,
- }:
- 
-@@ -20,13 +23,11 @@ makeSetupHook {
-   name = "nvidia-driver-unpack-hook";
- 
-   propagatedBuildInputs = [
--    bzip2
-     gawk
-     gnused
--    gzip
--    libarchive
-     gnutar
--    xz
-+    libarchive
-+    which
-     zstd
-   ];
--} ./unpack-hook.sh
-\ No newline at end of file
-+} ./unpack-hook.sh
-diff --git a/pkgs/os-specific/linux/nvidia-x11/unpack-hook.sh b/pkgs/os-specific/linux/nvidia-x11/unpack-hook.sh
-index 20728240e5f5c..6dbf916a81b3b 100644
---- a/pkgs/os-specific/linux/nvidia-x11/unpack-hook.sh
-+++ b/pkgs/os-specific/linux/nvidia-x11/unpack-hook.sh
-@@ -29,4 +29,4 @@ unpackNvidiaDriver() {
- 
-     # That tarball unpacks flat into the current directory.
-     sourceRoot=.
--}
-\ No newline at end of file
-+}
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index cb202181a3163..decbdbfb3c1ac 100644
+index e766efa043e9e..17689dea1fa6f 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
-@@ -1928,7 +1928,7 @@ mapAliases {
+@@ -1950,7 +1950,7 @@ mapAliases {
    numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
    nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
    nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
@@ -4756,10 +5078,10 @@ index cb202181a3163..decbdbfb3c1ac 100644
    oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
    oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 diff --git a/pkgs/top-level/all-packages.nix b/pkgs/top-level/all-packages.nix
-index 29453644aeb6a..d304fb93317f0 100644
+index e127797199489..b5c0524a61ae5 100644
 --- a/pkgs/top-level/all-packages.nix
 +++ b/pkgs/top-level/all-packages.nix
-@@ -6219,6 +6219,11 @@ with pkgs;
+@@ -6196,6 +6196,11 @@ with pkgs;
    nv-codec-headers-11 = nv-codec-headers.override { majorVersion = "11"; };
    nv-codec-headers-12 = nv-codec-headers.override { majorVersion = "12"; };
  
@@ -4771,27 +5093,50 @@ index 29453644aeb6a..d304fb93317f0 100644
    nvidiaCtkPackages = recurseIntoAttrs (
      callPackage ../by-name/nv/nvidia-container-toolkit/packages.nix { }
    );
-@@ -7595,7 +7600,7 @@ with pkgs;
+@@ -7564,7 +7569,7 @@ with pkgs;
    conky = callPackage ../os-specific/linux/conky (
      {
-       lua = lua5_4;
+       lua = lua5_5;
 -      inherit (linuxPackages.nvidia_x11.settings) libXNVCtrl;
 +      inherit (nvidiaPackages.stable.settings) libXNVCtrl;
      }
      // config.conky or { }
    );
 diff --git a/pkgs/top-level/linux-kernels.nix b/pkgs/top-level/linux-kernels.nix
-index c710cc74b62b8..a413f00160f9f 100644
+index bf483fe0105d7..364b8505dd09e 100644
 --- a/pkgs/top-level/linux-kernels.nix
 +++ b/pkgs/top-level/linux-kernels.nix
-@@ -361,23 +361,31 @@ in
+@@ -16,7 +16,7 @@
+ # - Update packageAliases.linux_latest to the latest version
+ 
+ let
+-  inherit (lib) recurseIntoAttrs dontRecurseIntoAttrs;
++  inherit (lib) recurseIntoAttrs;
+   inherit (linuxKernel)
+     kernels
+     kernelPatches
+@@ -362,28 +362,29 @@ in
  
          nvidiabl = callPackage ../os-specific/linux/nvidiabl { };
  
 -        nvidiaPackages = dontRecurseIntoAttrs (
 -          lib.makeExtensible (_: callPackage ../os-specific/linux/nvidia-x11 { })
 -        );
--
++        # The same factory as `pkgs.nvidiaPackages`, instantiated again with a
++        # kernel so that each branch also provides its kernel modules. Only the
++        # kernel is passed in: `callPackage` resolves everything else from
++        # `pkgs` after looking in this scope, where `stdenv` is the kernel's.
++        # `default.nix` builds the userspace libraries from `pkgs.callPackage`
++        # for that reason.
++        #
++        # This stays a full branch set, so `mkDriver` here gives a custom version
++        # together with its modules. It is not `recurseIntoAttrs` on purpose:
++        # that would turn every userspace member into a release job as well, and
++        # those are the same derivations as the ones under `pkgs.nvidiaPackages`.
++        nvidiaPackages = callPackage ../os-specific/linux/nvidia-x11 {
++          inherit kernel kernelModuleMakeFlags;
++        };
+ 
 -        nvidia_x11 = nvidiaPackages.stable;
 -        nvidia_x11_beta = nvidiaPackages.beta;
 -        nvidia_x11_latest = nvidiaPackages.latest;
@@ -4805,38 +5150,72 @@ index c710cc74b62b8..a413f00160f9f 100644
 -
 -        # this is not a replacement for nvidia_x11*
 -        # only the opensource kernel driver exposed for hydra to build
-+        # The same factory as `pkgs.nvidiaPackages`, instantiated again with a
-+        # kernel so that each branch also provides its kernel modules. Only the
-+        # kernel is passed in: `callPackage` resolves everything else from
-+        # `pkgs` after looking in this scope, where `stdenv` is the kernel's.
-+        # `default.nix` builds the userspace libraries from `pkgs.callPackage`
-+        # for that reason.
-+        nvidiaPackages = callPackage ../os-specific/linux/nvidia-x11 {
-+          inherit kernel kernelModuleMakeFlags;
-+        };
-+
-+        # These name the driver of the corresponding branch. They cannot
-+        # deprecate themselves: this set is merged into `pkgs`, the release
-+        # walk reads the output path of every attribute, and the eval job
-+        # treats a warning as a failure.
-+        nvidia_x11 = nvidiaPackages.stable.driver;
-+        nvidia_x11_beta = nvidiaPackages.beta.driver;
-+        nvidia_x11_latest = nvidiaPackages.latest.driver;
-+        nvidia_x11_legacy340 = nvidiaPackages.legacy_340.driver;
-+        nvidia_x11_legacy390 = nvidiaPackages.legacy_390.driver;
-+        nvidia_x11_legacy470 = nvidiaPackages.legacy_470.driver;
-+        nvidia_x11_legacy535 = nvidiaPackages.legacy_535.driver;
-+        nvidia_x11_production = nvidiaPackages.production.driver;
-+        nvidia_x11_vulkan_beta = nvidiaPackages.vulkan_beta.driver;
-+        nvidia_dc = nvidiaPackages.dc.driver;
-+
-         nvidia_x11_beta_open = nvidiaPackages.beta.open;
-         nvidia_x11_latest_open = nvidiaPackages.latest.open;
-         nvidia_x11_production_open = nvidiaPackages.production.open;
+-        nvidia_x11_beta_open = nvidiaPackages.beta.open;
+-        nvidia_x11_latest_open = nvidiaPackages.latest.open;
+-        nvidia_x11_production_open = nvidiaPackages.production.open;
+-        nvidia_x11_stable_open = nvidiaPackages.stable.open;
+-        nvidia_x11_vulkan_beta_open = nvidiaPackages.vulkan_beta.open;
++        # A path for the release walk to find the kernel modules, which are the
++        # only part of `nvidiaPackages` that exists per kernel. Nothing else
++        # should use this; the branches are the interface.
++        nvidiaModules = recurseIntoAttrs (
++          lib.genAttrs nvidiaPackages.branches (
++            branch: lib.recurseIntoAttrs { inherit (nvidiaPackages.${branch}) mod open; }
++          )
++        );
+ 
+         nxp-pn5xx = callPackage ../os-specific/linux/nxp-pn5xx { };
+ 
+@@ -603,6 +604,45 @@ in
+         nvidia_dc_535 = throw "nvidiaPackages.dc_535 removed, soon reaches end of life, see https://endoflife.date/nvidia"; # added 2026-03-08
+         fwts-efi-runtime = throw "fwts-efi-runtime has been replaced by efi_test starting with kernel version 4.8, see https://bugs.launchpad.net/fwts/+bug/2138473"; # added 2026-05-16
+       }
++      // lib.optionalAttrs config.allowAliases (
++        # What the driver and its kernel modules were called while a branch was
++        # the driver derivation itself. `nvidiaPackages` is a scope now, so
++        # these name a member of it.
++        lib.mapAttrs
++          (
++            old: branch:
++            lib.warnOnInstantiate
++              "linuxPackages.${old} has been moved to linuxPackages.nvidiaPackages.${branch}.driver"
++              nvidiaPackages.${branch}.driver
++          )
++          {
++            nvidia_x11 = "stable";
++            nvidia_x11_beta = "beta";
++            nvidia_x11_latest = "latest";
++            nvidia_x11_legacy340 = "legacy_340";
++            nvidia_x11_legacy390 = "legacy_390";
++            nvidia_x11_legacy470 = "legacy_470";
++            nvidia_x11_legacy535 = "legacy_535";
++            nvidia_x11_production = "production";
++            nvidia_x11_vulkan_beta = "vulkan_beta";
++            nvidia_dc = "dc";
++          }
++        //
++          lib.mapAttrs
++            (
++              old: branch:
++              lib.warnOnInstantiate
++                "linuxPackages.${old} has been moved to linuxPackages.nvidiaPackages.${branch}.open"
++                nvidiaPackages.${branch}.open
++            )
++            {
++              nvidia_x11_beta_open = "beta";
++              nvidia_x11_latest_open = "latest";
++              nvidia_x11_production_open = "production";
++              nvidia_x11_stable_open = "stable";
++              nvidia_x11_vulkan_beta_open = "vulkan_beta";
++            }
++      )
+     )).extend
+       (lib.fixedPoints.composeManyExtensions kernelPackagesExtensions);
+ 
 
-From 365680570ae27e56559b994615f570664936c993 Mon Sep 17 00:00:00 2001
+From 361ed9aaf0818f846ca171c754517ef2b200dff2 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Sun, 4 Oct 2026 12:02:47 +0800
+Date: Tue, 13 Oct 2026 23:43:35 +0800
 Subject: [PATCH 10/10] nvidia: update the consumers of the driver namespace
 
 hardware.nvidia.package is a branch scope now, and the driver packages live in
@@ -4853,32 +5232,32 @@ name no longer describes where the module lives.
 
 Assisted-by: omp:Space Bunny Alpha
 ---
- nixos/doc/manual/configuration/x-windows.chapter.md |  6 +++---
- nixos/modules/hardware/video/bumblebee.nix          |  4 +---
- nixos/modules/programs/nix-required-mounts.nix      |  4 ++--
- nixos/modules/programs/wayland/sway.nix             |  2 +-
- nixos/modules/services/computing/boinc/client.nix   |  2 +-
- .../hardware/nvidia-container-toolkit/default.nix   |  4 ++--
- nixos/modules/services/monitoring/beszel-agent.nix  | 13 +++++++++++--
- .../monitoring/prometheus/exporters/nvidia-gpu.nix  |  2 +-
- nixos/modules/services/video/frigate.nix            |  2 +-
- nixos/modules/system/boot/kernel.nix                |  6 +++---
- nixos/tests/nvidia-container-toolkit.nix            |  2 +-
- .../networking/cluster/k3s/docs/examples/NVIDIA.md  |  2 +-
- pkgs/by-name/bu/bumblebee/package.nix               |  6 +++---
- pkgs/by-name/gl/gl-gsync-demo/package.nix           |  4 ++--
- pkgs/by-name/gw/gwe/package.nix                     |  8 ++++----
- pkgs/by-name/li/libnvidia-container/package.nix     |  4 ++--
- pkgs/by-name/li/libvibrant/package.nix              |  4 ++--
- pkgs/by-name/ma/mangohud/package.nix                |  6 +++---
- pkgs/by-name/nv/nvfancontrol/package.nix            |  4 ++--
- pkgs/by-name/pr/primus-lib/package.nix              |  4 ++--
- .../by-name/tu/tuxclocker-nvidia-plugin/package.nix |  6 +++---
- pkgs/by-name/xf/xfce4-sensors-plugin/package.nix    |  6 +++---
- pkgs/by-name/xp/xpraWithNvenc/package.nix           |  4 ++--
- .../pantheon/apps/elementary-monitor/default.nix    |  4 ++--
- .../haskell-modules/configuration-nix.nix           |  2 +-
- 25 files changed, 59 insertions(+), 52 deletions(-)
+ nixos/doc/manual/configuration/x-windows.chapter.md       | 6 +++---
+ nixos/modules/hardware/video/bumblebee.nix                | 4 +---
+ nixos/modules/programs/nix-required-mounts.nix            | 4 ++--
+ nixos/modules/programs/wayland/sway.nix                   | 2 +-
+ nixos/modules/services/computing/boinc/client.nix         | 2 +-
+ .../hardware/nvidia-container-toolkit/default.nix         | 4 ++--
+ nixos/modules/services/monitoring/beszel-agent.nix        | 2 +-
+ .../monitoring/prometheus/exporters/nvidia-gpu.nix        | 2 +-
+ nixos/modules/services/video/frigate.nix                  | 2 +-
+ nixos/modules/system/boot/kernel.nix                      | 6 +++---
+ nixos/tests/nvidia-container-toolkit.nix                  | 2 +-
+ .../networking/cluster/k3s/docs/examples/NVIDIA.md        | 2 +-
+ pkgs/by-name/bu/bumblebee/package.nix                     | 6 +++---
+ pkgs/by-name/gl/gl-gsync-demo/package.nix                 | 4 ++--
+ pkgs/by-name/gw/gwe/package.nix                           | 8 ++++----
+ pkgs/by-name/li/libnvidia-container/package.nix           | 4 ++--
+ pkgs/by-name/li/libvibrant/package.nix                    | 4 ++--
+ pkgs/by-name/ma/mangohud/package.nix                      | 6 +++---
+ pkgs/by-name/nv/nvfancontrol/package.nix                  | 4 ++--
+ pkgs/by-name/pr/primus-lib/package.nix                    | 4 ++--
+ pkgs/by-name/tu/tuxclocker-nvidia-plugin/package.nix      | 6 +++---
+ pkgs/by-name/xf/xfce4-sensors-plugin/package.nix          | 6 +++---
+ pkgs/by-name/xp/xpraWithNvenc/package.nix                 | 4 ++--
+ .../desktops/pantheon/apps/elementary-monitor/default.nix | 4 ++--
+ pkgs/development/haskell-modules/configuration-nix.nix    | 2 +-
+ 25 files changed, 49 insertions(+), 51 deletions(-)
 
 diff --git a/nixos/doc/manual/configuration/x-windows.chapter.md b/nixos/doc/manual/configuration/x-windows.chapter.md
 index ab0f501663333..2fcfdae8ee485 100644
@@ -4977,7 +5356,7 @@ index c6c744ca8311e..4d7025852a679 100644
              in
              lib.getExe script;
 diff --git a/nixos/modules/services/monitoring/beszel-agent.nix b/nixos/modules/services/monitoring/beszel-agent.nix
-index dda4e96306c19..945cec17046f8 100644
+index dda4e96306c19..472dcaa08e81a 100644
 --- a/nixos/modules/services/monitoring/beszel-agent.nix
 +++ b/nixos/modules/services/monitoring/beszel-agent.nix
 @@ -23,7 +23,7 @@ let
@@ -4989,24 +5368,6 @@ index dda4e96306c19..945cec17046f8 100644
        deviceAllow = [ "char-nvidia* rw" ];
      };
      "nvml" = {
-@@ -253,7 +253,16 @@ in
-         cfg.extraPath
-         ++ lib.optionals cfg.smartmon.enable [ cfg.smartmon.package ]
-         ++ lib.optionals config.boot.zfs.enabled [ config.boot.zfs.package ]
--        ++ gpuPackages;
-+        ++ gpuPackages
-+        ++ lib.optionals (builtins.elem "nvidia" config.services.xserver.videoDrivers) [
-+          (lib.getBin config.hardware.nvidia.package.driver)
-+        ]
-+        ++ lib.optionals (builtins.elem "amdgpu" config.services.xserver.videoDrivers) [
-+          (lib.getBin pkgs.rocmPackages.rocm-smi)
-+        ]
-+        ++ lib.optionals (builtins.elem "intel" config.services.xserver.videoDrivers) [
-+          (lib.getBin pkgs.intel-gpu-tools)
-+        ];
- 
-       serviceConfig = {
-         ExecStart = ''
 diff --git a/nixos/modules/services/monitoring/prometheus/exporters/nvidia-gpu.nix b/nixos/modules/services/monitoring/prometheus/exporters/nvidia-gpu.nix
 index ad70f3e90ccd1..4072b005d284c 100644
 --- a/nixos/modules/services/monitoring/prometheus/exporters/nvidia-gpu.nix
@@ -5034,7 +5395,7 @@ index 6ee20f7cf5823..cff1343583e75 100644
            procps
            radeontop
 diff --git a/nixos/modules/system/boot/kernel.nix b/nixos/modules/system/boot/kernel.nix
-index 93c9183bb7960..aa7729e4ddfeb 100644
+index 2fb9f2114c36c..1f430de701b35 100644
 --- a/nixos/modules/system/boot/kernel.nix
 +++ b/nixos/modules/system/boot/kernel.nix
 @@ -92,9 +92,9 @@ in
