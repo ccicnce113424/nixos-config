@@ -14,7 +14,7 @@
   services.firewalld.enable = true;
 
   services.daed = {
-    enable = false;
+    enable = true;
     package = pkgs.daed;
     openFirewall = {
       enable = true;
@@ -25,7 +25,7 @@
   };
 
   services.honk-core = {
-    enable = true;
+    enable = false;
     openFirewall = true;
   };
 
