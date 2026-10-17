@@ -40,7 +40,7 @@
       };
 
       wireplumber.extraConfig = {
-        "ja11-volume-fix" = {
+        "51-ja11-volume-fix" = {
           "monitor.alsa.rules" = [
             {
               matches = [
@@ -54,6 +54,18 @@
               actions = {
                 update-props = {
                   "api.alsa.ignore-dB" = true;
+                };
+              };
+            }
+          ];
+        };
+        "52-lhdc-quality" = {
+          "monitor.bluez.rules" = [
+            {
+              matches = [ { "device.description" = "MOONDROP Pudding"; } ];
+              actions = {
+                update-props = {
+                  "bluez5.a2dp.lhdc.quality" = "500k";
                 };
               };
             }
