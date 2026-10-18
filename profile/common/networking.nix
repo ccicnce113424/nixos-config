@@ -13,15 +13,22 @@
 
   services.firewalld.enable = true;
 
-  services.daed = {
+  # services.daed = {
+  #   enable = true;
+  #   package = pkgs.daed;
+  #   openFirewall = {
+  #     enable = true;
+  #     port = 12345;
+  #   };
+  #   configDir = "/etc/daed";
+  #   listen = "127.0.0.1:2023";
+  # };
+
+  services.daed-next = {
     enable = true;
-    package = pkgs.daed;
-    openFirewall = {
-      enable = true;
-      port = 12345;
-    };
-    configDir = "/etc/daed";
-    listen = "127.0.0.1:2023";
+    package = pkgs.daed-next-git;
+    configDir = "/etc/daed-next";
+    stateDir = "/var/lib/daed-next";
   };
 
   services.honk-core = {
