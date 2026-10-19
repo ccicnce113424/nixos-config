@@ -29,7 +29,7 @@ Key wiring facts:
 - `hosts/hosts.nix` is the only host declaration (data): entries composed from `desktop-template`/`thin-template` via `lib.recursiveUpdate`. `hosts/<name>/default.nix` is a 6-line shim importing `hosts/templates/{desktop,vm-guest}.nix` + `hardware-configuration.nix`.
 - Activation gates: `runtime.profile` (`desktop`|`minimal`|`vm-test`), `runtime.features` (free strings), `runtime.users`. Everything is imported unconditionally and gated with `lib.mkIf` / `builtins.elem` — there are no per-host module lists.
 - `hostCfg.*` facts (cpu/gpu/locale/vm, declared in `hosts/modules/*.nix`) feed both NixOS modules and the pkgs builder (`cudaSupport`/`rocmSupport` in `lib/patched-nixpkgs.nix`).
-- **Two package sets**: flake-parts `pkgs` (tooling only, `nixpkgs.nix`, NUR+nix-packages overlays) vs per-host `hostPkgs` (patched nixpkgs + multiverse/NUR/nix-packages/nix-gaming/llm-agents/gaze/… overlays). A package available in `nix develop` may not exist on hosts and vice versa.
+- **Two package sets**: flake-parts `pkgs` (tooling only, `nixpkgs.nix`, NUR+nix-packages overlays) vs per-host `hostPkgs` (patched nixpkgs + multiverse/NUR/nix-packages/nix-gaming/llm-agents/… overlays). A package available in `nix develop` may not exist on hosts and vice versa.
 - `specialArgs`/`extraSpecialArgs` parity: NixOS and home-manager both get `{ self, inputs, inputs', nixConfig, host }` (`lib/gencfg.nix`, `hosts/runtime.nix`).
 - `livecd.nix` bypasses the entire host pipeline (plain `nixpkgs.lib.nixosSystem`, unpatched nixpkgs).
 

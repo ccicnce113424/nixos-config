@@ -79,10 +79,6 @@ rec {
         treefmt-nix.follows = "treefmt-nix";
       };
     };
-    gaze = {
-      url = "github:GunduLabs/gaze";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     flake-registry = {
       url = "github:NixOS/flake-registry";
       flake = false;
