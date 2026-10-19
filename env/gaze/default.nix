@@ -21,7 +21,8 @@
       };
       kde = {
         lockScreen = true;
-        # loginScreen = true;
+        loginScreen = true;
+        unlockKwallet = true;
       };
     };
   };
