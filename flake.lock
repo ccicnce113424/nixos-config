@@ -358,11 +358,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792706836,
-        "narHash": "sha256-HqvqANTIPCe+Z1ghWQPBIauk56p0rZJUwO8GWiF5IiI=",
+        "lastModified": 1792789336,
+        "narHash": "sha256-s/T5P4qrOeaTHGiATufgYMEJqGqX9toSZZc1Mcj834Q=",
         "owner": "4evy",
         "repo": "nixcord",
-        "rev": "337f2b1f8c188c749e3047901282529a309c4d62",
+        "rev": "2678d1e8574bf4af8cf9f165e1afb51b113eafae",
         "type": "github"
       },
       "original": {
