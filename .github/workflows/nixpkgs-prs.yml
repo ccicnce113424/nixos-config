@@ -16,7 +16,7 @@ on:
       refresh:
         description: Also re-download every patch listed in nixpkgs-prs.json
         required: false
-        default: false
+        default: true
         type: boolean
 
 permissions:
