@@ -1,8 +1,7 @@
-{ pkgs, ... }:
+{ ... }:
 {
   services.scx-loader = {
     enable = true;
-    schedsPackages = [ pkgs.scx_rustscheds ];
     config = {
       default_mode = "Auto";
       default_sched = "scx_mlfq";

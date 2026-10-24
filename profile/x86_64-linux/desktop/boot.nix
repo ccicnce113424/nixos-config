@@ -75,6 +75,5 @@ in
       "systemd.show_status=auto"
     ];
     boot.consoleLogLevel = 3;
-    boot.initrd.verbose = false;
   };
 }
