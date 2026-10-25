@@ -8,6 +8,7 @@
     ./inputs
     ./utils.nix
     ./documents
+    ./starship.nix
     ./zsh.nix
     ./gaming.nix
   ];
