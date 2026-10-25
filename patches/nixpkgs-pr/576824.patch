@@ -1,0 +1,35 @@
+From c0f68c81a8211293ba1a5c68105797f7a3ee9862 Mon Sep 17 00:00:00 2001
+From: hermes-agent <that.temperature@mail.com>
+Date: Wed, 21 Oct 2026 20:59:29 +0800
+Subject: [PATCH] nixos/sunshine: migrate deprecated Avahi options
+
+Use services.avahi.settings.publish after the RFC42 migration in
+NixOS/nixpkgs#521552 to avoid obsolete-option warnings when Sunshine
+is enabled.
+
+Keep mkDefault priorities and explicitly publish addresses, as previously
+implied by publish.userServices = true.
+
+Assisted-by: Hermes Agent (Nous Research), gpt-6.1-sol
+---
+ nixos/modules/services/networking/sunshine.nix | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/nixos/modules/services/networking/sunshine.nix b/nixos/modules/services/networking/sunshine.nix
+index 50060d314a868..3dbb30863cc0b 100644
+--- a/nixos/modules/services/networking/sunshine.nix
++++ b/nixos/modules/services/networking/sunshine.nix
+@@ -153,9 +153,10 @@ in
+ 
+     services.avahi = {
+       enable = mkDefault true;
+-      publish = {
+-        enable = mkDefault true;
+-        userServices = mkDefault true;
++      settings.publish = {
++        disable-publishing = mkDefault false;
++        disable-user-service-publishing = mkDefault false;
++        publish-addresses = mkDefault true;
+       };
+     };
+ 
