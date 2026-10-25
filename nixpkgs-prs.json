@@ -1,1 +1,6 @@
-[]
+[
+  {
+    "url": "https://github.com/NixOS/nixpkgs/pull/578625",
+    "rev": "81c18e06668625d6942a61562c17e4825d74cce2"
+  }
+]

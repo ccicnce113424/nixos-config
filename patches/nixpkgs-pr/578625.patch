@@ -1,0 +1,26 @@
+From 81c18e06668625d6942a61562c17e4825d74cce2 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sun, 25 Oct 2026 12:47:13 +0800
+Subject: [PATCH] nixos/ipp-usb: migrate avahi options
+
+---
+ nixos/modules/services/printing/ipp-usb.nix | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/nixos/modules/services/printing/ipp-usb.nix b/nixos/modules/services/printing/ipp-usb.nix
+index 0db2714cbc9a9..5c05134d6f63d 100644
+--- a/nixos/modules/services/printing/ipp-usb.nix
++++ b/nixos/modules/services/printing/ipp-usb.nix
+@@ -61,9 +61,9 @@
+     services.udev.packages = [ pkgs.ipp-usb ];
+     services.avahi = {
+       enable = true;
+-      publish = {
+-        enable = true;
+-        userServices = true;
++      settings.publish = {
++        disable-publishing = false;
++        publish-addresses = true;
+       };
+     };
+     # enable printing and scanning by default, but not required.
