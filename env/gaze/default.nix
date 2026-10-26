@@ -19,13 +19,7 @@
         enable = true;
         package = pkgs.gaze-gui;
       };
-      kde = {
-        lockScreen = true;
-        loginScreen = true;
-        unlockKwallet = true;
-        # kcmPackage = pkgs.gaze-kcm;
-        # enableKCM = true;
-      };
+      settings.auth.require_confirmation_elevation = true;
     };
   };
 }

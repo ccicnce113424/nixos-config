@@ -14,5 +14,13 @@
     environment.sessionVariables = {
       NIXOS_OZONE_WL = "1";
     };
+
+    services.gaze.kde = {
+      lockScreen = true;
+      loginScreen = true;
+      unlockKwallet = true;
+      # kcmPackage = pkgs.gaze-kcm;
+      # enableKCM = true;
+    };
   };
 }
