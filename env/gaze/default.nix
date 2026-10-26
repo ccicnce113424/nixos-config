@@ -15,13 +15,16 @@
         "polkit-1"
         "login"
       ];
-      gui.enable = false;
+      gui = {
+        enable = true;
+        package = pkgs.gaze-gui;
+      };
       kde = {
         lockScreen = true;
         loginScreen = true;
         unlockKwallet = true;
-        kcmPackage = pkgs.gaze-kcm;
-        enableKCM = true;
+        # kcmPackage = pkgs.gaze-kcm;
+        # enableKCM = true;
       };
     };
   };
