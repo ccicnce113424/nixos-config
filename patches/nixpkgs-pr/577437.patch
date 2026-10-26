@@ -1,17 +1,17 @@
-From 81c18e06668625d6942a61562c17e4825d74cce2 Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Sun, 25 Oct 2026 12:47:13 +0800
-Subject: [PATCH] nixos/ipp-usb: migrate avahi options
+From 6717a420cf446dc8d0b58388060c7ed5aa23d576 Mon Sep 17 00:00:00 2001
+From: r-vdp <ramses@well-founded.dev>
+Date: Thu, 22 Oct 2026 18:14:01 +0200
+Subject: [PATCH] nixos/ipp-usb: fix deprecation warning from avahi config
 
 ---
- nixos/modules/services/printing/ipp-usb.nix | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ nixos/modules/services/printing/ipp-usb.nix | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/nixos/modules/services/printing/ipp-usb.nix b/nixos/modules/services/printing/ipp-usb.nix
-index 0db2714cbc9a9..5c05134d6f63d 100644
+index 0db2714cbc9a9..708eb9743cf23 100644
 --- a/nixos/modules/services/printing/ipp-usb.nix
 +++ b/nixos/modules/services/printing/ipp-usb.nix
-@@ -61,9 +61,9 @@
+@@ -61,9 +61,10 @@
      services.udev.packages = [ pkgs.ipp-usb ];
      services.avahi = {
        enable = true;
@@ -20,6 +20,7 @@ index 0db2714cbc9a9..5c05134d6f63d 100644
 -        userServices = true;
 +      settings.publish = {
 +        disable-publishing = false;
++        disable-user-service-publishing = false;
 +        publish-addresses = true;
        };
      };
