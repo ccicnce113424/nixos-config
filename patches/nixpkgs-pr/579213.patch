@@ -1,0 +1,1015 @@
+From c2617c676fd12e05e35c85e45a5cc60f23294034 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Mon, 26 Oct 2026 18:47:10 +0800
+Subject: [PATCH 1/4] virtualbox: avoid rebuilding for extpack
+
+Assisted-by: omp:DeepSeek V4.1 Flash 1017
+---
+ .../virtualisation/virtualbox-host.nix        |   6 +
+ .../virtualization/virtualbox/default.nix     | 667 ++++++++++--------
+ .../virtualbox/extpack-relocation.patch       | 162 +++++
+ 3 files changed, 524 insertions(+), 311 deletions(-)
+ create mode 100644 pkgs/applications/virtualization/virtualbox/extpack-relocation.patch
+
+diff --git a/nixos/modules/virtualisation/virtualbox-host.nix b/nixos/modules/virtualisation/virtualbox-host.nix
+index 56ba741dc2e4d..ab6215df66a3f 100644
+--- a/nixos/modules/virtualisation/virtualbox-host.nix
++++ b/nixos/modules/virtualisation/virtualbox-host.nix
+@@ -111,6 +111,12 @@ in
+         ];
+         environment.systemPackages = [ virtualbox ];
+ 
++        # Setuid entry points cannot be wrapped with an environment variable,
++        # so make the extension pack directory discoverable system-wide.
++        environment.variables = lib.mkIf cfg.enableExtensionPack {
++          VBOX_NIX_APP_SHARE_DIR = "${virtualbox}/share/virtualbox";
++        };
++
+         security.wrappers =
+           let
+             mkSuid = program: {
+diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
+index 43df9e9f38349..6f82d11257827 100644
+--- a/pkgs/applications/virtualization/virtualbox/default.nix
++++ b/pkgs/applications/virtualization/virtualbox/default.nix
+@@ -4,6 +4,8 @@
+   fetchurl,
+   fetchpatch,
+   callPackage,
++  symlinkJoin,
++  makeWrapper,
+   lib,
+   acpica-tools,
+   dev86,
+@@ -104,326 +106,369 @@ let
+     qtscxml
+     wrapQtAppsHook
+     ;
+-in
+-stdenv.mkDerivation (finalAttrs: {
+-  pname = "virtualbox";
+-  version = "${finalAttrs.virtualboxVersion}${finalAttrs.virtualboxSubVersion}";
+-
+-  inherit
+-    buildType
+-    virtualboxVersion
+-    virtualboxSubVersion
+-    virtualboxSha256
+-    kvmPatchVersion
+-    kvmPatchHash
+-    virtualboxGuestAdditionsIso
+-    ;
+ 
+-  src = fetchurl {
+-    url = "https://download.virtualbox.org/virtualbox/${finalAttrs.virtualboxVersion}/VirtualBox-${finalAttrs.virtualboxVersion}${finalAttrs.virtualboxSubVersion}.tar.bz2";
+-    sha256 = finalAttrs.virtualboxSha256;
+-  };
++  unwrapped = stdenv.mkDerivation (finalAttrs: {
++    pname = "virtualbox";
++    version = "${finalAttrs.virtualboxVersion}${finalAttrs.virtualboxSubVersion}";
++
++    inherit
++      buildType
++      virtualboxVersion
++      virtualboxSubVersion
++      virtualboxSha256
++      kvmPatchVersion
++      kvmPatchHash
++      virtualboxGuestAdditionsIso
++      ;
++
++    src = fetchurl {
++      url = "https://download.virtualbox.org/virtualbox/${finalAttrs.virtualboxVersion}/VirtualBox-${finalAttrs.virtualboxVersion}${finalAttrs.virtualboxSubVersion}.tar.bz2";
++      sha256 = finalAttrs.virtualboxSha256;
++    };
++
++    outputs = [ "out" ] ++ optional withModsrc "modsrc";
++
++    nativeBuildInputs = [
++      pkg-config
++      which
++      docbook_xsl
++      docbook_xml_dtd_43
++      yasm
++      glslang
++    ]
++    ++ optionals (!headless) [
++      wrapQtAppsHook
++      wrapGAppsHook3
++    ];
+ 
+-  outputs = [ "out" ] ++ optional withModsrc "modsrc";
+-
+-  nativeBuildInputs = [
+-    pkg-config
+-    which
+-    docbook_xsl
+-    docbook_xml_dtd_43
+-    yasm
+-    glslang
+-  ]
+-  ++ optionals (!headless) [
+-    wrapQtAppsHook
+-    wrapGAppsHook3
+-  ];
+-
+-  # Wrap manually because we wrap just a small number of executables.
+-  dontWrapQtApps = true;
+-  dontWrapGApps = true;
+-
+-  buildInputs = [
+-    acpica-tools
+-    dev86
+-    libxslt
+-    libxml2
+-    xorgproto
+-    libx11
+-    libxext
+-    libxcursor
+-    libcap
+-    glib
+-    lvm2
+-    alsa-lib
+-    curl
+-    libvpx
+-    pam
+-    makeself
+-    perl
+-    libxmu
+-    libxrandr
+-    libpng
+-    libopus
+-    libtpms
+-    python3
+-    xz
+-    libGL
+-  ]
+-  ++ optional javaBindings jdk
+-  ++ optional pythonBindings python3 # Python is needed even when not building bindings
+-  ++ optional pulseSupport libpulseaudio
+-  ++ optionals (!headless) [
+-    qtbase
+-    qttools
+-    qtscxml
+-    libxinerama
+-    SDL2
+-    libGLU
+-  ]
+-  ++ optionals enableWebService [
+-    gsoap
+-    zlib
+-  ];
+-
+-  hardeningDisable = [
+-    "format"
+-    "fortify"
+-    "pic"
+-    "stackprotector"
+-  ];
+-
+-  prePatch = ''
+-    set -x
+-    sed -e 's@MKISOFS --version@MKISOFS -version@' \
+-        -e 's@PYTHONDIR=.*@PYTHONDIR=${optionalString pythonBindings python3}@' \
+-        -e 's@CXX_FLAGS="\(.*\)"@CXX_FLAGS="-std=c++11 \1"@' \
+-        ${
+-          optionalString (!headless) ''
+-            -e 's@TOOLQT6BIN=.*@TOOLQT6BIN="${getDev qttools}/bin"@' \
+-          ''
+-        } -i configure
+-    ls kBuild/bin/linux.x86/k* tools/linux.x86/bin/* | xargs -n 1 patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux.so.2
+-    ls kBuild/bin/linux.amd64/k* tools/linux.amd64/bin/* | xargs -n 1 patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2
+-
+-    grep 'libpulse\.so\.0'      src include -rI --files-with-match | xargs sed -i -e '
+-      ${optionalString pulseSupport ''s@"libpulse\.so\.0"@"${libpulseaudio.out}/lib/libpulse.so.0"@g''}'
+-
+-    grep 'libdbus-1\.so\.3'     src include -rI --files-with-match | xargs sed -i -e '
+-      s@"libdbus-1\.so\.3"@"${dbus.lib}/lib/libdbus-1.so.3"@g'
+-
+-    grep 'libXfixes\.so\.3'     src include -rI --files-with-match | xargs sed -i -e '
+-      s@"libXfixes\.so\.3"@"${libxfixes.out}/lib/libXfixes.so.3"@g'
+-
+-    grep 'libasound\.so\.2'     src include -rI --files-with-match | xargs sed -i -e '
+-      s@"libasound\.so\.2"@"${alsa-lib.out}/lib/libasound.so.2"@g'
+-
+-    substituteInPlace src/VBox/Devices/Graphics/DevVGA-SVGA3d-glLdr.cpp \
+-      --replace-fail \"libGL.so.1\" \"${libGL.out}/lib/libGL.so.1\"
+-
+-    export USER=nix
+-    set +x
+-  '';
+-
+-  patches =
+-    optional enableHardening ./hardened.patch
+-    # Since VirtualBox 7.0.8, VBoxSDL requires SDL2, but the build framework uses SDL1
++    # Wrap manually because we wrap just a small number of executables.
++    dontWrapQtApps = true;
++    dontWrapGApps = true;
++
++    buildInputs = [
++      acpica-tools
++      dev86
++      libxslt
++      libxml2
++      xorgproto
++      libx11
++      libxext
++      libxcursor
++      libcap
++      glib
++      lvm2
++      alsa-lib
++      curl
++      libvpx
++      pam
++      makeself
++      perl
++      libxmu
++      libxrandr
++      libpng
++      libopus
++      libtpms
++      python3
++      xz
++      libGL
++    ]
++    ++ optional javaBindings jdk
++    ++ optional pythonBindings python3 # Python is needed even when not building bindings
++    ++ optional pulseSupport libpulseaudio
+     ++ optionals (!headless) [
+-      ./fix-sdl.patch
+-      # No update patch disables check for update function
+-      # https://bugs.launchpad.net/ubuntu/+source/virtualbox-ose/+bug/272212
+-      (fetchpatch {
+-        url = "https://salsa.debian.org/pkg-virtualbox-team/virtualbox/-/raw/8028d88e6876ca5977de13c58b54e243229efe98/debian/patches/16-no-update.patch";
+-        hash = "sha256-AGtFsRjwd8Yw296eqX3NC2TUptAhpFTRaOMutiheQ6Y=";
+-      })
++      qtbase
++      qttools
++      qtscxml
++      libxinerama
++      SDL2
++      libGLU
+     ]
+-    ++ [ ./extra_symbols.patch ]
+-    # When hardening is enabled, we cannot use wrapQtApp to ensure that VirtualBoxVM sees
+-    # the correct environment variables needed for Qt to work, specifically QT_PLUGIN_PATH.
+-    # This is because VirtualBoxVM would detect that it is wrapped that and refuse to run,
+-    # and also because it would unset QT_PLUGIN_PATH for security reasons. We work around
+-    # these issues by patching the code to set QT_PLUGIN_PATH to the necessary paths,
+-    # after the code that unsets it. Note that qtsvg is included so that SVG icons from
+-    # the user's icon theme can be loaded.
+-    ++ optional (!headless && enableHardening) (
+-      replaceVars ./qt-env-vars.patch {
+-        qtPluginPath = "${qtbase}/bin/${qtbase.qtPluginPrefix}:${qtsvg}/bin/${qtbase.qtPluginPrefix}:${qtwayland}/bin/${qtbase.qtPluginPrefix}";
+-      }
+-    )
+-    # While the KVM patch should not break any other behavior if --with-kvm is not specified,
+-    # we don't take any chances and only apply it if people actually want to use KVM support.
+-    ++ optional enableKvm (fetchpatch {
+-      name = "virtualbox-${finalAttrs.virtualboxVersion}-kvm-dev-${finalAttrs.kvmPatchVersion}.patch";
+-      url = "https://github.com/cyberus-technology/virtualbox-kvm/releases/download/dev-${finalAttrs.kvmPatchVersion}/kvm-backend-${kvmPatchVboxVersion}-dev-${finalAttrs.kvmPatchVersion}.patch";
+-      hash = finalAttrs.kvmPatchHash;
+-    })
+-    ++ [
+-      ./qt-dependency-paths.patch
+-      # https://github.com/NixOS/nixpkgs/issues/123851
+-      ./fix-audio-driver-loading.patch
++    ++ optionals enableWebService [
++      gsoap
++      zlib
+     ];
+ 
+-  postPatch = ''
+-    sed -i -e 's|/sbin/ifconfig|${net-tools}/bin/ifconfig|' \
+-      src/VBox/HostDrivers/adpctl/VBoxNetAdpCtl.cpp
+-  '';
+-
+-  # first line: ugly hack, and it isn't yet clear why it's a problem
+-  configurePhase = ''
+-    NIX_CFLAGS_COMPILE=$(echo "$NIX_CFLAGS_COMPILE" | sed 's,\-isystem ${lib.getDev stdenv.cc.libc}/include,,g')
+-
+-    cat >> LocalConfig.kmk <<LOCAL_CONFIG
+-    VBOX_WITH_TESTCASES            :=
+-    VBOX_WITH_TESTSUITE            :=
+-    VBOX_WITH_VALIDATIONKIT        :=
+-    VBOX_WITH_DOCS                 :=
+-    VBOX_WITH_WARNINGS_AS_ERRORS   :=
+-
+-    VBOX_WITH_ORIGIN               :=
+-    VBOX_PATH_APP_PRIVATE_ARCH_TOP := $out/share/virtualbox
+-    VBOX_PATH_APP_PRIVATE_ARCH     := $out/libexec/virtualbox
+-    VBOX_PATH_SHARED_LIBS          := $out/libexec/virtualbox
+-    VBOX_WITH_RUNPATH              := $out/libexec/virtualbox
+-    VBOX_PATH_APP_PRIVATE          := $out/share/virtualbox
+-    VBOX_PATH_APP_DOCS             := $out/doc
+-
+-    VBOX_WITH_UPDATE_AGENT :=
+-
+-    ${optionalString javaBindings ''
+-      VBOX_JAVA_HOME                 := ${jdk}
+-    ''}
+-    ${optionalString (!headless) ''
+-      VBOX_WITH_VBOXSDL              := 1
+-      PATH_QT6_TOOLS_LIB             := ${getLib qttools}/lib
+-      PATH_QT6_TOOLS_INC             := ${getLib qttools}/include
+-      PATH_QT6_SCXML_LIB             := ${getLib qtscxml}/lib
+-      PATH_QT6_SCXML_INC             := ${getLib qtscxml}/include
+-      VBOX_PATH_QT                   := ${getLib qttools}/
+-    ''}
+-    ${optionalString enableWebService ''
+-      # fix gsoap missing zlib include and produce errors with --as-needed
+-      VBOX_GSOAP_CXX_LIBS := gsoapssl++ z
+-    ''}
+-    TOOL_QT6_LRC                   := ${getLib qttools}/bin/lrelease
+-    LOCAL_CONFIG
+-
+-    ./configure \
+-      ${optionalString headless "--build-headless"} \
+-      ${optionalString (!javaBindings) "--disable-java"} \
+-      ${optionalString (!pythonBindings) "--disable-python"} \
+-      ${optionalString (!pulseSupport) "--disable-pulse"} \
+-      ${optionalString (!enableHardening) "--disable-hardening"} \
+-      ${optionalString (!enable32bitGuests) "--disable-vmmraw"} \
+-      ${optionalString enableWebService "--enable-webservice"} \
+-      ${optionalString (open-watcom-bin != null) "--with-ow-dir=${open-watcom-bin}"} \
+-      ${optionalString enableKvm "--with-kvm"} \
+-      ${extraConfigureFlags} \
+-      --disable-kmods
+-    sed -e 's@PKG_CONFIG_PATH=.*@PKG_CONFIG_PATH=${glib.dev}/lib/pkgconfig@' \
+-        -i AutoConfig.kmk
+-    sed -e 's@arch/x86/@@' \
+-        -i Config.kmk
+-    substituteInPlace Config.kmk --replace-fail "VBOX_WITH_TESTCASES = 1" "#"
+-  '';
+-
+-  enableParallelBuilding = true;
+-
+-  buildPhase = ''
+-    source env.sh
+-    kmk -j $NIX_BUILD_CORES BUILD_TYPE="${finalAttrs.buildType}"
+-  '';
+-
+-  installPhase = ''
+-    libexec="$out/libexec/virtualbox"
+-    share="${if enableHardening then "$out/share/virtualbox" else "$libexec"}"
+-
+-    # Install VirtualBox files
+-    mkdir -p "$libexec"
+-    find out/linux.*/${finalAttrs.buildType}/bin -mindepth 1 -maxdepth 1 \
+-      -name src -o -exec cp -avt "$libexec" {} +
+-
+-    mkdir -p $out/bin
+-    for file in ${
+-      optionalString (!headless) "VirtualBox VBoxSDL"
+-    } ${optionalString enableWebService "vboxwebsrv"} VBoxManage VBoxBalloonCtrl VBoxHeadless; do
+-        echo "Linking $file to /bin"
+-        test -x "$libexec/$file"
+-        ln -s "$libexec/$file" $out/bin/$file
+-    done
+-
+-    ${optionalString (extensionPack != null) ''
+-      mkdir -p "$share"
+-      "${fakeroot}/bin/fakeroot" "${stdenv.shell}" <<EOF
+-      "$libexec/VBoxExtPackHelperApp" install \
+-        --base-dir "$share/ExtensionPacks" \
+-        --cert-dir "$share/ExtPackCertificates" \
+-        --name "Oracle VirtualBox Extension Pack" \
+-        --tarball "${extensionPack}" \
+-        --sha-256 "${extensionPack.outputHash}"
+-      EOF
+-    ''}
+-
+-    ${optionalString (!headless) ''
+-      # Create and fix desktop item
+-      mkdir -p $out/share/applications
+-      sed -i -e "s|Icon=VBox|Icon=$libexec/VBox.png|" $libexec/virtualbox.desktop
+-      ln -sfv $libexec/virtualbox.desktop $out/share/applications
+-      # Icons
+-      mkdir -p $out/share/icons/hicolor
+-      for size in `ls -1 $libexec/icons`; do
+-        mkdir -p $out/share/icons/hicolor/$size/apps
+-        ln -s $libexec/icons/$size/*.png $out/share/icons/hicolor/$size/apps
++    hardeningDisable = [
++      "format"
++      "fortify"
++      "pic"
++      "stackprotector"
++    ];
++
++    prePatch = ''
++      set -x
++      sed -e 's@MKISOFS --version@MKISOFS -version@' \
++          -e 's@PYTHONDIR=.*@PYTHONDIR=${optionalString pythonBindings python3}@' \
++          -e 's@CXX_FLAGS="\(.*\)"@CXX_FLAGS="-std=c++11 \1"@' \
++          ${
++            optionalString (!headless) ''
++              -e 's@TOOLQT6BIN=.*@TOOLQT6BIN="${getDev qttools}/bin"@' \
++            ''
++          } -i configure
++      ls kBuild/bin/linux.x86/k* tools/linux.x86/bin/* | xargs -n 1 patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux.so.2
++      ls kBuild/bin/linux.amd64/k* tools/linux.amd64/bin/* | xargs -n 1 patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2
++
++      grep 'libpulse\.so\.0'      src include -rI --files-with-match | xargs sed -i -e '
++        ${optionalString pulseSupport ''s@"libpulse\.so\.0"@"${libpulseaudio.out}/lib/libpulse.so.0"@g''}'
++
++      grep 'libdbus-1\.so\.3'     src include -rI --files-with-match | xargs sed -i -e '
++        s@"libdbus-1\.so\.3"@"${dbus.lib}/lib/libdbus-1.so.3"@g'
++
++      grep 'libXfixes\.so\.3'     src include -rI --files-with-match | xargs sed -i -e '
++        s@"libXfixes\.so\.3"@"${libxfixes.out}/lib/libXfixes.so.3"@g'
++
++      grep 'libasound\.so\.2'     src include -rI --files-with-match | xargs sed -i -e '
++        s@"libasound\.so\.2"@"${alsa-lib.out}/lib/libasound.so.2"@g'
++
++      substituteInPlace src/VBox/Devices/Graphics/DevVGA-SVGA3d-glLdr.cpp \
++        --replace-fail \"libGL.so.1\" \"${libGL.out}/lib/libGL.so.1\"
++
++      export USER=nix
++      set +x
++    '';
++
++    patches =
++      optional enableHardening ./hardened.patch
++      # Since VirtualBox 7.0.8, VBoxSDL requires SDL2, but the build framework uses SDL1
++      ++ optionals (!headless) [
++        ./fix-sdl.patch
++        # No update patch disables check for update function
++        # https://bugs.launchpad.net/ubuntu/+source/virtualbox-ose/+bug/272212
++        (fetchpatch {
++          url = "https://salsa.debian.org/pkg-virtualbox-team/virtualbox/-/raw/8028d88e6876ca5977de13c58b54e243229efe98/debian/patches/16-no-update.patch";
++          hash = "sha256-AGtFsRjwd8Yw296eqX3NC2TUptAhpFTRaOMutiheQ6Y=";
++        })
++      ]
++      ++ [ ./extra_symbols.patch ]
++      # When hardening is enabled, we cannot use wrapQtApp to ensure that VirtualBoxVM sees
++      # the correct environment variables needed for Qt to work, specifically QT_PLUGIN_PATH.
++      # This is because VirtualBoxVM would detect that it is wrapped that and refuse to run,
++      # and also because it would unset QT_PLUGIN_PATH for security reasons. We work around
++      # these issues by patching the code to set QT_PLUGIN_PATH to the necessary paths,
++      # after the code that unsets it. Note that qtsvg is included so that SVG icons from
++      # the user's icon theme can be loaded.
++      ++ optional (!headless && enableHardening) (
++        replaceVars ./qt-env-vars.patch {
++          qtPluginPath = "${qtbase}/bin/${qtbase.qtPluginPrefix}:${qtsvg}/bin/${qtbase.qtPluginPrefix}:${qtwayland}/bin/${qtbase.qtPluginPrefix}";
++        }
++      )
++      # While the KVM patch should not break any other behavior if --with-kvm is not specified,
++      # we don't take any chances and only apply it if people actually want to use KVM support.
++      ++ optional enableKvm (fetchpatch {
++        name = "virtualbox-${finalAttrs.virtualboxVersion}-kvm-dev-${finalAttrs.kvmPatchVersion}.patch";
++        url = "https://github.com/cyberus-technology/virtualbox-kvm/releases/download/dev-${finalAttrs.kvmPatchVersion}/kvm-backend-${kvmPatchVboxVersion}-dev-${finalAttrs.kvmPatchVersion}.patch";
++        hash = finalAttrs.kvmPatchHash;
++      })
++      ++ [
++        ./qt-dependency-paths.patch
++        # https://github.com/NixOS/nixpkgs/issues/123851
++        ./fix-audio-driver-loading.patch
++        # Let the extension pack live next to a symlink wrapper of this package.
++        ./extpack-relocation.patch
++      ];
++
++    postPatch = ''
++      sed -i -e 's|/sbin/ifconfig|${net-tools}/bin/ifconfig|' \
++        src/VBox/HostDrivers/adpctl/VBoxNetAdpCtl.cpp
++    '';
++
++    # first line: ugly hack, and it isn't yet clear why it's a problem
++    configurePhase = ''
++      NIX_CFLAGS_COMPILE=$(echo "$NIX_CFLAGS_COMPILE" | sed 's,\-isystem ${lib.getDev stdenv.cc.libc}/include,,g')
++
++      cat >> LocalConfig.kmk <<LOCAL_CONFIG
++      VBOX_WITH_TESTCASES            :=
++      VBOX_WITH_TESTSUITE            :=
++      VBOX_WITH_VALIDATIONKIT        :=
++      VBOX_WITH_DOCS                 :=
++      VBOX_WITH_WARNINGS_AS_ERRORS   :=
++
++      VBOX_WITH_ORIGIN               :=
++      VBOX_PATH_APP_PRIVATE_ARCH_TOP := $out/share/virtualbox
++      VBOX_PATH_APP_PRIVATE_ARCH     := $out/libexec/virtualbox
++      VBOX_PATH_SHARED_LIBS          := $out/libexec/virtualbox
++      VBOX_WITH_RUNPATH              := $out/libexec/virtualbox
++      VBOX_PATH_APP_PRIVATE          := $out/share/virtualbox
++      VBOX_PATH_APP_DOCS             := $out/doc
++
++      VBOX_WITH_UPDATE_AGENT :=
++
++      ${optionalString javaBindings ''
++        VBOX_JAVA_HOME                 := ${jdk}
++      ''}
++      ${optionalString (!headless) ''
++        VBOX_WITH_VBOXSDL              := 1
++        PATH_QT6_TOOLS_LIB             := ${getLib qttools}/lib
++        PATH_QT6_TOOLS_INC             := ${getLib qttools}/include
++        PATH_QT6_SCXML_LIB             := ${getLib qtscxml}/lib
++        PATH_QT6_SCXML_INC             := ${getLib qtscxml}/include
++        VBOX_PATH_QT                   := ${getLib qttools}/
++      ''}
++      ${optionalString enableWebService ''
++        # fix gsoap missing zlib include and produce errors with --as-needed
++        VBOX_GSOAP_CXX_LIBS := gsoapssl++ z
++      ''}
++      TOOL_QT6_LRC                   := ${getLib qttools}/bin/lrelease
++      LOCAL_CONFIG
++
++      ./configure \
++        ${optionalString headless "--build-headless"} \
++        ${optionalString (!javaBindings) "--disable-java"} \
++        ${optionalString (!pythonBindings) "--disable-python"} \
++        ${optionalString (!pulseSupport) "--disable-pulse"} \
++        ${optionalString (!enableHardening) "--disable-hardening"} \
++        ${optionalString (!enable32bitGuests) "--disable-vmmraw"} \
++        ${optionalString enableWebService "--enable-webservice"} \
++        ${optionalString (open-watcom-bin != null) "--with-ow-dir=${open-watcom-bin}"} \
++        ${optionalString enableKvm "--with-kvm"} \
++        ${extraConfigureFlags} \
++        --disable-kmods
++      sed -e 's@PKG_CONFIG_PATH=.*@PKG_CONFIG_PATH=${glib.dev}/lib/pkgconfig@' \
++          -i AutoConfig.kmk
++      sed -e 's@arch/x86/@@' \
++          -i Config.kmk
++      substituteInPlace Config.kmk --replace-fail "VBOX_WITH_TESTCASES = 1" "#"
++    '';
++
++    enableParallelBuilding = true;
++
++    buildPhase = ''
++      source env.sh
++      kmk -j $NIX_BUILD_CORES BUILD_TYPE="${finalAttrs.buildType}"
++    '';
++
++    installPhase = ''
++      libexec="$out/libexec/virtualbox"
++
++      # Install VirtualBox files
++      mkdir -p "$libexec"
++      find out/linux.*/${finalAttrs.buildType}/bin -mindepth 1 -maxdepth 1 \
++        -name src -o -exec cp -avt "$libexec" {} +
++
++      mkdir -p $out/bin
++      for file in ${
++        optionalString (!headless) "VirtualBox VBoxSDL"
++      } ${optionalString enableWebService "vboxwebsrv"} VBoxManage VBoxBalloonCtrl VBoxHeadless; do
++          echo "Linking $file to /bin"
++          test -x "$libexec/$file"
++          ln -s "$libexec/$file" $out/bin/$file
+       done
+-      # Translation
++
++      ${optionalString (!headless) ''
++        # Create and fix desktop item
++        mkdir -p $out/share/applications
++        sed -i -e "s|Icon=VBox|Icon=$libexec/VBox.png|" $libexec/virtualbox.desktop
++        ln -sfv $libexec/virtualbox.desktop $out/share/applications
++        # Icons
++        mkdir -p $out/share/icons/hicolor
++        for size in `ls -1 $libexec/icons`; do
++          mkdir -p $out/share/icons/hicolor/$size/apps
++          ln -s $libexec/icons/$size/*.png $out/share/icons/hicolor/$size/apps
++        done
++        # Translation
++        mkdir -p "$out/share/virtualbox"
++        ln -sv $libexec/nls "$out/share/virtualbox/nls"
++      ''}
++
++      ${optionalString withModsrc ''
++        cp -rv out/linux.*/${finalAttrs.buildType}/bin/src "$modsrc"
++      ''}
++
+       mkdir -p "$out/share/virtualbox"
+-      ln -sv $libexec/nls "$out/share/virtualbox/nls"
+-    ''}
+-
+-    ${optionalString withModsrc ''
+-      cp -rv out/linux.*/${finalAttrs.buildType}/bin/src "$modsrc"
+-    ''}
+-
+-    mkdir -p "$out/share/virtualbox"
+-    cp -rv src/VBox/Main/UnattendedTemplates "$out/share/virtualbox"
+-    ln -s "${finalAttrs.virtualboxGuestAdditionsIso}" "$out/share/virtualbox/VBoxGuestAdditions.iso"
+-  '';
+-
+-  preFixup =
+-    optionalString (!headless) ''
+-      qtWrapperArgs+=("''${gappsWrapperArgs[@]}")
+-      wrapQtApp $out/bin/VirtualBox
+-    ''
+-    # If hardening is disabled, wrap the VirtualBoxVM binary instead of patching
+-    # the source code (see postPatch).
+-    + optionalString (!headless && !enableHardening) ''
+-      wrapQtApp $out/libexec/virtualbox/VirtualBoxVM
++      cp -rv src/VBox/Main/UnattendedTemplates "$out/share/virtualbox"
++      ln -s "${finalAttrs.virtualboxGuestAdditionsIso}" "$out/share/virtualbox/VBoxGuestAdditions.iso"
+     '';
+ 
+-  passthru = {
+-    inherit extensionPack; # for inclusion in profile to prevent gc
+-    tests = nixosTests.virtualbox;
+-    updateScript = ./update.sh;
+-  };
+-
+-  meta = {
+-    description = "PC emulator";
+-    longDescription = ''
+-      VirtualBox is an x86 and AMD64/Intel64 virtualization product for enterprise and home use.
++    preFixup =
++      optionalString (!headless) ''
++        qtWrapperArgs+=("''${gappsWrapperArgs[@]}")
++        wrapQtApp $out/bin/VirtualBox
++      ''
++      # If hardening is disabled, wrap the VirtualBoxVM binary instead of patching
++      # the source code (see postPatch).
++      + optionalString (!headless && !enableHardening) ''
++        wrapQtApp $out/libexec/virtualbox/VirtualBoxVM
++      '';
++
++    passthru = {
++      inherit extensionPack; # for inclusion in profile to prevent gc
++      tests = nixosTests.virtualbox;
++      updateScript = ./update.sh;
++    };
++
++    meta = {
++      description = "PC emulator";
++      longDescription = ''
++        VirtualBox is an x86 and AMD64/Intel64 virtualization product for enterprise and home use.
++
++        To install on NixOS, please use the option `virtualisation.virtualbox.host.enable = true`.
++        Please also check other options under `virtualisation.virtualbox`.
++      '';
++      sourceProvenance = with lib.sourceTypes; [
++        fromSource
++        binaryNativeCode
++      ];
++      license = lib.licenses.gpl3Only;
++      homepage = "https://www.virtualbox.org/";
++      maintainers = with lib.maintainers; [
++        friedrichaltheide
++        parthy
++      ];
++      platforms = [ "x86_64-linux" ];
++      mainProgram = "VirtualBox";
++    };
++  });
++in
++if extensionPack == null then
++  unwrapped
++else
++  symlinkJoin {
++    pname = "virtualbox";
++    inherit (unwrapped) version meta;
++
++    paths = [ unwrapped ];
++
++    nativeBuildInputs = [ makeWrapper ];
++
++    postBuild = ''
++      # Point the VirtualBox binaries at the extension pack directory of this
++      # wrapper instead of the one of the unwrapped build.  The manager and the
++      # extension pack helper both honor this variable.
++      for file in ${
++        optionalString (!headless) "VirtualBox VBoxSDL"
++      } ${optionalString enableWebService "vboxwebsrv"} VBoxManage VBoxBalloonCtrl VBoxHeadless; do
++        rm -f "$out/bin/$file"
++        makeWrapper "${unwrapped}/bin/$file" "$out/bin/$file" \
++          --set VBOX_NIX_APP_SHARE_DIR "$out/share/virtualbox"
++      done
+ 
+-      To install on NixOS, please use the option `virtualisation.virtualbox.host.enable = true`.
+-      Please also check other options under `virtualisation.virtualbox`.
++      ${optionalString (!headless && !enableHardening) ''
++        rm -f "$out/libexec/virtualbox/VirtualBoxVM"
++        makeWrapper "${unwrapped}/libexec/virtualbox/VirtualBoxVM" "$out/libexec/virtualbox/VirtualBoxVM" \
++          --set VBOX_NIX_APP_SHARE_DIR "$out/share/virtualbox"
++      ''}
++
++      ${optionalString (extensionPack != null) ''
++        mkdir -p "$out/share/virtualbox"
++        "${fakeroot}/bin/fakeroot" "${stdenv.shell}" <<EOF
++        VBOX_NIX_APP_SHARE_DIR="$out/share/virtualbox" \
++        "${unwrapped}/libexec/virtualbox/VBoxExtPackHelperApp" install \
++          --base-dir "$out/share/virtualbox/ExtensionPacks" \
++          --cert-dir "$out/share/virtualbox/ExtPackCertificates" \
++          --name "Oracle VirtualBox Extension Pack" \
++          --tarball "${extensionPack}" \
++          --sha-256 "${extensionPack.outputHash}"
++        EOF
++      ''}
+     '';
+-    sourceProvenance = with lib.sourceTypes; [
+-      fromSource
+-      binaryNativeCode
+-    ];
+-    license = lib.licenses.gpl3Only;
+-    homepage = "https://www.virtualbox.org/";
+-    maintainers = with lib.maintainers; [
+-      friedrichaltheide
+-      parthy
+-    ];
+-    platforms = [ "x86_64-linux" ];
+-    mainProgram = "VirtualBox";
+-  };
+-})
++
++    passthru =
++      unwrapped.passthru
++      // {
++        inherit extensionPack;
++        unwrapped = unwrapped;
++      }
++      // lib.optionalAttrs withModsrc {
++        modsrc = unwrapped.modsrc;
++      };
++  }
+diff --git a/pkgs/applications/virtualization/virtualbox/extpack-relocation.patch b/pkgs/applications/virtualization/virtualbox/extpack-relocation.patch
+new file mode 100644
+index 0000000000000..bba8bf0b3f8f9
+--- /dev/null
++++ b/pkgs/applications/virtualization/virtualbox/extpack-relocation.patch
+@@ -0,0 +1,162 @@
++diff --git a/src/VBox/Main/include/ExtPackUtil.h b/src/VBox/Main/include/ExtPackUtil.h
++index f07a311..7b116fa 100644
++--- a/src/VBox/Main/include/ExtPackUtil.h
+++++ b/src/VBox/Main/include/ExtPackUtil.h
++@@ -138,6 +138,10 @@ RTCString          *VBoxExtPackLoadDescFromVfsFile(RTVFSFILE hVfsFile, PVBOXEXTP
++ RTCString          *VBoxExtPackExtractNameFromTarballPath(const char *pszTarball);
++ void                VBoxExtPackFreeDesc(PVBOXEXTPACKDESC a_pExtPackDesc);
++ bool                VBoxExtPackIsValidName(const char *pszName);
+++
+++int                 VBoxExtPackGetInstallDir(char *pszPath, size_t cchPath);
+++int                 VBoxExtPackGetCertDir(char *pszPath, size_t cchPath);
+++
++ bool                VBoxExtPackIsValidMangledName(const char *pszMangledName, size_t cchMax = RTSTR_MAX);
++ RTCString          *VBoxExtPackMangleName(const char *pszName);
++ RTCString          *VBoxExtPackUnmangleName(const char *pszMangledName, size_t cbMax);
++diff --git a/src/VBox/Main/src-all/ExtPackManagerImpl.cpp b/src/VBox/Main/src-all/ExtPackManagerImpl.cpp
++index 0fcda94..c1e8011 100644
++--- a/src/VBox/Main/src-all/ExtPackManagerImpl.cpp
+++++ b/src/VBox/Main/src-all/ExtPackManagerImpl.cpp
++@@ -2384,15 +2384,11 @@ HRESULT ExtPackManager::initExtPackManager(VirtualBox *a_pVirtualBox, VBOXEXTPAC
++      * Figure some stuff out before creating the instance data.
++      */
++     char szBaseDir[RTPATH_MAX];
++-    int vrc = RTPathAppPrivateArchTop(szBaseDir, sizeof(szBaseDir));
++-    AssertLogRelRCReturn(vrc, E_FAIL);
++-    vrc = RTPathAppend(szBaseDir, sizeof(szBaseDir), VBOX_EXTPACK_INSTALL_DIR);
+++    int vrc = VBoxExtPackGetInstallDir(szBaseDir, sizeof(szBaseDir));
++     AssertLogRelRCReturn(vrc, E_FAIL);
++ 
++     char szCertificatDir[RTPATH_MAX];
++-    vrc = RTPathAppPrivateNoArch(szCertificatDir, sizeof(szCertificatDir));
++-    AssertLogRelRCReturn(vrc, E_FAIL);
++-    vrc = RTPathAppend(szCertificatDir, sizeof(szCertificatDir), VBOX_EXTPACK_CERT_DIR);
+++    vrc = VBoxExtPackGetCertDir(szCertificatDir, sizeof(szCertificatDir));
++     AssertLogRelRCReturn(vrc, E_FAIL);
++ 
++     /*
++diff --git a/src/VBox/Main/src-all/ExtPackUtil.cpp b/src/VBox/Main/src-all/ExtPackUtil.cpp
++index cdde2bb..c0599f2 100644
++--- a/src/VBox/Main/src-all/ExtPackUtil.cpp
+++++ b/src/VBox/Main/src-all/ExtPackUtil.cpp
++@@ -33,6 +33,7 @@
++ 
++ #include <iprt/ctype.h>
++ #include <iprt/dir.h>
+++#include <iprt/env.h>
++ #include <iprt/err.h>
++ #include <iprt/file.h>
++ #include <iprt/manifest.h>
++@@ -48,6 +49,10 @@
++ 
++ #include "../include/VBoxNls.h"
++ 
+++#ifndef RT_OS_WINDOWS
+++# include <unistd.h>
+++#endif
+++
++ 
++ /*********************************************************************************************************************************
++ *   Defined Constants And Macros                                                                                                 *
++@@ -511,6 +516,73 @@ bool VBoxExtPackIsValidName(const char *pszName)
++     return true;
++ }
++ 
+++
+++/**
+++ * Resolves an extension pack directory, allowing a wrapper to relocate it.
+++ *
+++ * The Nixpkgs build stores the extension pack in a symlink wrapper around the
+++ * actual VirtualBox installation.  This lets both VBoxSVC and the helper app
+++ * agree on that location instead of using the path compiled into the binaries.
+++ * The override is ignored for processes that have switched from their real to
+++ * their effective user ID, so a set-user-ID helper app cannot be tricked into
+++ * operating outside its installation directory.
+++ *
+++ * @returns IPRT status code.
+++ * @param   fArchTop    Whether to use RTPathAppPrivateArchTop (true) or
+++ *                      RTPathAppPrivateNoArch (false) as the default.
+++ * @param   pszSubDir   The subdirectory to append.
+++ * @param   pszPath     Where to return the path.
+++ * @param   cchPath     The size of the buffer.
+++ */
+++static int vboxExtPackGetDir(bool fArchTop, const char *pszSubDir, char *pszPath, size_t cchPath)
+++{
+++#ifndef RT_OS_WINDOWS
+++    if (geteuid() == getuid())
+++#endif
+++    {
+++        const char *pszShareDir = RTEnvGet("VBOX_NIX_APP_SHARE_DIR");
+++        if (pszShareDir && *pszShareDir)
+++        {
+++            int vrc = RTStrCopy(pszPath, cchPath, pszShareDir);
+++            if (RT_SUCCESS(vrc))
+++                vrc = RTPathAppend(pszPath, cchPath, pszSubDir);
+++            return vrc;
+++        }
+++    }
+++
+++    int vrc = fArchTop ? RTPathAppPrivateArchTop(pszPath, cchPath)
+++                       : RTPathAppPrivateNoArch(pszPath, cchPath);
+++    if (RT_SUCCESS(vrc))
+++        vrc = RTPathAppend(pszPath, cchPath, pszSubDir);
+++    return vrc;
+++}
+++
+++
+++/**
+++ * Gets the directory where extension packs are installed.
+++ *
+++ * @returns IPRT status code.
+++ * @param   pszPath     Where to return the path.
+++ * @param   cchPath     The size of the buffer.
+++ */
+++int VBoxExtPackGetInstallDir(char *pszPath, size_t cchPath)
+++{
+++    return vboxExtPackGetDir(true /*fArchTop*/, VBOX_EXTPACK_INSTALL_DIR, pszPath, cchPath);
+++}
+++
+++
+++/**
+++ * Gets the directory where extension pack certificates are installed.
+++ *
+++ * @returns IPRT status code.
+++ * @param   pszPath     Where to return the path.
+++ * @param   cchPath     The size of the buffer.
+++ */
+++int VBoxExtPackGetCertDir(char *pszPath, size_t cchPath)
+++{
+++    return vboxExtPackGetDir(false /*fArchTop*/, VBOX_EXTPACK_CERT_DIR, pszPath, cchPath);
+++}
+++
++ /**
++  * Checks if an alledged manged extension pack name.
++  *
++diff --git a/src/VBox/Main/src-helper-apps/VBoxExtPackHelperApp.cpp b/src/VBox/Main/src-helper-apps/VBoxExtPackHelperApp.cpp
++index 2e1e097..fae18f3 100644
++--- a/src/VBox/Main/src-helper-apps/VBoxExtPackHelperApp.cpp
+++++ b/src/VBox/Main/src-helper-apps/VBoxExtPackHelperApp.cpp
++@@ -172,10 +172,7 @@ static bool IsValidCertificateDir(const char *pszCertDir)
++      * Just be darn strict for now.
++      */
++     char szCorrect[RTPATH_MAX];
++-    int vrc = RTPathAppPrivateNoArch(szCorrect, sizeof(szCorrect));
++-    if (RT_FAILURE(vrc))
++-        return false;
++-    vrc = RTPathAppend(szCorrect, sizeof(szCorrect), VBOX_EXTPACK_CERT_DIR);
+++    int vrc = VBoxExtPackGetCertDir(szCorrect, sizeof(szCorrect));
++     if (RT_FAILURE(vrc))
++         return false;
++ 
++@@ -195,10 +192,7 @@ static bool IsValidBaseDir(const char *pszBaseDir)
++      * Just be darn strict for now.
++      */
++     char szCorrect[RTPATH_MAX];
++-    int vrc = RTPathAppPrivateArchTop(szCorrect, sizeof(szCorrect));
++-    if (RT_FAILURE(vrc))
++-        return false;
++-    vrc = RTPathAppend(szCorrect, sizeof(szCorrect), VBOX_EXTPACK_INSTALL_DIR);
+++    int vrc = VBoxExtPackGetInstallDir(szCorrect, sizeof(szCorrect));
++     if (RT_FAILURE(vrc))
++         return false;
++ 
+
+From a5d12fffbd610090e3b8cd7e65db5d841c2757fe Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Mon, 26 Oct 2026 20:23:33 +0800
+Subject: [PATCH 2/4] virtualbox: fix VBoxVolInfo under hardening
+
+Assisted-by: omp:DeepSeek V4.1 Flash 1017
+---
+ .../virtualization/virtualbox/default.nix           |  9 +++++++++
+ .../virtualization/virtualbox/hardened.patch        | 13 +++++++++++++
+ 2 files changed, 22 insertions(+)
+
+diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
+index 6f82d11257827..5979933a57b8a 100644
+--- a/pkgs/applications/virtualization/virtualbox/default.nix
++++ b/pkgs/applications/virtualization/virtualbox/default.nix
+@@ -390,6 +390,15 @@ let
+         wrapQtApp $out/libexec/virtualbox/VirtualBoxVM
+       '';
+ 
++    postFixup = ''
++      # VBoxVolInfo dlopens libdevmapper via RTLdrLoadSystem in VBoxRT.
++      # VBOX_WITH_RUNPATH replaces the RPATH normally provided for buildInputs,
++      # so add the library path back to VBoxRT.
++      if [ -e "$out/libexec/virtualbox/VBoxVolInfo" ]; then
++        patchelf --add-rpath "${lib.makeLibraryPath [ lvm2 ]}" "$out/libexec/virtualbox/VBoxRT.so"
++      fi
++    '';
++
+     passthru = {
+       inherit extensionPack; # for inclusion in profile to prevent gc
+       tests = nixosTests.virtualbox;
+diff --git a/pkgs/applications/virtualization/virtualbox/hardened.patch b/pkgs/applications/virtualization/virtualbox/hardened.patch
+index eb53e0d1421e6..3dc45ea9bf71b 100644
+--- a/pkgs/applications/virtualization/virtualbox/hardened.patch
++++ b/pkgs/applications/virtualization/virtualbox/hardened.patch
+@@ -179,3 +179,16 @@ index f9d1ecf..042e599 100644
+  
+  RTR3DECL(const char *) RTProcShortName(void)
+  {
++diff --git a/src/VBox/Main/src-server/linux/PerformanceLinux.cpp b/src/VBox/Main/src-server/linux/PerformanceLinux.cpp
++index cc33777..c436d70 100644
++--- a/src/VBox/Main/src-server/linux/PerformanceLinux.cpp
+++++ b/src/VBox/Main/src-server/linux/PerformanceLinux.cpp
++@@ -529,7 +529,7 @@ void CollectorLinux::addVolumeDependencies(const char *pcszVolume, DiskList& lis
++     static const char s_szSlashExeNameSpace[] = "/" VBOXVOLINFO_EXE_NAME " ";
++     size_t const cchVolume = strlen(pcszVolume);
++     char szVolInfo[RTPATH_MAX];
++-    int vrc = RTPathAppPrivateArch(szVolInfo, sizeof(szVolInfo) - sizeof(s_szSlashExeNameSpace) - cchVolume);
+++    int vrc = RTPathSuidDir(szVolInfo, sizeof(szVolInfo) - sizeof(s_szSlashExeNameSpace) - cchVolume);
++     if (RT_FAILURE(vrc))
++     {
++         LogRel(("VolInfo: Failed to get program path, vrc=%Rrc\n", vrc));
+
+From 7ba92bcfbb72f604538d8732ce9632cf05e3fb3f Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Mon, 26 Oct 2026 20:30:52 +0800
+Subject: [PATCH 3/4] virtualbox: fix Vulkan loader lookup in VBoxDxVk
+
+Assisted-by: omp:DeepSeek V4.1 Flash 1017
+---
+ pkgs/applications/virtualization/virtualbox/default.nix | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
+index 5979933a57b8a..a1bd9c0a36014 100644
+--- a/pkgs/applications/virtualization/virtualbox/default.nix
++++ b/pkgs/applications/virtualization/virtualbox/default.nix
+@@ -45,6 +45,7 @@
+   xz,
+   yasm,
+   glslang,
++  vulkan-loader,
+   wrapGAppsHook3,
+   nixosTests,
+   # If open-watcom-bin is not passed, VirtualBox will fall back to use
+@@ -397,6 +398,12 @@ let
+       if [ -e "$out/libexec/virtualbox/VBoxVolInfo" ]; then
+         patchelf --add-rpath "${lib.makeLibraryPath [ lvm2 ]}" "$out/libexec/virtualbox/VBoxRT.so"
+       fi
++
++      # VBoxDxVk loads Vulkan dynamically; add its path after RPATH shrinking.
++      if [ -e "$out/libexec/virtualbox/VBoxDxVk.so" ]; then
++        patchelf --add-rpath "${lib.makeLibraryPath [ vulkan-loader ]}" \
++          "$out/libexec/virtualbox/VBoxDxVk.so"
++      fi
+     '';
+ 
+     passthru = {
+
+From b6130c4e63b52d3b896f7389d9aa4dbf4975f079 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Mon, 26 Oct 2026 20:51:12 +0800
+Subject: [PATCH 4/4] virtualbox: enable hardening for kvm package
+
+---
+ pkgs/top-level/all-packages.nix | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/pkgs/top-level/all-packages.nix b/pkgs/top-level/all-packages.nix
+index 32ea30a60841d..893f118582871 100644
+--- a/pkgs/top-level/all-packages.nix
++++ b/pkgs/top-level/all-packages.nix
+@@ -9042,15 +9042,16 @@ with pkgs;
+     open-watcom-bin = null;
+   };
+ 
+-  virtualboxKvm = lowPrio (
++  virtualboxHardened = lowPrio (
+     virtualbox.override {
+-      enableKvm = true;
++      enableHardening = true;
+     }
+   );
+ 
+-  virtualboxHardened = lowPrio (
++  virtualboxKvm = lowPrio (
+     virtualbox.override {
+       enableHardening = true;
++      enableKvm = true;
+     }
+   );
+ 
