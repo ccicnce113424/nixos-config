@@ -33,6 +33,12 @@ in
           desktopCfg = desktop.config;
           laptop = (builtins.head groupedByName.ccic-laptop).value;
           laptopCfg = laptop.config;
+          replacementChecks = builtins.listToAttrs (
+            map (r: {
+              name = "replace-${lib.getName r.newDependency}";
+              value = r.newDependency;
+            }) desktopCfg.system.replaceDependencies.replacements
+          );
         in
         (config.lib'.findPkgs
           [
@@ -62,6 +68,7 @@ in
           ]
           (laptopCfg.environment.systemPackages ++ laptopCfg.home-manager.users.ccicnce113424.home.packages)
         )
+        // replacementChecks
       ) grouped
     );
     attrPrefix = "githubActions.build.checks";
