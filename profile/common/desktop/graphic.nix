@@ -19,7 +19,6 @@
       enable = true;
       config = {
         hwaccel = true;
-        font-size = 24;
         bell = true;
       };
     };
