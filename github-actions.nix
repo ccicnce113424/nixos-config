@@ -59,7 +59,6 @@ in
         // (config.lib'.findPkgs
           [
             "gaze"
-            "gaze-gui"
           ]
           (laptopCfg.environment.systemPackages ++ laptopCfg.home-manager.users.ccicnce113424.home.packages)
         )
