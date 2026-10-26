@@ -9,12 +9,9 @@
     ];
 
     settings = {
-      format = "$os$username$hostname$directory$vcs$package$fill$sudo$cmd_duration$nix_shell$line_break$character";
+      format = "$username$hostname$directory$vcs$package$fill$sudo$cmd_duration$nix_shell$line_break$character";
 
       fill.symbol = " ";
-
-      os.disabled = false;
-      os.format = "[$symbol]($style)";
 
       sudo.disabled = false;
       # sudo-rs rejects -N, so the default `sudo -Nnv` probe always fails.
