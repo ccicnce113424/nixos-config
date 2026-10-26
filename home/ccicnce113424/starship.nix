@@ -14,6 +14,7 @@
       fill.symbol = " ";
 
       os.disabled = false;
+      os.format = "[$symbol]($style)";
 
       sudo.disabled = false;
       # sudo-rs rejects -N, so the default `sudo -Nnv` probe always fails.
