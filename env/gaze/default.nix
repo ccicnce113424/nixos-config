@@ -9,6 +9,7 @@
     services.gaze = {
       enable = true;
       package = pkgs.gaze;
+      mutableConfig = false;
       pam.defaultServices = [
         "sudo"
         "su"

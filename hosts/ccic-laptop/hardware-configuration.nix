@@ -103,6 +103,7 @@
       rgb = "usb:5986:215e";
       ir = "usb:5986:215e";
       emitter_enabled = true;
+      parallel_capture = "always";
     };
   };
 
