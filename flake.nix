@@ -76,6 +76,8 @@ rec {
       url = "github:4evy/nixcord";
       inputs = {
         nixpkgs.follows = "nixpkgs";
+        nixpkgs-packages.follows = "nixpkgs";
+        nixpkgs-ci.follows = "";
         treefmt-nix.follows = "treefmt-nix";
       };
     };
