@@ -10,7 +10,7 @@
     qbittorrent-enhanced
     rayburst-beta
 
-    # nur.repos.xddxdd.peerbanhelper
+    nur.repos.xddxdd.peerbanhelper
     # nur.repos.lonerOrz.qq
 
     nur.repos.DzmingLi.wechat
