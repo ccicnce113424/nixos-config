@@ -12,9 +12,9 @@ in
   config = {
     patchedNixpkgs.patches = lib.mkBefore (config.lib'.pathToPatchFileset ../patches/hiprio);
     perSystem =
-      { system, ... }:
+      { pkgs, system, ... }:
       {
-        packages.patchedNixpkgs = (config.lib'.patchedNixpkgs { forceSystem = system; }).finalNixpkgs;
+        packages.patchedNixpkgs = (config.lib'.patchedNixpkgs pkgs { inherit system; }).finalNixpkgs;
       };
   };
   options = {
@@ -33,11 +33,8 @@ in
     };
     lib'.patchedNixpkgs = lib.mkOption {
       default =
-        host:
+        bootstrapPkgs: host:
         let
-          bootstrapPkgs = import inputs.nixpkgs {
-            system = host.forceSystem or builtins.currentSystem or host.system;
-          };
           hostCfg = host.hostCfg or { };
           patches = lib.fileset.toList cfg.patches;
 
@@ -74,10 +71,16 @@ in
             };
             overlays = [
               self.overlays.nixos-tweaks
+            ]
+            ++ lib.optionals (cfg.pins != { }) [
+              # Only reached with actual pins; importing multiverse.nix parses
+              # its ~5.7 MB index even for an empty pin set.
               (inputs.multiverse.lib.pinOverlay {
                 inherit (cfg) pins;
                 config.allowUnfree = true;
               })
+            ]
+            ++ [
               (_: _: {
                 mv = inputs.multiverse.lib.mkMultiverse {
                   inherit (host) system;

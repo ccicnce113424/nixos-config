@@ -38,7 +38,7 @@
   };
 
   imports = [
-    inputs.nix-packages.nixosModules.default
+    inputs.nix-packages.nixosModules.modules
     inputs.home-manager.nixosModules.home-manager
     self.nixosModules.nixos-tweaks
     ../system

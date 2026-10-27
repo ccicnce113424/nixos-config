@@ -1,6 +1,6 @@
 { inputs, ... }:
 {
-  flake.nixosConfigurations.livecd = inputs.nixpkgs.lib.nixosSystem rec {
+  flake.nixosConfigurations.livecd = inputs.nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     modules = [
       (
@@ -11,6 +11,7 @@
         }:
         {
           nixpkgs.config.allowUnfree = true;
+          nixpkgs.overlays = [ inputs.nix-packages.overlays.default ];
           isoImage.squashfsCompression = "zstd";
           imports = [
             inputs.nix-packages.nixosModules.daed
@@ -19,7 +20,6 @@
           ];
           services.daed = {
             enable = true;
-            package = inputs.nix-packages.packages.${system}.daed;
             openFirewall = {
               enable = true;
               port = 12345;

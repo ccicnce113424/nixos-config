@@ -15,11 +15,12 @@
         name: host:
         (withSystem host.system (
           {
+            pkgs,
             inputs',
             ...
           }:
           let
-            patched = config.lib'.patchedNixpkgs host;
+            patched = config.lib'.patchedNixpkgs pkgs host;
             sharedModules = [
               ../hosts/runtime.nix
               {
