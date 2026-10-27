@@ -1,4 +1,5 @@
 {
+  pkgs,
   lib,
   config,
   ...
@@ -19,8 +20,8 @@
       lockScreen = true;
       loginScreen = true;
       unlockKwallet = true;
-      # kcmPackage = pkgs.gaze-kcm;
-      # enableKCM = true;
+      kcmPackage = pkgs.gaze-kcm;
+      enableKCM = true;
     };
   };
 }
