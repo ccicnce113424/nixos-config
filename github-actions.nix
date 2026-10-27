@@ -56,6 +56,7 @@ in
             # "cc-switch-cli"
             "omp"
             "wineprefix-preparer"
+            "plasma-desktop"
           ]
           (desktopCfg.environment.systemPackages ++ desktopCfg.home-manager.users.ccicnce113424.home.packages)
         )

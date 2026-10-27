@@ -73,6 +73,7 @@ in
               rocmSupport = true;
             };
             overlays = [
+              self.overlays.nixos-tweaks
               (inputs.multiverse.lib.pinOverlay {
                 inherit (cfg) pins;
                 config.allowUnfree = true;
