@@ -8,11 +8,7 @@
     "rev": "b6130c4e63b52d3b896f7389d9aa4dbf4975f079"
   },
   {
-    "url": "https://github.com/NixOS/nixpkgs/pull/579227",
-    "rev": "59ab0c0594d9c2e7cfebe6078d9d496eeff515bd"
-  },
-  {
-    "url": "https://github.com/NixOS/nixpkgs/pull/577437",
-    "rev": "6717a420cf446dc8d0b58388060c7ed5aa23d576"
+    "url": "https://github.com/NixOS/nixpkgs/pull/570177",
+    "rev": "978d2035d809807f43c716b4e868ebdbb67c836a"
   }
 ]
