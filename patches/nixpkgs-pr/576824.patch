@@ -16,7 +16,7 @@ Assisted-by: Hermes Agent (Nous Research), gpt-6.1-sol
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/nixos/modules/services/networking/sunshine.nix b/nixos/modules/services/networking/sunshine.nix
-index 50060d314a868..3dbb30863cc0b 100644
+index 50060d314a868d..3dbb30863cc0b5 100644
 --- a/nixos/modules/services/networking/sunshine.nix
 +++ b/nixos/modules/services/networking/sunshine.nix
 @@ -153,9 +153,10 @@ in
