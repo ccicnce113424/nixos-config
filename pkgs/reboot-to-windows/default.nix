@@ -39,11 +39,8 @@ stdenv.mkDerivation {
   # `-Z build-std` also resolves the standard library's own dependencies, so
   # merge rustc's vendored crates into the (flat) Cargo vendor directory after
   # the cargo setup hook has materialised it.
-  preUnpack = ''
-    copyRustVendor() {
-      cp -a ${rustPlatform.rustVendorSrc}/. "$cargoDepsCopy/"
-    }
-    postUnpackHooks+=(copyRustVendor)
+  postPatch = ''
+    cp -a ${rustPlatform.rustVendorSrc}/. "$cargoDepsCopy/"
   '';
 
   # `-Z build-std` is a nightly feature; RUSTC_BOOTSTRAP lets the stable
@@ -53,7 +50,7 @@ stdenv.mkDerivation {
   buildPhase = ''
     runHook preBuild
 
-    cargo build --release --target x86_64-unknown-uefi -Z build-std=core,alloc
+    cargo build --release --target x86_64-unknown-uefi -Z build-std=core
 
     runHook postBuild
   '';

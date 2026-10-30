@@ -24,3 +24,13 @@ updates:
       interval: "cron"
       cronjob: "30 6 * * *"
       timezone: "Asia/Shanghai"
+  - package-ecosystem: "cargo"
+    directory: "/pkgs/reboot-to-windows"
+    open-pull-requests-limit: 32
+    cooldown:
+      exclude:
+        - "*"
+    schedule:
+      interval: "cron"
+      cronjob: "0 7 * * *"
+      timezone: "Asia/Shanghai"
