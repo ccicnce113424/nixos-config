@@ -24,6 +24,7 @@
         programs.shfmt.enable = true;
         programs.shellcheck.enable = true;
         programs.actionlint.enable = true;
+        programs.rustfmt.enable = true;
       };
     };
 }
