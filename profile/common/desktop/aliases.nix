@@ -84,7 +84,7 @@
         pclean
         nb "$@"
       '';
-      win = ''exec systemctl reboot --boot-loader-entry=auto-windows "$@"'';
+      win = ''exec systemctl reboot --boot-loader-entry=reboot-to-windows.conf "$@"'';
       fw = ''exec systemctl reboot --firmware-setup "$@"'';
     };
   };

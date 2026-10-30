@@ -26,7 +26,7 @@ in
   flake.githubActions.build = inputs.nix-github-actions.lib.mkGithubMatrix {
     checks = lib.recursiveUpdate self.checks (
       builtins.mapAttrs (
-        _: machines:
+        system: machines:
         let
           groupedByName = builtins.groupBy (x: x.name) machines;
           desktop = (builtins.head groupedByName.ccic-desktop).value;
@@ -70,6 +70,10 @@ in
           (laptopCfg.environment.systemPackages ++ laptopCfg.home-manager.users.ccicnce113424.home.packages)
         )
         // replacementChecks
+        // {
+          # Built straight from the flake output, not via a host's package set.
+          reboot-to-windows = self.legacyPackages.${system}.reboot-to-windows;
+        }
       ) grouped
     );
     attrPrefix = "githubActions.build.checks";

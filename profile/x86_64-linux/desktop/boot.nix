@@ -31,6 +31,17 @@ in
       memtest86.enable = true;
       edk2-uefi-shell.enable = true;
       netbootxyz.enable = true;
+
+      # Extra entry: hand the next boot to the firmware's Windows Boot Manager
+      # instead of chainloading it from sd-boot, so the TPM measurements stay
+      # the ones Windows sealed BitLocker / Windows Hello against.
+      extraFiles."efi/reboot-to-windows/reboot-to-windows.efi" =
+        "${pkgs.reboot-to-windows}/reboot-to-windows.efi";
+      extraEntries."reboot-to-windows.conf" = ''
+        title    Reboot To Windows
+        efi      /efi/reboot-to-windows/reboot-to-windows.efi
+        sort-key o_reboot-to-windows
+      '';
     };
 
     environment.systemPackages = with pkgs; [
