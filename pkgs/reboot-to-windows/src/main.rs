@@ -5,7 +5,7 @@ use uefi::prelude::*;
 use uefi::runtime::{self, ResetType, VariableAttributes, VariableVendor};
 use uefi::{CStr16, Status};
 
-const WINDOWS_BOOT_MANAGER: &CStr16 = uefi::cstr16!("Windows Boot Manager");
+const WINDOWS_BOOT_MANAGER: &str = "Windows Boot Manager";
 
 const UPPERCASE_DIGITS: &[u8; 16] = b"0123456789ABCDEF";
 const LOWERCASE_DIGITS: &[u8; 16] = b"0123456789abcdef";
@@ -39,10 +39,13 @@ fn is_windows_boot_manager(option: &[u8]) -> bool {
     let (chunks, _) = rest.as_chunks::<2>();
     let mut units = chunks.iter().map(|chunk| u16::from_le_bytes(*chunk));
 
-    units
-        .by_ref()
-        .zip(WINDOWS_BOOT_MANAGER.to_u16_slice().iter().copied())
-        .all(|(actual, expected)| actual == expected)
+    // Keep the expected string on the left of `zip`: when it is exhausted,
+    // `units` is not advanced, so the NUL check below still sees the
+    // terminator. (The other order consumes the NUL and breaks the check.)
+    WINDOWS_BOOT_MANAGER
+        .encode_utf16()
+        .zip(units.by_ref())
+        .all(|(expected, actual)| expected == actual)
         && units.next() == Some(0)
 }
 
@@ -79,10 +82,10 @@ fn find_windows_boot_option() -> Option<u16> {
 fn main() -> Status {
     uefi::helpers::init().expect("failed to initialize uefi helpers");
 
-    uefi::println!("reboot-to-windows: looking for a \"Windows Boot Manager\" entry...");
+    uefi::println!("reboot-to-windows: looking for a \"{WINDOWS_BOOT_MANAGER}\" entry...");
 
     let Some(target) = find_windows_boot_option() else {
-        uefi::println!("reboot-to-windows: no firmware entry named \"Windows Boot Manager\".");
+        uefi::println!("reboot-to-windows: no firmware entry named \"{WINDOWS_BOOT_MANAGER}\".");
         return Status::NOT_FOUND;
     };
 
