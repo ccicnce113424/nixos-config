@@ -15,6 +15,7 @@
     ];
     extraPackages = with pkgs; [
       bash-language-server
+      taplo
     ];
     userSettings = {
       session.trust_all_worktrees = true;
