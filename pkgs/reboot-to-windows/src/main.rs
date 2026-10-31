@@ -44,9 +44,15 @@ fn is_windows_boot_manager(option: &[u8]) -> bool {
 }
 
 fn find_windows_boot_option() -> Option<u16> {
-    let (order, _) =
-        runtime::get_variable_boxed(uefi::cstr16!("BootOrder"), &VariableVendor::GLOBAL_VARIABLE)
-            .ok()?;
+    // BootOrder is a UINT16 array; 64 bytes covers 32 entries.
+    let mut order_buf = [0u8; 64];
+    let Ok((order, _)) = runtime::get_variable(
+        uefi::cstr16!("BootOrder"),
+        &VariableVendor::GLOBAL_VARIABLE,
+        &mut order_buf,
+    ) else {
+        return None;
+    };
 
     let (chunks, _) = order.as_chunks::<2>();
     for chunk in chunks {
@@ -57,12 +63,15 @@ fn find_windows_boot_option() -> Option<u16> {
             continue;
         };
 
-        let Ok((option, _)) = runtime::get_variable_boxed(name, &VariableVendor::GLOBAL_VARIABLE)
+        // Windows Boot Manager entries are typically a few hundred bytes.
+        let mut option_buf = [0u8; 1024];
+        let Ok((option, _)) =
+            runtime::get_variable(name, &VariableVendor::GLOBAL_VARIABLE, &mut option_buf)
         else {
             continue;
         };
 
-        if is_windows_boot_manager(&option) {
+        if is_windows_boot_manager(option) {
             return Some(id);
         }
     }

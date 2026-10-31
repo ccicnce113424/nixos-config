@@ -50,7 +50,7 @@ stdenv.mkDerivation {
   buildPhase = ''
     runHook preBuild
 
-    cargo build --release --target x86_64-unknown-uefi -Z build-std=core,alloc
+    cargo build --release --target x86_64-unknown-uefi -Z build-std=core
 
     runHook postBuild
   '';

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-uefi = { version = "0.41", features = ["alloc", "global_allocator", "panic_handler"] }
+uefi = { version = "0.41", features = ["panic_handler"] }
 
 [profile.release]
 panic = "abort"
