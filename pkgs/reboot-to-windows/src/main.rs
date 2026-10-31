@@ -1,38 +1,23 @@
 #![no_main]
 #![no_std]
 
-use core::fmt::Write;
-
 use uefi::prelude::*;
 use uefi::runtime::{self, ResetType, VariableAttributes, VariableVendor};
 use uefi::{CStr16, Status};
 
 const WINDOWS_BOOT_MANAGER: &str = "Windows Boot Manager";
 
-/// Fixed-capacity UCS-2 buffer for `core::fmt::Write`.
-struct Ucs2Name {
-    buf: [u16; 9],
-    len: usize,
-}
-
-impl Write for Ucs2Name {
-    fn write_str(&mut self, s: &str) -> core::fmt::Result {
-        for ch in s.chars() {
-            let slot = self.buf.get_mut(self.len).ok_or(core::fmt::Error)?;
-            *slot = u16::try_from(ch).map_err(|_| core::fmt::Error)?;
-            self.len += 1;
-        }
-        Ok(())
-    }
-}
-
 fn boot_variable_name(id: u16) -> [u16; 9] {
-    let mut name = Ucs2Name {
-        buf: [0u16; 9],
-        len: 0,
-    };
-    write!(&mut name, "Boot{id:04x}").expect("an 8-character name always fits");
-    name.buf
+    const HEX_DIGITS: &[u8; 16] = b"0123456789abcdef";
+
+    let mut name = [0u16; 9];
+    for (slot, byte) in name[..4].iter_mut().zip(b"Boot") {
+        *slot = u16::from(*byte);
+    }
+    for (slot, shift) in name[4..8].iter_mut().zip([12, 8, 4, 0]) {
+        *slot = u16::from(HEX_DIGITS[usize::from((id >> shift) & 0xf)]);
+    }
+    name
 }
 
 fn is_windows_boot_manager(option: &[u8]) -> bool {
