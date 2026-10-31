@@ -14,7 +14,8 @@ fn boot_variable_name(id: u16) -> [u16; 9] {
     for (slot, byte) in name[..4].iter_mut().zip(b"Boot") {
         *slot = u16::from(*byte);
     }
-    for (slot, shift) in name[4..8].iter_mut().zip([12, 8, 4, 0]) {
+    for (i, slot) in name[4..8].iter_mut().enumerate() {
+        let shift = 12 - (i * 4);
         *slot = u16::from(HEX_DIGITS[usize::from((id >> shift) & 0xf)]);
     }
     name
