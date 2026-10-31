@@ -2,12 +2,11 @@
 {
   fonts.fontconfig.enable = false;
 
-  home.packages = with pkgs; [
-    shijima-qt
-    kdePackages.francis
-    kdePackages.skanpage
+  home.packages = builtins.attrValues {
+    inherit (pkgs) shijima-qt;
+    inherit (pkgs.kdePackages) francis skanpage;
     # winboat
     # llm-agents.hermes-agent
     # llm-agents.hermes-desktop
-  ];
+  };
 }

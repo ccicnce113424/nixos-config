@@ -95,16 +95,17 @@
   };
 
   home.packages =
-    with pkgs;
-    [
+    builtins.attrValues {
       # lyrica
-      kurve
-      plasmusic-toolbar
-      kdePackages.wallpaper-engine-plugin
-      krunner-fd-plugin
-      waywallen-display-bin
-      waywallen-bin
-    ]
+      inherit (pkgs)
+        kurve
+        plasmusic-toolbar
+        krunner-fd-plugin
+        waywallen-display-bin
+        waywallen-bin
+        ;
+    }
+    ++ [ pkgs.kdePackages.wallpaper-engine-plugin ]
     ++ lib.optional (osConfig.networking.hostName == "ccic-laptop") pkgs.plasmavantage;
 
   dbus.packages = with pkgs; [

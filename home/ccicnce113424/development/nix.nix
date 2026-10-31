@@ -1,7 +1,7 @@
 { pkgs, osConfig, ... }:
 {
-  home.packages =
-    (with pkgs; [
+  home.packages = builtins.attrValues {
+    inherit (pkgs)
       nixd
       nixfmt-rs
       nix-tree
@@ -10,13 +10,15 @@
       cachix
       flake-linter
       mvs
-    ])
-    ++ (with osConfig.nixPackages; [
+      ;
+
+    inherit (osConfig.nixPackages)
       nixpkgs-reviewFull
       nix-eval-jobs
       nix-fast-build
       nix-update
-    ]);
+      ;
+  };
 
   programs.zed-editor = {
     extensions = [ "nix" ];

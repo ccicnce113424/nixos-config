@@ -10,32 +10,36 @@
     services.displayManager.plasma-login-manager.enable = true;
     programs.kdeconnect.enable = true;
     environment.systemPackages =
-      (with pkgs; [
-        dmidecode
-        qpwgraph
-        smartmontools
-        lm_sensors
-        aha
-      ])
-      ++ (with pkgs.kdePackages; [
-        plasma-disks
-        krdc
-        krfb
-        qtmultimedia
-        qtwebengine
-        yakuake
-        kcalc
-        kclock
-        filelight
-        kfind
-        kdialog
-        plasma-firewall
-        qrca
-        kcolorchooser
+      builtins.attrValues {
+        inherit (pkgs)
+          dmidecode
+          qpwgraph
+          smartmontools
+          lm_sensors
+          aha
+          ;
 
-        # kdepim-addons
-        # akonadi-calendar
-        (spectacle.override {
+        inherit (pkgs.kdePackages)
+          # kdepim-addons
+          # akonadi-calendar
+          plasma-disks
+          krdc
+          krfb
+          qtmultimedia
+          qtwebengine
+          yakuake
+          kcalc
+          kclock
+          filelight
+          kfind
+          kdialog
+          plasma-firewall
+          qrca
+          kcolorchooser
+          ;
+      }
+      ++ [
+        (pkgs.kdePackages.spectacle.override {
           tesseractLanguages = [
             "eng"
             "osd"
@@ -43,7 +47,7 @@
             "chi_sim"
           ];
         })
-      ]);
+      ];
     environment.plasma6.excludePackages = with pkgs.kdePackages; [
       spectacle
     ];

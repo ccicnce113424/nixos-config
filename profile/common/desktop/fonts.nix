@@ -9,25 +9,32 @@
     fonts = {
       enableDefaultPackages = true;
       fontDir.enable = true;
-      packages = with pkgs; [
-        noto-fonts
-        noto-fonts-cjk-sans
-        noto-fonts-cjk-serif
-        noto-fonts-color-emoji
-        noto-fonts-monochrome-emoji
-        noto-fonts-lgc-plus
-        noto-fonts-emoji-blob-bin
-        dejavu_fonts
-        maple-mono.NF-CN
-        arphic-ukai
-        lxgw-wenkai-gb
-        zhuque
-        nerd-fonts.symbols-only
-        nur.repos.chillcicada.ttf-wps-fonts
-        nur.repos.chillcicada.ttf-ms-win10
-        nur.repos.chillcicada.ttf-ms-win10-sc-sup
-        nur.repos.chillcicada.font-office
-      ];
+      packages =
+        builtins.attrValues {
+          inherit (pkgs)
+            noto-fonts
+            noto-fonts-cjk-sans
+            noto-fonts-cjk-serif
+            noto-fonts-color-emoji
+            noto-fonts-monochrome-emoji
+            noto-fonts-lgc-plus
+            noto-fonts-emoji-blob-bin
+            dejavu_fonts
+            arphic-ukai
+            lxgw-wenkai-gb
+            zhuque
+            ;
+          inherit (pkgs.nur.repos.chillcicada)
+            ttf-wps-fonts
+            ttf-ms-win10
+            ttf-ms-win10-sc-sup
+            font-office
+            ;
+        }
+        ++ [
+          pkgs.maple-mono.NF-CN
+          pkgs.nerd-fonts.symbols-only
+        ];
 
       fontconfig = rec {
         includeUserConf = false;

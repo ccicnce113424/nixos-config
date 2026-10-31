@@ -9,14 +9,18 @@
     ./zed.nix
     ./web.nix
   ];
-  home.packages = with pkgs; [
-    just
-    gh
-    shellcheck
+  home.packages = builtins.attrValues {
+    inherit (pkgs)
+      just
+      gh
+      shellcheck
+      ;
     # llm-agents.mimo-code
-    llm-agents.reasonix
     # llm-agents.cc-switch-cli
     # llm-agents.codex
-    llm-agents.omp
-  ];
+    inherit (pkgs.llm-agents)
+      reasonix
+      omp
+      ;
+  };
 }

@@ -7,15 +7,16 @@
     enable = true;
     package = pkgs.mpv.override {
       scripts =
-        with pkgs.mpvScripts;
-        [
-          thumbfast
-          uosc
-          mpris
-          sponsorblock
-          mpv-image-viewer.image-positioning
-        ]
+        builtins.attrValues {
+          inherit (pkgs.mpvScripts)
+            thumbfast
+            uosc
+            mpris
+            sponsorblock
+            ;
+        }
         ++ [
+          pkgs.mpvScripts.mpv-image-viewer.image-positioning
           pkgs.uosc-danmaku-git
         ];
     };
