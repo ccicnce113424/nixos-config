@@ -17,6 +17,7 @@
           smartmontools
           lm_sensors
           aha
+          libva-utils
           ;
 
         inherit (pkgs.kdePackages)
