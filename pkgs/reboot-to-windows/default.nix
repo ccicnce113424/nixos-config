@@ -36,6 +36,9 @@ stdenv.mkDerivation {
 
   cargoDeps = rustPlatform.importCargoLock { lockFile = ./Cargo.lock; };
 
+  strictDeps = true;
+  __structuredAttrs = true;
+
   # `-Z build-std` also resolves the standard library's own dependencies, so
   # merge rustc's vendored crates into the (flat) Cargo vendor directory after
   # the cargo setup hook has materialised it.
@@ -45,7 +48,7 @@ stdenv.mkDerivation {
 
   # `-Z build-std` is a nightly feature; RUSTC_BOOTSTRAP lets the stable
   # toolchain accept it (same trick as nixpkgs' eBPF/wasm packages).
-  RUSTC_BOOTSTRAP = 1;
+  env.RUSTC_BOOTSTRAP = 1;
 
   buildPhase = ''
     runHook preBuild
