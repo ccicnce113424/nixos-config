@@ -3,28 +3,18 @@
   ...
 }:
 {
-  home.packages = with pkgs; [
-    enimul
-    # wemeet
-    telegram-desktop
-    qbittorrent-enhanced
-    rayburst-beta
-
-    nur.repos.xddxdd.peerbanhelper
-    # nur.repos.lonerOrz.qq
-
-    nur.repos.DzmingLi.wechat
-
-    (nur.repos.mio.qq_bwrap.override {
-      bindDesktop = true;
-      bindDocuments = true;
-    })
-    # (nur.repos.mio.wechat_bwrap.override {
-    #   bindDesktop = true;
-    #   bindDocuments = true;
-    #   followSystemAppearance = true;
-    # })
-  ];
+  home.packages =
+    builtins.attrValues {
+      inherit (pkgs)
+        enimul
+        telegram-desktop
+        qbittorrent-enhanced
+        rayburst-beta
+        qq
+        wechat
+        ;
+    }
+    ++ [ pkgs.nur.repos.xddxdd.peerbanhelper ];
   programs.element-desktop.enable = true;
 
   imports = [
