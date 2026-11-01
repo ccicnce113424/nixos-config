@@ -1,0 +1,728 @@
+From db2feb60770c1e73d6dd243931a92bf71a6c6e5b Mon Sep 17 00:00:00 2001
+From: Moraxyc <i@qaq.li>
+Date: Sat, 5 Sep 2026 21:18:18 +0800
+Subject: [PATCH 1/2] wechat: refactor and switch to deb source
+
+---
+ pkgs/by-name/we/wechat/darwin.nix   |  33 ++--
+ pkgs/by-name/we/wechat/linux.nix    | 223 ++++++++++++++++++++++++----
+ pkgs/by-name/we/wechat/package.nix  |  94 +++++++-----
+ pkgs/by-name/we/wechat/sources.json |  20 +--
+ pkgs/by-name/we/wechat/update.py    |  94 +++++-------
+ 5 files changed, 321 insertions(+), 143 deletions(-)
+
+diff --git a/pkgs/by-name/we/wechat/darwin.nix b/pkgs/by-name/we/wechat/darwin.nix
+index f7d0377c0ca00..87b72ff0a80ab 100644
+--- a/pkgs/by-name/we/wechat/darwin.nix
++++ b/pkgs/by-name/we/wechat/darwin.nix
+@@ -1,21 +1,22 @@
+ {
+-  pname,
+-  version,
+-  src,
+-  meta,
+-  passthru ? { },
+   stdenvNoCC,
++  fetchurl,
+   _7zz,
++
++  passthru,
++  pname,
++  meta,
++  ...
+ }:
+ 
+-stdenvNoCC.mkDerivation {
+-  inherit
+-    pname
+-    version
+-    src
+-    meta
+-    passthru
+-    ;
++stdenvNoCC.mkDerivation (finalAttrs: {
++  inherit pname;
++
++  inherit (finalAttrs.passthru.source) version;
++  src = fetchurl finalAttrs.passthru.source.src;
++
++  strictDeps = true;
++  __structuredAttrs = true;
+ 
+   # dmg is APFS formatted
+   nativeBuildInputs = [ _7zz ];
+@@ -30,4 +31,8 @@ stdenvNoCC.mkDerivation {
+ 
+     runHook postInstall
+   '';
+-}
++
++  passthru = passthru finalAttrs;
++
++  meta = meta finalAttrs;
++})
+diff --git a/pkgs/by-name/we/wechat/linux.nix b/pkgs/by-name/we/wechat/linux.nix
+index a03c897b9ebb5..ed6a156c92966 100644
+--- a/pkgs/by-name/we/wechat/linux.nix
++++ b/pkgs/by-name/we/wechat/linux.nix
+@@ -1,36 +1,203 @@
+ {
++  lib,
++  stdenv,
++  stdenvNoCC,
++  fetchurl,
++
++  # native
++  autoPatchelfHook,
++  dpkg,
++  makeShellWrapper,
++  wrapGAppsHook3,
++
++  # runtime
++  alsa-lib,
++  at-spi2-core,
++  bzip2,
++  cairo,
++  cups,
++  dbus,
++  expat,
++  fontconfig,
++  glib,
++  gtk3,
++  libredirect,
++  libice,
++  libsm,
++  libx11,
++  libxcomposite,
++  libxcursor,
++  libxdamage,
++  libxext,
++  libxfixes,
++  libxrandr,
++  libglvnd,
++  libjack2,
++  libpulseaudio,
++  libxcb,
++  libxcb-keysyms,
++  libxkbcommon,
++  mesa,
++  nspr,
++  nss,
++  pango,
++  pipewire,
++  systemd,
++  util-linuxMinimal,
++  wayland,
++  xkeyboard-config,
++  zlib,
++
+   pname,
+-  version,
+-  src,
++  passthru,
+   meta,
+-  passthru ? { },
+-  appimageTools,
++  ...
+ }:
+ 
+-let
+-  appimageContents = appimageTools.extract {
+-    inherit pname version src;
+-    postExtract = ''
+-      patchelf --replace-needed libtiff.so.5 libtiff.so $out/opt/wechat/wechat
++stdenvNoCC.mkDerivation (finalAttrs: {
++  inherit pname;
++  inherit (finalAttrs.passthru.source) version;
++
++  # Try upstream first as Wayback Machine is slow in China (where most users are located)
++  src = fetchurl {
++    inherit (finalAttrs.passthru.source.src) url hash;
++    netrcPhase = ''
++      touch netrc
++
++      url=${lib.escapeShellArg finalAttrs.passthru.source.upstream.url}
++      crc=${lib.escapeShellArg finalAttrs.passthru.source.upstream."x-cos-hash-crc64ecma"}
++      ver=${lib.escapeShellArg finalAttrs.passthru.source.upstream."x-cos-version-id"}
++
++      if actual=$(curl -fsSIL -o /dev/null -w '%header{x-cos-hash-crc64ecma}:%header{x-cos-version-id}' "$url") && [[ "$actual" == "$crc:$ver" ]]; then
++        urls=("$url")
++      fi
+     '';
+   };
+-in
+-appimageTools.wrapAppImage {
+-  inherit
+-    pname
+-    version
+-    meta
+-    passthru
+-    ;
+-
+-  src = appimageContents;
+-
+-  extraInstallCommands = ''
+-    mkdir -p $out/share/applications
+-    cp ${appimageContents}/wechat.desktop $out/share/applications/
+-    mkdir -p $out/share/icons/hicolor/256x256/apps
+-    cp ${appimageContents}/wechat.png $out/share/icons/hicolor/256x256/apps/
+-
+-    substituteInPlace $out/share/applications/wechat.desktop --replace-fail AppRun wechat
++
++  strictDeps = true;
++  __structuredAttrs = true;
++
++  nativeBuildInputs = [
++    autoPatchelfHook
++    dpkg
++    makeShellWrapper
++    wrapGAppsHook3
++  ];
++
++  buildInputs = [
++    (lib.getLib stdenv.cc.cc) # for libatomic, libstdc++
++
++    dbus
++    glib
++    systemd # for libudev
++
++    at-spi2-core
++    cairo
++    fontconfig
++    gtk3
++    libxkbcommon
++    xkeyboard-config
++    pango
++
++    libice
++    libsm
++    libx11
++    libxcomposite
++    libxcursor
++    libxdamage
++    libxext
++    libxfixes
++    libxrandr
++    libxcb
++    libxcb-keysyms
++
++    wayland
++
++    libglvnd
++    mesa # for libgbm
++
++    alsa-lib
++    libjack2
++    libpulseaudio
++    pipewire
++
++    cups
++
++    nspr
++    nss
++
++    bzip2
++    expat
++    zlib
++  ];
++
++  runtimeDependencies = [
++    alsa-lib
++    gtk3
++    libglvnd
++    libpulseaudio
++    libxcursor
++    pipewire
++    systemd
++    wayland
++  ];
++
++  installPhase = ''
++    runHook preInstall
++
++    mkdir -p "$out/bin"
++    cp -r opt "$out/"
++    cp -r usr/share "$out/"
++
++    substituteInPlace "$out/share/applications/wechat.desktop" \
++      --replace-fail "/usr/bin/wechat" "wechat"
++
++    sed -i 's|^Icon=.*|Icon=wechat|' "$out/share/applications/wechat.desktop"
++
++    runHook postInstall
+   '';
+-}
++
++  dontWrapGApps = true;
++
++  preFixup = ''
++    # Bundled Qt 5 cannot position IME candidate popups under native Wayland.
++    makeShellWrapper "$out/opt/wechat/wechat" "$out/bin/wechat" \
++      "''${gappsWrapperArgs[@]}" \
++      --set LD_PRELOAD "${libredirect}/lib/libredirect.so" \
++      --set NIX_REDIRECTS "/usr/bin/lsblk=${lib.getExe' util-linuxMinimal "lsblk"}" \
++      --set XKB_CONFIG_ROOT "${xkeyboard-config}/share/X11/xkb" \
++      --set XLOCALEDIR "${libx11}/share/X11/locale" \
++      --set QT_QPA_PLATFORM "xcb" \
++      --set-default QT_AUTO_SCREEN_SCALE_FACTOR "1" \
++      --run '
++        if [ -z "''${QT_IM_MODULE:-}" ]; then
++          case "''${XMODIFIERS:-}" in
++            *fcitx*)
++              export QT_IM_MODULE=fcitx
++              ;;
++            *ibus*)
++              export QT_IM_MODULE=ibus
++              export IBUS_USE_PORTAL=1
++              ;;
++          esac
++        fi
++      '
++  '';
++
++  postFixup = ''
++    # ANGLE loads libGL.so.1 and libEGL.so.1 dynamically from the GPU process.
++    patchelf --add-needed "${libglvnd}/lib/libGL.so.1" \
++      --add-needed "${libglvnd}/lib/libEGL.so.1" \
++      "$out/opt/wechat/RadiumWMPF/runtime/WeChatAppEx"
++
++    # WMPF and VLC both ship libffmpeg.so, but WMPF requires its own ABI.
++    patchelf --replace-needed \
++      libffmpeg.so \
++      "$out/opt/wechat/RadiumWMPF/runtime/libffmpeg.so" \
++      "$out/opt/wechat/RadiumWMPF/runtime/WeChatAppEx"
++  '';
++
++  passthru = passthru finalAttrs;
++
++  meta = meta finalAttrs;
++})
+diff --git a/pkgs/by-name/we/wechat/package.nix b/pkgs/by-name/we/wechat/package.nix
+index 9917455f4f4ac..287a8b356d53b 100644
+--- a/pkgs/by-name/we/wechat/package.nix
++++ b/pkgs/by-name/we/wechat/package.nix
+@@ -1,18 +1,66 @@
+ {
+   lib,
++  stdenv,
+   stdenvNoCC,
+-  callPackage,
+   fetchurl,
+-}:
+ 
++  # native
++  _7zz,
++  autoPatchelfHook,
++  dpkg,
++  makeShellWrapper,
++  wrapGAppsHook3,
++
++  # runtime
++  alsa-lib,
++  at-spi2-core,
++  bzip2,
++  cairo,
++  cups,
++  dbus,
++  expat,
++  fontconfig,
++  glib,
++  gtk3,
++  libredirect,
++  libice,
++  libsm,
++  libx11,
++  libxcomposite,
++  libxcursor,
++  libxdamage,
++  libxext,
++  libxfixes,
++  libxrandr,
++  libglvnd,
++  libjack2,
++  libpulseaudio,
++  libxcb,
++  libxcb-keysyms,
++  libxkbcommon,
++  mesa,
++  nspr,
++  nss,
++  pango,
++  pipewire,
++  systemd,
++  util-linuxMinimal,
++  wayland,
++  xkeyboard-config,
++  zlib,
++}@args:
+ let
+-  inherit (stdenvNoCC.hostPlatform) system isDarwin;
++  pname = "wechat";
+ 
+-  sources = lib.importJSON ./sources.json;
+-  source = sources.${system} or (throw "Unsupported system: ${system}");
++  passthru = finalAttrs: {
++    sources = lib.importJSON ./sources.json;
++    updateScript = ./update.py;
++    source =
++      finalAttrs.passthru.sources.${stdenvNoCC.hostPlatform.system}
++        or (throw "Unsupported system: ${stdenvNoCC.hostPlatform.system}");
++  };
+ 
+-  pname = "wechat";
+-  meta = {
++  meta = finalAttrs: {
+     description = "Messaging and calling app";
+     homepage = "https://www.wechat.com/en/";
+     downloadPage = "https://linux.weixin.qq.com/en";
+@@ -24,33 +72,11 @@ let
+       prince213
+     ];
+     mainProgram = "wechat";
+-    platforms = lib.attrNames sources;
++    platforms = lib.attrNames finalAttrs.passthru.sources;
+   };
+ 
+-in
+-callPackage (if isDarwin then ./darwin.nix else ./linux.nix) {
+-  inherit pname meta;
+-  inherit (source) version;
+-  src =
+-    if isDarwin then
+-      fetchurl source.src
+-    else
+-      # Try upstream first as Wayback Machine is slow in China (where most users are located)
+-      fetchurl {
+-        inherit (source.src) url hash;
+-        netrcPhase = ''
+-          touch netrc
+-
+-          url=${lib.escapeShellArg source.upstream.url}
+-          crc=${lib.escapeShellArg source.upstream."x-cos-hash-crc64ecma"}
+-          ver=${lib.escapeShellArg source.upstream."x-cos-version-id"}
+-
+-          if actual=$(curl -fsSIL -o /dev/null -w '%header{x-cos-hash-crc64ecma}:%header{x-cos-version-id}' "$url") && [[ "$actual" == "$crc:$ver" ]]; then
+-            urls=("$url")
+-          fi
+-        '';
+-      };
+-  passthru = {
+-    updateScript = ./update.py;
++  args' = args // {
++    inherit pname passthru meta;
+   };
+-}
++in
++if stdenvNoCC.hostPlatform.isDarwin then import ./darwin.nix args' else import ./linux.nix args'
+diff --git a/pkgs/by-name/we/wechat/sources.json b/pkgs/by-name/we/wechat/sources.json
+index 58bbb51fdc444..629e806316f73 100644
+--- a/pkgs/by-name/we/wechat/sources.json
++++ b/pkgs/by-name/we/wechat/sources.json
+@@ -9,25 +9,25 @@
+   "x86_64-linux": {
+     "version": "4.1.13.26",
+     "src": {
+-      "url": "https://web.archive.org/web/20261016045027id_/https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.AppImage",
+-      "hash": "sha256-RSYYC8qYASh5FZmvEi/0eVACpXFaUQ9qZUgOK+aHQkQ="
++      "url": "https://web.archive.org/web/20261012092649id_/https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.deb",
++      "hash": "sha256-oNuMru6NHmz+CqXOWHECcPjXSpD/SSD1Oj/CKqCVb+k="
+     },
+     "upstream": {
+-      "url": "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.AppImage",
+-      "x-cos-hash-crc64ecma": "8546959459320172836",
+-      "x-cos-version-id": "MTg0NDQ5NTIyNzg5OTU1OTExNTE"
++      "url": "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.deb",
++      "x-cos-hash-crc64ecma": "10867328176854818451",
++      "x-cos-version-id": "MTg0NDQ5NTIyNzg5NTUwNjk2Nzk"
+     }
+   },
+   "aarch64-linux": {
+     "version": "4.1.13.26",
+     "src": {
+-      "url": "https://web.archive.org/web/20261019063855id_/https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_arm64.AppImage",
+-      "hash": "sha256-Awe3ndJWX7C6w63S7e4QzrKjwgcSAOZriE4ZxM1I/0g="
++      "url": "https://web.archive.org/web/20261012095035id_/https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_arm64.deb",
++      "hash": "sha256-N0cy7aiKbzp+TrMV5k5frHPvF5I9UE0kKWTxntG4DHU="
+     },
+     "upstream": {
+-      "url": "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_arm64.AppImage",
+-      "x-cos-hash-crc64ecma": "2533586403816119198",
+-      "x-cos-version-id": "MTg0NDQ5NTIyNzg5NjUzODMzNTc"
++      "url": "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_arm64.deb",
++      "x-cos-hash-crc64ecma": "14009050578420750826",
++      "x-cos-version-id": "MTg0NDQ5NTIyNzg5MzMyNjI0NTY"
+     }
+   }
+ }
+diff --git a/pkgs/by-name/we/wechat/update.py b/pkgs/by-name/we/wechat/update.py
+index 195e56c37cede..ef3a0e546b3bd 100755
+--- a/pkgs/by-name/we/wechat/update.py
++++ b/pkgs/by-name/we/wechat/update.py
+@@ -1,12 +1,11 @@
+ #! /usr/bin/env nix-shell
+-#! nix-shell -i python3 -p "python3.withPackages (p: [ p.waybackpy ])" _7zz
++#! nix-shell -i python3 -p "python3.withPackages (p: [ p.waybackpy ])" dpkg
+ 
+ import argparse
+ import base64
+ import hashlib
+ import json
+ import re
+-import shutil
+ import subprocess
+ import sys
+ import tempfile
+@@ -24,9 +23,9 @@
+ )
+ MACUPDATE_XML = "MacUpdate_universal.xml"
+ 
+-LINUX_APPIMAGE_URLS = {
+-    "x86_64-linux": "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.AppImage",
+-    "aarch64-linux": "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_arm64.AppImage",
++LINUX_URLS = {
++    "x86_64-linux": "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_x86_64.deb",
++    "aarch64-linux": "https://dldir1v6.qq.com/weixin/Universal/Linux/WeChatLinux_arm64.deb",
+ }
+ 
+ DMG_RE = re.compile(
+@@ -133,46 +132,17 @@ def hash_file(path: Path) -> str:
+     return f"sha256-{digest}"
+ 
+ 
+-def extract_version_from_appimage(appimage_path: Path) -> str | None:
+-    seven_z = shutil.which("7zz") or shutil.which("7z")
+-    if not seven_z:
+-        raise RuntimeError(
+-            "Neither '7zz' nor '7z' was found in PATH. "
+-            "Please ensure '_7zz' is available in PATH."
++def extract_version_linux(package_path: Path) -> str:
++    if package_path.suffix == ".deb":
++        proc = subprocess.run(
++            ["dpkg-deb", "-f", str(package_path), "Version"],
++            stdout=subprocess.PIPE,
++            stderr=subprocess.DEVNULL,
++            check=True,
++            text=True,
+         )
+-
+-    base_version = None
+-    proc_desktop = subprocess.run(
+-        [seven_z, "e", str(appimage_path), "wechat.desktop", "-so"],
+-        stdout=subprocess.PIPE,
+-        stderr=subprocess.DEVNULL,
+-    )
+-    if proc_desktop.returncode == 0 and proc_desktop.stdout:
+-        for line in proc_desktop.stdout.decode("utf-8", "ignore").splitlines():
+-            if line.startswith("X-AppImage-Version="):
+-                base_version = line.split("=", 1)[1].strip()
+-                break
+-
+-    proc = subprocess.run(
+-        [seven_z, "e", str(appimage_path), "opt/wechat/wechat", "-so"],
+-        stdout=subprocess.PIPE,
+-        stderr=subprocess.DEVNULL,
+-    )
+-    if proc.returncode == 0 and proc.stdout:
+-        if base_version:
+-            pattern = re.escape(base_version.encode()) + rb"\.\d+"
+-            matches = re.findall(pattern, proc.stdout)
+-            if matches:
+-                return matches[0].decode()
+-        matches = re.findall(rb"\b\d+\.\d+\.\d+\.\d+\b", proc.stdout)
+-        if matches:
+-            valid = [match for match in matches if match.startswith(b"4.")]
+-            if valid:
+-                return max(
+-                    valid, key=lambda match: tuple(map(int, match.split(b".")))
+-                ).decode()
+-
+-    return base_version
++        return proc.stdout.strip()
++    raise NotImplementedError(f"Unsupported package format: {package_path.name}")
+ 
+ 
+ def macupdate_package_url(config_xml: bytes) -> str:
+@@ -279,7 +249,15 @@ def save_to_wayback(url: str) -> str:
+     except Exception as exc:
+         log(f"Wayback save request failed ({exc}); checking newest snapshot...")
+         availability_api = waybackpy.WaybackMachineAvailabilityAPI(url, USER_AGENT)
+-        saved_url = availability_api.newest().archive_url
++        saved_url = None
++        for attempt in range(5):
++            try:
++                saved_url = availability_api.newest().archive_url
++                break
++            except Exception:
++                if attempt == 4:
++                    raise
++                time.sleep(2)
+     return format_wayback_url(saved_url)
+ 
+ 
+@@ -329,10 +307,10 @@ def update_darwin(sources: dict) -> bool:
+ 
+ 
+ def update_linux(platform: str, sources: dict) -> bool:
+-    appimage_url = LINUX_APPIMAGE_URLS[platform]
++    url = LINUX_URLS[platform]
+ 
+-    log(f"[{platform}] Checking upstream headers: {appimage_url}")
+-    headers = fetch_head_headers(appimage_url)
++    log(f"[{platform}] Checking upstream headers: {url}")
++    headers = fetch_head_headers(url)
+ 
+     current = sources.get(platform, {})
+     current_upstream = current.get("upstream", {})
+@@ -340,7 +318,9 @@ def update_linux(platform: str, sources: dict) -> bool:
+     crc = headers.get("x-cos-hash-crc64ecma")
+     version_id = headers.get("x-cos-version-id")
+ 
+-    if crc is not None:
++    if current_upstream.get("url") != url:
++        is_unchanged = False
++    elif crc is not None:
+         is_unchanged = current_upstream.get("x-cos-hash-crc64ecma") == crc
+     elif version_id is not None:
+         is_unchanged = current_upstream.get("x-cos-version-id") == version_id
+@@ -353,23 +333,23 @@ def update_linux(platform: str, sources: dict) -> bool:
+         )
+         return False
+ 
+-    log(f"[{platform}] Upstream updated or not recorded. Downloading AppImage...")
++    log(f"[{platform}] Upstream updated or not recorded. Downloading package...")
+ 
+     with tempfile.TemporaryDirectory(prefix=f"wechat-update-{platform}-") as tmp:
+-        appimage_path = Path(tmp) / Path(appimage_url).name
+-        log(f"[{platform}] Downloading AppImage...")
+-        download(appimage_url, appimage_path)
++        package_path = Path(tmp) / Path(url).name
++        log(f"[{platform}] Downloading package...")
++        download(url, package_path)
+ 
+-        version = extract_version_from_appimage(appimage_path)
++        version = extract_version_linux(package_path)
+         if not version:
+             raise RuntimeError(f"Could not determine version for {platform}")
+ 
+         log(f"[{platform}] Resolved version: {version}")
+         log(f"[{platform}] Computing hash...")
+-        hash_value = hash_file(appimage_path)
++        hash_value = hash_file(package_path)
+ 
+     log(f"[{platform}] Archiving to Wayback Machine...")
+-    archived_url = save_to_wayback(appimage_url)
++    archived_url = save_to_wayback(url)
+     log(f"[{platform}] Archived URL: {archived_url}")
+ 
+     sources[platform] = {
+@@ -379,7 +359,7 @@ def update_linux(platform: str, sources: dict) -> bool:
+             "hash": hash_value,
+         },
+         "upstream": {
+-            "url": appimage_url,
++            "url": url,
+             **({"x-cos-hash-crc64ecma": crc} if crc else {}),
+             **({"x-cos-version-id": version_id} if version_id else {}),
+         },
+
+From ea41ebe3e788f3f374e04885f4f60aca20efefed Mon Sep 17 00:00:00 2001
+From: Moraxyc <i@qaq.li>
+Date: Wed, 7 Oct 2026 19:00:27 +0800
+Subject: [PATCH 2/2] wechat: support wayland on linux
+
+Co-Authored-by: definfo <comonad@a-stable.com>
+---
+ pkgs/by-name/we/wechat/linux.nix   | 48 ++++++++++++++++++++----------
+ pkgs/by-name/we/wechat/package.nix |  1 +
+ 2 files changed, 33 insertions(+), 16 deletions(-)
+
+diff --git a/pkgs/by-name/we/wechat/linux.nix b/pkgs/by-name/we/wechat/linux.nix
+index ed6a156c92966..5901879f0e126 100644
+--- a/pkgs/by-name/we/wechat/linux.nix
++++ b/pkgs/by-name/we/wechat/linux.nix
+@@ -53,7 +53,6 @@
+   meta,
+   ...
+ }:
+-
+ stdenvNoCC.mkDerivation (finalAttrs: {
+   inherit pname;
+   inherit (finalAttrs.passthru.source) version;
+@@ -160,26 +159,35 @@ stdenvNoCC.mkDerivation (finalAttrs: {
+   dontWrapGApps = true;
+ 
+   preFixup = ''
+-    # Bundled Qt 5 cannot position IME candidate popups under native Wayland.
++    mkdir -p "$out/bin"
++
+     makeShellWrapper "$out/opt/wechat/wechat" "$out/bin/wechat" \
+       "''${gappsWrapperArgs[@]}" \
+-      --set LD_PRELOAD "${libredirect}/lib/libredirect.so" \
+-      --set NIX_REDIRECTS "/usr/bin/lsblk=${lib.getExe' util-linuxMinimal "lsblk"}" \
++      --prefix LD_PRELOAD : "${lib.getLib libredirect}/lib/libredirect.so" \
++      --prefix NIX_REDIRECTS : "/usr/bin/lsblk=${lib.getExe' util-linuxMinimal "lsblk"}" \
+       --set XKB_CONFIG_ROOT "${xkeyboard-config}/share/X11/xkb" \
+       --set XLOCALEDIR "${libx11}/share/X11/locale" \
+-      --set QT_QPA_PLATFORM "xcb" \
+-      --set-default QT_AUTO_SCREEN_SCALE_FACTOR "1" \
++      --set-default QT_AUTO_SCREEN_SCALE_FACTOR 1 \
+       --run '
+-        if [ -z "''${QT_IM_MODULE:-}" ]; then
+-          case "''${XMODIFIERS:-}" in
+-            *fcitx*)
+-              export QT_IM_MODULE=fcitx
+-              ;;
+-            *ibus*)
+-              export QT_IM_MODULE=ibus
+-              export IBUS_USE_PORTAL=1
+-              ;;
+-          esac
++        if [ -z "''${QT_QPA_PLATFORM:-}" ]; then
++          if [ -n "''${WAYLAND_DISPLAY:-}" ] || [ "''${XDG_SESSION_TYPE:-}" = wayland ]; then
++            export QT_QPA_PLATFORM=wayland
++            export QT_IM_MODULE=text-input-unstable-v3
++          else
++            export QT_QPA_PLATFORM=xcb
++
++            case "''${XMODIFIERS:-}" in
++              *@im=fcitx*)
++                export QT_IM_MODULE=fcitx
++                export GTK_IM_MODULE=fcitx
++                ;;
++              *@im=ibus*)
++                export QT_IM_MODULE=ibus
++                export GTK_IM_MODULE=ibus
++                export IBUS_USE_PORTAL=1
++                ;;
++            esac
++          fi
+         fi
+       '
+   '';
+@@ -195,6 +203,14 @@ stdenvNoCC.mkDerivation (finalAttrs: {
+       libffmpeg.so \
+       "$out/opt/wechat/RadiumWMPF/runtime/libffmpeg.so" \
+       "$out/opt/wechat/RadiumWMPF/runtime/WeChatAppEx"
++
++    wrapProgramShell "$out/opt/wechat/RadiumWMPF/runtime/WeChatAppEx" \
++      --run '
++        if [ -n "''${NIXOS_OZONE_WL:-}" ] && [ -n "''${WAYLAND_DISPLAY:-}" ]; then
++          export GDK_BACKEND=wayland
++          set -- --ozone-platform=wayland "$@"
++        fi
++      '
+   '';
+ 
+   passthru = passthru finalAttrs;
+diff --git a/pkgs/by-name/we/wechat/package.nix b/pkgs/by-name/we/wechat/package.nix
+index 287a8b356d53b..fa849672f35f3 100644
+--- a/pkgs/by-name/we/wechat/package.nix
++++ b/pkgs/by-name/we/wechat/package.nix
+@@ -16,6 +16,7 @@
+   at-spi2-core,
+   bzip2,
+   cairo,
++  coreutils,
+   cups,
+   dbus,
+   expat,
