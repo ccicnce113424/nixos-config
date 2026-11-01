@@ -77,6 +77,9 @@ in
       enable = true;
       theme = "bgrt";
       font = "${pkgs.maple-mono.truetype}/share/fonts/truetype/MapleMono-Regular.ttf";
+      # Plymouth 26 ignores simpledrm unless explicitly allowed. Without this
+      # the splash is only drawn once the real DRM driver probes in stage 2.
+      extraConfig = "UseSimpledrm=1";
     };
 
     # Silent boot
