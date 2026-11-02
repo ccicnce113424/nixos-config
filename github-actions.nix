@@ -45,7 +45,6 @@ in
             "virtualbox"
             "wine-tkg-full"
             "xwayland"
-            "gimp-with-plugins"
             "hplip"
             # "winboat"
             "spectacle"

@@ -4,29 +4,10 @@
   pkgs,
   ...
 }:
-let
-  gimp-base = pkgs.gimp3;
-  xsane = pkgs.xsane.override {
-    gimpSupport = true;
-    gimp = gimp-base;
-  };
-  gimp-combined = pkgs.gimp3-with-plugins.override {
-    plugins = [
-      # (pkgs.runCommand "gimp-plugin-xsane" { buildInputs = [ xsane ]; } ''
-      #   mkdir -p $out/${gimp-base.targetPluginDir}/xsane
-      #   ln -s ${lib.getExe xsane} $out/${gimp-base.targetPluginDir}/xsane
-      # '')
-      (pkgs.linkFarm "gimp-plugin-xsane" {
-        "${gimp-base.targetPluginDir}/xsane" = lib.getExe xsane;
-      })
-    ];
-  };
-in
 {
   config = lib.mkIf (builtins.elem "image" config.runtime.features) {
-    environment.systemPackages = [
-      gimp-combined
-      xsane
+    environment.systemPackages = with pkgs; [
+      gimp
     ];
 
     programs.weylus = {
