@@ -6,8 +6,16 @@
   ...
 }:
 let
+  # Group by the system declared in hosts/hosts.nix (the same data gencfg reads).
+  # Asking each configuration for pkgs.stdenv.hostPlatform.system instead forces
+  # every host's package set just to build the matrix. Configurations declared
+  # outside hosts.nix (livecd) still fall back to their package set.
+  hosts = (import ./hosts/hosts.nix) lib;
+  hostSystems = lib.mapAttrs (_: host: host.system) hosts;
   list = lib.attrsToList self.nixosConfigurations;
-  grouped = builtins.groupBy (x: x.value.pkgs.stdenv.hostPlatform.system) list;
+  grouped = builtins.groupBy (
+    x: hostSystems.${x.name} or x.value.pkgs.stdenv.hostPlatform.system
+  ) list;
 in
 {
   flake.githubActions.eval = inputs.nix-github-actions.lib.mkGithubMatrix {
