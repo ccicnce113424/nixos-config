@@ -6,7 +6,6 @@
       enableKvm = true;
       enableExtensionPack = true;
       addNetworkInterface = false;
-      enableHardening = true;
     };
   };
 }
