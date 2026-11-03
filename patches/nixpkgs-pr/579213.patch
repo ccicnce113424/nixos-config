@@ -1,4 +1,4 @@
-From 38de1db08ba707ca9a6594d3f269fe521a7f8106 Mon Sep 17 00:00:00 2001
+From 98f230d1c9a0c63fb235a0cf31de6ebc217bd2db Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 18:47:10 +0800
 Subject: [PATCH 1/4] virtualbox: avoid rebuilding for extpack
@@ -6,9 +6,9 @@ Subject: [PATCH 1/4] virtualbox: avoid rebuilding for extpack
 Assisted-by: omp:DeepSeek V4.1 Flash 1017
 ---
  .../virtualisation/virtualbox-host.nix        |  17 +-
- .../virtualization/virtualbox/default.nix     | 632 ++++++++++--------
+ .../virtualization/virtualbox/default.nix     | 636 ++++++++++--------
  .../virtualbox/extpack-relocation.patch       | 162 +++++
- 3 files changed, 513 insertions(+), 298 deletions(-)
+ 3 files changed, 517 insertions(+), 298 deletions(-)
  create mode 100644 pkgs/applications/virtualization/virtualbox/extpack-relocation.patch
 
 diff --git a/nixos/modules/virtualisation/virtualbox-host.nix b/nixos/modules/virtualisation/virtualbox-host.nix
@@ -48,7 +48,7 @@ index 56ba741dc2e4d..40d107eeafd9c 100644
          users.groups.vboxusers.gid = config.ids.gids.vboxusers;
  
 diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index 43df9e9f38349..1583bca5f0e96 100644
+index 43df9e9f38349..c3ed921eb9b64 100644
 --- a/pkgs/applications/virtualization/virtualbox/default.nix
 +++ b/pkgs/applications/virtualization/virtualbox/default.nix
 @@ -4,6 +4,8 @@
@@ -60,7 +60,7 @@ index 43df9e9f38349..1583bca5f0e96 100644
    lib,
    acpica-tools,
    dev86,
-@@ -104,326 +106,378 @@ let
+@@ -104,326 +106,382 @@ let
      qtscxml
      wrapQtAppsHook
      ;
@@ -84,7 +84,11 @@ index 43df9e9f38349..1583bca5f0e96 100644
 -    sha256 = finalAttrs.virtualboxSha256;
 -  };
 +  unwrapped = stdenv.mkDerivation (finalAttrs: {
-+    pname = "virtualbox";
++    pname =
++      "virtualbox-unwrapped"
++      + optionalString enableKvm "-kvm"
++      + optionalString headless "-headless"
++      + optionalString enableHardening "-hardened";
 +    version = "${finalAttrs.virtualboxVersion}${finalAttrs.virtualboxSubVersion}";
 +
 +    inherit
@@ -897,7 +901,7 @@ index 0000000000000..bba8bf0b3f8f9
 +         return false;
 + 
 
-From 350ee1d34499ad291231a8e629eddfb64f5df6bd Mon Sep 17 00:00:00 2001
+From 8fd26d4ef1f3787ba536c091cda30a21aaf0c7ac Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 20:23:33 +0800
 Subject: [PATCH 2/4] virtualbox: fix VBoxVolInfo under hardening
@@ -909,10 +913,10 @@ Assisted-by: omp:DeepSeek V4.1 Flash 1017
  2 files changed, 21 insertions(+)
 
 diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index 1583bca5f0e96..ca614ba2c54b3 100644
+index c3ed921eb9b64..adddd5fef1185 100644
 --- a/pkgs/applications/virtualization/virtualbox/default.nix
 +++ b/pkgs/applications/virtualization/virtualbox/default.nix
-@@ -376,6 +376,14 @@ let
+@@ -380,6 +380,14 @@ let
        ln -s "${finalAttrs.virtualboxGuestAdditionsIso}" "$out/share/virtualbox/VBoxGuestAdditions.iso"
      '';
  
@@ -949,7 +953,7 @@ index eb53e0d1421e6..3dc45ea9bf71b 100644
 +     {
 +         LogRel(("VolInfo: Failed to get program path, vrc=%Rrc\n", vrc));
 
-From 16b29c9a7482f86c6d801c6eec057959fa357974 Mon Sep 17 00:00:00 2001
+From 1b352f42d50a6d1a4671b7822c7e3a88640bb4de Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 20:30:52 +0800
 Subject: [PATCH 3/4] virtualbox: fix Vulkan loader lookup in VBoxDxVk
@@ -960,7 +964,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash 1017
  1 file changed, 7 insertions(+)
 
 diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index ca614ba2c54b3..2b7a93efa9cc6 100644
+index adddd5fef1185..9dfd1b2343ac5 100644
 --- a/pkgs/applications/virtualization/virtualbox/default.nix
 +++ b/pkgs/applications/virtualization/virtualbox/default.nix
 @@ -45,6 +45,7 @@
@@ -971,7 +975,7 @@ index ca614ba2c54b3..2b7a93efa9cc6 100644
    wrapGAppsHook3,
    nixosTests,
    # If open-watcom-bin is not passed, VirtualBox will fall back to use
-@@ -383,6 +384,12 @@ let
+@@ -387,6 +388,12 @@ let
        if [ -e "$out/libexec/virtualbox/VBoxVolInfo" ]; then
          patchelf --add-rpath "${lib.makeLibraryPath [ lvm2 ]}" "$out/libexec/virtualbox/VBoxRT.so"
        fi
@@ -985,7 +989,7 @@ index ca614ba2c54b3..2b7a93efa9cc6 100644
      passthru = {
        inherit extensionPack; # for inclusion in profile to prevent gc
 
-From 48a6749bc2c936424dc761c7a5925a671aa87f66 Mon Sep 17 00:00:00 2001
+From 5b8e1db286637e4c77b5697830dd49b093355535 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 20:51:12 +0800
 Subject: [PATCH 4/4] virtualbox: enable hardening for kvm package
