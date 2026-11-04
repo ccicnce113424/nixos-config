@@ -988,36 +988,24 @@ index d6136233b49dd..3b48a1662a793 100644
      passthru = {
        inherit extensionPack; # for inclusion in profile to prevent gc
 
-From f18862587fd2ce4084ba24260d4350a14a64e615 Mon Sep 17 00:00:00 2001
+From 00bd632aa8c4e8c60d402c1034bd96965d20a68f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Mon, 26 Oct 2026 20:51:12 +0800
-Subject: [PATCH 4/4] virtualbox: enable hardening for kvm package
+Date: Wed, 4 Nov 2026 07:52:22 +0800
+Subject: [PATCH 4/4] nixos/virtualbox: disable hardening for kvm support
 
 ---
- pkgs/top-level/all-packages.nix | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ nixos/modules/virtualisation/virtualbox-host.nix | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/pkgs/top-level/all-packages.nix b/pkgs/top-level/all-packages.nix
-index 32ea30a60841d..893f118582871 100644
---- a/pkgs/top-level/all-packages.nix
-+++ b/pkgs/top-level/all-packages.nix
-@@ -9042,15 +9042,16 @@ with pkgs;
-     open-watcom-bin = null;
-   };
- 
--  virtualboxKvm = lowPrio (
-+  virtualboxHardened = lowPrio (
-     virtualbox.override {
--      enableKvm = true;
-+      enableHardening = true;
-     }
-   );
- 
--  virtualboxHardened = lowPrio (
-+  virtualboxKvm = lowPrio (
-     virtualbox.override {
-       enableHardening = true;
-+      enableKvm = true;
-     }
-   );
- 
+diff --git a/nixos/modules/virtualisation/virtualbox-host.nix b/nixos/modules/virtualisation/virtualbox-host.nix
+index 40d107eeafd9c..94acce1ff3006 100644
+--- a/nixos/modules/virtualisation/virtualbox-host.nix
++++ b/nixos/modules/virtualisation/virtualbox-host.nix
+@@ -155,6 +155,7 @@ in
+             message = "VirtualBox KVM only supports standard NAT networking for VMs. Please turn off virtualisation.virtualbox.host.addNetworkInterface.";
+           }
+         ];
++        virtualisation.virtualbox.host.enableHardening = lib.mkDefault false;
+       })
+       (lib.mkIf (!cfg.enableKvm) {
+         boot.kernelModules = [
