@@ -1,7 +1,41 @@
-From 734aeb60ff858976cdb36347ea5bf57bd94d5834 Mon Sep 17 00:00:00 2001
+From 1fc17581c358927eae6449a131ad6191b7e30233 Mon Sep 17 00:00:00 2001
+From: Kiskae <Kiskae@users.noreply.github.com>
+Date: Thu, 5 Nov 2026 17:48:27 +0100
+Subject: [PATCH 01/13] linuxPackages.nvidiaPackages.production: 595.112.07 ->
+ 620.70.06
+
+---
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
+index 08d61bd77cb61..f101a9ee5c9bc 100644
+--- a/pkgs/os-specific/linux/nvidia-x11/default.nix
++++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
+@@ -39,12 +39,12 @@ rec {
+   bleeding_edge = selectHighestVersion latest beta;
+ 
+   production = generic {
+-    version = "595.112.07";
+-    sha256_64bit = "sha256-Gjjs1Tii2mIypzMBhAY69Z6fyUbJCMylVb0HkJhIufA=";
+-    sha256_aarch64 = "sha256-7qQuOKX9xS/wpKa+bEOqsS2euJjJu182vl+6UU6bxR0=";
+-    openSha256 = "sha256-nQnXGCcvo4i7eGaVft3Xc9dRUPPH0v9Zi87cfI4i/Ys=";
+-    settingsSha256 = "sha256-2bWSou/9J3EojhSRXBol/+yGGu2XZ6EuCptb5qXHM14=";
+-    persistencedSha256 = "sha256-cGMEUXN7WPu822zZDLTSu6Owj8VXG4PNmhe9oKqMMKI=";
++    version = "620.70.06";
++    sha256_64bit = "sha256-KRGOOr0IwHVZvMo9nHYjjQOUkK8DYqLlvPy+cgSv1LE=";
++    sha256_aarch64 = "sha256-P6ZaknHg3eKk5YxJZcOIhaAqOkKszcsm/IF0EGB/PgM=";
++    openSha256 = "sha256-dV8vzniUl3UJoG2Q3KdoUJigLRuQeTniUfB670gb1Mw=";
++    settingsSha256 = "sha256-CFBRmXFJ9eAf5BRlHMBolahz1Pshr9giI7zcZC29oZ8=";
++    persistencedSha256 = "sha256-FpGzhArrvR1nEt8lKDzNEnbvHvGP36gL1dINvpDAkpA=";
+   };
+ 
+   new_feature = generic {
+
+From 2dbe1bf758f6c571db27ea5309f37be6c8e90b1f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 18:23:22 +0800
-Subject: [PATCH 01/12] maintainers/scripts/nvidia-source-hashes: add a per-URL
+Subject: [PATCH 02/13] maintainers/scripts/nvidia-source-hashes: add a per-URL
  hash verifier
 
 The script walks linuxPackages.nvidiaPackages, takes every component whose .src
@@ -18,8 +52,8 @@ publish a release at different times; --strict makes it fail.
 Assisted-by: omp:DeepSeek V4.1 Flash
 ---
  .../scripts/nvidia-source-hashes/default.nix  | 367 ++++++++++++++++++
- .../scripts/nvidia-source-hashes/verify.sh    | 307 +++++++++++++++
- 2 files changed, 674 insertions(+)
+ .../scripts/nvidia-source-hashes/verify.sh    | 308 +++++++++++++++
+ 2 files changed, 675 insertions(+)
  create mode 100644 maintainers/scripts/nvidia-source-hashes/default.nix
  create mode 100755 maintainers/scripts/nvidia-source-hashes/verify.sh
 
@@ -398,10 +432,10 @@ index 0000000000000..c865e3c81bed3
 +  ''
 diff --git a/maintainers/scripts/nvidia-source-hashes/verify.sh b/maintainers/scripts/nvidia-source-hashes/verify.sh
 new file mode 100755
-index 0000000000000..eba466d547650
+index 0000000000000..40ef4e4dc17aa
 --- /dev/null
 +++ b/maintainers/scripts/nvidia-source-hashes/verify.sh
-@@ -0,0 +1,307 @@
+@@ -0,0 +1,308 @@
 +#!/usr/bin/env nix-shell
 +#!nix-shell -i bash -p jq
 +
@@ -607,23 +641,24 @@ index 0000000000000..eba466d547650
 +    unavailable=0
 +    unavailable_keys=()
 +    while IFS=$'\t' read -r key drv_path url; do
++        printf '%s\n    %s\n' "$key" "$url"
 +        log="$tmp/log"
 +        if nix-store --realise "$drv_path" > /dev/null 2> "$log"; then
 +            bad=$((bad + 1))
-+            printf '%s\n    %s\n    ERROR: unexpectedly matched the bogus hash\n' "$key" "$url" >&2
++            printf '    ERROR: unexpectedly matched the bogus hash\n' >&2
 +            continue
 +        fi
 +        got=$(sed -n 's/^ *got: *//p' "$log" | head -n 1)
 +        if [[ -n "$got" ]]; then
 +            ok=$((ok + 1))
-+            printf '%s\n    %s\n    -> %s\n' "$key" "$url" "$got"
++            printf '    -> %s\n' "$got"
 +        elif grep -qE "returned error: 404" "$log"; then
 +            unavailable=$((unavailable + 1))
 +            unavailable_keys+=("$key")
-+            printf '%s\n    %s\n    URL NOT AVAILABLE\n' "$key" "$url" >&2
++            printf '    URL NOT AVAILABLE\n' >&2
 +        else
 +            bad=$((bad + 1))
-+            printf '%s\n    %s\n    ERROR\n' "$key" "$url" >&2
++            printf '    ERROR\n' >&2
 +            grep -E "curl:|error:" "$log" | head -n 3 | sed 's/^ */    /' >&2 || true
 +        fi
 +    done < <(jq -r 'to_entries[] | [.key, .value.drvPath, (.value.urls[0] // "")] | @tsv' "$tmp/meta.json")
@@ -710,10 +745,10 @@ index 0000000000000..eba466d547650
 +    exit 1
 +fi
 
-From 2456e3cd66a826e2dbaa79849ecf665fb3cf69ac Mon Sep 17 00:00:00 2001
+From 3392cb9f151e5ab5dd7adaba386e2a62961d8bc7 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 23:42:50 +0800
-Subject: [PATCH 02/12] nvidia-x11: check the version of the fetched sources
+Subject: [PATCH 03/13] nvidia-x11: check the version of the fetched sources
 
 A version bump whose hash was not updated silently reuses the old source from
 the store, which a second URL and a postFetch make more likely. Each component
@@ -873,10 +908,10 @@ index e47dc3cb4e613..b07451d09e5a8 100644
      if [ -e src/libXNVCtrl/libXNVCtrl.a ]; then
        ( cd src/libXNVCtrl
 
-From aafe21368261d19e8225b55fbf61b3f4230314cd Mon Sep 17 00:00:00 2001
+From af19911a5b7fcbeded2b211c3d38f546db9be634 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:28:00 +0800
-Subject: [PATCH 03/12] linuxPackages.nvidiaPackages: fetch open kernel module
+Subject: [PATCH 04/13] linuxPackages.nvidiaPackages: fetch open kernel module
  sources from NVIDIA
 
 Serve the open-gpu-kernel-modules source through fetchFromGithubOrNvidia, with
@@ -896,17 +931,17 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  5 files changed, 30 insertions(+), 18 deletions(-)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 08d61bd77cb61..38f672bb5e0a7 100644
+index f101a9ee5c9bc..986c5fc1514a0 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -42,7 +42,7 @@ rec {
-     version = "595.112.07";
-     sha256_64bit = "sha256-Gjjs1Tii2mIypzMBhAY69Z6fyUbJCMylVb0HkJhIufA=";
-     sha256_aarch64 = "sha256-7qQuOKX9xS/wpKa+bEOqsS2euJjJu182vl+6UU6bxR0=";
--    openSha256 = "sha256-nQnXGCcvo4i7eGaVft3Xc9dRUPPH0v9Zi87cfI4i/Ys=";
-+    openSha256 = "sha256-/uLSwBmCE3ITwprNiPzWzeh/LgvEcKv7GIFxcTXkzJU=";
-     settingsSha256 = "sha256-2bWSou/9J3EojhSRXBol/+yGGu2XZ6EuCptb5qXHM14=";
-     persistencedSha256 = "sha256-cGMEUXN7WPu822zZDLTSu6Owj8VXG4PNmhe9oKqMMKI=";
+     version = "620.70.06";
+     sha256_64bit = "sha256-KRGOOr0IwHVZvMo9nHYjjQOUkK8DYqLlvPy+cgSv1LE=";
+     sha256_aarch64 = "sha256-P6ZaknHg3eKk5YxJZcOIhaAqOkKszcsm/IF0EGB/PgM=";
+-    openSha256 = "sha256-dV8vzniUl3UJoG2Q3KdoUJigLRuQeTniUfB670gb1Mw=";
++    openSha256 = "sha256-hQ8JyuzBlEu7LIxGDe09+HMWroafUWQYrfxSX127kcQ=";
+     settingsSha256 = "sha256-CFBRmXFJ9eAf5BRlHMBolahz1Pshr9giI7zcZC29oZ8=";
+     persistencedSha256 = "sha256-FpGzhArrvR1nEt8lKDzNEnbvHvGP36gL1dINvpDAkpA=";
    };
 @@ -51,7 +51,7 @@ rec {
      version = "615.78.08";
@@ -1104,10 +1139,10 @@ index b07451d09e5a8..1f905ca9efafd 100644
    };
  
 
-From 9aab9878e9f3c544a580d7051bc1b9d0a9750f46 Mon Sep 17 00:00:00 2001
+From 99a96168f72f1075fa1463cd627d27877c296714 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 17 Oct 2026 23:25:33 +0800
-Subject: [PATCH 04/12] libnvidia-container: fetch the nvidia-modprobe source
+Subject: [PATCH 05/13] libnvidia-container: fetch the nvidia-modprobe source
  directly
 
 It only needs the source tree, so fetch the NVIDIA/nvidia-modprobe archive with
@@ -1143,10 +1178,10 @@ index 734eeecac9853..514b69cf08d32 100644
      };
      patches = [
 
-From 7490a4be4b5b9f333f8c8c8965b31153ce1fd9e0 Mon Sep 17 00:00:00 2001
+From 98810e27a0f2806032d3146951a2d76c329263b2 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
-Subject: [PATCH 05/12] nvidia-modprobe: move to linuxPackages.nvidiaPackages
+Subject: [PATCH 06/13] nvidia-modprobe: move to linuxPackages.nvidiaPackages
 
 nvidia-modprobe matches the driver it belongs to, so it moves into that driver's
 namespace next to the other tools, as nvidiaPackages.<branch>.modprobe. The
@@ -1168,10 +1203,10 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (51%)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index d1dc0e785353f..74b13228f6c88 100644
+index d751d294118c3..31e63a2fe008a 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
-@@ -38,6 +38,11 @@
+@@ -43,6 +43,11 @@
  
    See the [upstream migration guide](https://github.com/roadrunner-server/docs/blob/release/v3/intro/v3-migration.md) for details.
  
@@ -1203,14 +1238,14 @@ index 77461de17ca57..672c9be01c5ab 100644
            hardware.graphics =
              let
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 38f672bb5e0a7..1e34f0efb4baf 100644
+index 986c5fc1514a0..17e5feff2ba40 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -45,6 +45,7 @@ rec {
-     openSha256 = "sha256-/uLSwBmCE3ITwprNiPzWzeh/LgvEcKv7GIFxcTXkzJU=";
-     settingsSha256 = "sha256-2bWSou/9J3EojhSRXBol/+yGGu2XZ6EuCptb5qXHM14=";
-     persistencedSha256 = "sha256-cGMEUXN7WPu822zZDLTSu6Owj8VXG4PNmhe9oKqMMKI=";
-+    modprobeSha256 = "sha256-w0nGxkaqVsv2JSj+50/IKaToPui2U2d2Ob6GjOB0pOQ=";
+     openSha256 = "sha256-hQ8JyuzBlEu7LIxGDe09+HMWroafUWQYrfxSX127kcQ=";
+     settingsSha256 = "sha256-CFBRmXFJ9eAf5BRlHMBolahz1Pshr9giI7zcZC29oZ8=";
+     persistencedSha256 = "sha256-FpGzhArrvR1nEt8lKDzNEnbvHvGP36gL1dINvpDAkpA=";
++    modprobeSha256 = "sha256-3o6BYqz4tQ3e1BWF6y/1VaLx2BQqtGSfFhjB6sUvevA=";
    };
  
    new_feature = generic {
@@ -1405,10 +1440,10 @@ index 84ed230b36c19..7c608737bf1a1 100644
    };
  })
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index 2bc17c406b44b..9ad6fb96dcab3 100644
+index 4bd02871825e2..62a3e90427ba2 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
-@@ -1988,6 +1988,7 @@ mapAliases {
+@@ -2007,6 +2007,7 @@ mapAliases {
    numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
    nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
    nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
@@ -1417,10 +1452,10 @@ index 2bc17c406b44b..9ad6fb96dcab3 100644
    oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
    oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 
-From 9cf1a3b7ec28b43ebd027301347ba67cc99e56be Mon Sep 17 00:00:00 2001
+From 928f92cc29fdc7f9bd2eeb0ee845109c8628228a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 20:08:54 +0800
-Subject: [PATCH 06/12] nvidia-x11: document driver updates and custom versions
+Subject: [PATCH 07/13] nvidia-x11: document driver updates and custom versions
 
 Add pkgs/os-specific/linux/nvidia-x11/README.md, covering how a driver is added
 or updated, how hashes are obtained and verified, and how to call mkDriver with
@@ -1652,10 +1687,10 @@ index 0000000000000..27bbff86baded
 +`hardware.nvidia.open` selects the open kernel modules, which
 +`hardware.nvidia.kernelModules` then picks up from the branch.
 
-From ae4f3890676dde772c46a43ecc1eabe761deb675 Mon Sep 17 00:00:00 2001
+From ab863ca4f74a144feab074e93730543d3416975a Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:30:08 +0800
-Subject: [PATCH 07/12] linuxPackages.nvidiaPackages: move userspace utilities
+Subject: [PATCH 08/13] linuxPackages.nvidiaPackages: move userspace utilities
  to a separate file
 
 Move the driver derivation out of generic.nix into binaries.nix, and give the
@@ -1913,7 +1948,7 @@ index 0000000000000..2194b769b8d58
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 1e34f0efb4baf..a54fa7cb564f0 100644
+index 17e5feff2ba40..973759a76cf6a 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -11,17 +11,7 @@
@@ -2619,10 +2654,10 @@ index 1f905ca9efafd..d797d8a267c03 100644
      gtk3
      librsvg
 
-From 5a32546ec56204ea69f3312e8ebf29b1b89d67ff Mon Sep 17 00:00:00 2001
+From 4b6b9ea130f5fb2bb1c99f31c4dfb01edeebf838 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 22:50:14 +0800
-Subject: [PATCH 08/12] nvidia-settings: find the key documentation in the XDG
+Subject: [PATCH 09/13] nvidia-settings: find the key documentation in the XDG
  data directories
 
 The build patched the path of the application-profile key documentation into the
@@ -2795,10 +2830,10 @@ index d797d8a267c03..fbe529d31554f 100644
      vulkan-headers
    ]
 
-From 54d68e98a3388f527a1099e7547f3ddc57fa76b1 Mon Sep 17 00:00:00 2001
+From 5d8c0b23bb703b13da2c6c22cd8a59693b9922f7 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 11:29:02 +0800
-Subject: [PATCH 09/12] nvidia-x11: unpack the installer into a source
+Subject: [PATCH 10/13] nvidia-x11: unpack the installer into a source
  derivation
 
 The installer is a Makeself archive and both the userspace build and the
@@ -3026,7 +3061,7 @@ index 65daf1afebb42..a3506b80fa7b6 100755
          # Install the GSP firmware
          install -Dm644 -t $firmware/lib/firmware/nvidia/$version firmware/*.bin
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index a54fa7cb564f0..6d19c9e214ebb 100644
+index 973759a76cf6a..1630c3094fac7 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -225,7 +225,7 @@ rec {
@@ -3447,10 +3482,10 @@ index 7d5f9a50ace52..71e732c562e86 100644
        "x86_64-linux"
        "aarch64-linux"
 
-From 104ea9eaaa59556da32e6c01708c60b437a0a0ee Mon Sep 17 00:00:00 2001
+From 1779d99a8c7bba3bb9f8e83ca42a3486959203a6 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 12:02:47 +0800
-Subject: [PATCH 10/12] nvidia-x11: build each driver in a factory and expose
+Subject: [PATCH 11/13] nvidia-x11: build each driver in a factory and expose
  it as a scope
 
 default.nix is a factory: called once by pkgs it builds the driver and the
@@ -3508,10 +3543,10 @@ Assisted-by: omp:Space Bunny Alpha
  16 files changed, 872 insertions(+), 562 deletions(-)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index 74b13228f6c88..a7467b65458e6 100644
+index 31e63a2fe008a..fa0ab67c12295 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
-@@ -38,10 +38,11 @@
+@@ -43,10 +43,11 @@
  
    See the [upstream migration guide](https://github.com/roadrunner-server/docs/blob/release/v3/intro/v3-migration.md) for details.
  
@@ -3527,7 +3562,7 @@ index 74b13228f6c88..a7467b65458e6 100644
  
  - The `dxvk` Wine setup wrapper now uses DXVK 3.x on Linux. DXVK 3.x requires Wine 10.0 or newer and a Vulkan 1.4-capable driver, and removes the `DXVK_FRAME_RATE` environment variable; use `dxvk.maxFrameRate` instead.
    The native library is available as `dxvk_3`. The `dxvk_1` and `dxvk_2` packages remain available for older hardware and applications.
-@@ -55,6 +56,23 @@
+@@ -60,6 +61,23 @@
    include built-in login. Set `services.stirling-pdf.package = pkgs.stirling-pdf-free;`
    to use it with the NixOS service.
  
@@ -3550,7 +3585,7 @@ index 74b13228f6c88..a7467b65458e6 100644
 +
  - `moon` has been updated to `2.x` and needs manual migration. See the [migration guide](https://moonrepo.dev/docs/migrate/2.0) for instructions.
  
- - `hyperfine` has been updated from 1.21.0 to 2.0.0, which contains several breaking changes:
+ - `paperless-manage` now uses `runuser` instead of automatically calling `sudo` to set user/group before running. Invoke the script with `sudo paperless-manage` or an equivalent elevation tool of your choice
 diff --git a/maintainers/scripts/nvidia-source-hashes/default.nix b/maintainers/scripts/nvidia-source-hashes/default.nix
 index c865e3c81bed3..22e7549461a4a 100644
 --- a/maintainers/scripts/nvidia-source-hashes/default.nix
@@ -3621,10 +3656,10 @@ index c865e3c81bed3..22e7549461a4a 100644
                empty;
            step = builtins.tryEval result;
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index 934da757c4672..2f65862cbd063 100644
+index ebcd669f64919..3c328dae56691 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
-@@ -248,6 +248,40 @@
+@@ -257,6 +257,40 @@
  - [`services.litellm`](#opt-services.litellm.enable) fails to start without a master key since `litellm` 1.104.0, which refuses to serve unauthenticated requests.
    Set `LITELLM_MASTER_KEY` through [](#opt-services.litellm.environmentFile).
  
@@ -4042,7 +4077,7 @@ index 751f54ad2bfb3..46ad5820f6ac9 100644
    };
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 6d19c9e214ebb..85a8aa449d763 100644
+index 1630c3094fac7..bb389eafcd162 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -1,294 +1,319 @@
@@ -4101,13 +4136,13 @@ index 6d19c9e214ebb..85a8aa449d763 100644
 +    stable = if stdenv.hostPlatform.system == "i686-linux" then self.legacy_390 else self.production;
  
 -  production = generic {
--    version = "595.112.07";
--    sha256_64bit = "sha256-Gjjs1Tii2mIypzMBhAY69Z6fyUbJCMylVb0HkJhIufA=";
--    sha256_aarch64 = "sha256-7qQuOKX9xS/wpKa+bEOqsS2euJjJu182vl+6UU6bxR0=";
--    openSha256 = "sha256-/uLSwBmCE3ITwprNiPzWzeh/LgvEcKv7GIFxcTXkzJU=";
--    settingsSha256 = "sha256-2bWSou/9J3EojhSRXBol/+yGGu2XZ6EuCptb5qXHM14=";
--    persistencedSha256 = "sha256-cGMEUXN7WPu822zZDLTSu6Owj8VXG4PNmhe9oKqMMKI=";
--    modprobeSha256 = "sha256-w0nGxkaqVsv2JSj+50/IKaToPui2U2d2Ob6GjOB0pOQ=";
+-    version = "620.70.06";
+-    sha256_64bit = "sha256-KRGOOr0IwHVZvMo9nHYjjQOUkK8DYqLlvPy+cgSv1LE=";
+-    sha256_aarch64 = "sha256-P6ZaknHg3eKk5YxJZcOIhaAqOkKszcsm/IF0EGB/PgM=";
+-    openSha256 = "sha256-hQ8JyuzBlEu7LIxGDe09+HMWroafUWQYrfxSX127kcQ=";
+-    settingsSha256 = "sha256-CFBRmXFJ9eAf5BRlHMBolahz1Pshr9giI7zcZC29oZ8=";
+-    persistencedSha256 = "sha256-FpGzhArrvR1nEt8lKDzNEnbvHvGP36gL1dINvpDAkpA=";
+-    modprobeSha256 = "sha256-3o6BYqz4tQ3e1BWF6y/1VaLx2BQqtGSfFhjB6sUvevA=";
 -  };
 +    latest = selectHighestVersion self.production self.new_feature;
  
@@ -4133,13 +4168,13 @@ index 6d19c9e214ebb..85a8aa449d763 100644
 -  };
 +    production = mkBranch {
 +      branch = "production";
-+      version = "595.112.07";
-+      sha256_64bit = "sha256-Gjjs1Tii2mIypzMBhAY69Z6fyUbJCMylVb0HkJhIufA=";
-+      sha256_aarch64 = "sha256-7qQuOKX9xS/wpKa+bEOqsS2euJjJu182vl+6UU6bxR0=";
-+      openSha256 = "sha256-/uLSwBmCE3ITwprNiPzWzeh/LgvEcKv7GIFxcTXkzJU=";
-+      settingsSha256 = "sha256-2bWSou/9J3EojhSRXBol/+yGGu2XZ6EuCptb5qXHM14=";
-+      persistencedSha256 = "sha256-cGMEUXN7WPu822zZDLTSu6Owj8VXG4PNmhe9oKqMMKI=";
-+      modprobeSha256 = "sha256-w0nGxkaqVsv2JSj+50/IKaToPui2U2d2Ob6GjOB0pOQ=";
++      version = "620.70.06";
++      sha256_64bit = "sha256-KRGOOr0IwHVZvMo9nHYjjQOUkK8DYqLlvPy+cgSv1LE=";
++      sha256_aarch64 = "sha256-P6ZaknHg3eKk5YxJZcOIhaAqOkKszcsm/IF0EGB/PgM=";
++      openSha256 = "sha256-hQ8JyuzBlEu7LIxGDe09+HMWroafUWQYrfxSX127kcQ=";
++      settingsSha256 = "sha256-CFBRmXFJ9eAf5BRlHMBolahz1Pshr9giI7zcZC29oZ8=";
++      persistencedSha256 = "sha256-FpGzhArrvR1nEt8lKDzNEnbvHvGP36gL1dINvpDAkpA=";
++      modprobeSha256 = "sha256-3o6BYqz4tQ3e1BWF6y/1VaLx2BQqtGSfFhjB6sUvevA=";
 +    };
  
 -  # Vulkan developer beta driver
@@ -5312,10 +5347,10 @@ index fbe529d31554f..3b5108396f113 100644
  
    libXNVCtrl = stdenv.mkDerivation {
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index 9ad6fb96dcab3..e5f0979fd5b0e 100644
+index 62a3e90427ba2..f99c788968838 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
-@@ -1988,7 +1988,7 @@ mapAliases {
+@@ -2007,7 +2007,7 @@ mapAliases {
    numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
    nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
    nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
@@ -5325,10 +5360,10 @@ index 9ad6fb96dcab3..e5f0979fd5b0e 100644
    oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
    oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 diff --git a/pkgs/top-level/all-packages.nix b/pkgs/top-level/all-packages.nix
-index 32ea30a60841d..04f6ce9d55f76 100644
+index 5c1d20ad4d48f..d0da8cd0a13c4 100644
 --- a/pkgs/top-level/all-packages.nix
 +++ b/pkgs/top-level/all-packages.nix
-@@ -6049,6 +6049,10 @@ with pkgs;
+@@ -6028,6 +6028,10 @@ with pkgs;
    nv-codec-headers-12 = nv-codec-headers.override { majorVersion = "12"; };
    nv-codec-headers-13 = nv-codec-headers.override { majorVersion = "13"; };
  
@@ -5339,7 +5374,7 @@ index 32ea30a60841d..04f6ce9d55f76 100644
    nvidiaCtkPackages = recurseIntoAttrs (
      callPackage ../by-name/nv/nvidia-container-toolkit/packages.nix { }
    );
-@@ -7379,7 +7383,7 @@ with pkgs;
+@@ -7341,7 +7345,7 @@ with pkgs;
    conky = callPackage ../os-specific/linux/conky (
      {
        lua = lua5_5;
@@ -5349,7 +5384,7 @@ index 32ea30a60841d..04f6ce9d55f76 100644
      // config.conky or { }
    );
 diff --git a/pkgs/top-level/linux-kernels.nix b/pkgs/top-level/linux-kernels.nix
-index a91b74e41b096..d5d79fafb8781 100644
+index b875144364c17..1af2087ba44d1 100644
 --- a/pkgs/top-level/linux-kernels.nix
 +++ b/pkgs/top-level/linux-kernels.nix
 @@ -16,7 +16,7 @@
@@ -5361,7 +5396,7 @@ index a91b74e41b096..d5d79fafb8781 100644
    inherit (linuxKernel)
      kernels
      kernelPatches
-@@ -374,28 +374,21 @@ in
+@@ -376,28 +376,21 @@ in
  
          nvidiabl = callPackage ../os-specific/linux/nvidiabl { };
  
@@ -5404,7 +5439,7 @@ index a91b74e41b096..d5d79fafb8781 100644
  
          nxp-pn5xx = callPackage ../os-specific/linux/nxp-pn5xx { };
  
-@@ -615,6 +608,66 @@ in
+@@ -617,6 +610,66 @@ in
          nvidia_dc_535 = throw "nvidiaPackages.dc_535 removed, soon reaches end of life, see https://endoflife.date/nvidia"; # added 2026-03-08
          fwts-efi-runtime = throw "fwts-efi-runtime has been replaced by efi_test starting with kernel version 4.8, see https://bugs.launchpad.net/fwts/+bug/2138473"; # added 2026-05-16
        }
@@ -5472,10 +5507,10 @@ index a91b74e41b096..d5d79fafb8781 100644
        (lib.fixedPoints.composeManyExtensions kernelPackagesExtensions);
  
 
-From aad13dcfc79856bdde58cf618861d80aff6900a5 Mon Sep 17 00:00:00 2001
+From 5f87885715d2e70177b61984bc7f973eca48e25b Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 13 Oct 2026 23:43:35 +0800
-Subject: [PATCH 11/12] nvidia: update the consumers of the driver namespace
+Subject: [PATCH 12/13] nvidia: update the consumers of the driver namespace
 
 hardware.nvidia.package is a branch scope now, and the driver packages live in
 pkgs.nvidiaPackages rather than pkgs.linuxPackages.nvidiaPackages, so every
@@ -5597,7 +5632,7 @@ index a91beca21ec58..4794d1a8910d2 100644
            CUDA. Note that this requires an NVIDIA graphics device to be
            present on the system.
 diff --git a/nixos/modules/services/hardware/nvidia-container-toolkit/default.nix b/nixos/modules/services/hardware/nvidia-container-toolkit/default.nix
-index c6c744ca8311e..4d7025852a679 100644
+index cd5440e723f01..bb58f788f9217 100644
 --- a/nixos/modules/services/hardware/nvidia-container-toolkit/default.nix
 +++ b/nixos/modules/services/hardware/nvidia-container-toolkit/default.nix
 @@ -258,7 +258,7 @@
@@ -5648,10 +5683,10 @@ index 12537816ef078..0ec4948b849ae 100644
              description = "Path or command to be used for the nvidia-smi executable.";
            };
 diff --git a/nixos/modules/services/video/frigate.nix b/nixos/modules/services/video/frigate.nix
-index ecea71abbc361..24f8cb5d4fdb2 100644
+index 9f30265e83225..0af85c03c6a99 100644
 --- a/nixos/modules/services/video/frigate.nix
 +++ b/nixos/modules/services/video/frigate.nix
-@@ -747,7 +747,7 @@ in
+@@ -750,7 +750,7 @@ in
          with pkgs;
          [
            # unfree:
@@ -5972,10 +6007,10 @@ index b108be58aa8ab..8450fc5c62bbb 100644
        "--extra-lib-dirs=${pkgs.cudaPackages.cudatoolkit.lib}/lib"
        "--extra-include-dirs=${pkgs.cudaPackages.cudatoolkit}/include"
 
-From 978d2035d809807f43c716b4e868ebdbb67c836a Mon Sep 17 00:00:00 2001
+From dbdc556f7c6f623cb5eb054485c56bc32421b688 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 12:48:30 +0800
-Subject: [PATCH 12/12] nvidia-persistenced: use the platform's container
+Subject: [PATCH 13/13] nvidia-persistenced: use the platform's container
  loader
 
 The copy for containers was pinned to /lib64/ld-linux-x86-64.so.2, which
