@@ -9,7 +9,6 @@
       hydra-check
       cachix
       flake-linter
-      mvs
       ;
 
     inherit (osConfig.nixPackages)

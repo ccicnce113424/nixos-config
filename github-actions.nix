@@ -50,13 +50,12 @@ in
         in
         (config.lib'.findPkgs
           [
-            "virtualbox"
+            "virtualbox-kvm-extpak"
             "wine-tkg-full"
             "xwayland"
             "hplip"
             # "winboat"
             "spectacle"
-            "mvs"
             # "hermes-desktop"
             "reasonix"
             # "codex"
