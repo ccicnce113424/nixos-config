@@ -69,35 +69,33 @@ in
             // lib.optionalAttrs (hostCfg.gpu.amdgpu or false) {
               rocmSupport = true;
             };
-            overlays = [
-              self.overlays.nixos-tweaks
-            ]
-            ++ lib.optionals (cfg.pins != { }) [
-              # Only reached with actual pins; importing multiverse.nix parses
-              # its ~5.7 MB index even for an empty pin set.
-              (inputs.multiverse.lib.pinOverlay {
-                inherit (cfg) pins;
-                config.allowUnfree = true;
-              })
-            ]
-            ++ [
-              (_: _: {
-                mv = inputs.multiverse.lib.mkMultiverse {
-                  inherit (host) system;
+            overlays =
+              lib.optionals (cfg.pins != { }) [
+                # Only reached with actual pins; importing multiverse.nix parses
+                # its ~5.7 MB index even for an empty pin set.
+                (inputs.multiverse.lib.pinOverlay {
+                  inherit (cfg) pins;
                   config.allowUnfree = true;
-                  overlays = [
-                    # whatever overlays you want to apply to every revision
-                  ];
-                };
-              })
-              (final: _: cfg.overridePackagesFromMv final.mv)
-              self.overlays.default
-              inputs.nur.overlays.default
-              inputs.nix-packages.overlays.default
-              inputs.nix-gaming.overlays.default
-              inputs.llm-agents.overlays.shared-nixpkgs
-              inputs.multiverse.overlays.default
-            ];
+                })
+              ]
+              ++ [
+                (_: _: {
+                  mv = inputs.multiverse.lib.mkMultiverse {
+                    inherit (host) system;
+                    config.allowUnfree = true;
+                    overlays = [
+                      # whatever overlays you want to apply to every revision
+                    ];
+                  };
+                })
+                (final: _: cfg.overridePackagesFromMv final.mv)
+                self.overlays.default
+                inputs.nur.overlays.default
+                inputs.nix-packages.overlays.default
+                inputs.nix-gaming.overlays.default
+                inputs.llm-agents.overlays.shared-nixpkgs
+                self.overlays.nixos-tweaks
+              ];
           };
         in
         {
