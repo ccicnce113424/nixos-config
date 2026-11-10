@@ -6,7 +6,7 @@
     waylyrics
     mediainfo
     mediainfo-gui
-    tenacity
+    audacity
     ruffle
     splayer-next-dev
     open-orpheus-dev

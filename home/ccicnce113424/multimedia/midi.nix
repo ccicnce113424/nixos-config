@@ -12,7 +12,7 @@
   };
   home.packages = with pkgs; [
     fluidsynth
-    rosegarden
+    # rosegarden
   ];
   home.file.".local/share/soundfonts/default.sf2".source = config.services.fluidsynth.soundFont;
   # Disable the automatic start of fluidsynth with systemd
