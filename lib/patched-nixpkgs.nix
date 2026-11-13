@@ -36,6 +36,10 @@ in
         bootstrapPkgs: host:
         let
           hostCfg = host.hostCfg or { };
+          # Application order is this list's order: lib.fileset.toList sorts
+          # path components, so patches/hiprio applies before
+          # patches/nixpkgs-pr, and inside a directory the two-digit priority
+          # prefix at the front of the filename decides.
           patches = lib.fileset.toList cfg.patches;
 
           # applyPatches = bootstrapPkgs.callPackage ./apply-patches-cow.nix { };

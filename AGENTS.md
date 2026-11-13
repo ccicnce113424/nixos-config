@@ -55,7 +55,7 @@ Key wiring facts:
 nix develop            # dev shell: just, nixd, just-lsp
 just fmt               # = nix fmt .  (treefmt: nixfmt-rs → deadnix → nixf-diagnose, prettier, shfmt, shellcheck, actionlint)
 just fup               # nix flake update --commit-lock-file
-just pr <args>         # nixpkgs PR patch manager: show | update | add | remove | prune
+just pr <args>         # nixpkgs PR patch manager: show | update | add [--priority N] | remove | prune
 
 # CI-equivalent verification (this is what .github/workflows runs):
 nix eval --show-trace '.#githubActions.eval.checks.x86_64-linux."<host>"'    # host: ccic-desktop|ccic-laptop|vbox-test|vmware-test|livecd
@@ -82,6 +82,8 @@ nix build -L .#nixosConfigurations.livecd.config.system.build.isoImage
   - `builtins.attrValues` returns names in sorted order, so the resulting list is alphabetical.
 - **home-manager**: `home/<user>/default.nix` is the per-user entry selected by `runtime.users` (`hosts/runtime.nix`); new user ⇒ matching `home/<user>/` dir. Host-conditional home tweaks key on `osConfig.networking.hostName`.
 - **nixpkgs patch workflow**: never edit nixpkgs by hand — `just pr add <n>` records the PR in `nixpkgs-prs.json` and downloads the patch; patches flow into `lib/patched-nixpkgs.nix` (patched source used for both module eval and `pkgs`).
+  - Patches apply in filename order (`lib.fileset.toList` sorts path components), so each one is named `patches/nixpkgs-pr/<priority>-<number>.patch` with a **two-digit** priority (`00`–`99`, default `50`; unpadded digits would sort wrong). `add`/`update` take `--priority N` (sticky for the following refs); renaming the file reorders it. Files not matching that format are ignored by the manager. `patches/hiprio/` still sorts before `patches/nixpkgs-pr/`.
+  - `.github/workflows/nixpkgs-prs.yml` exposes the same number as its optional `priority` input.
 - **`nixConfig` is single-source**: the flake's `nixConfig` (substituters, keys) is re-applied to `nix.settings` in `profile/common/nix.nix`.
 - Format before finishing: nixfmt-rs (RFC style), deadnix (no dead bindings), nixf-diagnose run via `just fmt`; Zed formats on save through `nix fmt -- --stdin`.
 

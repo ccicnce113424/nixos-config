@@ -7,19 +7,90 @@ set -euo pipefail
 manifest=nixpkgs-prs.json
 output_dir=patches/nixpkgs-pr
 
+# Patch application order is plain filename order (`lib.fileset.toList` sorts
+# path components lexicographically), so every patch is named
+# "<priority>-<number>.patch" with a two-digit priority: 00 <= priority <= 99
+# keeps that order numeric. Files not following that scheme are ignored.
+default_priority=50
+
+pad_priority() { printf '%02d\n' "$1"; }
+
+# Prints <priority> as a plain integer, accepting leading zeros; 0-99 only.
+normalize_priority() {
+  local p=$1
+  if [[ ! $p =~ ^[0-9]{1,2}$ ]]; then
+    echo "Invalid priority: $1 (expected an integer in 0-99)" >&2
+    exit 1
+  fi
+  printf '%s\n' $((10#$p))
+}
+
+# Prints the priority encoded in a patch filename.
+priority_of() {
+  local base=${1##*/}
+  if [[ $base =~ ^([0-9]{2})-[0-9]+\.(patch|diff)$ ]]; then
+    printf '%s\n' $((10#${BASH_REMATCH[1]}))
+  else
+    printf '%s\n' "$default_priority"
+  fi
+}
+
+# Sets patch_paths to every <priority>-<n>.patch|diff in the output directory.
+patch_paths=()
+
+patch_files() {
+  local n=$1 f base
+  patch_paths=()
+  for f in "$output_dir"/*.patch "$output_dir"/*.diff; do
+    [[ -e $f ]] || continue
+    base=${f##*/}
+    if [[ $base =~ ^[0-9]{2}-$n\.(patch|diff)$ ]]; then
+      patch_paths+=("$f")
+    fi
+  done
+}
+
+# Prints the managed file for PR <n>; empty if absent.
+patch_file() {
+  local n=$1
+  patch_files "$n"
+  if ((${#patch_paths[@]} > 0)); then
+    printf '%s\n' "${patch_paths[0]}"
+  fi
+}
+
+# Prints where `download_pr` should write PR <n>: an explicit <priority>
+# overrides, otherwise an existing file keeps its name (so manual renames
+# survive --refresh) and everything else gets the default priority.
+patch_target() {
+  local n=$1 priority=${2:-}
+  patch_files "$n"
+  if [[ -z $priority ]] && ((${#patch_paths[@]} > 0)); then
+    printf '%s\n' "${patch_paths[0]}"
+    return 0
+  fi
+  printf '%s/%s-%s.patch\n' "$output_dir" "$(pad_priority "${priority:-$default_priority}")" "$n"
+}
+
 usage() {
   {
     echo "Usage: nixpkgs-prs [show | update | add | remove | prune] [ARGS...]"
     echo
     echo "  nixpkgs-prs               same as show (default)"
-    echo "  nixpkgs-prs show          list PRs: patch/PR state, branch reached, links"
+    echo "  nixpkgs-prs show          list PRs in application order: patch/PR state, priority, branch reached, links"
     echo "  nixpkgs-prs update        prune landed PRs, then apply --remove/--add"
-    echo "                            options: --refresh (re-download every patch), --remove REF, --add REF (repeatable)"
+    echo "                            options: --refresh (re-download every patch), --priority N,"
+    echo "                            --remove REF, --add REF (repeatable)"
     echo "  nixpkgs-prs add REF...    add PRs to $manifest, then download their patches"
     echo "  nixpkgs-prs remove REF... remove PRs from $manifest, then delete their patches"
     echo "  nixpkgs-prs prune         drop PRs already in the nixpkgs pinned in flake.lock"
     echo
     echo "REF is a PR number or https://github.com/NixOS/nixpkgs/pull/<number>"
+    echo
+    echo "Patches are applied in filename order, so each one is named"
+    echo "<priority>-<number>.patch with a two-digit priority (00-99, default"
+    echo "$default_priority); --priority N sets it for every add that follows, and"
+    echo "renaming the file reorders it. Files not in that format are ignored."
   } >&2
   exit 1
 }
@@ -88,8 +159,9 @@ ref_contains() {
 patch_status() {
   local url=$1 head_sha=$2
   local n="${url##*/}"
-  local file="$output_dir/$n.patch"
-  if [[ ! -f $file ]]; then
+  local file
+  file=$(patch_file "$n")
+  if [[ -z $file ]]; then
     printf '%s\n' missing
     return 0
   fi
@@ -117,17 +189,30 @@ patch_status() {
   printf '%s\n' "$verdict"
 }
 
+# Downloads PR <n>'s patch to its canonical filename. <priority> is optional and
+# overrides the filename prefix; without it an existing prefix is preserved.
 download_pr() {
   local url=$1
   local n="${url##*/}"
   local rev="${2:-}" # head rev; callers that already fetched the PR pass it in
+  local priority="${3:-}"
   if [[ -z $rev ]]; then
     rev=$(api_get "pulls/$n" | jq -r '.head.sha // empty | strings' || true)
   fi
+  local dest f
+  dest=$(patch_target "$n" "$priority")
   mkdir -p "$output_dir"
   echo "Downloading PR #$n..." >&2
+  # Write via a temp file so a failed download never leaves a truncated patch.
   curl -fL --retry 5 --retry-all-errors --speed-limit 1024 --speed-time 15 \
-    --output "$output_dir/$n.patch" "$url.patch"
+    --output "$dest.tmp" "$url.patch"
+  mv -f -- "$dest.tmp" "$dest"
+  # Drop the previous priority prefix for the same PR after an explicit
+  # --priority change.
+  patch_files "$n"
+  for f in "${patch_paths[@]}"; do
+    [[ $f == "$dest" ]] || rm -f -- "$f"
+  done
   # Record the head rev this patch was fetched at, so `show` can compare without
   # downloading. Captured before the patch: a race then yields a harmless false
   # "stale" instead of a false "ok".
@@ -138,43 +223,72 @@ download_pr() {
 }
 
 refresh_all() {
-  shopt -s nullglob
-  local old_patches=("$output_dir"/*.patch "$output_dir"/*.diff)
-  if (("${#old_patches[@]}")); then
-    echo "Cleaning existing patch files in: $output_dir" >&2
-    rm -f -- "${old_patches[@]}"
-  fi
-  local urls=()
+  local urls=() url f base n
   mapfile -t urls < <(jq -r '.[].url' "$manifest")
-  local url
   for url in "${urls[@]}"; do
+    # No explicit priority: download_pr reuses each file's existing prefix, so a
+    # hand-renamed priority survives --refresh.
     download_pr "$url"
+  done
+  # Remove leftovers whose PR is no longer listed (the old implementation wiped
+  # the directory up front, which also dropped every priority prefix). Only our
+  # own naming scheme is managed; other files are left untouched.
+  local -A wanted=()
+  for url in "${urls[@]}"; do
+    wanted[${url##*/}]=1
+  done
+  for f in "$output_dir"/*.patch "$output_dir"/*.diff; do
+    [[ -e $f ]] || continue
+    base=${f##*/}
+    if [[ ! $base =~ ^[0-9]{2}-([0-9]+)\.(patch|diff)$ ]]; then
+      continue
+    fi
+    n=${BASH_REMATCH[1]}
+    if [[ -z ${wanted[$n]:-} ]]; then
+      echo "Removing stale patch: $f" >&2
+      rm -f -- "$f"
+    fi
   done
 }
 
+# --priority N is sticky: it applies to every REF that follows it, so both
+# `add --priority 10 123` and `add 123 --priority 10 456` work.
 cmd_add() {
   if (($# == 0)); then usage; fi
-  local ref url n rev
-  for ref in "$@"; do
-    url=$(normalize_url "$ref")
-    n="${url##*/}"
-    rev=""
-    if jq -e --arg url "$url" 'any(.[]; .url == $url)' "$manifest" >/dev/null; then
-      echo "PR #$n is already in $manifest" >&2
-    else
-      # The head rev doubles as an existence check: nothing is written when the
-      # PR cannot be fetched (404 / rate limit).
-      rev=$(api_get "pulls/$n" | jq -r '.head.sha // empty | strings' || true)
-      if [[ -z $rev ]]; then
-        echo "Failed to fetch PR #$n" >&2
-        exit 1
+  local ref url n rev priority="" added=0
+  while (($# > 0)); do
+    case "$1" in
+    --priority)
+      if (($# < 2)); then usage; fi
+      priority=$(normalize_priority "$2")
+      shift 2
+      ;;
+    *)
+      ref=$1
+      shift
+      url=$(normalize_url "$ref")
+      n="${url##*/}"
+      rev=""
+      if jq -e --arg url "$url" 'any(.[]; .url == $url)' "$manifest" >/dev/null; then
+        echo "PR #$n is already in $manifest" >&2
+      else
+        # The head rev doubles as an existence check: nothing is written when the
+        # PR cannot be fetched (404 / rate limit).
+        rev=$(api_get "pulls/$n" | jq -r '.head.sha // empty | strings' || true)
+        if [[ -z $rev ]]; then
+          echo "Failed to fetch PR #$n" >&2
+          exit 1
+        fi
+        jq --arg url "$url" --arg rev "$rev" \
+          '. + [{ url: $url, rev: $rev }]' "$manifest" | sponge "$manifest"
+        echo "Added PR #$n to $manifest" >&2
       fi
-      jq --arg url "$url" --arg rev "$rev" \
-        '. + [{ url: $url, rev: $rev }]' "$manifest" | sponge "$manifest"
-      echo "Added PR #$n to $manifest" >&2
-    fi
-    download_pr "$url" "$rev"
+      download_pr "$url" "$rev" "$priority"
+      added=$((added + 1))
+      ;;
+    esac
   done
+  ((added > 0)) || usage
 }
 
 cmd_remove() {
@@ -189,7 +303,10 @@ cmd_remove() {
     else
       echo "PR #$n is not in $manifest" >&2
     fi
-    rm -f -- "$output_dir/$n.patch" "$output_dir/$n.diff"
+    patch_files "$n"
+    if ((${#patch_paths[@]} > 0)); then
+      rm -f -- "${patch_paths[@]}"
+    fi
   done
 }
 
@@ -231,7 +348,10 @@ cmd_prune() {
   fi
   for url in "${drop[@]}"; do
     jq --arg url "$url" 'map(select(.url != $url))' "$manifest" | sponge "$manifest"
-    rm -f -- "$output_dir/${url##*/}.patch" "$output_dir/${url##*/}.diff"
+    patch_files "${url##*/}"
+    if ((${#patch_paths[@]} > 0)); then
+      rm -f -- "${patch_paths[@]}"
+    fi
   done
   echo "Dropped ${#drop[@]} PR(s) already in the pinned nixpkgs" >&2
 }
@@ -241,10 +361,22 @@ cmd_show() {
     echo "No PRs listed in $manifest"
     return 0
   fi
-  local n url title info state head_sha merge_sha patch_state tracker reached
+  local n url title info state head_sha merge_sha patch_state tracker reached file priority
   local rest r_unstable r_small r_master
-  while IFS= read -r url; do
+  # Patches are applied in filename order, so list the PRs the same way:
+  # priority first, then PR number.
+  local rows name
+  rows=$(
+    jq -r '.[].url' "$manifest" | while IFS= read -r url; do
+      n=${url##*/}
+      # Sort by the actual filename: that is exactly the order they are applied in.
+      file=$(patch_file "$n")
+      printf '%s\t%s\n' "${file:-$(pad_priority "$default_priority")-$n.patch}" "$url"
+    done | sort -t $'\t' -k1,1
+  )
+  while IFS=$'\t' read -r name url; do
     n="${url##*/}"
+    priority=$(priority_of "$name")
     title=""
     state=""
     head_sha=""
@@ -291,6 +423,7 @@ cmd_show() {
     fi
     printf '#%s%s\n' "$n" "${title:+  $title}"
     printf '  %-9s %s\n' 'patch:' "$patch_state"
+    printf '  %-9s %s\n' 'priority:' "$(pad_priority "$priority")"
     printf '  %-9s %s\n' 'pr:' "${state:-?}"
     if [[ -n $reached ]]; then
       printf '  %-9s %s\n' 'in:' "$reached"
@@ -300,7 +433,7 @@ cmd_show() {
       printf '  %-9s %s\n' 'tracker:' "$tracker"
     fi
     echo
-  done < <(jq -r '.[].url' "$manifest")
+  done <<<"$rows"
 }
 
 if [[ ! -f $manifest ]]; then
@@ -323,11 +456,17 @@ update)
   do_refresh=false
   removes=()
   adds=()
+  add_priority=""
   while (($# > 0)); do
     case "$1" in
     --refresh)
       do_refresh=true
       shift
+      ;;
+    --priority)
+      if (($# < 2)); then usage; fi
+      add_priority=$(normalize_priority "$2")
+      shift 2
       ;;
     --remove | --add)
       if (($# < 2)); then usage; fi
@@ -350,7 +489,13 @@ update)
     refresh_all
     echo "Downloaded patches to: $output_dir" >&2
   fi
-  if (("${#adds[@]}" > 0)); then cmd_add "${adds[@]}"; fi
+  if (("${#adds[@]}" > 0)); then
+    if [[ -n $add_priority ]]; then
+      cmd_add --priority "$add_priority" "${adds[@]}"
+    else
+      cmd_add "${adds[@]}"
+    fi
+  fi
   ;;
 add)
   shift

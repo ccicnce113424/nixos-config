@@ -8,6 +8,11 @@ on:
         required: false
         default: ""
         type: string
+      priority:
+        description: Priority (0-99) for the patches added above; empty means 50
+        required: false
+        default: ""
+        type: string
       remove:
         description: PR numbers or URLs to remove (space or comma separated)
         required: false
@@ -46,6 +51,7 @@ jobs:
       - name: Update patches
         env:
           ADD: ${{ inputs.add }}
+          PRIORITY: ${{ inputs.priority }}
           REMOVE: ${{ inputs.remove }}
           REFRESH: ${{ inputs.refresh }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -62,6 +68,9 @@ jobs:
             for r in "${refs[@]}"; do flags+=(--remove "$r"); done
           fi
           if [ -n "$ADD" ]; then
+            if [ -n "$PRIORITY" ]; then
+              flags+=(--priority "$PRIORITY")
+            fi
             read -r -a refs <<< "${ADD//,/ }"
             for r in "${refs[@]}"; do flags+=(--add "$r"); done
           fi
