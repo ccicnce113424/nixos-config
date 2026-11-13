@@ -32,7 +32,7 @@ index 08d61bd77cb61..f101a9ee5c9bc 100644
  
    new_feature = generic {
 
-From 2dbe1bf758f6c571db27ea5309f37be6c8e90b1f Mon Sep 17 00:00:00 2001
+From dd68b14384ec47f5a9fde5256b0224ff6ea86f33 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 18:23:22 +0800
 Subject: [PATCH 02/13] maintainers/scripts/nvidia-source-hashes: add a per-URL
@@ -745,7 +745,7 @@ index 0000000000000..40ef4e4dc17aa
 +    exit 1
 +fi
 
-From 3392cb9f151e5ab5dd7adaba386e2a62961d8bc7 Mon Sep 17 00:00:00 2001
+From 674c67691233839e6b65b10783aef016be01d808 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 23:42:50 +0800
 Subject: [PATCH 03/13] nvidia-x11: check the version of the fetched sources
@@ -908,7 +908,7 @@ index e47dc3cb4e613..b07451d09e5a8 100644
      if [ -e src/libXNVCtrl/libXNVCtrl.a ]; then
        ( cd src/libXNVCtrl
 
-From af19911a5b7fcbeded2b211c3d38f546db9be634 Mon Sep 17 00:00:00 2001
+From 15be12f28bedd569e92184f0511ac37d5872d538 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:28:00 +0800
 Subject: [PATCH 04/13] linuxPackages.nvidiaPackages: fetch open kernel module
@@ -1139,7 +1139,7 @@ index b07451d09e5a8..1f905ca9efafd 100644
    };
  
 
-From 99a96168f72f1075fa1463cd627d27877c296714 Mon Sep 17 00:00:00 2001
+From 3f46ef02578364ba73a6f6ceefdf3283b403e7a9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 17 Oct 2026 23:25:33 +0800
 Subject: [PATCH 05/13] libnvidia-container: fetch the nvidia-modprobe source
@@ -1155,7 +1155,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/pkgs/by-name/li/libnvidia-container/package.nix b/pkgs/by-name/li/libnvidia-container/package.nix
-index 734eeecac9853..514b69cf08d32 100644
+index d7af075742370..908d80092bf90 100644
 --- a/pkgs/by-name/li/libnvidia-container/package.nix
 +++ b/pkgs/by-name/li/libnvidia-container/package.nix
 @@ -13,14 +13,15 @@
@@ -1178,7 +1178,7 @@ index 734eeecac9853..514b69cf08d32 100644
      };
      patches = [
 
-From 98810e27a0f2806032d3146951a2d76c329263b2 Mon Sep 17 00:00:00 2001
+From c112cac91baa9f41775baec79aa3fb5351d29dec Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 06/13] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -1193,17 +1193,17 @@ linuxPackages.nvidiaPackages.latest.modprobe.
 
 Assisted-by: omp:DeepSeek V4.1 Flash
 ---
- doc/release-notes/rl-2611.section.md          |  5 ++++
- nixos/modules/hardware/video/nvidia.nix       |  8 +++---
- pkgs/os-specific/linux/nvidia-x11/default.nix | 13 ++++++++++
- pkgs/os-specific/linux/nvidia-x11/generic.nix | 11 ++++++++
- .../linux/nvidia-x11/modprobe.nix}            | 25 ++++++++++++++-----
+ doc/release-notes/rl-2611.section.md          |  5 +++
+ nixos/modules/hardware/video/nvidia.nix       |  8 ++--
+ pkgs/os-specific/linux/nvidia-x11/default.nix | 13 +++++++
+ pkgs/os-specific/linux/nvidia-x11/generic.nix | 11 ++++++
+ .../linux/nvidia-x11/modprobe.nix}            | 38 ++++++++++---------
  pkgs/top-level/aliases.nix                    |  1 +
- 6 files changed, 53 insertions(+), 10 deletions(-)
- rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (51%)
+ 6 files changed, 54 insertions(+), 22 deletions(-)
+ rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (52%)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index d751d294118c3..31e63a2fe008a 100644
+index 9cc6eb32f6d09..752e9f1a3c88e 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
 @@ -43,6 +43,11 @@
@@ -1378,13 +1378,13 @@ index 03898db04b125..dee8cb7139b08 100644
        ibtSupport = ibtSupport || (lib.versionAtLeast version "530");
      }
 diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-similarity index 51%
+similarity index 52%
 rename from pkgs/by-name/nv/nvidia-modprobe/package.nix
 rename to pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-index 84ed230b36c19..7c608737bf1a1 100644
+index 70d353da38cfe..220c469d57876 100644
 --- a/pkgs/by-name/nv/nvidia-modprobe/package.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-@@ -1,21 +1,29 @@
+@@ -1,22 +1,29 @@
  {
    stdenv,
    lib,
@@ -1395,20 +1395,19 @@ index 84ed230b36c19..7c608737bf1a1 100644
 +  nvidia_x11,
 +  version,
 +  hash,
-+  versionCheckHook,
+   versionCheckHook,
  }:
  stdenv.mkDerivation (finalAttrs: {
    pname = "nvidia-modprobe";
--  version = "595.71.05";
+-  version = "615.71.09";
 +  inherit version;
  
 -  src = fetchFromGitHub {
 +  src = fetchFromGithubOrNvidia {
      owner = "NVIDIA";
      repo = "nvidia-modprobe";
--    rev = finalAttrs.version;
--    hash = "sha256-XVWvnUZkEqEh3UjPIU6DaZuYU9DvjfIMsWbLJ78jJWs=";
-+    tag = finalAttrs.version;
+     tag = finalAttrs.version;
+-    hash = "sha256-aj8GeAdRqX5/zSHkaqfETjklbphVR7EH1oEqABQIlOs=";
 +    inherit hash;
    };
  
@@ -1419,31 +1418,49 @@ index 84ed230b36c19..7c608737bf1a1 100644
    patches = [
      (fetchpatch {
        url = "https://github.com/ooonea/nvidia-modprobe/commit/450f0c15ad9229fe5f4d3f80ae4d95e42d9c038e.patch";
-@@ -25,6 +33,10 @@ stdenv.mkDerivation (finalAttrs: {
+@@ -24,28 +31,23 @@ stdenv.mkDerivation (finalAttrs: {
+     })
+   ];
  
-   nativeBuildInputs = [ gnum4 ];
+-  postPatch = ''
+-    substituteInPlace utils.mk \
+-      --replace-fail \
+-        "/usr/local" \
+-        "$out"
+-  '';
+-
+-  nativeBuildInputs = [
+-    gnum4
+-  ];
++  nativeBuildInputs = [ gnum4 ];
  
+-  nativeInstallCheckInputs = [
+-    versionCheckHook
+-  ];
 +  # `nvidia-modprobe --version` prints the built source's version, catching a stale hash.
-+  doInstallCheck = true;
+   doInstallCheck = true;
 +  nativeInstallCheckInputs = [ versionCheckHook ];
 +
-   postPatch = ''
-     substituteInPlace utils.mk --replace-fail "/usr/local" "$out"
-   '';
-@@ -33,6 +45,7 @@ stdenv.mkDerivation (finalAttrs: {
++  postPatch = ''
++    substituteInPlace utils.mk --replace-fail "/usr/local" "$out"
++  '';
+ 
+   meta = {
      description = "Load the NVIDIA kernel module and create NVIDIA character device files";
      homepage = "https://github.com/NVIDIA/nvidia-modprobe";
      license = lib.licenses.gpl2;
 -    platforms = lib.platforms.linux;
 +    platforms = nvidia_x11.meta.platforms;
+     maintainers = [ lib.maintainers.GaetanLepage ];
+     teams = [ lib.teams.cuda ];
 +    mainProgram = "nvidia-modprobe";
    };
  })
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index 4bd02871825e2..62a3e90427ba2 100644
+index 299f770106257..9620f11122f55 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
-@@ -2007,6 +2007,7 @@ mapAliases {
+@@ -2021,6 +2021,7 @@ mapAliases {
    numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
    nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
    nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
@@ -1452,7 +1469,7 @@ index 4bd02871825e2..62a3e90427ba2 100644
    oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
    oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 
-From 928f92cc29fdc7f9bd2eeb0ee845109c8628228a Mon Sep 17 00:00:00 2001
+From 915094dcbc7fb3e978f4b99f04b26c369150dcdc Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 20:08:54 +0800
 Subject: [PATCH 07/13] nvidia-x11: document driver updates and custom versions
@@ -1687,7 +1704,7 @@ index 0000000000000..27bbff86baded
 +`hardware.nvidia.open` selects the open kernel modules, which
 +`hardware.nvidia.kernelModules` then picks up from the branch.
 
-From ab863ca4f74a144feab074e93730543d3416975a Mon Sep 17 00:00:00 2001
+From 7f1c7e7537bb41320955210d3b63605060f54df9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:30:08 +0800
 Subject: [PATCH 08/13] linuxPackages.nvidiaPackages: move userspace utilities
@@ -2654,7 +2671,7 @@ index 1f905ca9efafd..d797d8a267c03 100644
      gtk3
      librsvg
 
-From 4b6b9ea130f5fb2bb1c99f31c4dfb01edeebf838 Mon Sep 17 00:00:00 2001
+From 4fc1ccd78db18e4db9448d403df5c3b16a8a4353 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 22:50:14 +0800
 Subject: [PATCH 09/13] nvidia-settings: find the key documentation in the XDG
@@ -2830,7 +2847,7 @@ index d797d8a267c03..fbe529d31554f 100644
      vulkan-headers
    ]
 
-From 5d8c0b23bb703b13da2c6c22cd8a59693b9922f7 Mon Sep 17 00:00:00 2001
+From 603b2ac1572efb49107d9288ef7e2612a108b560 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 11:29:02 +0800
 Subject: [PATCH 10/13] nvidia-x11: unpack the installer into a source
@@ -3482,7 +3499,7 @@ index 7d5f9a50ace52..71e732c562e86 100644
        "x86_64-linux"
        "aarch64-linux"
 
-From 1779d99a8c7bba3bb9f8e83ca42a3486959203a6 Mon Sep 17 00:00:00 2001
+From 62bd9c506bb2cff20d4f9a9ea6d83e3a29331c3e Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 12:02:47 +0800
 Subject: [PATCH 11/13] nvidia-x11: build each driver in a factory and expose
@@ -3539,11 +3556,11 @@ Assisted-by: omp:Space Bunny Alpha
  .../os-specific/linux/nvidia-x11/settings.nix |   4 +-
  pkgs/top-level/aliases.nix                    |   2 +-
  pkgs/top-level/all-packages.nix               |   6 +-
- pkgs/top-level/linux-kernels.nix              |  97 +++-
- 16 files changed, 872 insertions(+), 562 deletions(-)
+ pkgs/top-level/linux-kernels.nix              |  99 +++-
+ 16 files changed, 873 insertions(+), 563 deletions(-)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index 31e63a2fe008a..fa0ab67c12295 100644
+index 752e9f1a3c88e..65e60a3611324 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
 @@ -43,10 +43,11 @@
@@ -3585,7 +3602,7 @@ index 31e63a2fe008a..fa0ab67c12295 100644
 +
  - `moon` has been updated to `2.x` and needs manual migration. See the [migration guide](https://moonrepo.dev/docs/migrate/2.0) for instructions.
  
- - `paperless-manage` now uses `runuser` instead of automatically calling `sudo` to set user/group before running. Invoke the script with `sudo paperless-manage` or an equivalent elevation tool of your choice
+ - `readest` now uses CEF instead of WebKitGTK on Linux. Wayland sessions require XWayland.
 diff --git a/maintainers/scripts/nvidia-source-hashes/default.nix b/maintainers/scripts/nvidia-source-hashes/default.nix
 index c865e3c81bed3..22e7549461a4a 100644
 --- a/maintainers/scripts/nvidia-source-hashes/default.nix
@@ -3656,10 +3673,10 @@ index c865e3c81bed3..22e7549461a4a 100644
                empty;
            step = builtins.tryEval result;
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index ebcd669f64919..3c328dae56691 100644
+index d0d80e9e2ce3e..c1d89170f0cc5 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
-@@ -257,6 +257,40 @@
+@@ -276,6 +276,40 @@
  - [`services.litellm`](#opt-services.litellm.enable) fails to start without a master key since `litellm` 1.104.0, which refuses to serve unauthenticated requests.
    Set `LITELLM_MASTER_KEY` through [](#opt-services.litellm.environmentFile).
  
@@ -5278,7 +5295,7 @@ index 71e732c562e86..886d087170985 100644
        with lib.sourceTypes;
        [
 diff --git a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-index 7c608737bf1a1..35b5f13ae6937 100644
+index 220c469d57876..8d4e8c504761c 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
 @@ -4,7 +4,7 @@
@@ -5296,9 +5313,9 @@ index 7c608737bf1a1..35b5f13ae6937 100644
      license = lib.licenses.gpl2;
 -    platforms = nvidia_x11.meta.platforms;
 +    platforms = supportedPlatforms;
+     maintainers = [ lib.maintainers.GaetanLepage ];
+     teams = [ lib.teams.cuda ];
      mainProgram = "nvidia-modprobe";
-   };
- })
 diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 index f7b47a3a3c0aa..a3bf876df4430 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
@@ -5347,10 +5364,10 @@ index fbe529d31554f..3b5108396f113 100644
  
    libXNVCtrl = stdenv.mkDerivation {
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index 62a3e90427ba2..f99c788968838 100644
+index 9620f11122f55..e83ab1c927c51 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
-@@ -2007,7 +2007,7 @@ mapAliases {
+@@ -2021,7 +2021,7 @@ mapAliases {
    numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
    nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
    nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
@@ -5360,10 +5377,10 @@ index 62a3e90427ba2..f99c788968838 100644
    oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
    oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 diff --git a/pkgs/top-level/all-packages.nix b/pkgs/top-level/all-packages.nix
-index 5c1d20ad4d48f..d0da8cd0a13c4 100644
+index 165d13af0ce4e..4ef503b13780c 100644
 --- a/pkgs/top-level/all-packages.nix
 +++ b/pkgs/top-level/all-packages.nix
-@@ -6028,6 +6028,10 @@ with pkgs;
+@@ -5945,6 +5945,10 @@ with pkgs;
    nv-codec-headers-12 = nv-codec-headers.override { majorVersion = "12"; };
    nv-codec-headers-13 = nv-codec-headers.override { majorVersion = "13"; };
  
@@ -5374,7 +5391,7 @@ index 5c1d20ad4d48f..d0da8cd0a13c4 100644
    nvidiaCtkPackages = recurseIntoAttrs (
      callPackage ../by-name/nv/nvidia-container-toolkit/packages.nix { }
    );
-@@ -7341,7 +7345,7 @@ with pkgs;
+@@ -7258,7 +7262,7 @@ with pkgs;
    conky = callPackage ../os-specific/linux/conky (
      {
        lua = lua5_5;
@@ -5384,7 +5401,7 @@ index 5c1d20ad4d48f..d0da8cd0a13c4 100644
      // config.conky or { }
    );
 diff --git a/pkgs/top-level/linux-kernels.nix b/pkgs/top-level/linux-kernels.nix
-index b875144364c17..1af2087ba44d1 100644
+index a9a8f547c23e5..a616876ce7f86 100644
 --- a/pkgs/top-level/linux-kernels.nix
 +++ b/pkgs/top-level/linux-kernels.nix
 @@ -16,7 +16,7 @@
@@ -5396,7 +5413,7 @@ index b875144364c17..1af2087ba44d1 100644
    inherit (linuxKernel)
      kernels
      kernelPatches
-@@ -376,28 +376,21 @@ in
+@@ -378,29 +378,21 @@ in
  
          nvidiabl = callPackage ../os-specific/linux/nvidiabl { };
  
@@ -5418,6 +5435,7 @@ index b875144364c17..1af2087ba44d1 100644
 -        nvidia_x11_legacy390 = nvidiaPackages.legacy_390;
 -        nvidia_x11_legacy470 = nvidiaPackages.legacy_470;
 -        nvidia_x11_legacy535 = nvidiaPackages.legacy_535;
+-        nvidia_x11_legacy580 = nvidiaPackages.legacy_580;
 -        nvidia_x11_production = nvidiaPackages.production;
 -        nvidia_x11_vulkan_beta = nvidiaPackages.vulkan_beta;
 -        nvidia_dc = nvidiaPackages.dc;
@@ -5439,7 +5457,7 @@ index b875144364c17..1af2087ba44d1 100644
  
          nxp-pn5xx = callPackage ../os-specific/linux/nxp-pn5xx { };
  
-@@ -617,6 +610,66 @@ in
+@@ -620,6 +612,67 @@ in
          nvidia_dc_535 = throw "nvidiaPackages.dc_535 removed, soon reaches end of life, see https://endoflife.date/nvidia"; # added 2026-03-08
          fwts-efi-runtime = throw "fwts-efi-runtime has been replaced by efi_test starting with kernel version 4.8, see https://bugs.launchpad.net/fwts/+bug/2138473"; # added 2026-05-16
        }
@@ -5482,6 +5500,7 @@ index b875144364c17..1af2087ba44d1 100644
 +            nvidia_x11_legacy390 = "legacy_390";
 +            nvidia_x11_legacy470 = "legacy_470";
 +            nvidia_x11_legacy535 = "legacy_535";
++            nvidia_x11_legacy580 = "legacy_580";
 +            nvidia_x11_production = "production";
 +            nvidia_x11_vulkan_beta = "vulkan_beta";
 +            nvidia_dc = "dc";
@@ -5507,7 +5526,7 @@ index b875144364c17..1af2087ba44d1 100644
        (lib.fixedPoints.composeManyExtensions kernelPackagesExtensions);
  
 
-From 5f87885715d2e70177b61984bc7f973eca48e25b Mon Sep 17 00:00:00 2001
+From 5da0678d2f23ebaa42980e7ce2c79d2f6836cc15 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 13 Oct 2026 23:43:35 +0800
 Subject: [PATCH 12/13] nvidia: update the consumers of the driver namespace
@@ -5994,7 +6013,7 @@ index 169b4e28fde8d..22d82ae93f42c 100644
      pciutils
      udisks
 diff --git a/pkgs/development/haskell-modules/configuration-nix.nix b/pkgs/development/haskell-modules/configuration-nix.nix
-index b108be58aa8ab..8450fc5c62bbb 100644
+index af16d9d413732..792b5863e48ec 100644
 --- a/pkgs/development/haskell-modules/configuration-nix.nix
 +++ b/pkgs/development/haskell-modules/configuration-nix.nix
 @@ -220,7 +220,7 @@ builtins.intersectAttrs super {
@@ -6007,7 +6026,7 @@ index b108be58aa8ab..8450fc5c62bbb 100644
        "--extra-lib-dirs=${pkgs.cudaPackages.cudatoolkit.lib}/lib"
        "--extra-include-dirs=${pkgs.cudaPackages.cudatoolkit}/include"
 
-From dbdc556f7c6f623cb5eb054485c56bc32421b688 Mon Sep 17 00:00:00 2001
+From 35751125bc2d03ffc64330cdc113b093626ed859 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 12:48:30 +0800
 Subject: [PATCH 13/13] nvidia-persistenced: use the platform's container
