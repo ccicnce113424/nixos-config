@@ -1,0 +1,119 @@
+From e496a3df097ea179669baab839376f5a0ca602c0 Mon Sep 17 00:00:00 2001
+From: Gaetan Lepage <gaetan@glepage.com>
+Date: Wed, 11 Nov 2026 15:37:32 +0000
+Subject: [PATCH 1/4] nvidia-modprobe: cleanup, modernize
+
+---
+ pkgs/by-name/nv/nvidia-modprobe/package.nix | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+index 341e02c4728510..bab8ea823b8f6b 100644
+--- a/pkgs/by-name/nv/nvidia-modprobe/package.nix
++++ b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+@@ -12,7 +12,7 @@ stdenv.mkDerivation (finalAttrs: {
+   src = fetchFromGitHub {
+     owner = "NVIDIA";
+     repo = "nvidia-modprobe";
+-    rev = finalAttrs.version;
++    tag = finalAttrs.version;
+     hash = "sha256-aj8GeAdRqX5/zSHkaqfETjklbphVR7EH1oEqABQIlOs=";
+   };
+ 
+@@ -23,12 +23,17 @@ stdenv.mkDerivation (finalAttrs: {
+     })
+   ];
+ 
+-  nativeBuildInputs = [ gnum4 ];
+-
+   postPatch = ''
+-    substituteInPlace utils.mk --replace-fail "/usr/local" "$out"
++    substituteInPlace utils.mk \
++      --replace-fail \
++        "/usr/local" \
++        "$out"
+   '';
+ 
++  nativeBuildInputs = [
++    gnum4
++  ];
++
+   meta = {
+     description = "Load the NVIDIA kernel module and create NVIDIA character device files";
+     homepage = "https://github.com/NVIDIA/nvidia-modprobe";
+
+From f4b5577eedc0bb5bdd0e6481594aba45db727c2b Mon Sep 17 00:00:00 2001
+From: Gaetan Lepage <gaetan@glepage.com>
+Date: Wed, 11 Nov 2026 15:37:41 +0000
+Subject: [PATCH 2/4] nvidia-modprobe: add versionCheckHook
+
+---
+ pkgs/by-name/nv/nvidia-modprobe/package.nix | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+index bab8ea823b8f6b..e7b9bd2cc1bb06 100644
+--- a/pkgs/by-name/nv/nvidia-modprobe/package.nix
++++ b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+@@ -4,6 +4,7 @@
+   fetchFromGitHub,
+   fetchpatch,
+   gnum4,
++  versionCheckHook,
+ }:
+ stdenv.mkDerivation (finalAttrs: {
+   pname = "nvidia-modprobe";
+@@ -34,6 +35,11 @@ stdenv.mkDerivation (finalAttrs: {
+     gnum4
+   ];
+ 
++  nativeInstallCheckInputs = [
++    versionCheckHook
++  ];
++  doInstallCheck = true;
++
+   meta = {
+     description = "Load the NVIDIA kernel module and create NVIDIA character device files";
+     homepage = "https://github.com/NVIDIA/nvidia-modprobe";
+
+From 6ff91d0e8994076b56b124939d56aaf2c8e5198d Mon Sep 17 00:00:00 2001
+From: Gaetan Lepage <gaetan@glepage.com>
+Date: Wed, 11 Nov 2026 15:38:29 +0000
+Subject: [PATCH 3/4] nvidia-modprobe: add GaetanLepage to maintainers
+
+---
+ pkgs/by-name/nv/nvidia-modprobe/package.nix | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+index e7b9bd2cc1bb06..09cb4069254f8f 100644
+--- a/pkgs/by-name/nv/nvidia-modprobe/package.nix
++++ b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+@@ -45,5 +45,6 @@ stdenv.mkDerivation (finalAttrs: {
+     homepage = "https://github.com/NVIDIA/nvidia-modprobe";
+     license = lib.licenses.gpl2;
+     platforms = lib.platforms.linux;
++    maintainers = [ lib.maintainers.GaetanLepage ];
+   };
+ })
+
+From 3b248367398dbd56ce3623bdbe84de8f7b8dd358 Mon Sep 17 00:00:00 2001
+From: Gaetan Lepage <gaetan@glepage.com>
+Date: Wed, 11 Nov 2026 15:38:56 +0000
+Subject: [PATCH 4/4] nvidia-modprobe: add cuda to meta.teams
+
+---
+ pkgs/by-name/nv/nvidia-modprobe/package.nix | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+index 09cb4069254f8f..70d353da38cfeb 100644
+--- a/pkgs/by-name/nv/nvidia-modprobe/package.nix
++++ b/pkgs/by-name/nv/nvidia-modprobe/package.nix
+@@ -46,5 +46,6 @@ stdenv.mkDerivation (finalAttrs: {
+     license = lib.licenses.gpl2;
+     platforms = lib.platforms.linux;
+     maintainers = [ lib.maintainers.GaetanLepage ];
++    teams = [ lib.teams.cuda ];
+   };
+ })
