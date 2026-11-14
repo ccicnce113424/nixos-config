@@ -22,18 +22,16 @@
         };
         extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
           ublock-origin
-          scriptcat
+          violentmonkey
           foxyproxy-standard
           user-agent-string-switcher
           plasma-integration
           bilisponsorblock
           sponsorblock
-          aria2-integration
           kiss-translator
           gesturefy
           scroll_anywhere
           search-by-image
-          clearcache
           clearurls
           video-downloadhelper
           header-editor
