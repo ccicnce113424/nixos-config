@@ -1,4 +1,4 @@
-From f36938849c576926c47413312c9a55127acbdc51 Mon Sep 17 00:00:00 2001
+From 87280a9c074ec006e39374f797a4d46fdc1721d5 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 18:47:10 +0800
 Subject: [PATCH 1/4] virtualbox: avoid rebuilding for extpack
@@ -6,9 +6,9 @@ Subject: [PATCH 1/4] virtualbox: avoid rebuilding for extpack
 Assisted-by: omp:DeepSeek V4.1 Flash 1017
 ---
  .../virtualisation/virtualbox-host.nix        |  17 +-
- .../virtualization/virtualbox/default.nix     | 662 ++++++++++--------
+ .../virtualization/virtualbox/default.nix     | 669 +++++++++---------
  .../virtualbox/extpack-relocation.patch       | 145 ++++
- 3 files changed, 505 insertions(+), 319 deletions(-)
+ 3 files changed, 506 insertions(+), 325 deletions(-)
  create mode 100644 pkgs/applications/virtualization/virtualbox/extpack-relocation.patch
 
 diff --git a/nixos/modules/virtualisation/virtualbox-host.nix b/nixos/modules/virtualisation/virtualbox-host.nix
@@ -48,7 +48,7 @@ index 56ba741dc2e4d0..40d107eeafd9c8 100644
          users.groups.vboxusers.gid = config.ids.gids.vboxusers;
  
 diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index 43df9e9f38349b..64e9499f9bdcc2 100644
+index ca422a6a54ced9..7da78ed65da7c1 100644
 --- a/pkgs/applications/virtualization/virtualbox/default.nix
 +++ b/pkgs/applications/virtualization/virtualbox/default.nix
 @@ -4,6 +4,8 @@
@@ -60,7 +60,7 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
    lib,
    acpica-tools,
    dev86,
-@@ -104,326 +106,366 @@ let
+@@ -105,332 +107,367 @@ let
      qtscxml
      wrapQtAppsHook
      ;
@@ -84,11 +84,7 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
 -    sha256 = finalAttrs.virtualboxSha256;
 -  };
 +  base = stdenv.mkDerivation (finalAttrs: {
-+    pname =
-+      "virtualbox"
-+      + optionalString enableKvm "-kvm"
-+      + optionalString headless "-headless"
-+      + optionalString enableHardening "-hardened";
++    pname = "virtualbox";
 +    version = "${finalAttrs.virtualboxVersion}${finalAttrs.virtualboxSubVersion}";
 +
 +    inherit
@@ -394,6 +390,26 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
 -
 -    ${optionalString (extensionPack != null) ''
 -      mkdir -p "$share"
+-      "${fakeroot}/bin/fakeroot" "${stdenv.shell}" <<EOF
+-      "$libexec/VBoxExtPackHelperApp" install \
+-        --base-dir "$share/ExtensionPacks" \
+-        --cert-dir "$share/ExtPackCertificates" \
+-        --name "Oracle VirtualBox Extension Pack" \
+-        --tarball "${extensionPack}" \
+-        --sha-256 "${extensionPack.outputHash}"
+-      EOF
+-    ''}
+-
+-    ${optionalString (!headless) ''
+-      # Create and fix desktop item
+-      mkdir -p $out/share/applications
+-      sed -i -e "s|Icon=VBox|Icon=$libexec/VBox.png|" $libexec/virtualbox.desktop
+-      ln -sfv $libexec/virtualbox.desktop $out/share/applications
+-      # Icons
+-      mkdir -p $out/share/icons/hicolor
+-      for size in `ls -1 $libexec/icons`; do
+-        mkdir -p $out/share/icons/hicolor/$size/apps
+-        ln -s $libexec/icons/$size/*.png $out/share/icons/hicolor/$size/apps
 +    hardeningDisable = [
 +      "format"
 +      "fortify"
@@ -558,7 +574,8 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
 +          echo "Linking $file to /bin"
 +          test -x "$libexec/$file"
 +          ln -s "$libexec/$file" $out/bin/$file
-+      done
+       done
+-      # Translation
 +
 +      ${optionalString (!headless) ''
 +        # Create and fix desktop item
@@ -580,11 +597,43 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
 +        cp -rv out/linux.*/${finalAttrs.buildType}/bin/src "$modsrc"
 +      ''}
 +
-+      mkdir -p "$out/share/virtualbox"
+       mkdir -p "$out/share/virtualbox"
+-      ln -sv $libexec/nls "$out/share/virtualbox/nls"
+-    ''}
+-
+-    ${optionalString withModsrc ''
+-      cp -rv out/linux.*/${finalAttrs.buildType}/bin/src "$modsrc"
+-    ''}
+-
+-    mkdir -p "$out/share/virtualbox"
+-    cp -rv src/VBox/Main/UnattendedTemplates "$out/share/virtualbox"
+-    ln -s "${finalAttrs.virtualboxGuestAdditionsIso}" "$out/share/virtualbox/VBoxGuestAdditions.iso"
+-  '';
+-
+-  preFixup =
+-    optionalString (!headless) ''
+-      qtWrapperArgs+=("''${gappsWrapperArgs[@]}")
+-      wrapQtApp $out/bin/VirtualBox
+-    ''
+-    # If hardening is disabled, wrap the VirtualBoxVM binary instead of patching
+-    # the source code (see postPatch).
+-    + optionalString (!headless && !enableHardening) ''
+-      wrapQtApp $out/libexec/virtualbox/VirtualBoxVM
 +      cp -rv src/VBox/Main/UnattendedTemplates "$out/share/virtualbox"
 +      ln -s "${finalAttrs.virtualboxGuestAdditionsIso}" "$out/share/virtualbox/VBoxGuestAdditions.iso"
-+    '';
-+
+     '';
+ 
+-  postFixup = optionalString stdenv.hostPlatform.isLinux ''
+-    # VBoxDxVk loads Vulkan dynamically; add its path after RPATH shrinking.
+-    patchelf --add-rpath ${lib.makeLibraryPath [ vulkan-loader ]} \
+-      "$out/libexec/virtualbox/VBoxDxVk.so"
+-  '';
+-
+-  passthru = {
+-    inherit extensionPack; # for inclusion in profile to prevent gc
+-    tests = nixosTests.virtualbox;
+-    updateScript = ./update.sh;
+-  };
 +    preFixup =
 +      optionalString (!headless) ''
 +        qtWrapperArgs+=("''${gappsWrapperArgs[@]}")
@@ -594,6 +643,16 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
 +        wrapQtApp $out/libexec/virtualbox/VirtualBoxVM
 +      '';
 +
++    postFixup = optionalString stdenv.hostPlatform.isLinux ''
++      # VBoxDxVk loads Vulkan dynamically; add its path after RPATH shrinking.
++      patchelf --add-rpath "${lib.makeLibraryPath [ vulkan-loader ]}" \
++        "$out/libexec/virtualbox/VBoxDxVk.so"
++    '';
+ 
+-  meta = {
+-    description = "PC emulator";
+-    longDescription = ''
+-      VirtualBox is an x86 and AMD64/Intel64 virtualization product for enterprise and home use.
 +    passthru = {
 +      inherit extensionPack; # for inclusion in profile to prevent gc
 +      tests = nixosTests.virtualbox;
@@ -627,7 +686,7 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
 +  base
 +else
 +  symlinkJoin {
-+    pname = base.pname + "-extpak";
++    pname = base.pname + "-extpack";
 +    inherit (base) version meta;
 +
 +    paths = [ base ];
@@ -641,79 +700,26 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
 +      # helper find the extension pack when one is installed.
 +      # The setuid wrappers in the NixOS module force this variable with --set;
 +      # these wrappers cover the non-setuid entry points.
-+      for file in ${
-+        optionalString (!headless) "VirtualBox VBoxSDL"
-+      } ${optionalString enableWebService "vboxwebsrv"} VBoxManage VBoxBalloonCtrl VBoxHeadless; do
++      for file in "$out"/bin/*; do
++        file="$(basename "$file")"
 +        rm -f "$out/bin/$file"
 +        makeWrapper "${base}/bin/$file" "$out/bin/$file" \
 +          --set VBOX_NIX_APP_SHARE_DIR "$out/share/virtualbox"
 +      done
-+
+ 
+-      To install on NixOS, please use the option `virtualisation.virtualbox.host.enable = true`.
+-      Please also check other options under `virtualisation.virtualbox`.
 +      mkdir -p "$out/share/virtualbox"
-       "${fakeroot}/bin/fakeroot" "${stdenv.shell}" <<EOF
--      "$libexec/VBoxExtPackHelperApp" install \
--        --base-dir "$share/ExtensionPacks" \
--        --cert-dir "$share/ExtPackCertificates" \
++      "${fakeroot}/bin/fakeroot" "${stdenv.shell}" <<EOF
 +      VBOX_NIX_APP_SHARE_DIR="$out/share/virtualbox" \
 +      "${base}/libexec/virtualbox/VBoxExtPackHelperApp" install \
 +        --base-dir "$out/share/virtualbox/ExtensionPacks" \
 +        --cert-dir "$out/share/virtualbox/ExtPackCertificates" \
-         --name "Oracle VirtualBox Extension Pack" \
-         --tarball "${extensionPack}" \
-         --sha-256 "${extensionPack.outputHash}"
-       EOF
--    ''}
--
--    ${optionalString (!headless) ''
--      # Create and fix desktop item
--      mkdir -p $out/share/applications
--      sed -i -e "s|Icon=VBox|Icon=$libexec/VBox.png|" $libexec/virtualbox.desktop
--      ln -sfv $libexec/virtualbox.desktop $out/share/applications
--      # Icons
--      mkdir -p $out/share/icons/hicolor
--      for size in `ls -1 $libexec/icons`; do
--        mkdir -p $out/share/icons/hicolor/$size/apps
--        ln -s $libexec/icons/$size/*.png $out/share/icons/hicolor/$size/apps
--      done
--      # Translation
--      mkdir -p "$out/share/virtualbox"
--      ln -sv $libexec/nls "$out/share/virtualbox/nls"
--    ''}
--
--    ${optionalString withModsrc ''
--      cp -rv out/linux.*/${finalAttrs.buildType}/bin/src "$modsrc"
--    ''}
--
--    mkdir -p "$out/share/virtualbox"
--    cp -rv src/VBox/Main/UnattendedTemplates "$out/share/virtualbox"
--    ln -s "${finalAttrs.virtualboxGuestAdditionsIso}" "$out/share/virtualbox/VBoxGuestAdditions.iso"
--  '';
--
--  preFixup =
--    optionalString (!headless) ''
--      qtWrapperArgs+=("''${gappsWrapperArgs[@]}")
--      wrapQtApp $out/bin/VirtualBox
--    ''
--    # If hardening is disabled, wrap the VirtualBoxVM binary instead of patching
--    # the source code (see postPatch).
--    + optionalString (!headless && !enableHardening) ''
--      wrapQtApp $out/libexec/virtualbox/VirtualBoxVM
++        --name "Oracle VirtualBox Extension Pack" \
++        --tarball "${extensionPack}" \
++        --sha-256 "${extensionPack.outputHash}"
++      EOF
      '';
- 
--  passthru = {
--    inherit extensionPack; # for inclusion in profile to prevent gc
--    tests = nixosTests.virtualbox;
--    updateScript = ./update.sh;
--  };
--
--  meta = {
--    description = "PC emulator";
--    longDescription = ''
--      VirtualBox is an x86 and AMD64/Intel64 virtualization product for enterprise and home use.
--
--      To install on NixOS, please use the option `virtualisation.virtualbox.host.enable = true`.
--      Please also check other options under `virtualisation.virtualbox`.
--    '';
 -    sourceProvenance = with lib.sourceTypes; [
 -      fromSource
 -      binaryNativeCode
@@ -728,6 +734,7 @@ index 43df9e9f38349b..64e9499f9bdcc2 100644
 -    mainProgram = "VirtualBox";
 -  };
 -})
++
 +    passthru =
 +      base.passthru
 +      // {
@@ -889,25 +896,26 @@ index 00000000000000..4e6603645aedf7
 +         return false;
 + 
 
-From 94723e591d2f6f8b7db7c237f1158fe93aecef80 Mon Sep 17 00:00:00 2001
+From 3adbe71434426710c1107d62138c12aa7bbe8793 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 20:23:33 +0800
 Subject: [PATCH 2/4] virtualbox: fix VBoxVolInfo under hardening
 
 Assisted-by: omp:DeepSeek V4.1 Flash 1017
 ---
- .../virtualization/virtualbox/default.nix           |  9 +++++++++
- .../virtualization/virtualbox/hardened.patch        | 13 +++++++++++++
- 2 files changed, 22 insertions(+)
+ .../virtualization/virtualbox/default.nix         | 15 ++++++++++++---
+ .../virtualization/virtualbox/hardened.patch      | 13 +++++++++++++
+ 2 files changed, 25 insertions(+), 3 deletions(-)
 
 diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index 64e9499f9bdcc2..199be568ff726f 100644
+index 7da78ed65da7c1..d844d0ed0e1cc2 100644
 --- a/pkgs/applications/virtualization/virtualbox/default.nix
 +++ b/pkgs/applications/virtualization/virtualbox/default.nix
-@@ -393,6 +393,15 @@ let
+@@ -390,10 +390,19 @@ let
          wrapQtApp $out/libexec/virtualbox/VirtualBoxVM
        '';
  
+-    postFixup = optionalString stdenv.hostPlatform.isLinux ''
 +    postFixup = ''
 +      # VBoxVolInfo dlopens libdevmapper via RTLdrLoadSystem in VBoxRT.
 +      # VBOX_WITH_RUNPATH replaces the RPATH normally provided for buildInputs,
@@ -915,11 +923,17 @@ index 64e9499f9bdcc2..199be568ff726f 100644
 +      if [ -e "$out/libexec/virtualbox/VBoxVolInfo" ]; then
 +        patchelf --add-rpath "${lib.makeLibraryPath [ lvm2 ]}" "$out/libexec/virtualbox/VBoxRT.so"
 +      fi
-+    '';
 +
+       # VBoxDxVk loads Vulkan dynamically; add its path after RPATH shrinking.
+-      patchelf --add-rpath "${lib.makeLibraryPath [ vulkan-loader ]}" \
+-        "$out/libexec/virtualbox/VBoxDxVk.so"
++      if [ -e "$out/libexec/virtualbox/VBoxDxVk.so" ]; then
++        patchelf --add-rpath "${lib.makeLibraryPath [ vulkan-loader ]}" \
++          "$out/libexec/virtualbox/VBoxDxVk.so"
++      fi
+     '';
+ 
      passthru = {
-       inherit extensionPack; # for inclusion in profile to prevent gc
-       tests = nixosTests.virtualbox;
 diff --git a/pkgs/applications/virtualization/virtualbox/hardened.patch b/pkgs/applications/virtualization/virtualbox/hardened.patch
 index eb53e0d1421e6b..3dc45ea9bf71b9 100644
 --- a/pkgs/applications/virtualization/virtualbox/hardened.patch
@@ -942,56 +956,29 @@ index eb53e0d1421e6b..3dc45ea9bf71b9 100644
 +     {
 +         LogRel(("VolInfo: Failed to get program path, vrc=%Rrc\n", vrc));
 
-From 28508f627621ce9c5667ab182e0a5999544c5eb9 Mon Sep 17 00:00:00 2001
-From: ccicnce113424 <ccicnce113424@gmail.com>
-Date: Mon, 26 Oct 2026 20:30:52 +0800
-Subject: [PATCH 3/4] virtualbox: fix Vulkan loader lookup in VBoxDxVk
-
-Assisted-by: omp:DeepSeek V4.1 Flash 1017
----
- pkgs/applications/virtualization/virtualbox/default.nix | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index 199be568ff726f..df0742e54f78dd 100644
---- a/pkgs/applications/virtualization/virtualbox/default.nix
-+++ b/pkgs/applications/virtualization/virtualbox/default.nix
-@@ -45,6 +45,7 @@
-   xz,
-   yasm,
-   glslang,
-+  vulkan-loader,
-   wrapGAppsHook3,
-   nixosTests,
-   # If open-watcom-bin is not passed, VirtualBox will fall back to use
-@@ -400,6 +401,12 @@ let
-       if [ -e "$out/libexec/virtualbox/VBoxVolInfo" ]; then
-         patchelf --add-rpath "${lib.makeLibraryPath [ lvm2 ]}" "$out/libexec/virtualbox/VBoxRT.so"
-       fi
-+
-+      # VBoxDxVk loads Vulkan dynamically; add its path after RPATH shrinking.
-+      if [ -e "$out/libexec/virtualbox/VBoxDxVk.so" ]; then
-+        patchelf --add-rpath "${lib.makeLibraryPath [ vulkan-loader ]}" \
-+          "$out/libexec/virtualbox/VBoxDxVk.so"
-+      fi
-     '';
- 
-     passthru = {
-
-From 393add9c84b5fe65da311f8dc1741c1fc86ad986 Mon Sep 17 00:00:00 2001
+From 3832d358b8e1c7d1f4e57858cc7bf4dc23661ac9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 4 Nov 2026 07:52:22 +0800
-Subject: [PATCH 4/4] nixos/virtualbox: disable hardening for kvm support
+Subject: [PATCH 3/4] nixos/virtualbox: disable hardening for kvm support
 
 ---
- nixos/modules/virtualisation/virtualbox-host.nix | 1 +
- 1 file changed, 1 insertion(+)
+ nixos/modules/virtualisation/virtualbox-host.nix | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/nixos/modules/virtualisation/virtualbox-host.nix b/nixos/modules/virtualisation/virtualbox-host.nix
-index 40d107eeafd9c8..94acce1ff3006f 100644
+index 40d107eeafd9c8..06d9c9b9deed50 100644
 --- a/nixos/modules/virtualisation/virtualbox-host.nix
 +++ b/nixos/modules/virtualisation/virtualbox-host.nix
-@@ -155,6 +155,7 @@ in
+@@ -65,6 +65,8 @@ in
+         system path get access to the devices exposed by the kernel modules
+         instead of all users in the vboxusers group.
+ 
++        For the KVM build this defaults to false.
++
+         ::: {.important}
+         Disabling this can put your system's security at risk, as local users
+         in the vboxusers group can tamper with the VirtualBox device files.
+@@ -155,6 +157,7 @@ in
              message = "VirtualBox KVM only supports standard NAT networking for VMs. Please turn off virtualisation.virtualbox.host.addNetworkInterface.";
            }
          ];
@@ -999,3 +986,30 @@ index 40d107eeafd9c8..94acce1ff3006f 100644
        })
        (lib.mkIf (!cfg.enableKvm) {
          boot.kernelModules = [
+
+From 35bf23d23f1c1e12a3bc1b006c5cc40e4c46e752 Mon Sep 17 00:00:00 2001
+From: ccicnce113424 <ccicnce113424@gmail.com>
+Date: Sat, 14 Nov 2026 11:39:28 +0800
+Subject: [PATCH 4/4] virtualbox: add variant suffixes to package names
+
+---
+ pkgs/applications/virtualization/virtualbox/default.nix | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
+index d844d0ed0e1cc2..8a58fd7f756bde 100644
+--- a/pkgs/applications/virtualization/virtualbox/default.nix
++++ b/pkgs/applications/virtualization/virtualbox/default.nix
+@@ -109,7 +109,11 @@ let
+     ;
+ 
+   base = stdenv.mkDerivation (finalAttrs: {
+-    pname = "virtualbox";
++    pname =
++      "virtualbox"
++      + optionalString enableKvm "-kvm"
++      + optionalString headless "-headless"
++      + optionalString enableHardening "-hardened";
+     version = "${finalAttrs.virtualboxVersion}${finalAttrs.virtualboxSubVersion}";
+ 
+     inherit
