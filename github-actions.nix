@@ -50,7 +50,7 @@ in
         in
         (config.lib'.findPkgs
           [
-            "virtualbox-kvm-extpak"
+            "virtualbox-kvm-extpack"
             "wine-tkg-full"
             "xwayland"
             "hplip"
