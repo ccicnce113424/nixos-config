@@ -6,5 +6,9 @@
   {
     "url": "https://github.com/NixOS/nixpkgs/pull/570177",
     "rev": "35751125bc2d03ffc64330cdc113b093626ed859"
+  },
+  {
+    "url": "https://github.com/NixOS/nixpkgs/pull/589558",
+    "rev": "90605af0a78294a7e7d70df00da06c9ce613f948"
   }
 ]

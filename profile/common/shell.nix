@@ -15,6 +15,8 @@
     progress
     colorized-logs
     man-pages
+    libburn
+    libisoburn
   ];
 
   programs.git.enable = true;
