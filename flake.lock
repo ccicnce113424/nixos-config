@@ -262,11 +262,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794808030,
-        "narHash": "sha256-VFQXKm0nVF2AjRaxO9op6FAel7iTbYL+uuUegrFv2aE=",
+        "lastModified": 1794984441,
+        "narHash": "sha256-ESQsgRlmj4VZxvKJ7u3/LZ+D1qUbz3eIp2p6I/lLzVI=",
         "owner": "fufexan",
         "repo": "nix-gaming",
-        "rev": "15d35729116985000ee5c3b2488bb800e4af50b2",
+        "rev": "87217390927bcb318bc706c542ba6848b07ed253",
         "type": "github"
       },
       "original": {
@@ -331,11 +331,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794973335,
-        "narHash": "sha256-wyvS9uB/clIKcTvz7pjL1/cIf2wE4sg+zC/SRCewLYY=",
+        "lastModified": 1794990291,
+        "narHash": "sha256-79ALo5PLnpB8hp6qgaptoh7m6oH+kJmPN2lCmVaoPsI=",
         "owner": "ccicnce113424",
         "repo": "nix-packages",
-        "rev": "42aa63f4662daddbea3d3f8fe39846836de1691b",
+        "rev": "6e1ba204ba5515754cada2fb442b6bcfe604821f",
         "type": "github"
       },
       "original": {
@@ -375,11 +375,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1794750194,
-        "narHash": "sha256-1qOtz5nZG+3hsBEqeKtUx+T5gSaJ+hONlBWWSbH+mJ8=",
-        "rev": "1a08097fc1ed85575db39763b2c4a5d8970a37ba",
+        "lastModified": 1794890597,
+        "narHash": "sha256-vJoAj1xon3Mhfc8FZ5uBrPyZee9Eqa05gG/taXv6iZ8=",
+        "rev": "04906337b6d53e8bb0eaf0470ae9f070a4d4eb55",
         "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1121687.1a08097fc1ed/nixexprs.tar.zst"
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1122823.04906337b6d5/nixexprs.tar.zst"
       },
       "original": {
         "type": "tarball",
@@ -396,11 +396,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1794983242,
-        "narHash": "sha256-CuPPF63SRLCS3Ie1PJzS1vBUJF+HmvM3xLt0DSt/0iU=",
+        "lastModified": 1794990035,
+        "narHash": "sha256-cTjx/x/q9uWcrLruSbYIBHoySempqMwlXDB3GIGBusk=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "fbd3cca3c3d31f67d8a52261ed8ab0c4a6fb9602",
+        "rev": "17aec521339ba3c16ecdf7db6195bfa67f5714d5",
         "type": "github"
       },
       "original": {
