@@ -57,8 +57,26 @@ let
         nvtopPackages.nvidia
       ];
 
-      environment.sessionVariables = {
-        CUDA_DISABLE_PERF_BOOST = 1;
+      boot.extraModulePackages = [ config.boot.kernelPackages.gpu-unlock ];
+      hardware.firmware = [ config.boot.kernelPackages.gpu-unlock.firmware ];
+      boot.initrd.availableKernelModules = [ "gpu_unlock" ];
+      boot.kernelParams = [ "gpu_unlock.targets=all" ];
+
+      boot.initrd.systemd.services.gpu-unlock = {
+        description = "Unlock NVIDIA GPU tensor core throughput";
+        wantedBy = [ "sysinit.target" ];
+        before = [
+          "sysinit.target"
+          "systemd-modules-load.service"
+          "systemd-udevd.service"
+          "systemd-udev-trigger.service"
+        ];
+        unitConfig.DefaultDependencies = false;
+        serviceConfig = {
+          Type = "oneshot";
+          RemainAfterExit = true;
+          ExecStart = "/bin/modprobe gpu_unlock";
+        };
       };
     };
     nouveau = lib.recursiveUpdate common {
