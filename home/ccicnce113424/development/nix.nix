@@ -5,7 +5,7 @@
       nixd
       nixfmt-rs
       nix-tree
-      nix-output-monitor
+      rom
       hydra-check
       cachix
       flake-linter
