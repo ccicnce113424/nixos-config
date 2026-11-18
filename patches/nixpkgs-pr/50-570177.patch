@@ -9,7 +9,7 @@ Subject: [PATCH 01/13] linuxPackages.nvidiaPackages.production: 595.112.07 ->
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 08d61bd77cb616..f101a9ee5c9bc1 100644
+index 08d61bd77cb61..f101a9ee5c9bc 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -39,12 +39,12 @@ rec {
@@ -59,7 +59,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
 
 diff --git a/maintainers/scripts/nvidia-source-hashes/default.nix b/maintainers/scripts/nvidia-source-hashes/default.nix
 new file mode 100644
-index 00000000000000..c865e3c81bed34
+index 0000000000000..c865e3c81bed3
 --- /dev/null
 +++ b/maintainers/scripts/nvidia-source-hashes/default.nix
 @@ -0,0 +1,367 @@
@@ -432,7 +432,7 @@ index 00000000000000..c865e3c81bed34
 +  ''
 diff --git a/maintainers/scripts/nvidia-source-hashes/verify.sh b/maintainers/scripts/nvidia-source-hashes/verify.sh
 new file mode 100755
-index 00000000000000..40ef4e4dc17aa1
+index 0000000000000..40ef4e4dc17aa
 --- /dev/null
 +++ b/maintainers/scripts/nvidia-source-hashes/verify.sh
 @@ -0,0 +1,308 @@
@@ -774,7 +774,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  4 files changed, 62 insertions(+)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index e6c1595ae572df..4f33a254d03d54 100644
+index e6c1595ae572d..4f33a254d03d5 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -201,6 +201,22 @@ stdenv.mkDerivation (finalAttrs: {
@@ -801,7 +801,7 @@ index e6c1595ae572df..4f33a254d03d54 100644
    dontPatchELF = true;
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index 9e6998017f87e1..0d1e2be113cd2b 100644
+index 9e6998017f87e..0d1e2be113cd2 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 @@ -9,6 +9,7 @@
@@ -842,7 +842,7 @@ index 9e6998017f87e1..0d1e2be113cd2b 100644
  
    meta = {
 diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index 556e53f937af3b..5462ee06679364 100644
+index 556e53f937af3..5462ee0667936 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 @@ -9,6 +9,7 @@ nvidia_x11: sha256:
@@ -865,7 +865,7 @@ index 556e53f937af3b..5462ee06679364 100644
      libtirpc
    ];
 diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index e47dc3cb4e6138..b07451d09e5a87 100644
+index e47dc3cb4e613..b07451d09e5a8 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
 @@ -21,6 +21,7 @@ nvidia_x11: sha256:
@@ -931,7 +931,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  5 files changed, 30 insertions(+), 18 deletions(-)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index f101a9ee5c9bc1..986c5fc1514a09 100644
+index f101a9ee5c9bc..986c5fc1514a0 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -42,7 +42,7 @@ rec {
@@ -1016,7 +1016,7 @@ index f101a9ee5c9bc1..986c5fc1514a09 100644
      persistencedSha256 = "sha256-q061VN6om3UzbpWD7+tJJVgU/e2YCJF4IgEv53qx9ZA=";
    };
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index 4f33a254d03d54..03898db04b1255 100644
+index 4f33a254d03d5..03898db04b125 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -41,6 +41,7 @@
@@ -1083,7 +1083,7 @@ index 4f33a254d03d54..03898db04b1255 100644
        ) openSha256;
        settings =
 diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index 0d1e2be113cd2b..7d5f9a50ace52f 100644
+index 0d1e2be113cd2..7d5f9a50ace52 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 @@ -1,7 +1,7 @@
@@ -1113,7 +1113,7 @@ index 0d1e2be113cd2b..7d5f9a50ace52f 100644
      else
        nvidia_x11.modsrc;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index 5462ee06679364..727c6d430b9eae 100644
+index 5462ee0667936..727c6d430b9ea 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 @@ -19,7 +19,7 @@ stdenv.mkDerivation {
@@ -1126,7 +1126,7 @@ index 5462ee06679364..727c6d430b9eae 100644
    };
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index b07451d09e5a87..1f905ca9efafde 100644
+index b07451d09e5a8..1f905ca9efafd 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
 @@ -30,7 +30,7 @@ let
@@ -1155,7 +1155,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/pkgs/by-name/li/libnvidia-container/package.nix b/pkgs/by-name/li/libnvidia-container/package.nix
-index d7af075742370d..908d80092bf902 100644
+index d7af075742370..908d80092bf90 100644
 --- a/pkgs/by-name/li/libnvidia-container/package.nix
 +++ b/pkgs/by-name/li/libnvidia-container/package.nix
 @@ -13,14 +13,15 @@
@@ -1203,7 +1203,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (52%)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index 9cc6eb32f6d09d..752e9f1a3c88e1 100644
+index 9cc6eb32f6d09..752e9f1a3c88e 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
 @@ -43,6 +43,11 @@
@@ -1219,7 +1219,7 @@ index 9cc6eb32f6d09d..752e9f1a3c88e1 100644
    The native library is available as `dxvk_3`. The `dxvk_1` and `dxvk_2` packages remain available for older hardware and applications.
    See the [upstream release notes](https://github.com/doitsujin/dxvk/releases/tag/v3.0) for details.
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index 77461de17ca572..672c9be01c5aba 100644
+index 77461de17ca57..672c9be01c5ab 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
 @@ -458,10 +458,10 @@ in
@@ -1238,7 +1238,7 @@ index 77461de17ca572..672c9be01c5aba 100644
            hardware.graphics =
              let
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 986c5fc1514a09..17e5feff2ba402 100644
+index 986c5fc1514a0..17e5feff2ba40 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -45,6 +45,7 @@ rec {
@@ -1344,7 +1344,7 @@ index 986c5fc1514a09..17e5feff2ba402 100644
  
        broken = kernel.kernelAtLeast "6.19";
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index 03898db04b1255..dee8cb7139b082 100644
+index 03898db04b125..dee8cb7139b08 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -11,6 +11,8 @@
@@ -1381,7 +1381,7 @@ diff --git a/pkgs/by-name/nv/nvidia-modprobe/package.nix b/pkgs/os-specific/linu
 similarity index 52%
 rename from pkgs/by-name/nv/nvidia-modprobe/package.nix
 rename to pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-index 70d353da38cfeb..220c469d578765 100644
+index 70d353da38cfe..220c469d57876 100644
 --- a/pkgs/by-name/nv/nvidia-modprobe/package.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
 @@ -1,22 +1,29 @@
@@ -1457,7 +1457,7 @@ index 70d353da38cfeb..220c469d578765 100644
    };
  })
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index 299f7701062571..9620f11122f550 100644
+index 299f770106257..9620f11122f55 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
 @@ -2021,6 +2021,7 @@ mapAliases {
@@ -1486,7 +1486,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/README.md
 
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index 672c9be01c5aba..f2ecd2735dda16 100644
+index 672c9be01c5ab..f2ecd2735dda1 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
 @@ -354,7 +354,8 @@ in
@@ -1501,7 +1501,7 @@ index 672c9be01c5aba..f2ecd2735dda16 100644
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/README.md b/pkgs/os-specific/linux/nvidia-x11/README.md
 new file mode 100644
-index 00000000000000..27bbff86badedb
+index 0000000000000..27bbff86baded
 --- /dev/null
 +++ b/pkgs/os-specific/linux/nvidia-x11/README.md
 @@ -0,0 +1,198 @@
@@ -1727,7 +1727,7 @@ Assisted-by: Zed Agent:DeepSeek V4 Pro
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 new file mode 100644
-index 00000000000000..2194b769b8d58b
+index 0000000000000..2194b769b8d58
 --- /dev/null
 +++ b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 @@ -0,0 +1,233 @@
@@ -1965,7 +1965,7 @@ index 00000000000000..2194b769b8d58b
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 17e5feff2ba402..973759a76cf6ab 100644
+index 17e5feff2ba40..973759a76cf6a 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -11,17 +11,7 @@
@@ -2003,7 +2003,7 @@ index 17e5feff2ba402..973759a76cf6ab 100644
        useGLVND = false;
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
-index f8192cc146dbf9..8b10f04b0b67cc 100644
+index f8192cc146dbf..8b10f04b0b67c 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
 @@ -1,5 +1,3 @@
@@ -2056,7 +2056,7 @@ index f8192cc146dbf9..8b10f04b0b67cc 100644
 -}
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index dee8cb7139b082..a7aed1cec65ef1 100644
+index dee8cb7139b08..a7aed1cec65ef 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -1,18 +1,30 @@
@@ -2523,7 +2523,7 @@ index dee8cb7139b082..a7aed1cec65ef1 100644
 +  }
 +)
 diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index 727c6d430b9eae..f7b47a3a3c0aa3 100644
+index 727c6d430b9ea..f7b47a3a3c0aa 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 @@ -1,29 +1,30 @@
@@ -2578,7 +2578,7 @@ index 727c6d430b9eae..f7b47a3a3c0aa3 100644
 -}
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index 1f905ca9efafde..d797d8a267c03a 100644
+index 1f905ca9efafd..d797d8a267c03 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
 @@ -1,9 +1,7 @@
@@ -2692,7 +2692,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/nvidia-settings-xdg-data-dirs.patch
 
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index f2ecd2735dda16..8db3cf632016df 100644
+index f2ecd2735dda1..8db3cf632016d 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
 @@ -511,6 +511,11 @@ in
@@ -2708,7 +2708,7 @@ index f2ecd2735dda16..8db3cf632016df 100644
  
          # X11
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index a7aed1cec65ef1..c2d12d1e0cd440 100644
+index a7aed1cec65ef..c2d12d1e0cd44 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -186,12 +186,12 @@ nvidiaDriver.overrideAttrs (
@@ -2728,7 +2728,7 @@ index a7aed1cec65ef1..c2d12d1e0cd440 100644
            { };
 diff --git a/pkgs/os-specific/linux/nvidia-x11/nvidia-settings-xdg-data-dirs.patch b/pkgs/os-specific/linux/nvidia-x11/nvidia-settings-xdg-data-dirs.patch
 new file mode 100644
-index 00000000000000..6be244b516fcfc
+index 0000000000000..6be244b516fcf
 --- /dev/null
 +++ b/pkgs/os-specific/linux/nvidia-x11/nvidia-settings-xdg-data-dirs.patch
 @@ -0,0 +1,62 @@
@@ -2795,7 +2795,7 @@ index 00000000000000..6be244b516fcfc
 +         char *expected_file_paths;
 +         const char *version_missing_error_str;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index d797d8a267c03a..fbe529d31554f1 100644
+index d797d8a267c03..fbe529d31554f 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
 @@ -19,10 +19,11 @@
@@ -2869,7 +2869,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/installer.nix
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-index 2194b769b8d58b..751f54ad2bfb33 100644
+index 2194b769b8d58..751f54ad2bfb3 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 @@ -2,15 +2,13 @@
@@ -3047,7 +3047,7 @@ index 2194b769b8d58b..751f54ad2bfb33 100644
    };
  })
 diff --git a/pkgs/os-specific/linux/nvidia-x11/builder.sh b/pkgs/os-specific/linux/nvidia-x11/builder.sh
-index 65daf1afebb42f..a3506b80fa7b61 100755
+index 65daf1afebb42..a3506b80fa7b6 100755
 --- a/pkgs/os-specific/linux/nvidia-x11/builder.sh
 +++ b/pkgs/os-specific/linux/nvidia-x11/builder.sh
 @@ -1,14 +1,3 @@
@@ -3078,7 +3078,7 @@ index 65daf1afebb42f..a3506b80fa7b61 100755
          # Install the GSP firmware
          install -Dm644 -t $firmware/lib/firmware/nvidia/$version firmware/*.bin
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 973759a76cf6ab..1630c3094fac76 100644
+index 973759a76cf6a..1630c3094fac7 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -225,7 +225,7 @@ rec {
@@ -3100,7 +3100,7 @@ index 973759a76cf6ab..1630c3094fac76 100644
          (replaceVars ./legacy340-for-nix-kernel-modules.patch {
            inherit (builtins) storeDir;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index c2d12d1e0cd440..ebc8cd1a26a247 100644
+index c2d12d1e0cd44..ebc8cd1a26a24 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -4,9 +4,11 @@
@@ -3220,7 +3220,7 @@ index c2d12d1e0cd440..ebc8cd1a26a247 100644
        ) openSha256;
 diff --git a/pkgs/os-specific/linux/nvidia-x11/installer.nix b/pkgs/os-specific/linux/nvidia-x11/installer.nix
 new file mode 100644
-index 00000000000000..1a3a5f83f8c396
+index 0000000000000..1a3a5f83f8c39
 --- /dev/null
 +++ b/pkgs/os-specific/linux/nvidia-x11/installer.nix
 @@ -0,0 +1,180 @@
@@ -3405,7 +3405,7 @@ index 00000000000000..1a3a5f83f8c396
 +  };
 +})
 diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index 7d5f9a50ace52f..71e732c562e868 100644
+index 7d5f9a50ace52..71e732c562e86 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 @@ -4,9 +4,14 @@
@@ -3560,7 +3560,7 @@ Assisted-by: omp:Space Bunny Alpha
  16 files changed, 873 insertions(+), 563 deletions(-)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index 752e9f1a3c88e1..65e60a3611324f 100644
+index 752e9f1a3c88e..65e60a3611324 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
 @@ -43,10 +43,11 @@
@@ -3604,7 +3604,7 @@ index 752e9f1a3c88e1..65e60a3611324f 100644
  
  - `readest` now uses CEF instead of WebKitGTK on Linux. Wayland sessions require XWayland.
 diff --git a/maintainers/scripts/nvidia-source-hashes/default.nix b/maintainers/scripts/nvidia-source-hashes/default.nix
-index c865e3c81bed34..22e7549461a4ac 100644
+index c865e3c81bed3..22e7549461a4a 100644
 --- a/maintainers/scripts/nvidia-source-hashes/default.nix
 +++ b/maintainers/scripts/nvidia-source-hashes/default.nix
 @@ -6,14 +6,10 @@
@@ -3673,7 +3673,7 @@ index c865e3c81bed34..22e7549461a4ac 100644
                empty;
            step = builtins.tryEval result;
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index d0d80e9e2ce3e8..c1d89170f0cc55 100644
+index d0d80e9e2ce3e..c1d89170f0cc5 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
 @@ -276,6 +276,40 @@
@@ -3718,7 +3718,7 @@ index d0d80e9e2ce3e8..c1d89170f0cc55 100644
    directory discovery changed; see the [upstream migration
    guide](https://artalk.js.org/en/guide/releases/v2.10.0.html) when invoking
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index 8db3cf632016df..db051128ed93f0 100644
+index 8db3cf632016d..db051128ed93f 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
 @@ -6,12 +6,39 @@
@@ -4028,7 +4028,7 @@ index 8db3cf632016df..db051128ed93f0 100644
        ]
      );
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
-index 751f54ad2bfb33..46ad5820f6ac9a 100644
+index 751f54ad2bfb3..46ad5820f6ac9 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 @@ -2,7 +2,6 @@
@@ -4094,7 +4094,7 @@ index 751f54ad2bfb33..46ad5820f6ac9a 100644
    };
  
 diff --git a/pkgs/os-specific/linux/nvidia-x11/default.nix b/pkgs/os-specific/linux/nvidia-x11/default.nix
-index 1630c3094fac76..bb389eafcd162f 100644
+index 1630c3094fac7..bb389eafcd162 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/default.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/default.nix
 @@ -1,294 +1,319 @@
@@ -4677,7 +4677,7 @@ index 1630c3094fac76..bb389eafcd162f 100644
 +  }
 +)
 diff --git a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
-index 8b10f04b0b67cc..7081d2fb70c3da 100644
+index 8b10f04b0b67c..7081d2fb70c3d 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/fabricmanager.nix
 @@ -6,9 +6,9 @@
@@ -4702,7 +4702,7 @@ index 8b10f04b0b67cc..7081d2fb70c3da 100644
    };
  })
 diff --git a/pkgs/os-specific/linux/nvidia-x11/generic.nix b/pkgs/os-specific/linux/nvidia-x11/generic.nix
-index ebc8cd1a26a247..648bbf14a1c24d 100644
+index ebc8cd1a26a24..648bbf14a1c24 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/generic.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/generic.nix
 @@ -1,30 +1,43 @@
@@ -5236,7 +5236,7 @@ index ebc8cd1a26a247..648bbf14a1c24d 100644
 +  )
  )
 diff --git a/pkgs/os-specific/linux/nvidia-x11/installer.nix b/pkgs/os-specific/linux/nvidia-x11/installer.nix
-index 1a3a5f83f8c396..385471374c1ec2 100644
+index 1a3a5f83f8c39..385471374c1ec 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/installer.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/installer.nix
 @@ -162,8 +162,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
@@ -5249,7 +5249,7 @@ index 1a3a5f83f8c396..385471374c1ec2 100644
      homepage = "https://www.nvidia.com/object/unix.html";
      description = "Unpacked NVIDIA driver installer, shared by the userspace and kernel module builds";
 diff --git a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
-index 71e732c562e868..886d0871709850 100644
+index 71e732c562e86..886d087170985 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/kernel-modules.nix
 @@ -10,11 +10,21 @@
@@ -5295,7 +5295,7 @@ index 71e732c562e868..886d0871709850 100644
        with lib.sourceTypes;
        [
 diff --git a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
-index 220c469d578765..8d4e8c504761ce 100644
+index 220c469d57876..8d4e8c504761c 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/modprobe.nix
 @@ -4,7 +4,7 @@
@@ -5317,7 +5317,7 @@ index 220c469d578765..8d4e8c504761ce 100644
      teams = [ lib.teams.cuda ];
      mainProgram = "nvidia-modprobe";
 diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index f7b47a3a3c0aa3..a3bf876df44300 100644
+index f7b47a3a3c0aa..a3bf876df4430 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 @@ -7,9 +7,9 @@
@@ -5342,7 +5342,7 @@ index f7b47a3a3c0aa3..a3bf876df44300 100644
    };
  })
 diff --git a/pkgs/os-specific/linux/nvidia-x11/settings.nix b/pkgs/os-specific/linux/nvidia-x11/settings.nix
-index fbe529d31554f1..3b5108396f1136 100644
+index fbe529d31554f..3b5108396f113 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/settings.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/settings.nix
 @@ -19,7 +19,7 @@
@@ -5364,7 +5364,7 @@ index fbe529d31554f1..3b5108396f1136 100644
  
    libXNVCtrl = stdenv.mkDerivation {
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index 9620f11122f550..e83ab1c927c51c 100644
+index 9620f11122f55..e83ab1c927c51 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
 @@ -2021,7 +2021,7 @@ mapAliases {
@@ -5377,7 +5377,7 @@ index 9620f11122f550..e83ab1c927c51c 100644
    oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
    oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 diff --git a/pkgs/top-level/all-packages.nix b/pkgs/top-level/all-packages.nix
-index 165d13af0ce4e3..4ef503b13780c0 100644
+index 165d13af0ce4e..4ef503b13780c 100644
 --- a/pkgs/top-level/all-packages.nix
 +++ b/pkgs/top-level/all-packages.nix
 @@ -5945,6 +5945,10 @@ with pkgs;
@@ -5401,7 +5401,7 @@ index 165d13af0ce4e3..4ef503b13780c0 100644
      // config.conky or { }
    );
 diff --git a/pkgs/top-level/linux-kernels.nix b/pkgs/top-level/linux-kernels.nix
-index a9a8f547c23e57..a616876ce7f864 100644
+index a9a8f547c23e5..a616876ce7f86 100644
 --- a/pkgs/top-level/linux-kernels.nix
 +++ b/pkgs/top-level/linux-kernels.nix
 @@ -16,7 +16,7 @@
@@ -5573,7 +5573,7 @@ Assisted-by: omp:Space Bunny Alpha
  24 files changed, 49 insertions(+), 51 deletions(-)
 
 diff --git a/nixos/doc/manual/configuration/x-windows.chapter.md b/nixos/doc/manual/configuration/x-windows.chapter.md
-index ab0f5016633332..2fcfdae8ee4857 100644
+index ab0f501663333..2fcfdae8ee485 100644
 --- a/nixos/doc/manual/configuration/x-windows.chapter.md
 +++ b/nixos/doc/manual/configuration/x-windows.chapter.md
 @@ -216,9 +216,9 @@ If you have an older card, you may have to use one of the legacy drivers:
@@ -5590,7 +5590,7 @@ index ab0f5016633332..2fcfdae8ee4857 100644
  ```
  
 diff --git a/nixos/modules/hardware/video/bumblebee.nix b/nixos/modules/hardware/video/bumblebee.nix
-index 3aebc4a800f569..32a563a06da74f 100644
+index 3aebc4a800f56..32a563a06da74 100644
 --- a/nixos/modules/hardware/video/bumblebee.nix
 +++ b/nixos/modules/hardware/video/bumblebee.nix
 @@ -94,9 +94,7 @@ in
@@ -5605,7 +5605,7 @@ index 3aebc4a800f569..32a563a06da74f 100644
      environment.systemPackages = [
        bumblebee
 diff --git a/nixos/modules/programs/nix-required-mounts.nix b/nixos/modules/programs/nix-required-mounts.nix
-index 9e8073c4d3aeef..2ac404c82c4f07 100644
+index 9e8073c4d3aee..2ac404c82c4f0 100644
 --- a/nixos/modules/programs/nix-required-mounts.nix
 +++ b/nixos/modules/programs/nix-required-mounts.nix
 @@ -57,9 +57,9 @@ let
@@ -5621,7 +5621,7 @@ index 9e8073c4d3aeef..2ac404c82c4f07 100644
    defaults = {
      nvidia-gpu.onFeatures = package.allowedPatterns.nvidia-gpu.onFeatures;
 diff --git a/nixos/modules/programs/wayland/sway.nix b/nixos/modules/programs/wayland/sway.nix
-index 6284162f2a3d85..6967124693ab51 100644
+index 6284162f2a3d8..6967124693ab5 100644
 --- a/nixos/modules/programs/wayland/sway.nix
 +++ b/nixos/modules/programs/wayland/sway.nix
 @@ -143,10 +143,10 @@ in
@@ -5638,7 +5638,7 @@ index 6284162f2a3d85..6967124693ab51 100644
  
          environment = {
 diff --git a/nixos/modules/services/computing/boinc/client.nix b/nixos/modules/services/computing/boinc/client.nix
-index a91beca21ec58d..4794d1a8910d20 100644
+index a91beca21ec58..4794d1a8910d2 100644
 --- a/nixos/modules/services/computing/boinc/client.nix
 +++ b/nixos/modules/services/computing/boinc/client.nix
 @@ -68,7 +68,7 @@ in
@@ -5651,7 +5651,7 @@ index a91beca21ec58d..4794d1a8910d20 100644
            CUDA. Note that this requires an NVIDIA graphics device to be
            present on the system.
 diff --git a/nixos/modules/services/hardware/nvidia-container-toolkit/default.nix b/nixos/modules/services/hardware/nvidia-container-toolkit/default.nix
-index cd5440e723f01e..bb58f788f92177 100644
+index cd5440e723f01..bb58f788f9217 100644
 --- a/nixos/modules/services/hardware/nvidia-container-toolkit/default.nix
 +++ b/nixos/modules/services/hardware/nvidia-container-toolkit/default.nix
 @@ -258,7 +258,7 @@
@@ -5673,7 +5673,7 @@ index cd5440e723f01e..bb58f788f92177 100644
              in
              lib.getExe script;
 diff --git a/nixos/modules/services/monitoring/beszel-agent.nix b/nixos/modules/services/monitoring/beszel-agent.nix
-index 88ca335e953d5c..4f8eda4966ce01 100644
+index 88ca335e953d5..4f8eda4966ce0 100644
 --- a/nixos/modules/services/monitoring/beszel-agent.nix
 +++ b/nixos/modules/services/monitoring/beszel-agent.nix
 @@ -23,7 +23,7 @@ let
@@ -5686,7 +5686,7 @@ index 88ca335e953d5c..4f8eda4966ce01 100644
      };
      "nvml" = {
 diff --git a/nixos/modules/services/monitoring/prometheus/exporters/nvidia-gpu.nix b/nixos/modules/services/monitoring/prometheus/exporters/nvidia-gpu.nix
-index 12537816ef078b..0ec4948b849aee 100644
+index 12537816ef078..0ec4948b849ae 100644
 --- a/nixos/modules/services/monitoring/prometheus/exporters/nvidia-gpu.nix
 +++ b/nixos/modules/services/monitoring/prometheus/exporters/nvidia-gpu.nix
 @@ -42,9 +42,9 @@ in
@@ -5702,7 +5702,7 @@ index 12537816ef078b..0ec4948b849aee 100644
              description = "Path or command to be used for the nvidia-smi executable.";
            };
 diff --git a/nixos/modules/services/video/frigate.nix b/nixos/modules/services/video/frigate.nix
-index 9f30265e832258..0af85c03c6a99e 100644
+index 9f30265e83225..0af85c03c6a99 100644
 --- a/nixos/modules/services/video/frigate.nix
 +++ b/nixos/modules/services/video/frigate.nix
 @@ -750,7 +750,7 @@ in
@@ -5715,7 +5715,7 @@ index 9f30265e832258..0af85c03c6a99e 100644
            procps
            radeontop
 diff --git a/nixos/modules/system/boot/kernel.nix b/nixos/modules/system/boot/kernel.nix
-index 2fb9f2114c36c1..1f430de701b357 100644
+index 2fb9f2114c36c..1f430de701b35 100644
 --- a/nixos/modules/system/boot/kernel.nix
 +++ b/nixos/modules/system/boot/kernel.nix
 @@ -92,9 +92,9 @@ in
@@ -5740,7 +5740,7 @@ index 2fb9f2114c36c1..1f430de701b357 100644
      };
  
 diff --git a/nixos/tests/nvidia-container-toolkit.nix b/nixos/tests/nvidia-container-toolkit.nix
-index a0be2983747f8f..30164e648cd3db 100644
+index a0be2983747f8..30164e648cd3d 100644
 --- a/nixos/tests/nvidia-container-toolkit.nix
 +++ b/nixos/tests/nvidia-container-toolkit.nix
 @@ -109,7 +109,7 @@ in
@@ -5753,7 +5753,7 @@ index a0be2983747f8f..30164e648cd3db 100644
          graphics.enable = lib.mkDefault true;
        };
 diff --git a/pkgs/applications/networking/cluster/k3s/docs/examples/NVIDIA.md b/pkgs/applications/networking/cluster/k3s/docs/examples/NVIDIA.md
-index 3163024ec59535..fa3d119a9f4da5 100644
+index 3163024ec5953..fa3d119a9f4da 100644
 --- a/pkgs/applications/networking/cluster/k3s/docs/examples/NVIDIA.md
 +++ b/pkgs/applications/networking/cluster/k3s/docs/examples/NVIDIA.md
 @@ -7,7 +7,7 @@
@@ -5766,7 +5766,7 @@ index 3163024ec59535..fa3d119a9f4da5 100644
  };
  
 diff --git a/pkgs/by-name/bu/bumblebee/package.nix b/pkgs/by-name/bu/bumblebee/package.nix
-index 3c454536bdc10d..593e74b98efb2a 100644
+index 3c454536bdc10..593e74b98efb2 100644
 --- a/pkgs/by-name/bu/bumblebee/package.nix
 +++ b/pkgs/by-name/bu/bumblebee/package.nix
 @@ -30,8 +30,8 @@
@@ -5790,7 +5790,7 @@ index 3c454536bdc10d..593e74b98efb2a 100644
        null,
    libglvnd_i686 ?
 diff --git a/pkgs/by-name/gl/gl-gsync-demo/package.nix b/pkgs/by-name/gl/gl-gsync-demo/package.nix
-index c556bccb0e9d33..a3c59914b28fbc 100644
+index c556bccb0e9d3..a3c59914b28fb 100644
 --- a/pkgs/by-name/gl/gl-gsync-demo/package.nix
 +++ b/pkgs/by-name/gl/gl-gsync-demo/package.nix
 @@ -5,12 +5,12 @@
@@ -5809,7 +5809,7 @@ index c556bccb0e9d33..a3c59914b28fbc 100644
  
  stdenv.mkDerivation {
 diff --git a/pkgs/by-name/gw/gwe/package.nix b/pkgs/by-name/gw/gwe/package.nix
-index 6bbfb8d8ab6ffc..6e6d7929c6adb1 100644
+index 6bbfb8d8ab6ff..6e6d7929c6adb 100644
 --- a/pkgs/by-name/gw/gwe/package.nix
 +++ b/pkgs/by-name/gw/gwe/package.nix
 @@ -14,7 +14,7 @@
@@ -5842,7 +5842,7 @@ index 6bbfb8d8ab6ffc..6e6d7929c6adb1 100644
            "/run/wrappers/bin"
          ]
 diff --git a/pkgs/by-name/li/libvibrant/package.nix b/pkgs/by-name/li/libvibrant/package.nix
-index 2967df353a2b3c..48417ea92e7bb4 100644
+index 2967df353a2b3..48417ea92e7bb 100644
 --- a/pkgs/by-name/li/libvibrant/package.nix
 +++ b/pkgs/by-name/li/libvibrant/package.nix
 @@ -5,7 +5,7 @@
@@ -5864,7 +5864,7 @@ index 2967df353a2b3c..48417ea92e7bb4 100644
  
    meta = {
 diff --git a/pkgs/by-name/ma/mangohud/package.nix b/pkgs/by-name/ma/mangohud/package.nix
-index f8536a4eb243f8..d8ec17c95100a8 100644
+index f8536a4eb243f..d8ec17c95100a 100644
 --- a/pkgs/by-name/ma/mangohud/package.nix
 +++ b/pkgs/by-name/ma/mangohud/package.nix
 @@ -23,14 +23,14 @@
@@ -5894,7 +5894,7 @@ index f8536a4eb243f8..d8ec17c95100a8 100644
  
  in
 diff --git a/pkgs/by-name/nv/nvfancontrol/package.nix b/pkgs/by-name/nv/nvfancontrol/package.nix
-index bded96ad5490c6..74a5801a2dca45 100644
+index bded96ad5490c..74a5801a2dca4 100644
 --- a/pkgs/by-name/nv/nvfancontrol/package.nix
 +++ b/pkgs/by-name/nv/nvfancontrol/package.nix
 @@ -2,12 +2,12 @@
@@ -5913,7 +5913,7 @@ index bded96ad5490c6..74a5801a2dca45 100644
  rustPlatform.buildRustPackage rec {
    pname = "nvfancontrol";
 diff --git a/pkgs/by-name/pr/primus-lib/package.nix b/pkgs/by-name/pr/primus-lib/package.nix
-index 9294249a419bc7..decc1ac40586a4 100644
+index 9294249a419bc..decc1ac40586a 100644
 --- a/pkgs/by-name/pr/primus-lib/package.nix
 +++ b/pkgs/by-name/pr/primus-lib/package.nix
 @@ -5,8 +5,8 @@
@@ -5928,7 +5928,7 @@ index 9294249a419bc7..decc1ac40586a4 100644
  }:
  
 diff --git a/pkgs/by-name/tu/tuxclocker-nvidia-plugin/package.nix b/pkgs/by-name/tu/tuxclocker-nvidia-plugin/package.nix
-index 40acfecf6688a4..e00d3ccccccadd 100644
+index 40acfecf6688a..e00d3ccccccad 100644
 --- a/pkgs/by-name/tu/tuxclocker-nvidia-plugin/package.nix
 +++ b/pkgs/by-name/tu/tuxclocker-nvidia-plugin/package.nix
 @@ -3,7 +3,7 @@
@@ -5952,7 +5952,7 @@ index 40acfecf6688a4..e00d3ccccccadd 100644
    ];
  
 diff --git a/pkgs/by-name/xf/xfce4-sensors-plugin/package.nix b/pkgs/by-name/xf/xfce4-sensors-plugin/package.nix
-index 68d1bee5b77abd..61fac6559c91d1 100644
+index 68d1bee5b77ab..61fac6559c91d 100644
 --- a/pkgs/by-name/xf/xfce4-sensors-plugin/package.nix
 +++ b/pkgs/by-name/xf/xfce4-sensors-plugin/package.nix
 @@ -16,8 +16,8 @@
@@ -5976,7 +5976,7 @@ index 68d1bee5b77abd..61fac6559c91d1 100644
    mesonFlags = [
      (lib.mesonEnable "xnvctrl" nvidiaSupport)
 diff --git a/pkgs/by-name/xp/xpraWithNvenc/package.nix b/pkgs/by-name/xp/xpraWithNvenc/package.nix
-index 169c3a657a197c..6d385388ebdea4 100644
+index 169c3a657a197..6d385388ebdea 100644
 --- a/pkgs/by-name/xp/xpraWithNvenc/package.nix
 +++ b/pkgs/by-name/xp/xpraWithNvenc/package.nix
 @@ -1,8 +1,8 @@
@@ -5991,7 +5991,7 @@ index 169c3a657a197c..6d385388ebdea4 100644
 +  nvidia_x11 = nvidiaPackages.stable.driver.override { libsOnly = true; };
  }
 diff --git a/pkgs/desktops/pantheon/apps/elementary-monitor/default.nix b/pkgs/desktops/pantheon/apps/elementary-monitor/default.nix
-index 169b4e28fde8d6..22d82ae93f42cc 100644
+index 169b4e28fde8d..22d82ae93f42c 100644
 --- a/pkgs/desktops/pantheon/apps/elementary-monitor/default.nix
 +++ b/pkgs/desktops/pantheon/apps/elementary-monitor/default.nix
 @@ -19,7 +19,7 @@
@@ -6013,7 +6013,7 @@ index 169b4e28fde8d6..22d82ae93f42cc 100644
      pciutils
      udisks
 diff --git a/pkgs/development/haskell-modules/configuration-nix.nix b/pkgs/development/haskell-modules/configuration-nix.nix
-index af16d9d4137321..792b5863e48ec6 100644
+index af16d9d413732..792b5863e48ec 100644
 --- a/pkgs/development/haskell-modules/configuration-nix.nix
 +++ b/pkgs/development/haskell-modules/configuration-nix.nix
 @@ -220,7 +220,7 @@ builtins.intersectAttrs super {
@@ -6039,7 +6039,7 @@ aarch64 cannot start. Use /lib/ld-linux-aarch64.so.1 there instead.
  1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
-index a3bf876df44300..227303feb401dd 100644
+index a3bf876df4430..227303feb401d 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 +++ b/pkgs/os-specific/linux/nvidia-x11/persistenced.nix
 @@ -58,7 +58,14 @@ stdenv.mkDerivation (finalAttrs: {

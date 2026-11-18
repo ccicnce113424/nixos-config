@@ -12,7 +12,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash 1017
  create mode 100644 pkgs/applications/virtualization/virtualbox/extpack-relocation.patch
 
 diff --git a/nixos/modules/virtualisation/virtualbox-host.nix b/nixos/modules/virtualisation/virtualbox-host.nix
-index 56ba741dc2e4d0..40d107eeafd9c8 100644
+index 56ba741dc2e4d..40d107eeafd9c 100644
 --- a/nixos/modules/virtualisation/virtualbox-host.nix
 +++ b/nixos/modules/virtualisation/virtualbox-host.nix
 @@ -113,8 +113,14 @@ in
@@ -48,7 +48,7 @@ index 56ba741dc2e4d0..40d107eeafd9c8 100644
          users.groups.vboxusers.gid = config.ids.gids.vboxusers;
  
 diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index ca422a6a54ced9..7da78ed65da7c1 100644
+index ca422a6a54ced..7da78ed65da7c 100644
 --- a/pkgs/applications/virtualization/virtualbox/default.nix
 +++ b/pkgs/applications/virtualization/virtualbox/default.nix
 @@ -4,6 +4,8 @@
@@ -746,7 +746,7 @@ index ca422a6a54ced9..7da78ed65da7c1 100644
 +  }
 diff --git a/pkgs/applications/virtualization/virtualbox/extpack-relocation.patch b/pkgs/applications/virtualization/virtualbox/extpack-relocation.patch
 new file mode 100644
-index 00000000000000..4e6603645aedf7
+index 0000000000000..4e6603645aedf
 --- /dev/null
 +++ b/pkgs/applications/virtualization/virtualbox/extpack-relocation.patch
 @@ -0,0 +1,145 @@
@@ -908,7 +908,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash 1017
  2 files changed, 25 insertions(+), 3 deletions(-)
 
 diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index 7da78ed65da7c1..d844d0ed0e1cc2 100644
+index 7da78ed65da7c..d844d0ed0e1cc 100644
 --- a/pkgs/applications/virtualization/virtualbox/default.nix
 +++ b/pkgs/applications/virtualization/virtualbox/default.nix
 @@ -390,10 +390,19 @@ let
@@ -935,7 +935,7 @@ index 7da78ed65da7c1..d844d0ed0e1cc2 100644
  
      passthru = {
 diff --git a/pkgs/applications/virtualization/virtualbox/hardened.patch b/pkgs/applications/virtualization/virtualbox/hardened.patch
-index eb53e0d1421e6b..3dc45ea9bf71b9 100644
+index eb53e0d1421e6..3dc45ea9bf71b 100644
 --- a/pkgs/applications/virtualization/virtualbox/hardened.patch
 +++ b/pkgs/applications/virtualization/virtualbox/hardened.patch
 @@ -179,3 +179,16 @@ index f9d1ecf..042e599 100644
@@ -966,7 +966,7 @@ Subject: [PATCH 3/4] nixos/virtualbox: disable hardening for kvm support
  1 file changed, 3 insertions(+)
 
 diff --git a/nixos/modules/virtualisation/virtualbox-host.nix b/nixos/modules/virtualisation/virtualbox-host.nix
-index 40d107eeafd9c8..06d9c9b9deed50 100644
+index 40d107eeafd9c..06d9c9b9deed5 100644
 --- a/nixos/modules/virtualisation/virtualbox-host.nix
 +++ b/nixos/modules/virtualisation/virtualbox-host.nix
 @@ -65,6 +65,8 @@ in
@@ -997,7 +997,7 @@ Subject: [PATCH 4/4] virtualbox: add variant suffixes to package names
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/pkgs/applications/virtualization/virtualbox/default.nix b/pkgs/applications/virtualization/virtualbox/default.nix
-index d844d0ed0e1cc2..8a58fd7f756bde 100644
+index d844d0ed0e1cc..8a58fd7f756bd 100644
 --- a/pkgs/applications/virtualization/virtualbox/default.nix
 +++ b/pkgs/applications/virtualization/virtualbox/default.nix
 @@ -109,7 +109,11 @@ let
