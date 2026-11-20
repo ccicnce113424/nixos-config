@@ -27,6 +27,7 @@
     enable = true;
     discord = {
       vencord.enable = false;
+      openASAR.enable = false;
 
       # I WANT VANILLA DISCORD
       silenceNoModClientWarning = true;
