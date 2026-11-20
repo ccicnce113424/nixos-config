@@ -66,7 +66,7 @@ index f101a9ee5c9bc1..d26d0a9b27eb5e 100644
  
    new_feature = generic {
 
-From 0c367d6dbf983926751576f95db2847f24966dde Mon Sep 17 00:00:00 2001
+From 051f12802b0f4dd9fcbb64b8230afbfad0263229 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 18:23:22 +0800
 Subject: [PATCH 03/14] maintainers/scripts/nvidia-source-hashes: add a per-URL
@@ -779,7 +779,7 @@ index 00000000000000..40ef4e4dc17aa1
 +    exit 1
 +fi
 
-From c5114cee4340ebaa2dff6d1dd9ef2c861b58f1c6 Mon Sep 17 00:00:00 2001
+From 9a0cb25e75c2b4837af0419eb259b816e43f95b0 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 23:42:50 +0800
 Subject: [PATCH 04/14] nvidia-x11: check the version of the fetched sources
@@ -942,7 +942,7 @@ index e47dc3cb4e6138..b07451d09e5a87 100644
      if [ -e src/libXNVCtrl/libXNVCtrl.a ]; then
        ( cd src/libXNVCtrl
 
-From d3cfcd7913ab72c7634600dd9e3ad43b5176598b Mon Sep 17 00:00:00 2001
+From 4054a8712391a21178c721c5751914a1fa5b897f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:28:00 +0800
 Subject: [PATCH 05/14] linuxPackages.nvidiaPackages: fetch open kernel module
@@ -1173,7 +1173,7 @@ index b07451d09e5a87..1f905ca9efafde 100644
    };
  
 
-From cfb4df52d72aac4f9e0d2bd26cfbe674e1d5b8c3 Mon Sep 17 00:00:00 2001
+From 671bb2274d384103e2cf157a1ba0a55d7e62c5a3 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sat, 17 Oct 2026 23:25:33 +0800
 Subject: [PATCH 06/14] libnvidia-container: fetch the nvidia-modprobe source
@@ -1212,7 +1212,7 @@ index d7af075742370d..908d80092bf902 100644
      };
      patches = [
 
-From fed1a79623d64c4e3d4e61a0be469b3d7b3eca63 Mon Sep 17 00:00:00 2001
+From 24108cf4a2e25dcad8030e6b0fbde9fece42d38f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 12 May 2026 15:44:41 +0800
 Subject: [PATCH 07/14] nvidia-modprobe: move to linuxPackages.nvidiaPackages
@@ -1237,7 +1237,7 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  rename pkgs/{by-name/nv/nvidia-modprobe/package.nix => os-specific/linux/nvidia-x11/modprobe.nix} (52%)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index 7619aa29d03cbf..86c0ffae96317a 100644
+index 23571f5fa9a864..fa28b4bb08beb0 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
 @@ -50,6 +50,11 @@
@@ -1253,10 +1253,10 @@ index 7619aa29d03cbf..86c0ffae96317a 100644
    The native library is available as `dxvk_3`. The `dxvk_1` and `dxvk_2` packages remain available for older hardware and applications.
    See the [upstream release notes](https://github.com/doitsujin/dxvk/releases/tag/v3.0) for details.
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index 77461de17ca572..672c9be01c5aba 100644
+index 32bb250da94e95..067780c2d5dda5 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
-@@ -458,10 +458,10 @@ in
+@@ -536,10 +536,10 @@ in
            services.udev.extraRules = ''
              # nvidia-modprobe honors the driver's device-file parameters.
              ACTION=="add", SUBSYSTEM=="module", KERNEL=="nvidia|nvidia_modeset|nvidia_uvm", RUN+="${pkgs.coreutils}/bin/mkdir -m 755 -p /dev/char"
@@ -1491,10 +1491,10 @@ index 70d353da38cfeb..220c469d578765 100644
    };
  })
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index 91a556381151a7..cbe5c406ab5deb 100644
+index 626440a38a7e04..724d05f1c305fc 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
-@@ -2036,6 +2036,7 @@ mapAliases {
+@@ -2037,6 +2037,7 @@ mapAliases {
    numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
    nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
    nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
@@ -1503,7 +1503,7 @@ index 91a556381151a7..cbe5c406ab5deb 100644
    oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
    oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 
-From 9ee4b9fb2ed0afdc48c1b431e1f1e863860e51a3 Mon Sep 17 00:00:00 2001
+From 64e29880a80ed4164c5770947fa8efa15dff4424 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Fri, 2 Oct 2026 20:08:54 +0800
 Subject: [PATCH 08/14] nvidia-x11: document driver updates and custom versions
@@ -1520,10 +1520,10 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/README.md
 
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index 672c9be01c5aba..f2ecd2735dda16 100644
+index 067780c2d5dda5..ea9e85727a1006 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
-@@ -354,7 +354,8 @@ in
+@@ -432,7 +432,8 @@ in
            your configured kernel.
  
            For custom versions, you can use `nvidiaPackages.mkDriver`; see
@@ -1738,7 +1738,7 @@ index 00000000000000..27bbff86badedb
 +`hardware.nvidia.open` selects the open kernel modules, which
 +`hardware.nvidia.kernelModules` then picks up from the branch.
 
-From e0099c56db9012832bfda6e532529b515465e9d3 Mon Sep 17 00:00:00 2001
+From a67e2479b45a5e584e6b1ab27237a00e541e03e9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 20:30:08 +0800
 Subject: [PATCH 09/14] linuxPackages.nvidiaPackages: move userspace utilities
@@ -2705,7 +2705,7 @@ index 1f905ca9efafde..d797d8a267c03a 100644
      gtk3
      librsvg
 
-From 8f1a11970b6c42ce27512dff66af447879ab87d1 Mon Sep 17 00:00:00 2001
+From ad0e0f3a9f8310f1d5b7e508513e6c882ecb53ba Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Wed, 23 Sep 2026 22:50:14 +0800
 Subject: [PATCH 10/14] nvidia-settings: find the key documentation in the XDG
@@ -2726,10 +2726,10 @@ Assisted-by: omp:DeepSeek V4.1 Flash
  create mode 100644 pkgs/os-specific/linux/nvidia-x11/nvidia-settings-xdg-data-dirs.patch
 
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index f2ecd2735dda16..8db3cf632016df 100644
+index ea9e85727a1006..7aa92d4b13234e 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
-@@ -511,6 +511,11 @@ in
+@@ -589,6 +589,11 @@ in
                ];
              };
            environment.systemPackages = [ nvidia_x11.bin ];
@@ -2881,7 +2881,7 @@ index d797d8a267c03a..fbe529d31554f1 100644
      vulkan-headers
    ]
 
-From 94c52afa065d302a6b182410d50a8e2a2f6f8abf Mon Sep 17 00:00:00 2001
+From 8eeb8ab7f7f028b439654da186ca87c24e15eef9 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 11:29:02 +0800
 Subject: [PATCH 11/14] nvidia-x11: unpack the installer into a source
@@ -3533,7 +3533,7 @@ index 7d5f9a50ace52f..71e732c562e868 100644
        "x86_64-linux"
        "aarch64-linux"
 
-From 1bb09efe2eb22e1809d0f554c473b335de081d8e Mon Sep 17 00:00:00 2001
+From 0d2e8a3c6333744a27e32a1a1163eb365af1cf3f Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Sun, 4 Oct 2026 12:02:47 +0800
 Subject: [PATCH 12/14] nvidia-x11: build each driver in a factory and expose
@@ -3578,7 +3578,7 @@ Assisted-by: omp:Space Bunny Alpha
  doc/release-notes/rl-2611.section.md          |  26 +-
  .../scripts/nvidia-source-hashes/default.nix  |  37 +-
  .../manual/release-notes/rl-2611.section.md   |  34 ++
- nixos/modules/hardware/video/nvidia.nix       | 152 +++--
+ nixos/modules/hardware/video/nvidia.nix       | 156 +++--
  .../os-specific/linux/nvidia-x11/binaries.nix |  26 +-
  pkgs/os-specific/linux/nvidia-x11/default.nix | 543 +++++++++---------
  .../linux/nvidia-x11/fabricmanager.nix        |   4 +-
@@ -3591,10 +3591,10 @@ Assisted-by: omp:Space Bunny Alpha
  pkgs/top-level/aliases.nix                    |   2 +-
  pkgs/top-level/all-packages.nix               |   6 +-
  pkgs/top-level/linux-kernels.nix              |  99 +++-
- 16 files changed, 873 insertions(+), 563 deletions(-)
+ 16 files changed, 875 insertions(+), 565 deletions(-)
 
 diff --git a/doc/release-notes/rl-2611.section.md b/doc/release-notes/rl-2611.section.md
-index 86c0ffae96317a..923321cf0ae917 100644
+index fa28b4bb08beb0..a28a5376590972 100644
 --- a/doc/release-notes/rl-2611.section.md
 +++ b/doc/release-notes/rl-2611.section.md
 @@ -50,10 +50,11 @@
@@ -3707,10 +3707,10 @@ index c865e3c81bed34..22e7549461a4ac 100644
                empty;
            step = builtins.tryEval result;
 diff --git a/nixos/doc/manual/release-notes/rl-2611.section.md b/nixos/doc/manual/release-notes/rl-2611.section.md
-index 409080f97fa0d1..c1918df9d6272a 100644
+index bc1ba787d730b2..c1b5ec363202a6 100644
 --- a/nixos/doc/manual/release-notes/rl-2611.section.md
 +++ b/nixos/doc/manual/release-notes/rl-2611.section.md
-@@ -289,6 +289,40 @@
+@@ -293,6 +293,40 @@
  - [`services.litellm`](#opt-services.litellm.enable) fails to start without a master key since `litellm` 1.104.0, which refuses to serve unauthenticated requests.
    Set `LITELLM_MASTER_KEY` through [](#opt-services.litellm.environmentFile).
  
@@ -3752,7 +3752,7 @@ index 409080f97fa0d1..c1918df9d6272a 100644
    directory discovery changed; see the [upstream migration
    guide](https://artalk.js.org/en/guide/releases/v2.10.0.html) when invoking
 diff --git a/nixos/modules/hardware/video/nvidia.nix b/nixos/modules/hardware/video/nvidia.nix
-index 8db3cf632016df..db051128ed93f0 100644
+index 7aa92d4b13234e..47294ee9b2644a 100644
 --- a/nixos/modules/hardware/video/nvidia.nix
 +++ b/nixos/modules/hardware/video/nvidia.nix
 @@ -6,12 +6,39 @@
@@ -3804,8 +3804,8 @@ index 8db3cf632016df..db051128ed93f0 100644
 +  # driver reports it there, and `binaries.nix` folds in the version rule.
    ibtSupport = useOpenModules || (nvidia_x11.ibtSupport or false);
    settingsFormat = pkgs.formats.keyValue { };
- in
-@@ -103,7 +132,7 @@ in
+   nvlsmSettingsFormat = pkgs.formats.keyValue {
+@@ -181,7 +210,7 @@ in
            Requires NVIDIA driver version 595 or newer, and the open source kernel modules.
          ''
          // {
@@ -3814,7 +3814,7 @@ index 8db3cf632016df..db051128ed93f0 100644
            defaultText = lib.literalExpression ''
              config.hardware.nvidia.open == true && lib.versionAtLeast config.hardware.nvidia.package.version "595"
            '';
-@@ -299,11 +328,9 @@ in
+@@ -377,11 +406,9 @@ in
        '';
  
        branch = lib.mkOption {
@@ -3829,7 +3829,7 @@ index 8db3cf632016df..db051128ed93f0 100644
          default = if cfg.datacenter.enable then "dc" else "stable";
          defaultText = lib.literalExpression ''
            if config.hardware.nvidia.datacenter.enable then "dc" else "stable"
-@@ -333,6 +360,10 @@ in
+@@ -411,6 +438,10 @@ in
              no longer support (often Maxwell through Volta; roughly GeForce GTX 9xx
              through 10xx, plus rare Volta cards like TITAN V).
  
@@ -3840,7 +3840,7 @@ index 8db3cf632016df..db051128ed93f0 100644
            - vulkan_beta:
              The Vulkan developer beta driver, for users interested in testing new
              Vulkan features.
-@@ -340,30 +371,60 @@ in
+@@ -418,30 +449,60 @@ in
        };
  
        package = lib.mkOption {
@@ -3912,7 +3912,7 @@ index 8db3cf632016df..db051128ed93f0 100644
          defaultText = lib.literalExpression ''
            if lib.versionOlder config.hardware.nvidia.package.version "560" then false else null
          '';
-@@ -374,7 +435,7 @@ in
+@@ -452,7 +513,7 @@ in
            the GPU System Processor (GSP) on the video card
          ''
          // {
@@ -3921,7 +3921,7 @@ index 8db3cf632016df..db051128ed93f0 100644
            defaultText = lib.literalExpression ''
              config.hardware.nvidia.open == true || lib.versionAtLeast config.hardware.nvidia.package.version "555"
            '';
-@@ -420,10 +481,19 @@ in
+@@ -498,10 +559,19 @@ in
                '';
              }
              {
@@ -3943,7 +3943,7 @@ index 8db3cf632016df..db051128ed93f0 100644
                '';
              }
            ];
-@@ -574,12 +644,12 @@ in
+@@ -652,12 +722,12 @@ in
              }
  
              {
@@ -3958,7 +3958,7 @@ index 8db3cf632016df..db051128ed93f0 100644
                message = "This version of NVIDIA driver does not provide a corresponding opensource kernel driver.";
              }
  
-@@ -709,8 +779,10 @@ in
+@@ -787,8 +857,10 @@ in
            hardware.graphics.extraPackages = lib.optional cfg.videoAcceleration pkgs.nvidia-vaapi-driver;
  
            environment.systemPackages =
@@ -3971,7 +3971,7 @@ index 8db3cf632016df..db051128ed93f0 100644
              ++ lib.optional offloadCfg.enableOffloadCmd (
                pkgs.writeShellScriptBin cfg.prime.offload.offloadCmdMainProgram ''
                  export __NV_PRIME_RENDER_OFFLOAD=1
-@@ -762,7 +834,7 @@ in
+@@ -840,7 +912,7 @@ in
                      Type = "forking";
                      Restart = "always";
                      PIDFile = "/var/run/nvidia-persistenced/nvidia-persistenced.pid";
@@ -3980,7 +3980,7 @@ index 8db3cf632016df..db051128ed93f0 100644
                      ExecStopPost = "${pkgs.coreutils}/bin/rm -rf /var/run/nvidia-persistenced";
                    };
                  };
-@@ -798,8 +870,8 @@ in
+@@ -876,8 +948,8 @@ in
              "d /run/nvidia-xdriver 0770 root users"
            ]
            ++
@@ -3991,7 +3991,7 @@ index 8db3cf632016df..db051128ed93f0 100644
  
            hardware.nvidia.moduleParams = lib.mkMerge (
              lib.optional (offloadCfg.enable || cfg.modesetting.enable) { nvidia-drm.modeset = 1; }
-@@ -819,7 +891,7 @@ in
+@@ -897,7 +969,7 @@ in
            );
  
            boot = {
@@ -4000,67 +4000,82 @@ index 8db3cf632016df..db051128ed93f0 100644
              # nvidia-uvm is required by CUDA applications.
              kernelModules = lib.optionals config.services.xserver.enable [
                "nvidia"
-@@ -862,12 +934,12 @@ in
-         })
-         # Data Center
-         (lib.mkIf (cfg.datacenter.enable) {
--          boot.extraModulePackages = if useOpenModules then [ nvidia_x11.open ] else [ nvidia_x11.mod ];
-+          boot.extraModulePackages = [ cfg.kernelModules ];
+@@ -942,12 +1014,12 @@ in
+         (lib.mkIf (cfg.datacenter.enable) (
+           let
+             nvswitchEnabled = cfg.datacenter.nvswitch.enable;
+-            # Since these rely on the `nvidia_x11.fabricmanager` derivation, they're
++            # Since these rely on the `cfg.package.fabricmanager` derivation, they're
+             # unsuitable to be mentioned in the configuration defaults, but they _can_
+             # be overridden in `cfg.datacenter.settings` if needed.
+             fabricManagerConfDefaults = {
+-              TOPOLOGY_FILE_PATH = "${nvidia_x11.fabricmanager}/share/nvidia-fabricmanager/nvidia/nvswitch";
+-              DATABASE_PATH = "${nvidia_x11.fabricmanager}/share/nvidia-fabricmanager/nvidia/nvswitch";
++              TOPOLOGY_FILE_PATH = "${cfg.package.fabricmanager}/share/nvidia-fabricmanager/nvidia/nvswitch";
++              DATABASE_PATH = "${cfg.package.fabricmanager}/share/nvidia-fabricmanager/nvidia/nvswitch";
+             };
+             nv-fab-conf = settingsFormat.generate "fabricmanager.conf" (
+               fabricManagerConfDefaults
+@@ -975,12 +1047,12 @@ in
+                 '';
+               };
  
-           systemd = {
-             tmpfiles.rules =
--              lib.optional (nvidia_x11.persistenced != null && config.virtualisation.docker.enableNvidia)
--                "L+ /run/nvidia-docker/extras/bin/nvidia-persistenced - - - - ${nvidia_x11.persistenced}/origBin/nvidia-persistenced";
-+              lib.optional (cfg.package.persistenced != null && config.virtualisation.docker.enableNvidia)
-+                "L+ /run/nvidia-docker/extras/bin/nvidia-persistenced - - - - ${cfg.package.persistenced}/origBin/nvidia-persistenced";
+-              boot.extraModulePackages = if useOpenModules then [ nvidia_x11.open ] else [ nvidia_x11.mod ];
++              boot.extraModulePackages = [ cfg.kernelModules ];
  
-             services = lib.mkMerge [
-               {
-@@ -882,18 +954,18 @@ in
-                     TimeoutStartSec = 240;
-                     ExecStart =
-                       let
--                        # Since these rely on the `nvidia_x11.fabricmanager` derivation, they're
-+                        # Since these rely on the `cfg.package.fabricmanager` derivation, they're
-                         # unsuitable to be mentioned in the configuration defaults, but they _can_
-                         # be overridden in `cfg.datacenter.settings` if needed.
-                         fabricManagerConfDefaults = {
--                          TOPOLOGY_FILE_PATH = "${nvidia_x11.fabricmanager}/share/nvidia-fabricmanager/nvidia/nvswitch";
--                          DATABASE_PATH = "${nvidia_x11.fabricmanager}/share/nvidia-fabricmanager/nvidia/nvswitch";
-+                          TOPOLOGY_FILE_PATH = "${cfg.package.fabricmanager}/share/nvidia-fabricmanager/nvidia/nvswitch";
-+                          DATABASE_PATH = "${cfg.package.fabricmanager}/share/nvidia-fabricmanager/nvidia/nvswitch";
-                         };
-                         nv-fab-conf = settingsFormat.generate "fabricmanager.conf" (
-                           fabricManagerConfDefaults // cfg.datacenter.settings
-                         );
-                       in
--                      "${lib.getExe nvidia_x11.fabricmanager} -c ${nv-fab-conf}";
-+                      "${lib.getExe cfg.package.fabricmanager} -c ${nv-fab-conf}";
-                     LimitCORE = "infinity";
-                   };
-                 };
-@@ -906,7 +978,7 @@ in
-                     Type = "forking";
-                     Restart = "always";
-                     PIDFile = "/var/run/nvidia-persistenced/nvidia-persistenced.pid";
--                    ExecStart = "${lib.getExe nvidia_x11.persistenced} --verbose";
-+                    ExecStart = "${lib.getExe cfg.package.persistenced} --verbose";
-                     ExecStopPost = "${pkgs.coreutils}/bin/rm -rf /var/run/nvidia-persistenced";
-                   };
-                 };
-@@ -915,8 +987,10 @@ in
-           };
+               systemd = {
+                 tmpfiles.rules =
+-                  lib.optional (nvidia_x11.persistenced != null && config.virtualisation.docker.enableNvidia)
+-                    "L+ /run/nvidia-docker/extras/bin/nvidia-persistenced - - - - ${nvidia_x11.persistenced}/origBin/nvidia-persistenced";
++                  lib.optional (cfg.package.persistenced != null && config.virtualisation.docker.enableNvidia)
++                    "L+ /run/nvidia-docker/extras/bin/nvidia-persistenced - - - - ${cfg.package.persistenced}/origBin/nvidia-persistenced";
  
-           environment.systemPackages =
--            lib.optional cfg.datacenter.enable nvidia_x11.fabricmanager
--            ++ lib.optional cfg.nvidiaPersistenced nvidia_x11.persistenced;
-+            lib.optional (cfg.datacenter.enable && cfg.package.fabricmanager != null) cfg.package.fabricmanager
-+            ++ lib.optional (
-+              cfg.nvidiaPersistenced && cfg.package.persistenced != null
-+            ) cfg.package.persistenced;
-         })
-       ]
-     );
+                 services = lib.mkMerge [
+                   {
+@@ -993,7 +1065,7 @@ in
+                       serviceConfig = {
+                         Type = "forking";
+                         TimeoutStartSec = 240;
+-                        ExecStart = "${lib.getExe nvidia_x11.fabricmanager} -c ${nv-fab-conf}";
++                        ExecStart = "${lib.getExe cfg.package.fabricmanager} -c ${nv-fab-conf}";
+                         LimitCORE = "infinity";
+                       };
+                     };
+@@ -1006,7 +1078,7 @@ in
+                         Type = "forking";
+                         Restart = "always";
+                         PIDFile = "/var/run/nvidia-persistenced/nvidia-persistenced.pid";
+-                        ExecStart = "${lib.getExe nvidia_x11.persistenced} --verbose";
++                        ExecStart = "${lib.getExe cfg.package.persistenced} --verbose";
+                         ExecStopPost = "${pkgs.coreutils}/bin/rm -rf /var/run/nvidia-persistenced";
+                       };
+                     };
+@@ -1015,8 +1087,10 @@ in
+               };
+ 
+               environment.systemPackages =
+-                lib.optional cfg.datacenter.enable nvidia_x11.fabricmanager
+-                ++ lib.optional cfg.nvidiaPersistenced nvidia_x11.persistenced;
++                lib.optional (cfg.datacenter.enable && cfg.package.fabricmanager != null) cfg.package.fabricmanager
++                ++ lib.optional (
++                  cfg.nvidiaPersistenced && cfg.package.persistenced != null
++                ) cfg.package.persistenced;
+             }
+ 
+             # NVSwitch / NVLSM
+@@ -1055,10 +1129,10 @@ in
+                 fabricManagerStartScript =
+                   pkgs.runCommand "nvidia-fabricmanager-start" { nativeBuildInputs = [ pkgs.makeWrapper ]; }
+                     ''
+-                      cp ${nvidia_x11.fabricmanager}/bin/nvidia-fabricmanager-start.sh nvidia-fabricmanager-start.sh
++                      cp ${cfg.package.fabricmanager}/bin/nvidia-fabricmanager-start.sh nvidia-fabricmanager-start.sh
+                       chmod +w nvidia-fabricmanager-start.sh
+                       substituteInPlace nvidia-fabricmanager-start.sh \
+-                        --replace-fail "/usr/bin/nv-fabricmanager" "${nvidia_x11.fabricmanager}/bin/nv-fabricmanager" \
++                        --replace-fail "/usr/bin/nv-fabricmanager" "${cfg.package.fabricmanager}/bin/nv-fabricmanager" \
+                         --replace-fail "/opt/nvidia/nvlsm/sbin/nvlsm" "${nvlsmPkg}/sbin/nvlsm"
+                       mkdir -p $out/bin
+                       mv nvidia-fabricmanager-start.sh $out/bin/nvidia-fabricmanager-start
 diff --git a/pkgs/os-specific/linux/nvidia-x11/binaries.nix b/pkgs/os-specific/linux/nvidia-x11/binaries.nix
 index 751f54ad2bfb33..46ad5820f6ac9a 100644
 --- a/pkgs/os-specific/linux/nvidia-x11/binaries.nix
@@ -5398,10 +5413,10 @@ index fbe529d31554f1..3b5108396f1136 100644
  
    libXNVCtrl = stdenv.mkDerivation {
 diff --git a/pkgs/top-level/aliases.nix b/pkgs/top-level/aliases.nix
-index cbe5c406ab5deb..c8411a0edc8f49 100644
+index 724d05f1c305fc..94078e7af0368e 100644
 --- a/pkgs/top-level/aliases.nix
 +++ b/pkgs/top-level/aliases.nix
-@@ -2036,7 +2036,7 @@ mapAliases {
+@@ -2037,7 +2037,7 @@ mapAliases {
    numix-sx-gtk-theme = throw "'numix-sx-gtk-theme' has been removed because it depended on 'gtk-engine-murrine', which was removed because it was unmaintained upstream and depended on GTK 2."; # Added 2026-07-22
    nushellFull = throw "'nushellFull' has been renamed to/replaced by 'nushell'"; # Converted to throw 2025-10-27
    nuXmv = warnAlias "'nuXmv' has been renamed to 'nuxmv'" nuxmv; # Added 2026-02-08
@@ -5411,10 +5426,10 @@ index cbe5c406ab5deb..c8411a0edc8f49 100644
    oam-tools = throw "'oam-tools' has been become part of amass"; # Added 2025-12-21
    oathToolkit = throw "'oathToolkit' has been renamed to/replaced by 'oath-toolkit'"; # Converted to throw 2025-10-27
 diff --git a/pkgs/top-level/all-packages.nix b/pkgs/top-level/all-packages.nix
-index 8dacf9501ba6bc..76a5cb78ef2a66 100644
+index a239439481f609..783c76b01f20cf 100644
 --- a/pkgs/top-level/all-packages.nix
 +++ b/pkgs/top-level/all-packages.nix
-@@ -5879,6 +5879,10 @@ with pkgs;
+@@ -5831,6 +5831,10 @@ with pkgs;
    nv-codec-headers-12 = nv-codec-headers.override { majorVersion = "12"; };
    nv-codec-headers-13 = nv-codec-headers.override { majorVersion = "13"; };
  
@@ -5425,7 +5440,7 @@ index 8dacf9501ba6bc..76a5cb78ef2a66 100644
    nvidiaCtkPackages = recurseIntoAttrs (
      callPackage ../by-name/nv/nvidia-container-toolkit/packages.nix { }
    );
-@@ -7181,7 +7185,7 @@ with pkgs;
+@@ -7076,7 +7080,7 @@ with pkgs;
    conky = callPackage ../os-specific/linux/conky (
      {
        lua = lua5_5;
@@ -5560,7 +5575,7 @@ index a9a8f547c23e57..a616876ce7f864 100644
        (lib.fixedPoints.composeManyExtensions kernelPackagesExtensions);
  
 
-From 2ecf740cb20b5543151804aa09ddd416956743e6 Mon Sep 17 00:00:00 2001
+From f77e03ab62942f0fc69747c8a71c19a607e34455 Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Tue, 13 Oct 2026 23:43:35 +0800
 Subject: [PATCH 13/14] nvidia: update the consumers of the driver namespace
@@ -5736,10 +5751,10 @@ index 12537816ef078b..0ec4948b849aee 100644
              description = "Path or command to be used for the nvidia-smi executable.";
            };
 diff --git a/nixos/modules/services/video/frigate.nix b/nixos/modules/services/video/frigate.nix
-index 9f30265e832258..0af85c03c6a99e 100644
+index 64410ee9d4b77a..c6cd2c0c220e9b 100644
 --- a/nixos/modules/services/video/frigate.nix
 +++ b/nixos/modules/services/video/frigate.nix
-@@ -750,7 +750,7 @@ in
+@@ -768,7 +768,7 @@ in
          with pkgs;
          [
            # unfree:
@@ -6060,7 +6075,7 @@ index 748e1cb4dd6b34..c20e6881938781 100644
        "--extra-lib-dirs=${pkgs.cudaPackages.cudatoolkit.lib}/lib"
        "--extra-include-dirs=${pkgs.cudaPackages.cudatoolkit}/include"
 
-From b6767321aeb623628f0276f97d15979959cd45ba Mon Sep 17 00:00:00 2001
+From 4baad8ef427b40c51b30ed1412eee4c97ef8e51d Mon Sep 17 00:00:00 2001
 From: ccicnce113424 <ccicnce113424@gmail.com>
 Date: Mon, 26 Oct 2026 12:48:30 +0800
 Subject: [PATCH 14/14] nvidia-persistenced: use the platform's container
