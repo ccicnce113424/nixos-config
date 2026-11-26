@@ -20,7 +20,10 @@
         enable = true;
         package = pkgs.gaze-gui;
       };
-      settings.auth.require_confirmation_elevation = true;
+      settings = {
+        auth.require_confirmation_elevation = true;
+        auth.require_attention = true;
+      };
     };
   };
 }
