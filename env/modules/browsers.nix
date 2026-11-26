@@ -32,6 +32,9 @@
         "extensions.autoDisableScopes" = 0;
 
         "network.trr.mode" = 5;
+
+        "gfx.color_management.hdr" = true;
+        "gfx.color_management.hdr.yuv_to_rgb_video_shader.always" = false;
       };
     };
 
