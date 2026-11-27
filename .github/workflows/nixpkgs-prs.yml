@@ -43,7 +43,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN_FOR_UPDATES }}
 
       - name: Install Nix
-        uses: nixbuild/nix-quick-install-action@v35
+        uses: nixbuild/nix-quick-install-action@v36
         with:
           nix_conf: |
             accept-flake-config = true
